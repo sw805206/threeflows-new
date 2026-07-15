@@ -23,6 +23,9 @@
   --tf-stone: #B8ADA5;        /* supporting tone: meta text, borders, charts */
   --tf-stone-light: #DDD6CF;  /* light borders, subtle rules */
   --tf-paper: #F5F2EE;        /* ground — warm white everywhere */
+  /* Raised-surface tone for overlay elements (dropdowns; future overlays reuse it).
+     A tint derived from existing tokens — NOT a new raw hue (resolves to ~#E9E4DE). */
+  --tf-cream: color-mix(in srgb, var(--tf-stone-light) 50%, var(--tf-paper));
 
   /* Type */
   --tf-font-heading: 'Source Serif 4', Georgia, serif;
@@ -65,6 +68,32 @@ body {
   font-weight: 400;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+}
+
+/* App shell — sticky footer. A page (body.tf-app) is a full-height flex
+   column: header, main, footer stack top-to-bottom and <main> grows to fill,
+   so the footer sits at the viewport bottom on short pages and flows after
+   the content on long ones. Shared structure; never page-local. */
+body.tf-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.tf-app > main { flex: 1 0 auto; }
+
+/* Container — the shared content measure. Centres content and holds it to a
+   readable width with responsive side padding. Full-bleed surfaces (header
+   rule, footer ink band) span the viewport; their CONTENT sits in a
+   container. Applied to the nav inner, the footer inner, and every <main>. */
+.tf-container {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: var(--tf-space-3);
+  box-sizing: border-box;
+}
+@media (min-width: 768px) {
+  .tf-container { padding-inline: var(--tf-space-4); }
 }
 
 h1, h2, h3, h4 {
@@ -127,7 +156,15 @@ a:hover { color: var(--tf-brick-dark); }
   display: flex;
   align-items: center;
   gap: 12px;
+  color: inherit;   /* wordmark follows its surface: ink on paper, paper on ink — never the base link brick */
 }
+/* The header lockup is a link (to index.html) but the wordmark must never
+   take link colouring. Pin every interactive state to inherit so it stays on
+   its surface tone — ink on the paper header — beating the global a:hover.
+   (The footer lockup is a <div>, not a link, so it already stays paper.) */
+.tf-lockup:hover,
+.tf-lockup:focus,
+.tf-lockup:active { color: inherit; }
 .tf-lockup-mark { width: 40px; height: 40px; }
 .tf-lockup-name {
   font-family: var(--tf-font-heading);
@@ -166,14 +203,20 @@ a:hover { color: var(--tf-brick-dark); }
 }
 .tf-btn-secondary:hover { background: var(--tf-ink); color: var(--tf-paper); }
 
-/* Header / nav */
+/* Header / nav — full-bleed band; its content is held in .tf-nav-inner
+   (a .tf-container), so the 2px bottom rule spans the viewport while the
+   lockup + nav sit on the shared measure. */
 .tf-nav {
+  padding-block: var(--tf-space-2);
+  border-bottom: var(--tf-rule);
+  background: var(--tf-paper);
+}
+.tf-nav-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--tf-space-2) var(--tf-space-3);
-  border-bottom: var(--tf-rule);
-  background: var(--tf-paper);
+  flex-wrap: wrap;
+  gap: var(--tf-space-2);
 }
 .tf-nav-links {
   display: flex;
@@ -181,13 +224,21 @@ a:hover { color: var(--tf-brick-dark); }
   font-size: var(--tf-text-sm);
   font-weight: 500;
 }
-.tf-nav-links a { color: var(--tf-ink-soft); }
-.tf-nav-links a:hover,
-.tf-nav-links a[aria-current="page"] { color: var(--tf-brick); }
+/* Nav link colour. At rest NO brick text and NO current-page marker: the
+   top-level links are ink-soft, the dropdown links ink on their cream panel.
+   The current page keeps aria-current="page" in the markup for accessibility
+   but carries no visual affordance. Brick text appears only on hover, or on a
+   dropdown trigger while its own panel is open (see the trigger rules). */
+.tf-nav-links > a { color: var(--tf-ink-soft); }
+.tf-nav-links > a:hover { color: var(--tf-brick); }
 
-/* Section — strong rules between major page blocks */
+/* Section — full-bleed band: vertical rhythm (--tf-space-6 top/bottom) and a
+   2px ink divider between major page blocks. Horizontal gutters are NOT set
+   here; a nested .tf-container supplies them, so section padding and the
+   container's gutters never double up (same band + container idiom as the
+   header and footer). */
 .tf-section {
-  padding: var(--tf-space-6) var(--tf-space-3);
+  padding-block: var(--tf-space-6);
   border-bottom: var(--tf-rule);
 }
 
@@ -220,4 +271,130 @@ a:hover { color: var(--tf-brick-dark); }
 .tf-stat-label {
   font-size: var(--tf-text-sm);
   color: var(--tf-ink-soft);
+}
+
+/* --------------------------------------------------------------------------
+   5. Nav — dropdowns & mobile menu
+   Shared header carries a Home link, two dropdown groups (Services,
+   Resources), and About / Contact. On desktop a panel opens on its
+   trigger's hover or click, at most one at a time, and closes on mouse
+   leave / outside click / Esc — all driven by the .is-open class the nav
+   script sets (JS owns the state; CSS just reflects it). Below the
+   breakpoint the whole nav collapses behind a hamburger and the panels
+   become one-at-a-time accordions. Vanilla CSS + JS only.
+   -------------------------------------------------------------------------- */
+.tf-nav-inner { position: relative; }
+
+/* Hamburger toggle — hidden on desktop, shown below the breakpoint */
+.tf-nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: transparent;
+  border: 2px solid var(--tf-ink);
+  cursor: pointer;
+}
+.tf-nav-toggle-bar {
+  display: block;
+  width: 20px;
+  height: 2px;
+  margin: 0 auto;
+  background: var(--tf-ink);
+}
+
+/* Dropdown parent + top-level trigger (styled to match .tf-nav-links a) */
+.tf-nav-item { position: relative; display: flex; }
+.tf-nav-trigger {
+  font-family: var(--tf-font-body);
+  font-size: var(--tf-text-sm);
+  font-weight: 500;
+  line-height: 1.6;
+  color: var(--tf-ink-soft);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.tf-nav-trigger:hover,
+.tf-has-dropdown.is-open > .tf-nav-trigger { color: var(--tf-brick); }
+
+/* Dropdown panel — raised cream surface (--tf-cream, a derived tint). Item
+   text is ink; hover / current-page is brick. Borderless, no shadow, square
+   corners; contrast comes from the surface itself. Closed at rest —
+   visibility is driven ONLY by the .is-open class the nav script toggles,
+   which is the single source of truth, so at most one panel is ever open at
+   a time. */
+.tf-dropdown {
+  display: none;
+  flex-direction: column;
+  background: var(--tf-cream);
+}
+.tf-dropdown a {
+  color: var(--tf-ink);
+  white-space: nowrap;                       /* size to the longest label; never wrap or clip */
+  padding: var(--tf-space-1) var(--tf-space-2);
+}
+.tf-dropdown a:hover { color: var(--tf-brick); }  /* current-page marker is the underline (see nav-link rules), not brick text */
+.tf-has-dropdown.is-open > .tf-dropdown { display: flex; }
+
+/* Desktop: panel floats below its trigger, sized to its longest item, and
+   overlays page content (z-index) — never pushing or bleeding into it. */
+@media (min-width: 820px) {
+  .tf-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: max-content;      /* fits the longest item; no truncation */
+    padding: var(--tf-space-1) 0;
+    z-index: 50;
+  }
+}
+
+/* Mobile: hamburger shows; nav collapses to a stacked panel. Dropdowns
+   become in-flow accordions (still the cream surface, still one-at-a-time).
+   Larger tap targets throughout. */
+@media (max-width: 819px) {
+  .tf-nav-toggle { display: flex; }
+  .tf-nav-links {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    order: 3;
+    gap: 0;
+    margin-top: var(--tf-space-2);
+    padding-top: var(--tf-space-2);
+    border-top: var(--tf-rule-light);
+  }
+  .tf-nav-open .tf-nav-links { display: flex; }
+  .tf-nav-links > a,
+  .tf-nav-trigger { padding: var(--tf-space-1) 0; }
+  .tf-nav-item { flex-direction: column; align-items: stretch; width: 100%; }
+  .tf-nav-trigger { text-align: left; }
+  .tf-dropdown { width: 100%; margin: var(--tf-space-1) 0; }
+}
+
+/* --------------------------------------------------------------------------
+   6. Footer — dark surface, minimal (pairs with .tf-surface-ink)
+   -------------------------------------------------------------------------- */
+.tf-footer {
+  padding-block: var(--tf-space-4);
+  border-top: var(--tf-rule);
+}
+.tf-footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--tf-space-2);
+}
+.tf-footer-links {
+  display: flex;
+  gap: var(--tf-space-3);
+  font-size: var(--tf-text-sm);
+  font-weight: 500;
 }
