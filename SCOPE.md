@@ -1,4 +1,4 @@
-v001 | last updated: 2026-07-15
+v002 | last updated: 2026-07-15
 
 # SCOPE.md — threeflows.com Relaunch (new repo)
 
@@ -53,14 +53,14 @@ or cross-referenced.
 Before page work begins, extract from the old repo's FILES (not its docs)
 everything the new site must preserve:
 
-- [ ] Full list of live filenames/URLs — every public page must exist in
-      the new tree under the same filename, or be consciously dropped
-      (dropped URLs logged; redirects/SEO impact assessed)
+- [x] Full list of live filenames/URLs — superseded by the user's page
+      reorg (see Site structure); old URL → new URL redirect map still
+      required at inventory time (Cloudflare Redirect Rules at cutover)
 - [ ] Form endpoint URLs (Google Apps Script) from contact, intake, and
       gated-tool pages — the endpoints are owner-managed and reused as-is
 - [ ] Blog posts: content, filenames, dates, tags
 - [ ] Hidden pages (surveys, materials) reachable by direct link — list
-      them all with a keep/kill decision each
+      them all with a keep/kill decision each (BL-008)
 - [ ] Existing free tools and their calculator/checklist logic
 - [ ] CNAME value and any deploy-config files
 - [ ] External dependencies actually in use (fonts, chart libraries,
@@ -68,6 +68,17 @@ everything the new site must preserve:
 
 The completed inventory lives in BACKLOG.md as the page checklist; each
 row is tracked to done before cutover.
+
+## Site structure (per user reorg, 2026-07-15)
+
+index.html (Home); service-planning.html, service-sourcing.html,
+service-launch.html, service-management.html; blog.html (index; posts
+blog-###.html later); references.html; seminars.html; tools.html;
+about.html; contact.html; privacy.html (hidden — no nav; linked in the
+shared footer); surveys.html (hidden cover; svy###.html later).
+Nav = Home, Services (dropdown ×4), Resources (dropdown: Blogs,
+References, Seminars, Free tools), About, Contact. Shared header/footer
+served from partials.html, fetched per page.
 
 ## Build strategy
 
@@ -78,6 +89,8 @@ row is tracked to done before cutover.
   never into page-local styles. The decision is recorded in STYLE.md.
 - Later pages reuse, not reinvent. If new patterns are still appearing
   after the first 2–3 pages, flag it — the design is drifting.
+- Style-system changes identified but not immediately implemented are
+  logged to BACKLOG.md — never left untracked.
 - Style changes always get their own commits, never mixed with other
   changes (Part B).
 - The calculator MVP's computing engine lives in its own JS file from
@@ -94,7 +107,8 @@ Cutover happens once, when every page-checklist row is done:
 3. New repo: add CNAME file (www.threeflows.com) and set the custom
    domain in Pages settings.
 4. Cloudflare DNS: verify records still point at GitHub Pages
-   (expected: no change needed).
+   (expected: no change needed); add Redirect Rules per the old→new
+   URL redirect map from the inventory.
 5. Confirm the live domain serves the new site; spot-check forms,
    tools, and a sample of blog posts and hidden pages.
 6. Archive the old repo (read-only) as the historical record.
@@ -109,10 +123,10 @@ pages). Every such fix is logged in this repo's BACKLOG.md as
 
 ## Open decisions
 
-- Blog restyling depth: full restyle vs minimal carry-over styling for
-  old post bodies.
-- Hidden pages triage: carry all vs keep/kill per page (decided during
-  the carry-over inventory).
+Tracked in BACKLOG.md (BL-004 footer buildout, BL-005 tagline, BL-007
+blog restyling depth, BL-008 hidden pages triage). BACKLOG.md is the
+authoritative tracker for open items; this section no longer duplicates
+them.
 
 ## Closed decisions
 
@@ -122,6 +136,9 @@ pages). Every such fix is logged in this repo's BACKLOG.md as
   launch, MVP included.
 - Hosting: GitHub Pages + Cloudflare DNS, unchanged as platforms.
 - Governance: written fresh; no cross-reference to old repo docs.
+- Site structure: reorged per user (see Site structure); URL changes
+  handled via redirect map at cutover.
+- "Useful websites" renamed to "References" (references.html).
 
 ## Stage 3 (future, out of scope)
 
