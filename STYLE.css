@@ -1,0 +1,223 @@
+/* ==========================================================================
+   Three Flows Solutions — brand stylesheet
+   v1 · 2026 · Derived from the approved brand sheet
+   Pair with style.md for usage rules.
+   ========================================================================== */
+
+/* Fonts — load in <head> before this sheet:
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+*/
+
+/* --------------------------------------------------------------------------
+   1. Design tokens
+   -------------------------------------------------------------------------- */
+:root {
+  /* Color — the logo's four inks. No additional hues. */
+  --tf-brick: #C2291B;        /* brand accent: primary actions, emphasis. Use sparingly. */
+  --tf-brick-dark: #8F1E12;   /* hover / pressed state for brick */
+  --tf-brick-on-ink: #D4402C; /* brick adjusted for dark (ink) backgrounds */
+  --tf-ink: #26221F;          /* text, rules, dark surfaces */
+  --tf-ink-soft: #55504D;     /* secondary text */
+  --tf-stone: #B8ADA5;        /* supporting tone: meta text, borders, charts */
+  --tf-stone-light: #DDD6CF;  /* light borders, subtle rules */
+  --tf-paper: #F5F2EE;        /* ground — warm white everywhere */
+
+  /* Type */
+  --tf-font-heading: 'Source Serif 4', Georgia, serif;
+  --tf-font-body: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+
+  /* Type scale */
+  --tf-text-xs: 12px;      /* meta, kickers */
+  --tf-text-sm: 14px;      /* captions, secondary */
+  --tf-text-base: 16px;    /* body */
+  --tf-text-lg: 20px;      /* lead paragraphs */
+  --tf-text-xl: 27px;      /* h3 */
+  --tf-text-2xl: 36px;     /* h2 */
+  --tf-text-3xl: 48px;     /* h1 / hero */
+
+  /* Spacing (8px base) */
+  --tf-space-1: 8px;
+  --tf-space-2: 16px;
+  --tf-space-3: 24px;
+  --tf-space-4: 32px;
+  --tf-space-6: 48px;
+  --tf-space-8: 64px;
+
+  /* Rules */
+  --tf-rule: 2px solid var(--tf-ink);
+  --tf-rule-light: 2px solid var(--tf-stone-light);
+}
+
+/* --------------------------------------------------------------------------
+   2. Base
+   -------------------------------------------------------------------------- */
+html {
+  font-size: var(--tf-text-base);
+}
+
+body {
+  margin: 0;
+  background: var(--tf-paper);
+  color: var(--tf-ink);
+  font-family: var(--tf-font-body);
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--tf-font-heading);
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0 0 var(--tf-space-2);
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--tf-text-3xl); }
+h2 { font-size: var(--tf-text-2xl); }
+h3 { font-size: var(--tf-text-xl); }
+h4 { font-size: var(--tf-text-lg); }
+
+p {
+  margin: 0 0 var(--tf-space-2);
+  text-wrap: pretty;
+}
+
+.tf-lead { font-size: var(--tf-text-lg); }
+.tf-secondary { color: var(--tf-ink-soft); }
+.tf-meta {
+  font-size: var(--tf-text-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tf-ink-soft);
+}
+
+/* Kicker — small red label above a heading */
+.tf-kicker {
+  font-size: var(--tf-text-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--tf-brick);
+}
+
+a {
+  color: var(--tf-brick);
+  text-decoration: none;
+}
+a:hover { color: var(--tf-brick-dark); }
+
+::selection { background: var(--tf-brick); color: var(--tf-paper); }
+
+:focus-visible {
+  outline: 2px solid var(--tf-brick);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   3. Logo lockup
+   -------------------------------------------------------------------------- */
+/* <div class="tf-lockup">
+     <img src="logo-mark.svg" alt="" class="tf-lockup-mark">
+     <span class="tf-lockup-name">Three Flows Solutions</span>
+   </div> */
+.tf-lockup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.tf-lockup-mark { width: 40px; height: 40px; }
+.tf-lockup-name {
+  font-family: var(--tf-font-heading);
+  font-weight: 700;
+  font-size: 20px;
+  white-space: nowrap;
+  color: inherit;
+}
+
+/* --------------------------------------------------------------------------
+   4. Components
+   -------------------------------------------------------------------------- */
+/* Buttons — labels flush left, generous right padding */
+.tf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tf-space-1);
+  font-family: var(--tf-font-body);
+  font-weight: 500;
+  font-size: 15px;
+  padding: 13px 48px 13px 18px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+.tf-btn-primary {
+  background: var(--tf-brick);
+  color: var(--tf-paper);
+}
+.tf-btn-primary:hover { background: var(--tf-brick-dark); color: var(--tf-paper); }
+.tf-btn-secondary {
+  background: transparent;
+  color: var(--tf-ink);
+  border: 2px solid var(--tf-ink);
+  padding: 11px 46px 11px 16px;
+}
+.tf-btn-secondary:hover { background: var(--tf-ink); color: var(--tf-paper); }
+
+/* Header / nav */
+.tf-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--tf-space-2) var(--tf-space-3);
+  border-bottom: var(--tf-rule);
+  background: var(--tf-paper);
+}
+.tf-nav-links {
+  display: flex;
+  gap: var(--tf-space-3);
+  font-size: var(--tf-text-sm);
+  font-weight: 500;
+}
+.tf-nav-links a { color: var(--tf-ink-soft); }
+.tf-nav-links a:hover,
+.tf-nav-links a[aria-current="page"] { color: var(--tf-brick); }
+
+/* Section — strong rules between major page blocks */
+.tf-section {
+  padding: var(--tf-space-6) var(--tf-space-3);
+  border-bottom: var(--tf-rule);
+}
+
+/* Card */
+.tf-card {
+  border: var(--tf-rule-light);
+  padding: var(--tf-space-3);
+  background: var(--tf-paper);
+}
+.tf-card-strong { border: var(--tf-rule); }
+
+/* Dark (ink) surface — hero bands, footer */
+.tf-surface-ink {
+  background: var(--tf-ink);
+  color: var(--tf-paper);
+}
+.tf-surface-ink a { color: var(--tf-brick-on-ink); }
+.tf-surface-ink a:hover { color: var(--tf-paper); }
+.tf-surface-ink .tf-secondary,
+.tf-surface-ink .tf-meta { color: var(--tf-stone); }
+
+/* Stat block */
+.tf-stat-value {
+  font-family: var(--tf-font-body);
+  font-weight: 700;
+  font-size: var(--tf-text-2xl);
+  color: var(--tf-brick);
+  line-height: 1.1;
+}
+.tf-stat-label {
+  font-size: var(--tf-text-sm);
+  color: var(--tf-ink-soft);
+}
