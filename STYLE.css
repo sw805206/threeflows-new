@@ -96,6 +96,96 @@ body.tf-app {
   .tf-container { padding-inline: var(--tf-space-4); }
 }
 
+/* Long-form prose — a readable measure for running body copy (legal pages,
+   blog posts, service write-ups). Sits INSIDE a .tf-container and holds text
+   flush left (no auto-centering). Adds the list / heading-rhythm / rule /
+   inline-link styling that long documents need and the base sheet does not
+   define. First defined by privacy.html; blogs and services reuse it.
+   Measure: 62ch renders ~85 characters per line here. NB the `ch` unit tracks
+   Space Grotesk's wide `0` glyph (~1.37× its average character), so a nominal
+   70ch would render ~96 chars — too wide; 62ch lands the intended ~85. */
+.tf-prose { max-width: 62ch; }
+.tf-prose > :first-child { margin-top: 0; }
+/* Heading rhythm: more space above a heading than below, so each section
+   reads as a grouped block. In-page anchors get scroll-margin so a jumped-to
+   heading doesn't butt the viewport top. */
+.tf-prose h2 { margin-top: var(--tf-space-6); margin-bottom: var(--tf-space-2); }
+.tf-prose h3 { margin-top: var(--tf-space-3); margin-bottom: var(--tf-space-1); }
+.tf-prose :is(h2, h3) { scroll-margin-top: var(--tf-space-3); }
+/* Lists */
+.tf-prose ul,
+.tf-prose ol { margin: 0 0 var(--tf-space-2); padding-left: var(--tf-space-3); }
+.tf-prose li { margin-bottom: var(--tf-space-1); }
+/* Prose page intro — the paragraph under the h1 on a long-form page. Body size
+   (16px), set apart from the body copy by COLOUR (ink-soft), not size. Distinct
+   from .tf-lead (20px), which stays reserved for hero moments. */
+.tf-prose-intro { font-size: var(--tf-text-base); color: var(--tf-ink-soft); }
+/* A direct-child meta line (e.g. "Last updated …") closes the page-header block
+   (kicker/h1/intro/meta) with a light within-section rule before the body copy. */
+.tf-prose > .tf-meta {
+  padding-bottom: var(--tf-space-3);
+  border-bottom: var(--tf-rule-light);
+}
+/* Inline links in prose are underlined — colour alone shouldn't carry a link
+   inside running text. */
+.tf-prose a { text-decoration: underline; }
+/* Section rule within prose (e.g. between Privacy and Terms) — the brand's
+   2px ink rule. */
+.tf-prose hr { border: none; border-top: var(--tf-rule); margin: var(--tf-space-6) 0; }
+
+/* --------------------------------------------------------------------------
+   "On this page" rail — a sticky table-of-contents for long-form prose pages.
+   Opt-in: a page wraps its .tf-prose in <div class="tf-prose-layout" data-toc>,
+   and assets/toc.js builds the rail, inserts it before the prose, and adds
+   .is-railed. Without JS (or on failure) the layout stays single-column and no
+   rail appears — same soft-fail posture as the partials fetch. Defined by
+   privacy.html; blog posts reuse it. Layout: the rail sits at the container's
+   LEFT edge and the prose column at its RIGHT edge, with the flexible space
+   between them (space-between) — so the prose keeps its measure with no orphan
+   space on the far right. A deliberate asymmetry vs. non-prose pages, whose
+   content simply starts at the container's left edge.
+   -------------------------------------------------------------------------- */
+.tf-prose-layout { }   /* single-column by default (mobile, and pre/no-JS) */
+
+/* Rail — sticky, hidden until the desktop grid reveals it. */
+.tf-toc {
+  display: none;
+  position: sticky;
+  top: var(--tf-space-4);
+  align-self: start;
+  font-size: var(--tf-text-sm);
+  line-height: 1.3;
+}
+.tf-toc-label {
+  border-left: 2px solid var(--tf-stone-light);
+  padding: 0 0 var(--tf-space-1) var(--tf-space-2);
+}
+.tf-toc ul { list-style: none; margin: 0; padding: 0; }
+.tf-toc li { margin: 0; }
+.tf-toc a {
+  display: block;
+  color: var(--tf-ink-soft);
+  text-decoration: none;
+  border-left: 2px solid var(--tf-stone-light);   /* contiguous borders form the rail's edge rule */
+  padding: var(--tf-space-1) 0 var(--tf-space-1) var(--tf-space-2);
+}
+.tf-toc a.tf-toc-sub { padding-left: var(--tf-space-4); }   /* h3 text indented; border stays on the edge */
+.tf-toc a:hover { color: var(--tf-brick); }
+.tf-toc a.is-active { color: var(--tf-brick); border-left-color: var(--tf-brick); }   /* active: brick text + brick edge segment */
+
+/* Desktop: two columns — rail left (~200px), prose right, keeping its measure.
+   Below the breakpoint the rail is hidden and the page is single-column. */
+@media (min-width: 820px) {
+  .tf-prose-layout.is-railed {
+    display: flex;
+    justify-content: space-between;   /* flexible space sits BETWEEN rail and prose */
+    align-items: flex-start;          /* rail keeps its own height so it can stick */
+    gap: var(--tf-space-6);           /* minimum separation when the columns are tight */
+  }
+  .tf-prose-layout.is-railed > .tf-toc { flex: 0 0 260px; display: block; }
+  .tf-prose-layout.is-railed > .tf-prose { flex: 0 1 62ch; min-width: 0; }   /* keeps its ~640px measure, pinned right */
+}
+
 h1, h2, h3, h4 {
   font-family: var(--tf-font-heading);
   font-weight: 700;

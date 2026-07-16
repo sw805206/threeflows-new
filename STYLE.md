@@ -141,3 +141,89 @@ Two design-system decisions from the same review:
 ### Lockup never takes link colour — localhost review — 2026-07-15
 
 The header lockup is an `<a href="index.html">`, so it was picking up the global `a:hover { color: var(--tf-brick-dark) }` and the wordmark flipped brick on hover. The lockup is a wordmark, not a coloured link: it must stay on its surface tone in **every** state. Fix (in `style.css`): `.tf-lockup:hover, .tf-lockup:focus, .tf-lockup:active { color: inherit; }` — the `:hover` selector (0,2,0) outranks `a:hover` (0,1,1), so the header wordmark stays ink at rest, hover, focus, and active. The footer lockup is a `<div>` (not a link), so it never took link colouring and stays paper in all states — verified. `:focus-visible` still draws the standard brick focus ring (an outline, not text colour), so keyboard focus remains visible.
+
+### Long-form prose (`.tf-prose`) — privacy.html — 2026-07-15
+
+Long documents (legal text now; blog posts and service write-ups later) need a
+narrow, readable measure and body-element styling the base sheet doesn't carry.
+Defined by the first page that needed it (privacy.html); **reused, not
+reinvented, by blogs and services.**
+
+- **`.tf-prose` — reading measure.** `max-width: 62ch` (**≈85 rendered
+  characters** in Space Grotesk), flush left. It nests *inside* a
+  `.tf-container`: the container supplies the outer gutters and the 1200px page
+  measure; `.tf-prose` holds the running text at the left edge (no
+  auto-centering), so paragraphs read comfortably on wide screens while the page
+  frame stays consistent with every other page. **Unit caveat:** the `ch` unit
+  is tied to the font's `0` glyph, which in Space Grotesk runs ~1.37× the
+  average character — so a nominal `70ch` renders ~96 chars (too wide). `62ch`
+  lands the intended ~85-character measure; size by rendered characters, not the
+  nominal `ch` number, when reusing this on blogs/services.
+- **Prose page intro (`.tf-prose-intro`).** The paragraph under the h1 is
+  **body size (16px) in `--tf-ink-soft`** — differentiated from the body copy by
+  colour, not size. It deliberately does **not** use `.tf-lead` (20px), which
+  stays reserved for hero moments; a legal/reference page opens quietly.
+- **Header divider (`.tf-prose > .tf-meta`).** A direct-child meta line (e.g.
+  "Last updated …") closes the page-header block with a **light rule**
+  (`--tf-rule-light`, `--tf-space-3` padding above it) before the body copy —
+  the brand's rule hierarchy: light rules divide content *within* a section,
+  the 2px ink `hr` divides major sections.
+- **Heading rhythm.** Within prose, headings get more space above than below
+  (`h2` `--tf-space-6` top / `--tf-space-2` bottom; `h3` `--tf-space-3` /
+  `--tf-space-1`) so each section reads as a grouped block. `> :first-child`
+  gets `margin-top: 0`; `h2/h3` get `scroll-margin-top` so an in-page anchor
+  jump doesn't butt the viewport top.
+- **Lists.** `.tf-prose ul/ol` get bottom spacing + left padding
+  (`--tf-space-3`); `li` get `--tf-space-1` between items. (The base sheet
+  styled no lists.)
+- **Inline links.** `.tf-prose a` is underlined — inside running text, colour
+  alone shouldn't carry a link (accessibility + scannability). Elsewhere links
+  stay underline-free per the base `a` rule.
+- **Section rule.** `.tf-prose hr` renders as the brand's 2px ink rule
+  (`--tf-rule`) with `--tf-space-6` above/below — used to divide major
+  sections (e.g. Privacy Policy vs Terms of Use on privacy.html).
+
+Page structure that uses it: `<main class="tf-section"> <div class="tf-container"> <div class="tf-prose"> … </div></div></main>`. All colours/sizes from `--tf-*` tokens.
+
+### "In this article" TOC rail (`.tf-toc`) — privacy.html — 2026-07-15
+
+A sticky table-of-contents rail for long-form prose pages. **Defined by
+privacy.html; reused by blog posts.**
+
+- **Opt-in, JS-built, soft-fail.** A page opts in by wrapping its `.tf-prose` in
+  `<div class="tf-prose-layout" data-toc>`. The shared `assets/toc.js` (a
+  separate file, never inline) finds `[data-toc]`, scans the prose for headings,
+  generates ids on any heading that lacks one, builds the rail, inserts it
+  **before** the prose, and adds `.is-railed`. If the script is absent, fails,
+  finds no marker, or finds no headings, the page renders normally with **no
+  rail** — the same soft-JS posture as the partials fetch. Pages without
+  `[data-toc]` never get a rail.
+- **Entries: H2-only by default.** The rail lists the article's **main
+  sections (H2)** only — no H3 or deeper. `toc.js` keeps depth capability (the
+  marker's value is the heading selector, e.g. `data-toc="h2, h3"`); the pattern
+  **default is H2-only** (`data-toc` empty → `h2`). The `.tf-toc-sub` indent
+  style is retained for pages that opt into deeper levels.
+- **Layout — rail left, prose right, space between.** On desktop
+  (`min-width: 820px`) `.tf-prose-layout.is-railed` is a flex row with
+  `justify-content: space-between`: a fixed **260px** rail (wide enough that
+  short H2 titles rarely wrap) pinned to the container's **left** edge, and the
+  `.tf-prose` column (`flex: 0 1 62ch`, keeping its ~640px / ~85-char measure)
+  pinned to the container's **right** edge. The flexible space sits **between**
+  the two, so there is no orphan space on the far right. **Deliberate
+  asymmetry** vs. non-prose pages, whose content just starts at the container's
+  left edge.
+- **Rail styling.** Sticky (`position: sticky; top: --tf-space-4`) so it stays
+  in view while the document scrolls. The left edge is a 2px `--tf-stone-light`
+  rule, formed by contiguous `border-left`s on the label + each link. An
+  **"IN THIS ARTICLE"** label uses the `.tf-meta` treatment. Links are
+  `--tf-ink-soft` at `--tf-text-sm`; deeper entries (`.tf-toc-sub`, unused in the
+  H2-only default) indent their text via extra left padding while the border
+  stays on the edge. **Hover** → brick text. **Active section** → brick text
+  **and** its segment of the edge rule turns brick (`.is-active` sets
+  `border-left-color`). Active is tracked by `IntersectionObserver` (last
+  heading past a 120px trigger line), with an rAF-throttled scroll/resize
+  fallback.
+- **Mobile (< 820px): the rail is hidden entirely** (`.tf-toc { display: none }`
+  and the layout stays single-column). Chosen over an in-flow block because
+  these are linear reads and a section list above the content would cost more
+  scrolling than it saves; the headings remain reachable by scrolling.
