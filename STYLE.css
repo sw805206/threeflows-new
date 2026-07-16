@@ -1,6 +1,7 @@
 /* ==========================================================================
    Three Flows Solutions — brand stylesheet
-   v1 · 2026 · Derived from the approved brand sheet
+   v2 · 2026-07-16 · Merge of the site build (v1 + ratchet) and Claude Design v1.5
+   Conflicts resolved per review: paper #FBFAF8, design pills, data palette.
    Pair with style.md for usage rules.
    ========================================================================== */
 
@@ -14,7 +15,8 @@
    1. Design tokens
    -------------------------------------------------------------------------- */
 :root {
-  /* Color — the logo's four inks. No additional hues. */
+  /* Color — core palette is the logo's four inks; charts & tags may draw on
+     the data palette below. */
   --tf-brick: #C2291B;        /* brand accent: primary actions, emphasis. Use sparingly. */
   --tf-brick-dark: #8F1E12;   /* hover / pressed state for brick */
   --tf-brick-on-ink: #D4402C; /* brick adjusted for dark (ink) backgrounds */
@@ -22,10 +24,20 @@
   --tf-ink-soft: #55504D;     /* secondary text */
   --tf-stone: #B8ADA5;        /* supporting tone: meta text, borders, charts */
   --tf-stone-light: #DDD6CF;  /* light borders, subtle rules */
-  --tf-paper: #F5F2EE;        /* ground — warm white everywhere */
+  --tf-paper: #FBFAF8;        /* ground — warm off-white, never pure white */
   /* Raised-surface tone for overlay elements (dropdowns; future overlays reuse it).
-     A tint derived from existing tokens — NOT a new raw hue (resolves to ~#E9E4DE). */
+     A tint derived from existing tokens — NOT a new raw hue (resolves to ~#ECE7E2
+     with the v2 paper). */
   --tf-cream: color-mix(in srgb, var(--tf-stone-light) 50%, var(--tf-paper));
+
+  /* Data palette — six equal-weight series colors for charts & category coding.
+     Use in order; brick is always series 1. Never for body text. */
+  --tf-chart-1: #C2291B;  /* brick */
+  --tf-chart-2: #35618E;  /* slate */
+  --tf-chart-3: #B07A18;  /* ochre */
+  --tf-chart-4: #23787A;  /* teal */
+  --tf-chart-5: #8A3A62;  /* plum */
+  --tf-chart-6: #B8ADA5;  /* stone */
 
   /* Type */
   --tf-font-heading: 'Source Serif 4', Georgia, serif;
@@ -214,16 +226,37 @@ body.tf-app {
    brick / paper text; secondary = brick outline; muted (vocabulary tags this
    post is NOT filed under) = stone text / stone-light outline. */
 .tf-pills { display: flex; flex-wrap: wrap; gap: var(--tf-space-1); }
+/* Pill kit (v2, from the brand sheet §04). Pills + logo bars are the two
+   rounded shapes in the brand. */
 .tf-pill {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 999px;
+  padding: 6px 15px;
   font-family: var(--tf-font-body);
-  font-size: var(--tf-text-xs);
+  font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.04em;
-  padding: 4px 10px;
-  border: 1px solid transparent;
-  border-radius: 999px;   /* pill radius */
+  border: 1.5px solid transparent;
+  color: var(--tf-ink);
 }
+.tf-pill-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+/* Solid — status & emphasis */
+.tf-pill-brick { background: var(--tf-brick); color: var(--tf-paper); }
+.tf-pill-ink   { background: var(--tf-ink); color: var(--tf-paper); }
+/* Outline — filters & interactive states */
+.tf-pill-outline { border-color: var(--tf-stone); background: transparent; }
+/* Tints — category tags, one per data-palette hue (wash bg + deep text) */
+.tf-pill-tint-brick { background: #F7E4E1; color: #8F1E12; }
+.tf-pill-tint-slate { background: #E3EAF2; color: #24466B; }
+.tf-pill-tint-ochre { background: #F4EAD4; color: #7A5410; }
+.tf-pill-tint-teal  { background: #DDEDED; color: #175355; }
+.tf-pill-tint-plum  { background: #F2E3EA; color: #632846; }
+.tf-pill-tint-stone { background: #ECE7E1; color: #55504D; }
+/* Small uppercase modifier — journey phases, compact labels */
+.tf-pill-sm { padding: 4px 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+/* Blog-tag compat aliases (blog.js): primary = solid brick, secondary = brick
+   outline, muted = stone outline. Same names, v2 pill base. */
 .tf-pill-primary { background: var(--tf-brick); color: var(--tf-paper); border-color: var(--tf-brick); }
 .tf-pill-secondary { color: var(--tf-brick); border-color: var(--tf-brick); }
 .tf-pill-muted { color: var(--tf-stone); border-color: var(--tf-stone-light); }
@@ -391,13 +424,40 @@ a:hover { color: var(--tf-brick-dark); }
   border-bottom: var(--tf-rule);
 }
 
-/* Card */
+/* Cards — square corners, structure from 2px borders (never shadows).
+   Kicker on top, meta pinned to the bottom. */
 .tf-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   border: var(--tf-rule-light);
   padding: var(--tf-space-3);
   background: var(--tf-paper);
 }
-.tf-card-strong { border: var(--tf-rule); }
+.tf-card-strong { border: var(--tf-rule); }          /* stat cards */
+.tf-card-ink {                                        /* feature card — max one per row */
+  border: var(--tf-rule);
+  background: var(--tf-ink);
+  color: var(--tf-paper);
+}
+.tf-card-ink .tf-card-kicker { color: var(--tf-brick-on-ink); }
+.tf-card-ink .tf-card-body { color: var(--tf-stone); }
+.tf-card-kicker {
+  font-size: var(--tf-text-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--tf-brick);
+}
+.tf-card-title {
+  font-family: var(--tf-font-heading);
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 1.2;
+  margin: 0;
+}
+.tf-card-body { font-size: var(--tf-text-sm); line-height: 1.6; color: var(--tf-ink-soft); margin: 0; }
+.tf-card-meta { font-size: var(--tf-text-xs); color: var(--tf-stone); margin-top: auto; padding-top: var(--tf-space-1); }
 
 /* Dark (ink) surface — hero bands, footer */
 .tf-surface-ink {
@@ -547,3 +607,53 @@ a:hover { color: var(--tf-brick-dark); }
   font-size: var(--tf-text-sm);
   font-weight: 500;
 }
+
+/* --------------------------------------------------------------------------
+   7. Site components (v2, from the brand sheet §07–12)
+   Icons: Lucide (lucide.dev), 1.75px stroke, 22px default, brick or ink.
+   No emoji anywhere in the brand.
+   -------------------------------------------------------------------------- */
+/* Stat grid — 3-up or 6-up */
+.tf-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); border: var(--tf-rule); }
+.tf-stat-grid > div { padding: 20px 24px; border-right: var(--tf-rule-light); }
+.tf-stat-grid > div:last-child { border-right: none; }
+
+/* Testimonial */
+.tf-quote { font-family: var(--tf-font-heading); font-weight: 600; font-size: 24px; line-height: 1.4; max-width: 760px; margin: 0; }
+.tf-quote-attr { font-size: 13px; color: var(--tf-ink-soft); margin-top: 12px; }
+
+/* Trusted-by strip */
+.tf-logos { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; border-top: var(--tf-rule-light); padding-top: 20px; }
+.tf-logos span { font-weight: 500; font-size: 15px; color: var(--tf-stone); }
+
+/* Journey stepper — the signature component. Phase labels are pills on the
+   v2 pill base: Pathfinder = .tf-pill .tf-pill-sm .tf-pill-tint-brick,
+   Runningmate = .tf-pill .tf-pill-sm .tf-pill-tint-teal. */
+.tf-journey { display: grid; grid-template-columns: repeat(4, 1fr); border: var(--tf-rule); }
+.tf-journey-step { padding: 22px 24px; border-right: var(--tf-rule-light); position: relative; cursor: pointer; }
+.tf-journey-step:last-child { border-right: none; }
+.tf-journey-step:hover, .tf-journey-step[aria-current] { background: #F7E4E1; }
+.tf-journey-num { font-weight: 700; font-size: 30px; color: var(--tf-stone); }
+
+/* Numbered step list */
+.tf-steps { list-style: none; margin: 0; padding: 0; counter-reset: tf-step; }
+.tf-steps li { counter-increment: tf-step; display: flex; align-items: baseline; gap: 14px; padding: 11px 0; border-bottom: var(--tf-rule-light); font-size: var(--tf-text-sm); }
+.tf-steps li:last-child { border-bottom: none; }
+.tf-steps li::before { content: counter(tf-step); font-weight: 700; color: var(--tf-brick); min-width: 18px; }
+
+/* Callout — Lucide icon + title + body (replaces the site's emoji notes) */
+.tf-callout { border: var(--tf-rule-light); padding: 18px 20px; display: flex; gap: 14px; }
+.tf-callout svg { flex-shrink: 0; color: var(--tf-brick); }
+.tf-callout-title { font-weight: 700; font-size: var(--tf-text-sm); }
+.tf-callout-body { font-size: 13px; color: var(--tf-ink-soft); margin: 4px 0 0; line-height: 1.55; }
+
+/* Principal profile */
+.tf-profile { border: var(--tf-rule-light); padding: var(--tf-space-3); display: flex; gap: 18px; }
+.tf-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--tf-stone); color: var(--tf-paper); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; flex-shrink: 0; object-fit: cover; }
+
+/* CTA band — ink field with the brick button carrying the accent; once per page */
+.tf-cta { background: var(--tf-ink); color: var(--tf-paper); padding: var(--tf-space-6) var(--tf-space-4); }
+.tf-cta .tf-btn-primary:hover { background: var(--tf-brick-on-ink); }
+
+/* Photo treatment — every content photograph (profiles: same, circle crop) */
+.tf-photo { filter: saturate(0.72) sepia(0.14) contrast(1.04) brightness(1.02); }
