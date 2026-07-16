@@ -1,6 +1,6 @@
 # Three Flows Solutions — Brand Style Guide
 
-v1 · 2026. This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
+v2 · 2026-07-16 — merge of the site build (v1 + ratchet record) and Claude Design v1.5. This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
 
 ---
 
@@ -31,9 +31,39 @@ The palette is exactly the logo's four inks — **no additional hues**.
 - **Brick `#C2291B`** — brand accent. Primary actions, kickers, emphasis. Use sparingly; most of the page is ink on paper. Hover/pressed: `#8F1E12`. On ink backgrounds use `#D4402C`.
 - **Ink `#26221F`** — body text, 2px rules, dark surfaces (footer, hero bands). Secondary text: `#55504D`.
 - **Stone `#B8ADA5`** — supporting tone: meta text, chart fills, muted labels. Light borders: `#DDD6CF`.
-- **Paper `#F5F2EE`** — the ground. Warm white everywhere; never pure white.
+- **Paper `#FBFAF8`** — the ground. Warm off-white; never pure white.
+- **Cream `--tf-cream`** — derived overlay tint (≈#ECE7E2 with v2 paper) for raised surfaces: dropdowns, popovers, menus.
 
 Text on brick is always paper. Body-size text in brick should be avoided (contrast) — use it for labels ≥ 14px bold, buttons, and headings only.
+
+### Data palette (charts & category coding)
+
+Six equal-weight series colors, used **in order** — Brick is always the primary series: Brick `#C2291B`, Slate `#35618E`, Ochre `#B07A18`, Teal `#23787A`, Plum `#8A3A62`, Stone `#B8ADA5` (tokens `--tf-chart-1` … `--tf-chart-6`). All sit at the logo's muted saturation. Area fills: the color at 20% opacity with a solid 2px line. Never for body text.
+
+### Pills (v2 kit)
+
+Pills and the logo bars are the two rounded shapes in the brand. Base `.tf-pill` (13px / 6px 15px) +
+- `.tf-pill-brick` / `.tf-pill-ink` — solid, status & emphasis
+- `.tf-pill-outline` (optionally `.tf-pill-dot`) — filters & states
+- `.tf-pill-tint-{brick|slate|ochre|teal|plum|stone}` — category tags (wash bg + deep text of the same hue). This resolves the "pending palette extension" note from the blog build.
+- `.tf-pill-sm` — small uppercase modifier (journey phases, compact labels)
+- Blog-tag aliases kept for blog.js: `-primary` (solid brick), `-secondary` (brick outline), `-muted` (stone outline)
+
+### Icons & imagery
+
+**Lucide** (lucide.dev) only — 1.75px stroke, 22px default, brick or ink. **No emoji anywhere in the brand.** Every content photograph passes through `.tf-photo` (`saturate(0.72) sepia(0.14) contrast(1.04) brightness(1.02)`) — muted, warmed to the palette; no per-image grading. Profile photos: same treatment, circle crop.
+
+### Site components (brand sheet §07–12)
+
+- **Stats** — `.tf-stat-grid` + `.tf-stat-value`/`.tf-stat-label`; figures always brick
+- **Testimonial** — `.tf-quote` + `.tf-quote-attr`; Source Serif 4 Semibold, never italic
+- **Trusted-by** — `.tf-logos`; names in stone, logos only as one-color ink wordmarks
+- **Journey stepper** — `.tf-journey` + `.tf-journey-step` + `.tf-journey-num`; phases are pills: Pathfinder `.tf-pill .tf-pill-sm .tf-pill-tint-brick`, Runningmate `.tf-pill .tf-pill-sm .tf-pill-tint-teal`. Hover/active = brick-tint wash
+- **Step lists** — `.tf-steps` on an `<ol>`; auto-numbered in brick
+- **Callouts** — `.tf-callout` with a Lucide icon
+- **Profiles** — `.tf-profile` + `.tf-avatar` (initials until photography is supplied)
+- **Cards** — `.tf-card` + `.tf-card-kicker/-title/-body/-meta`; `.tf-card-strong` (stat), `.tf-card-ink` (feature, max one per row)
+- **CTA band** — `.tf-cta` (ink field) + `.tf-btn-primary` brick button; once per page
 
 ---
 
@@ -268,3 +298,14 @@ header and prev/next as a two-tile row at the post's end — both replaced below
   to the date meta line → e.g. `MARCH 5, 2025 · 6 MIN READ`. Computed from the
   DOM independent of the manifest; if the script fails, the baked date renders
   alone.
+
+### v2 merge — Claude Design × site build — 2026-07-16
+
+Merged the codebase v1+ratchet files with Design v1.5 into v2. Everything from both sides kept; conflicts resolved per review:
+
+1. **`--tf-paper` → `#FBFAF8`** (off-white; was #F5F2EE). `--tf-cream` still derives via color-mix and now resolves ≈#ECE7E2.
+2. **Pills → the Design kit** (13px / 6px 15px base, solid/outline/tint variants + `.tf-pill-sm`). Blog-tag aliases `-primary/-secondary/-muted` retained on the new base so blog.js is untouched. Tint set resolves the blog build's "pending palette extension" note.
+3. **Color copy** → core four inks + data palette (`--tf-chart-1…6`); "no additional hues" retired.
+4. **Journey phases** restyled as pills on the shared base (tint-brick / tint-teal); the slate phase color was dropped earlier — slate stays chart-only.
+5. New in v2 from Design: card kit, stat grid, quote, logos strip, journey, steps, callouts, profiles, CTA band (ink field), Lucide-only icons, `.tf-photo` treatment.
+6. **Defined by Design, pending first use** (no built page consumes these yet — they ship in the sheet so pages can adopt them without re-deriving): the card kit (`.tf-card`, `.tf-card-ink`, `.tf-card-kicker/-title/-body/-meta`, `.tf-card-strong`), `.tf-stat-grid`, `.tf-quote`/`.tf-quote-attr`, `.tf-logos`, the journey stepper (`.tf-journey`/`.tf-journey-step`/`.tf-journey-num`), `.tf-steps`, `.tf-callout`/`.tf-callout-title`/`.tf-callout-body`, `.tf-profile`/`.tf-avatar`, `.tf-cta`, `.tf-photo`, the new pill variants (`.tf-pill-brick`/`-ink`/`-outline`/`-sm`/`-dot`, `.tf-pill-tint-*`), the data-palette tokens (`--tf-chart-1…6`), and the pre-existing base components still unused (`.tf-btn*`, `.tf-lead`, `.tf-stat-value`/`-label`). **In active use today:** the app-shell, container, section, prose (+ intro/meta-divider), TOC rail, nav (+ dropdowns/hamburger), footer band, surface-ink, lockup, kicker/meta/secondary, and the blog pill aliases (`-primary/-secondary/-muted`) + top-nav/pager — exercised by index/shell, privacy, and the blog post. First real use of a pending component records its own ratchet note.
