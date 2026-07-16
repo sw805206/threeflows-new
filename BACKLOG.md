@@ -48,7 +48,7 @@ come later.
 | service-sourcing.html | svc2.html | not-started |
 | service-launch.html | svc3.html | not-started |
 | service-management.html | svc4.html | not-started |
-| blog.html | blog.html + bloglist.json | not-started |
+| blogs.html | blog.html + bloglist.json | not-started |
 | references.html | useful-websites.html | not-started |
 | seminars.html | webinars.html (+ livestream.html folded in via redirect) | not-started |
 | tools.html | free-tools.html (shell only; individual tool pages deferred — BL-009) | not-started |
@@ -72,7 +72,7 @@ assumed "nothing 404s" redirects the user will confirm at review.
 | contact.html | contact.html | identity (contact built fresh — new form + new endpoint) |
 | privacy.html | privacy.html | identity (hidden; footer link) |
 | surveys.html | surveys.html | identity (hidden cover; kept, redesigned later) |
-| blog.html | blog.html | identity |
+| blog.html | blogs.html | redirect |
 | blog-001…024, 010a, 010b | blog-###.html (same name) | identity — no redirect needed |
 | svc1.html | service-planning.html | redirect |
 | svc2.html | service-sourcing.html | redirect |
