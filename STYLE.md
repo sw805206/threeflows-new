@@ -227,3 +227,44 @@ privacy.html; reused by blog posts.**
   and the layout stays single-column). Chosen over an in-flow block because
   these are linear reads and a section list above the content would cost more
   scrolling than it saves; the headings remain reachable by scrolling.
+
+### Blog post patterns — tag pills, top nav row, rail tags — blog-template.html — 2026-07-15
+
+Patterns for the blog system, defined by the post template; reused by every
+post. (This supersedes an earlier same-day version that put pills in the post
+header and prev/next as a two-tile row at the post's end — both replaced below.)
+
+- **Tag pills (`.tf-pill`, `-primary` / `-secondary` / `-muted`) — ROUNDED.**
+  `border-radius: 999px` (pill shape). **This is a deliberate deviation:** the
+  brand's square-corner rule stands for UI surfaces; **pills and the logo bars
+  are the two rounded exceptions.** Three states, brand palette only: **primary**
+  = filled `--tf-brick` / `--tf-paper` text; **secondary** = brick outline
+  (transparent ground, `--tf-brick` text + border); **muted** = `--tf-stone`
+  text / `--tf-stone-light` outline. **Colour treatment is current-but-open** —
+  it stays within the existing palette for now, pending a possible palette
+  extension from Claude Design. Pill padding is a raw `4px 10px`, consistent with
+  how the button component sizes its padding.
+- **Tags live in the rail (`.tf-toc-tags`).** Above the rail heading, blog.js
+  renders a **"Filed under"** `.tf-meta` label + the pills. The pills show the
+  **full tag vocabulary** — the alphabetical union of every manifest entry's
+  `primaryTags` + `secondaryTags`, derived dynamically — with this post's primary
+  tag(s) filled, its secondary tag(s) outlined, and every other vocabulary tag
+  muted. **Mobile:** the rail collapses to just this tags block, rendered in-flow
+  above the article (the heading + TOC list hide below 820px).
+- **Rail heading (`.tf-toc-label`).** "In this article" is now **14px / weight
+  500 / `--tf-ink`** (not the meta gray), with a `--tf-space-2` gap before the
+  first entry. (toc.js still tags it `.tf-meta tf-toc-label`; the CSS overrides
+  the meta treatment. This also applies to the privacy page's rail, which shares
+  the pattern.)
+- **Top nav row (`.tf-post-topnav` + `.tf-post-pager`).**
+  Above the h1: **"← Blogs"** back link flush left (links to `blogs.html`,
+  `--tf-ink-soft`, brick on hover) and a **compact "← Previous | Next →" pager**
+  flush right, wired by blog.js to the neighbour logic (Previous = next older
+  published, Next = next newer). An **absent neighbour renders muted/disabled**
+  (`--tf-stone`), **not hidden** — so at n=1 both sides show muted. The old
+  bottom prev/next tiles are removed; navigation is top-only.
+- **Reading time.** blog.js counts the article's words (excluding the top nav and
+  the date meta), divides by ~220 wpm rounding up, and appends `" · N min read"`
+  to the date meta line → e.g. `MARCH 5, 2025 · 6 MIN READ`. Computed from the
+  DOM independent of the manifest; if the script fails, the baked date renders
+  alone.

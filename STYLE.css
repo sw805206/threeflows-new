@@ -147,18 +147,27 @@ body.tf-app {
    -------------------------------------------------------------------------- */
 .tf-prose-layout { }   /* single-column by default (mobile, and pre/no-JS) */
 
-/* Rail — sticky, hidden until the desktop grid reveals it. */
+/* Rail. On mobile it collapses to just the tags block (in-flow, above the
+   article); on desktop it becomes the sticky sidebar — tags block, an
+   "In this article" heading, and the TOC list. Heading + list hide below the
+   breakpoint (the "collapsed rail treatment"). */
 .tf-toc {
-  display: none;
-  position: sticky;
-  top: var(--tf-space-4);
-  align-self: start;
   font-size: var(--tf-text-sm);
   line-height: 1.3;
 }
-.tf-toc-label {
-  border-left: 2px solid var(--tf-stone-light);
-  padding: 0 0 var(--tf-space-1) var(--tf-space-2);
+/* Tags block ("Filed under" + pills), built by blog.js; shown on all viewports. */
+.tf-toc-tags { margin-bottom: var(--tf-space-3); }
+.tf-toc-tags .tf-pills { margin-top: var(--tf-space-1); }
+/* Rail heading — 14px / 500 ink (overrides the .tf-meta treatment toc.js gives
+   it: not meta gray, not uppercase), with a gap before the first entry. Scoped
+   to `.tf-toc .tf-toc-label` so it outranks the later `.tf-meta` rule. */
+.tf-toc .tf-toc-label {
+  font-size: var(--tf-text-sm);
+  font-weight: 500;
+  color: var(--tf-ink);
+  text-transform: none;
+  letter-spacing: normal;
+  margin-bottom: var(--tf-space-2);
 }
 .tf-toc ul { list-style: none; margin: 0; padding: 0; }
 .tf-toc li { margin: 0; }
@@ -166,25 +175,75 @@ body.tf-app {
   display: block;
   color: var(--tf-ink-soft);
   text-decoration: none;
-  border-left: 2px solid var(--tf-stone-light);   /* contiguous borders form the rail's edge rule */
+  border-left: 2px solid var(--tf-stone-light);   /* contiguous borders form the list's edge rule */
   padding: var(--tf-space-1) 0 var(--tf-space-1) var(--tf-space-2);
 }
-.tf-toc a.tf-toc-sub { padding-left: var(--tf-space-4); }   /* h3 text indented; border stays on the edge */
+.tf-toc a.tf-toc-sub { padding-left: var(--tf-space-4); }
 .tf-toc a:hover { color: var(--tf-brick); }
 .tf-toc a.is-active { color: var(--tf-brick); border-left-color: var(--tf-brick); }   /* active: brick text + brick edge segment */
+/* Collapsed rail (mobile / no-JS): only the tags block shows. */
+.tf-toc-label,
+.tf-toc ul { display: none; }
 
-/* Desktop: two columns — rail left (~200px), prose right, keeping its measure.
-   Below the breakpoint the rail is hidden and the page is single-column. */
+/* Desktop: rail becomes a 260px sticky sidebar at the container's left edge,
+   prose pinned right, flexible space between; the full rail shows. */
 @media (min-width: 820px) {
   .tf-prose-layout.is-railed {
     display: flex;
-    justify-content: space-between;   /* flexible space sits BETWEEN rail and prose */
-    align-items: flex-start;          /* rail keeps its own height so it can stick */
-    gap: var(--tf-space-6);           /* minimum separation when the columns are tight */
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--tf-space-6);
   }
-  .tf-prose-layout.is-railed > .tf-toc { flex: 0 0 260px; display: block; }
+  .tf-prose-layout.is-railed > .tf-toc {
+    flex: 0 0 260px;
+    position: sticky;
+    top: var(--tf-space-4);
+  }
   .tf-prose-layout.is-railed > .tf-prose { flex: 0 1 62ch; min-width: 0; }   /* keeps its ~640px measure, pinned right */
+  .tf-toc-label,
+  .tf-toc ul { display: block; }
 }
+
+/* --------------------------------------------------------------------------
+   Blog post — tag pills + top nav row
+   -------------------------------------------------------------------------- */
+/* Tag pills — live in the rail ("Filed under"). ROUNDED: a deliberate
+   exception to the brand's square-corner rule (see STYLE.md — pills and the
+   logo bars are the two rounded shapes). Three states, brand palette only
+   (colours provisional pending a possible palette extension): primary = filled
+   brick / paper text; secondary = brick outline; muted (vocabulary tags this
+   post is NOT filed under) = stone text / stone-light outline. */
+.tf-pills { display: flex; flex-wrap: wrap; gap: var(--tf-space-1); }
+.tf-pill {
+  display: inline-block;
+  font-family: var(--tf-font-body);
+  font-size: var(--tf-text-xs);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border: 1px solid transparent;
+  border-radius: 999px;   /* pill radius */
+}
+.tf-pill-primary { background: var(--tf-brick); color: var(--tf-paper); border-color: var(--tf-brick); }
+.tf-pill-secondary { color: var(--tf-brick); border-color: var(--tf-brick); }
+.tf-pill-muted { color: var(--tf-stone); border-color: var(--tf-stone-light); }
+
+/* Post top nav row — above the h1: "← Blogs" back link (left) + a compact
+   prev/next pager (right), wired by blog.js to the neighbour logic. An absent
+   neighbour renders muted/disabled, not hidden. */
+.tf-post-topnav {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--tf-space-2);
+  margin-bottom: var(--tf-space-4);
+  font-size: var(--tf-text-sm);
+}
+.tf-post-topnav a { text-decoration: none; color: var(--tf-ink-soft); }
+.tf-post-topnav a:hover { color: var(--tf-brick); }
+.tf-post-pager { display: flex; align-items: baseline; gap: var(--tf-space-1); white-space: nowrap; }
+.tf-post-pager .is-disabled { color: var(--tf-stone); }        /* absent neighbour: muted/disabled */
+.tf-post-pager .tf-pager-sep { color: var(--tf-stone-light); }
 
 h1, h2, h3, h4 {
   font-family: var(--tf-font-heading);
