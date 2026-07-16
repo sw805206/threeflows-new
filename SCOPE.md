@@ -1,4 +1,4 @@
-v002 | last updated: 2026-07-15
+v003 | last updated: 2026-07-15
 
 # SCOPE.md — threeflows.com Relaunch (new repo)
 
@@ -72,7 +72,7 @@ row is tracked to done before cutover.
 ## Site structure (per user reorg, 2026-07-15)
 
 index.html (Home); service-planning.html, service-sourcing.html,
-service-launch.html, service-management.html; blog.html (index; posts
+service-launch.html, service-management.html; blogs.html (index; posts
 blog-###.html later); references.html; seminars.html; tools.html;
 about.html; contact.html; privacy.html (hidden — no nav; linked in the
 shared footer); surveys.html (hidden cover; svy###.html later).
