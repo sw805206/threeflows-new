@@ -1,6 +1,8 @@
 /* ==========================================================================
    Three Flows Solutions — brand stylesheet
    v3 · 2026-07-16 · Paper lightened #FBFAF8 → #FCFBFA (user decision).
+                     Blog rail: tags block removed, .tf-rail-img slot added.
+                     No-italics rule (STYLE.md §3) + .tf-prose em/i normalization.
    v2 · 2026-07-16 · Merge of the site build (v1 + ratchet) and Claude Design v1.5
    Conflicts resolved per review: paper #FBFAF8, design pills, data palette.
    Pair with style.md for usage rules.
@@ -142,6 +144,12 @@ body.tf-app {
 /* Inline links in prose are underlined — colour alone shouldn't carry a link
    inside running text. */
 .tf-prose a { text-decoration: underline; }
+/* No italics in the brand (see STYLE.md §3): Space Grotesk ships no italic
+   style, so em/i would render as faux-oblique. Authored emphasis is <strong>;
+   this is a defensive net for anything that slips through (e.g. pasted copy) —
+   it renders as a medium-weight upright, not a slant. */
+.tf-prose em,
+.tf-prose i { font-style: normal; font-weight: 500; }
 /* Section rule within prose (e.g. between Privacy and Terms) — the brand's
    2px ink rule. */
 .tf-prose hr { border: none; border-top: var(--tf-rule); margin: var(--tf-space-6) 0; }
@@ -160,17 +168,27 @@ body.tf-app {
    -------------------------------------------------------------------------- */
 .tf-prose-layout { }   /* single-column by default (mobile, and pre/no-JS) */
 
-/* Rail. On mobile it collapses to just the tags block (in-flow, above the
-   article); on desktop it becomes the sticky sidebar — tags block, an
+/* Rail. On mobile it collapses to just the rail image (in-flow, above the
+   article); on desktop it becomes the sticky sidebar — image, an
    "In this article" heading, and the TOC list. Heading + list hide below the
-   breakpoint (the "collapsed rail treatment"). */
+   breakpoint (the "collapsed rail treatment"). With no image on the post, the
+   collapsed rail has no visible content and takes no height. */
 .tf-toc {
   font-size: var(--tf-text-sm);
   line-height: 1.3;
 }
-/* Tags block ("Filed under" + pills), built by blog.js; shown on all viewports. */
-.tf-toc-tags { margin-bottom: var(--tf-space-3); }
-.tf-toc-tags .tf-pills { margin-top: var(--tf-space-1); }
+/* Rail image — optional per-post lede image, built by blog.js from the
+   manifest's "image" field (absent → no element). Sits at the TOP of the rail
+   on all viewports: sticky with the rail on desktop, in-flow above the article
+   on mobile (the slot the retired tags block used to occupy). 3:2 crop, square
+   corners, no border/shadow; always carries .tf-photo for the brand grade. */
+.tf-rail-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  margin-bottom: var(--tf-space-3);
+}
 /* Rail heading — 14px / 500 ink (overrides the .tf-meta treatment toc.js gives
    it: not meta gray, not uppercase), with a gap before the first entry. Scoped
    to `.tf-toc .tf-toc-label` so it outranks the later `.tf-meta` rule. */
@@ -194,7 +212,9 @@ body.tf-app {
 .tf-toc a.tf-toc-sub { padding-left: var(--tf-space-4); }
 .tf-toc a:hover { color: var(--tf-brick); }
 .tf-toc a.is-active { color: var(--tf-brick); border-left-color: var(--tf-brick); }   /* active: brick text + brick edge segment */
-/* Collapsed rail (mobile / no-JS): only the tags block shows. */
+/* Collapsed rail (mobile / no-JS): only the rail image shows — the heading and
+   the TOC list hide, and .tf-toc itself stays in flow, so .tf-rail-img needs no
+   mobile-specific rule to remain visible above the article. */
 .tf-toc-label,
 .tf-toc ul { display: none; }
 
@@ -218,14 +238,14 @@ body.tf-app {
 }
 
 /* --------------------------------------------------------------------------
-   Blog post — tag pills + top nav row
+   Pill kit + blog top nav row
    -------------------------------------------------------------------------- */
-/* Tag pills — live in the rail ("Filed under"). ROUNDED: a deliberate
-   exception to the brand's square-corner rule (see STYLE.md — pills and the
-   logo bars are the two rounded shapes). Three states, brand palette only
-   (colours provisional pending a possible palette extension): primary = filled
-   brick / paper text; secondary = brick outline; muted (vocabulary tags this
-   post is NOT filed under) = stone text / stone-light outline. */
+/* Pills — ROUNDED: a deliberate exception to the brand's square-corner rule
+   (see STYLE.md — pills and the logo bars are the two rounded shapes). The kit
+   is design-system furniture: the journey stepper uses the tint + -sm variants.
+   The blog's "Filed under" tags were retired (user decision), so the -primary /
+   -secondary / -muted aliases below currently have no consumer; they stay in
+   the sheet as part of the kit. */
 .tf-pills { display: flex; flex-wrap: wrap; gap: var(--tf-space-1); }
 /* Pill kit (v2, from the brand sheet §04). Pills + logo bars are the two
    rounded shapes in the brand. */
@@ -256,8 +276,8 @@ body.tf-app {
 .tf-pill-tint-stone { background: #ECE7E1; color: #55504D; }
 /* Small uppercase modifier — journey phases, compact labels */
 .tf-pill-sm { padding: 4px 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
-/* Blog-tag compat aliases (blog.js): primary = solid brick, secondary = brick
-   outline, muted = stone outline. Same names, v2 pill base. */
+/* State aliases: primary = solid brick, secondary = brick outline, muted =
+   stone outline. Same names, v2 pill base. (Formerly the blog-tag states.) */
 .tf-pill-primary { background: var(--tf-brick); color: var(--tf-paper); border-color: var(--tf-brick); }
 .tf-pill-secondary { color: var(--tf-brick); border-color: var(--tf-brick); }
 .tf-pill-muted { color: var(--tf-stone); border-color: var(--tf-stone-light); }
@@ -278,6 +298,22 @@ body.tf-app {
 .tf-post-pager { display: flex; align-items: baseline; gap: var(--tf-space-1); white-space: nowrap; }
 .tf-post-pager .is-disabled { color: var(--tf-stone); }        /* absent neighbour: muted/disabled */
 .tf-post-pager .tf-pager-sep { color: var(--tf-stone-light); }
+
+/* Post-header space reservation (desktop only). The h1 and the recap are the
+   only variable-height blocks above the body, so without a floor the date line,
+   the divider, and the body top land at a different y on every post — the eye
+   loses its place when paging prev/next. Reserve the EDITORIAL TARGET: 2 lines
+   of h1, 3 lines of recap (see STYLE.md — titles and recaps are written to fit).
+   `lh` is the element's own rendered line box, so these track the type scale and
+   need no recompute if the h1 size or line-height changes.
+   min-height, NOT height: an over-long title/recap overflows VISIBLY instead of
+   clipping — it should look wrong, so it gets caught and the wording trimmed.
+   Scoped to main[data-blog-id] (blog posts only) — the privacy page's h1/intro
+   take no reservation. Below 820px: natural heights, no reservation. */
+@media (min-width: 820px) {
+  main[data-blog-id] .tf-prose > h1 { min-height: 2lh; }
+  main[data-blog-id] .tf-prose-intro { min-height: 3lh; }
+}
 
 h1, h2, h3, h4 {
   font-family: var(--tf-font-heading);
@@ -385,6 +421,20 @@ a:hover { color: var(--tf-brick-dark); }
   padding: 11px 46px 11px 16px;
 }
 .tf-btn-secondary:hover { background: var(--tf-ink); color: var(--tf-paper); }
+
+/* Header band space reservation. #tf-header is an empty placeholder until the
+   partials fetch lands, so with no floor the page paints its content at the top
+   and everything jumps down by the band height when the nav arrives. Reserving
+   the band means content paints in its final position.
+   74px = the rendered band: --tf-space-2 (16px) + the 40px lockup/hamburger row
+   + --tf-space-2 + the 2px rule. Desktop and mobile measure the SAME, because
+   the hamburger button and the lockup mark are both 40px — so one value covers
+   both breakpoints and no media query is needed.
+   Trade: the soft-fail state changes from "no nav, content at top" to "no nav,
+   empty band at top" — accepted (see the STYLE.md ratchet record).
+   Known gap: below ~360px the lockup + hamburger wrap to two rows (band = 130px)
+   and a residual jump remains there; see the ratchet record. */
+#tf-header { min-height: 74px; }
 
 /* Header / nav — full-bleed band; its content is held in .tf-nav-inner
    (a .tf-container), so the 2px bottom rule spans the viewport while the

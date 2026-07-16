@@ -1,6 +1,6 @@
 # Three Flows Solutions — Brand Style Guide
 
-v3 · 2026-07-16 — paper token lightened to `#FCFBFA` (v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
+v3 · 2026-07-16 — paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule (v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
 
 ---
 
@@ -47,7 +47,7 @@ Pills and the logo bars are the two rounded shapes in the brand. Base `.tf-pill`
 - `.tf-pill-outline` (optionally `.tf-pill-dot`) — filters & states
 - `.tf-pill-tint-{brick|slate|ochre|teal|plum|stone}` — category tags (wash bg + deep text of the same hue). This resolves the "pending palette extension" note from the blog build.
 - `.tf-pill-sm` — small uppercase modifier (journey phases, compact labels)
-- Blog-tag aliases kept for blog.js: `-primary` (solid brick), `-secondary` (brick outline), `-muted` (stone outline)
+- State aliases `-primary` (solid brick), `-secondary` (brick outline), `-muted` (stone outline) — formerly the blog tags; retained as kit, no current consumer (see the rail-image / tag-removal record in §6)
 
 ### Icons & imagery
 
@@ -75,6 +75,8 @@ Two families, loaded from Google Fonts (see the `<link>` snippet at the top of s
 - **Body & UI — Space Grotesk**, 400 body · 500 labels/buttons · 700 stats. Quietly technical counterpart to the serif.
 
 Scale (from style.css tokens): hero 48 / h2 36 / h3 27 / lead 20 / body 16 / caption 14 / meta 12 (uppercase, 0.14em tracking).
+
+**No italics anywhere in the brand** — Space Grotesk ships no italic style, so `em`/`i` render as faux-oblique. Emphasis is `<strong>` or sentence structure. (Testimonials were already never-italic; this generalizes the rule.) `.tf-prose em, .tf-prose i` normalize to upright medium as a defensive net.
 
 ---
 
@@ -257,6 +259,10 @@ privacy.html; reused by blog posts.**
   and the layout stays single-column). Chosen over an in-flow block because
   these are linear reads and a section list above the content would cost more
   scrolling than it saves; the headings remain reachable by scrolling.
+  *(Superseded — and the `.tf-toc { display: none }` claim was never accurate:
+  the sheet only ever hid `.tf-toc-label` and `.tf-toc ul`, leaving `.tf-toc`
+  itself in flow. That in-flow rail is what carries the mobile rail image today —
+  see the rail-image ratchet note below.)*
 
 ### Blog post patterns — tag pills, top nav row, rail tags — blog-template.html — 2026-07-15
 
@@ -313,3 +319,19 @@ Merged the codebase v1+ratchet files with Design v1.5 into v2. Everything from b
 ### Paper lightened — user review — 2026-07-16
 
 `--tf-paper` #FBFAF8 → #FCFBFA (one step lighter, still warm; user decision after comparing candidates). `--tf-cream` follows automatically via its color-mix derivation (now resolves ≈#ECE8E4). No other token or component changes. Supersedes a Claude Design suggestion to add a separate `--tf-ground` token — rejected: the site has no sheet-on-ground layout; the page ground is paper.
+
+### Rail image slot + tag removal — blog post pages — 2026-07-16
+
+Two decisions from the blog layout finalization. **This supersedes the tags half of the "Blog post patterns" record above** (tag pills in the rail, the "Filed under" block, and the mobile tags-only collapsed rail are all retired).
+
+- **Tags dropped from the blog system (user decision).** Removed the rail tags block (`.tf-toc-tags` + its `.tf-pills` rule from `style.css`), the `primaryTags` / `secondaryTags` fields from every `bloglist.json` entry, and the whole tags-rendering path from `blog.js` (label, pills, and the vocabulary union derived across manifest entries). Manifest schema is now `blogID, filename, title, date, status` (+ optional `image`, below). **The pill kit stays in the sheet** — `.tf-pill` and every variant, including the `-primary` / `-secondary` / `-muted` aliases: it is design-kit furniture (the journey stepper consumes the tint + `-sm` variants). The three state aliases currently have no consumer.
+- **Rail image slot (`.tf-rail-img`) — defined by the blog post pages.** An optional per-post lede image at the **top of the rail**, above "In this article". **Manifest-driven:** `blog.js` renders it only when the post's entry carries an `image` path; absent field → **no element at all** (no placeholder, no broken image, no gap). Rendered as `<img class="tf-rail-img tf-photo" alt="" loading="lazy">` — `alt` is empty because the image is decorative until per-post alt text ships with the real images; **always carries `.tf-photo`**, so it takes the brand grade like every other content photograph. Treatment: **3:2 crop** (`aspect-ratio: 3 / 2` + `object-fit: cover`), full rail width, square corners, no border, no shadow, `--tf-space-3` below.
+- **Placement follows the existing rail, no new layout rules.** Desktop (≥ 820px): it sits inside the sticky `.tf-toc` and travels with it (image → "In this article" → list). Mobile (< 820px): it stays **in-flow above the article**, taking the slot the retired tags block occupied — this needed **no mobile-specific rule**, because the collapsed-rail treatment only hides `.tf-toc-label` and `.tf-toc ul`; `.tf-toc` itself remains in flow. With no image set, the collapsed rail has no visible content and takes no height.
+
+### Layout stabilization — space reservation — blog post pages — 2026-07-16
+
+Kills the vertical shift that made the blog feel unstable: content jumping when the fetched nav landed, and the body starting at a different y on every post. Both fixes are **space reservations in `style.css`** — no page-local styles, no markup changes.
+
+- **Header band (`#tf-header { min-height: 74px }`).** The placeholder is empty until the partials fetch resolves, so the page painted its content at the top and dropped it by a band-height when the nav arrived. 74px is the measured band: `--tf-space-2` (16) + the 40px lockup/hamburger row + `--tf-space-2` (16) + the 2px rule. **One value covers both breakpoints** — desktop and mobile measure identically, because the hamburger button and the lockup mark are both 40px, so no media query is needed. **Soft-fail trade (accepted):** the no-JS / failed-fetch state changes from "no nav, content at top" to "no nav, **empty 74px band** at top". **Known gap:** below ~360px the lockup and hamburger wrap to two rows (real band 130px), so a residual jump remains under that width; not handled — the wrap threshold is font-metric dependent and would misreserve while the webfont loads.
+- **Post header (desktop ≥ 820px only).** `main[data-blog-id] .tf-prose > h1 { min-height: 2lh }` and `main[data-blog-id] .tf-prose-intro { min-height: 3lh }` — the h1 and recap are the only variable-height blocks above the body, so reserving them pins the date line, the divider, and the body top to the same y across posts. The `lh` unit is the element's **own rendered line box**, so the reservation tracks the type scale with no recompute (currently h1 2lh ≈ 110.4px, recap 3lh ≈ 76.8px). **`min-height`, not `height`: overflow stays visible** — an over-long title or recap is meant to look wrong so it gets caught, never silently clipped. Scoped to `main[data-blog-id]`, which is **blog posts only** — no hook class was needed and the privacy page's h1/intro are untouched. Below 820px there are no reservations (natural heights).
+- **EDITORIAL RULE — titles fit 2 desktop lines, recaps fit 3.** The reservations encode a writing target, they do not enforce it: **titles are written to fit 2 rendered lines at desktop, recaps to fit 3, and the wording is adjusted to keep it.** Check at post-add time (1280px is the reference width); if a title runs to 3 lines, trim the title rather than raise the reservation — raising it re-introduces the shift for every other post.
