@@ -1,5 +1,6 @@
 /* ==========================================================================
    Three Flows Solutions — brand stylesheet
+   v3 · 2026-07-16 · Paper lightened #FBFAF8 → #FCFBFA (user decision).
    v2 · 2026-07-16 · Merge of the site build (v1 + ratchet) and Claude Design v1.5
    Conflicts resolved per review: paper #FBFAF8, design pills, data palette.
    Pair with style.md for usage rules.
@@ -24,10 +25,10 @@
   --tf-ink-soft: #55504D;     /* secondary text */
   --tf-stone: #B8ADA5;        /* supporting tone: meta text, borders, charts */
   --tf-stone-light: #DDD6CF;  /* light borders, subtle rules */
-  --tf-paper: #FBFAF8;        /* ground — warm off-white, never pure white */
+  --tf-paper: #FCFBFA;        /* ground — warm off-white, never pure white */
   /* Raised-surface tone for overlay elements (dropdowns; future overlays reuse it).
-     A tint derived from existing tokens — NOT a new raw hue (resolves to ~#ECE7E2
-     with the v2 paper). */
+     A tint derived from existing tokens — NOT a new raw hue (resolves to ~#ECE8E4
+     with the v3 paper). */
   --tf-cream: color-mix(in srgb, var(--tf-stone-light) 50%, var(--tf-paper));
 
   /* Data palette — six equal-weight series colors for charts & category coding.
