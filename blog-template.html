@@ -2,7 +2,7 @@
   blog-template.html — COPY-SOURCE for new blog posts. NOT servable content.
 
   To create a post: copy this file to blog-<slug>.html, set data-blog-id on
-  <main> to the post's blogID, fill the pills / title / dek / date / body, and
+  <main> to the post's blogID, fill the title / dek / date / body, and
   add a matching entry to bloglist.json. This file is NOT a post: it is excluded
   from the nav and the backlog page checklist, its data-blog-id is empty, and it
   is never listed in bloglist.json — so blog.js never treats it as a post
@@ -11,7 +11,7 @@
   Structure mirrors privacy.html: partials-injected header/footer, the
   .tf-container two-column layout with the data-toc rail, the .tf-prose measure,
   and the header divider under the meta line. The header block is adapted for
-  posts (tag pills → h1 → dek → publish-date meta → divider).
+  posts (h1 → dek → publish-date meta → divider).
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -39,9 +39,9 @@
           <a href="blogs.html">← Blogs</a>
           <span class="tf-post-pager"></span>
         </div>
-        <!-- POST HEADER: h1 → dek → date (divider). Tags render in the rail
-             ("Filed under") — built dynamically by blog.js, not here. blog.js
-             also appends " · N min read" to the date meta. -->
+        <!-- POST HEADER: h1 → dek → date (divider). blog.js appends
+             " · N min read" to the date meta. An optional rail image renders
+             from the manifest's "image" field — never marked up here. -->
         <h1>Post title goes here</h1>
         <p class="tf-prose-intro">Dek / standfirst — one or two sentences that set up the post.</p>
         <p class="tf-meta">Month D, YYYY</p>

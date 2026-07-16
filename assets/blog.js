@@ -3,10 +3,9 @@
    A post identifies itself with data-blog-id="<blogID>". This script:
    1. Reading time — counts the article's words (DOM only, no manifest needed),
       ~220 wpm rounded up, and appends " · N min read" to the date meta line.
-   2. Filed-under tags — renders the FULL tag vocabulary (alphabetical union of
-      every manifest entry's primaryTags + secondaryTags) into the rail, above
-      "In this article": this post's primary tag(s) filled, secondary outlined,
-      every other vocabulary tag muted.
+   2. Rail image — if the manifest entry carries an optional "image" path, renders
+      it at the TOP of the rail (above "In this article"). Absent field → nothing
+      rendered: no placeholder, no broken image.
    3. Top pager — wires the "← Previous | Next →" row: Previous = next older
       published post, Next = next newer. An absent neighbour renders muted, not
       hidden. Same-date collision among published posts → both muted + warn.
@@ -24,20 +23,23 @@
 
     var prose = document.querySelector('.tf-prose');
 
-    // 1. Reading time — DOM word count, independent of the manifest.
+    // 1. Reading time — DOM word count, independent of the manifest. Counts the
+    //    reader-visible article body: everything inside .tf-prose EXCEPT the h1
+    //    (so editing a title never moves the count), the date/meta line, and the
+    //    top nav row (which sits INSIDE .tf-prose, not outside it). Scoping by
+    //    container-minus-exclusions rather than a tag list means body elements
+    //    count automatically as they appear — list items do now, and tables or
+    //    callouts will when they arrive.
     (function () {
       if (!prose) return;
       var meta = prose.querySelector('.tf-meta');
       if (!meta) return;
+      var body = prose.cloneNode(true);                              // count off a copy; the page keeps its DOM
+      var skip = body.querySelectorAll('h1, .tf-meta, .tf-post-topnav');
+      for (var i = 0; i < skip.length; i++) skip[i].remove();
+      var parts = body.textContent.trim().split(/\s+/);
       var words = 0;
-      var els = prose.querySelectorAll('h1, h2, h3, p');
-      for (var i = 0; i < els.length; i++) {
-        var el = els[i];
-        if (el.classList.contains('tf-meta')) continue;
-        if (el.closest('.tf-post-topnav')) continue;
-        var parts = el.textContent.trim().split(/\s+/);
-        for (var k = 0; k < parts.length; k++) if (parts[k]) words++;
-      }
+      for (var k = 0; k < parts.length; k++) if (parts[k]) words++;
       if (words > 0) {
         var mins = Math.max(1, Math.ceil(words / 220));
         meta.textContent += ' · ' + mins + ' min read';
@@ -53,35 +55,16 @@
       var self = null;
       for (var i = 0; i < posts.length; i++) { if (posts[i].blogID === selfId) { self = posts[i]; break; } }
 
-      // 2. Filed-under tags in the rail.
+      // 2. Rail image — optional per-post "image" in the manifest. Absent → no
+      //    element at all, so the rail top stays clean.
       var rail = document.querySelector('.tf-toc');
-      if (rail && self) {
-        var vocab = {};
-        posts.forEach(function (p) {
-          (p.primaryTags || []).concat(p.secondaryTags || []).forEach(function (t) { vocab[t] = true; });
-        });
-        var tags = Object.keys(vocab).sort();
-        var prim = self.primaryTags || [];
-        var sec = self.secondaryTags || [];
-
-        var block = document.createElement('div');
-        block.className = 'tf-toc-tags';
-        var label = document.createElement('div');
-        label.className = 'tf-meta tf-toc-tags-label';
-        label.textContent = 'Filed under';
-        var pills = document.createElement('div');
-        pills.className = 'tf-pills';
-        tags.forEach(function (t) {
-          var span = document.createElement('span');
-          var state = prim.indexOf(t) >= 0 ? 'tf-pill-primary'
-                    : (sec.indexOf(t) >= 0 ? 'tf-pill-secondary' : 'tf-pill-muted');
-          span.className = 'tf-pill ' + state;
-          span.textContent = t;
-          pills.appendChild(span);
-        });
-        block.appendChild(label);
-        block.appendChild(pills);
-        rail.insertBefore(block, rail.firstChild);
+      if (rail && self && self.image) {
+        var img = document.createElement('img');
+        img.className = 'tf-rail-img tf-photo';
+        img.src = self.image;
+        img.alt = '';                 // decorative until per-post alt text ships with real images
+        img.loading = 'lazy';
+        rail.insertBefore(img, rail.firstChild);
       }
 
       // 3. Top pager (Previous | Next), wired to published neighbours.

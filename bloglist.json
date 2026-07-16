@@ -1,11 +1,23 @@
 [
   {
     "blogID": "blog-001",
-    "filename": "blog-welcome-to-three-flows-solutions.html",
-    "title": "Welcome to Three Flows Solutions: Where Education Meets Execution",
+    "filename": "blog-welcome-to-three-flows.html",
+    "title": "Welcome to Three Flows Solutions",
     "date": "2025-03-05",
-    "status": "published",
-    "primaryTags": ["Others"],
-    "secondaryTags": []
+    "status": "published"
+  },
+  {
+    "blogID": "blog-002",
+    "filename": "blog-cut-import-costs.html",
+    "title": "Four Ways to Cut Your Import Cost in a Tariff War",
+    "date": "2025-04-29",
+    "status": "published"
+  },
+  {
+    "blogID": "blog-003",
+    "filename": "blog-factory-data.html",
+    "title": "The Real Cost of Factory Data Problems",
+    "date": "2025-05-21",
+    "status": "published"
   }
 ]
