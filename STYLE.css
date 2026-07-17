@@ -377,7 +377,7 @@ h1, h2, h3, h4 {
   font-weight: 700;
   line-height: 1.15;
   margin: 0 0 var(--tf-space-2);
-  text-wrap: balance;
+  text-wrap: pretty;
 }
 
 h1 { font-size: var(--tf-text-3xl); }

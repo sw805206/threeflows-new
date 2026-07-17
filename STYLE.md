@@ -555,3 +555,24 @@ pattern in `STYLE.css`, per BLOG.md §9. **The remaining three (`.tf-callout`,
   row action, so a hover state would signal an affordance that isn't there, and
   striping would add another tone to a palette that separates jobs by a tone
   each. Row separation is the light rule's job.
+
+### Heading wrap balance→pretty — blog-004 review — 2026-07-17
+
+The `h1–h4` rule carried `text-wrap: balance`; changed site-wide to
+`text-wrap: pretty`. One property on one rule — no other change.
+
+- **Why.** `balance` evens out the line lengths of a multi-line heading, which
+  pulls the **first line in narrower** than the available measure. Surfaced
+  during the blog-004 review on the ONT8 h2 ("The ONT8 Lesson: What "Dirty"
+  Freight Costs"), whose first line balanced short of the body measure and read
+  as an awkwardly early wrap against the prose beneath it. `pretty` instead lets
+  the first line **fill to the measure** and only optimises the **last** line
+  (avoiding a lone short word), which is the behaviour a left-aligned editorial
+  heading over running prose wants.
+- **Scope.** `h1–h4` (every heading). `p` already used `pretty`; the two now
+  agree, so headings and body copy wrap on the same principle.
+- **Trade-off, accepted.** `pretty` gives up `balance`'s evened multi-line
+  shape, so a heading can end on a slightly shorter last line — a small orphan
+  risk. Accepted: filling the first line to the measure matters more for a
+  flush-left heading than an evened silhouette, and `pretty`'s own last-line
+  optimisation keeps the orphan case rare.
