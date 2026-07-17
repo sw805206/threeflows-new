@@ -6,7 +6,9 @@
     "date": "2025-03-05",
     "status": "published",
     "image": "assets/images/blog-welcome-to-three-flows.jpg",
-    "imageAlt": "Four hands fit green, yellow, blue and pink jigsaw pieces together on a white table."
+    "imageAlt": "Four hands fit green, yellow, blue and pink jigsaw pieces together on a white table.",
+    "recap": "Every business is the management of three flows. Our job is to help you master all three — by teaching you what we know, and working beside you when knowing isn't enough.",
+    "readMinutes": 4
   },
   {
     "blogID": "blog-002",
@@ -15,7 +17,9 @@
     "date": "2025-04-29",
     "status": "published",
     "image": "assets/images/blog-cut-import-costs.jpg",
-    "imageAlt": "Stacked shipping containers in long rows fill a port yard, seen from above."
+    "imageAlt": "Stacked shipping containers in long rows fill a port yard, seen from above.",
+    "recap": "Four legitimate, widely underused mechanisms can dramatically reduce what you pay to bring goods into the US. Most growing brands miss most of them.",
+    "readMinutes": 5
   },
   {
     "blogID": "blog-003",
@@ -24,6 +28,8 @@
     "date": "2025-05-21",
     "status": "published",
     "image": "assets/images/blog-factory-data.jpg",
-    "imageAlt": "Workers in blue coats assemble and pack small parts at a row of benches in a factory."
+    "imageAlt": "Workers in blue coats assemble and pack small parts at a row of benches in a factory.",
+    "recap": "The physical goods move. The paperwork doesn't. Here's what poor factory data quality actually costs growing brands — and what to do about it.",
+    "readMinutes": 6
   }
 ]

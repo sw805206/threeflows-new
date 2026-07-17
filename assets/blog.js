@@ -1,5 +1,10 @@
-/* blog.js — blog post enhancements, driven by bloglist.json.
+/* blog.js — blog pages, driven by bloglist.json. Two independent blocks:
+   the POST enhancements (a page marks itself with data-blog-id) and the INDEX
+   render (blogs.html marks itself with data-blog-index). Exactly one applies per
+   page — a post has no index marker and the index has no data-blog-id — so they
+   never both fetch the manifest. Both fail soft and leave the page usable.
 
+   ── POST ──────────────────────────────────────────────────────────────────
    A post identifies itself with data-blog-id="<blogID>". This script:
    1. Reading time — counts the article's words (DOM only, no manifest needed),
       ~220 wpm rounded up, and appends " · N min read" to the date meta line.
@@ -108,6 +113,91 @@
       pager.appendChild(sep);
       pager.appendChild(item(newer, 'Next →'));
     }).catch(function () { /* soft-fail: no tags/pager; reading time already applied */ });
+  } catch (e) {
+    /* soft-fail */
+  }
+})();
+
+/* ── INDEX ──────────────────────────────────────────────────────────────────
+   blogs.html marks its container with data-blog-index. This block renders one
+   card per PUBLISHED post, date-descending (newest first), from the manifest:
+   image cap (image/imageAlt) → date · read-time meta → title → recap.
+
+   The whole card is a single <a> to the post. Card text comes from the manifest
+   only — `recap` is the post's own intro copied verbatim and `readMinutes` is
+   precomputed with the same scope the post page counts with, so the index and
+   the post always show the same figures.
+
+   Soft-fail: the container ships with a static "Posts are unavailable right
+   now." line baked into the HTML. It is replaced ONLY on a successful render, so
+   an unreachable or malformed manifest (or no JS at all) leaves that line
+   standing rather than a blank page. */
+(function () {
+  try {
+    var host = document.querySelector('[data-blog-index]');
+    if (!host) return;   // not the index page
+
+    // Format an ISO date without Date() — parsing 'YYYY-MM-DD' as a Date is
+    // UTC-based and can render the previous day west of Greenwich.
+    var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                  'August', 'September', 'October', 'November', 'December'];
+    function fmtDate(iso) {
+      var p = (iso || '').split('-');
+      if (p.length !== 3) return iso || '';
+      return MONTHS[(+p[1]) - 1] + ' ' + (+p[2]) + ', ' + p[0];
+    }
+
+    function card(post) {
+      var a = document.createElement('a');
+      a.className = 'tf-card tf-card-link';
+      a.href = post.filename;
+
+      if (post.image) {
+        var img = document.createElement('img');
+        img.className = 'tf-card-cap tf-photo';
+        img.src = post.image;
+        img.alt = post.imageAlt || '';     // no imageAlt -> decorative, never a guess
+        img.loading = 'lazy';              // a growing list; the browser still fetches in-view cards immediately
+        a.appendChild(img);
+      }
+
+      var meta = document.createElement('p');
+      meta.className = 'tf-meta';          // meta treatment in the kicker slot: ink-soft, never brick
+      meta.textContent = fmtDate(post.date) +
+        (post.readMinutes ? ' · ' + post.readMinutes + ' min read' : '');
+      a.appendChild(meta);
+
+      var title = document.createElement('h2');
+      title.className = 'tf-card-title';
+      title.textContent = post.title;
+      a.appendChild(title);
+
+      if (post.recap) {
+        var recap = document.createElement('p');
+        recap.className = 'tf-card-body';
+        recap.textContent = post.recap;
+        a.appendChild(recap);
+      }
+      return a;
+    }
+
+    fetch('bloglist.json').then(function (r) {
+      if (!r.ok) throw new Error('bloglist ' + r.status);
+      return r.json();
+    }).then(function (posts) {
+      if (!Array.isArray(posts)) throw new Error('malformed manifest');
+
+      var published = posts.filter(function (p) { return p && p.status === 'published'; });
+      published.sort(function (a, b) { return a.date < b.date ? 1 : (a.date > b.date ? -1 : 0); });
+      if (!published.length) return;       // nothing to show: keep the baked line
+
+      var grid = document.createElement('div');
+      grid.className = 'tf-card-grid';
+      published.forEach(function (p) { grid.appendChild(card(p)); });
+
+      host.textContent = '';               // drop the baked soft-fail line
+      host.appendChild(grid);
+    }).catch(function () { /* soft-fail: the baked "unavailable" line stands */ });
   } catch (e) {
     /* soft-fail */
   }
