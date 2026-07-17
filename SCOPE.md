@@ -1,4 +1,4 @@
-v003 | last updated: 2026-07-15
+v004 | last updated: 2026-07-17
 
 # SCOPE.md — threeflows.com Relaunch (new repo)
 
@@ -42,6 +42,7 @@ branch per task → PR → merge.
   (which page defined which pattern)
 - STYLE.css — design tokens and shared patterns; single source of truth
   for all styling
+- BLOG.md — blog add-a-post procedure and manifest schema
 - BACKLOG.md — Part C backlog process is ACTIVE; also holds the page
   checklist and carry-over inventory status
 
