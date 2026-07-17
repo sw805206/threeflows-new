@@ -1,6 +1,6 @@
 # Three Flows Solutions — Brand Style Guide
 
-v3 · 2026-07-16 — paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule (v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
+v4 · 2026-07-17 — page-header standard (`.tf-kicker` + h1 on every top-level page); no sheet change (v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
 
 ---
 
@@ -346,3 +346,14 @@ First real use of the card kit defined by Design in v2 ("pending first use" — 
 - **`.tf-card-cap` — the 3:2 image cap.** Flush to the card's inner edges, cancelling the card's `--tf-space-3` padding with negative margins **rather than the kit dropping its padding**; the card's 2px border still frames the image. Carries `.tf-photo` like every content photograph.
 - **Usage decision — the kicker slot holds a `.tf-meta` line, not `.tf-card-kicker`.** The card's top line is `DATE · N MIN READ` in the standard meta treatment (12px, uppercase, tracked, **ink-soft**). `.tf-card-kicker` is brick and `.tf-card-meta` is stone and bottom-pinned; neither was rewritten — the index simply uses `.tf-meta` in that slot, keeping the index free of at-rest brick. Both kit classes stand unchanged for other pages.
 - **Manifest fields for the index (`recap`, `readMinutes`).** The card's recap is the post's own `.tf-prose-intro` copied verbatim, and `readMinutes` is precomputed with the same scope `blog.js` uses on the post page, so the index and the post always agree. Both are data, not style.
+
+### Page-header standard — all top-level pages — 2026-07-17
+
+Page-header standard — every top-level page opens `.tf-kicker` + h1 (+ intro
+where the page has one). Section children carry the section name (Services ×4,
+Resources ×4); standalone pages their own name (About, Contact, Surveys);
+`privacy.html` predates the rule and keeps its original "Legal" kicker —
+grandfathered, not the template. `index.html` deferred to the home page design;
+blog post pages excluded (their header is the topnav pattern). No sheet change —
+`.tf-kicker` used as-is. On built pages the h1 is a title, not the page name, so
+kicker and h1 never duplicate; the echo on placeholder shells is temporary.
