@@ -56,14 +56,16 @@
       for (var i = 0; i < posts.length; i++) { if (posts[i].blogID === selfId) { self = posts[i]; break; } }
 
       // 2. Rail image — optional per-post "image" in the manifest. Absent → no
-      //    element at all, so the rail top stays clean.
+      //    element at all, so the rail top stays clean. "imageAlt" carries the
+      //    post's alt text; with no imageAlt the image renders alt="" (decorative),
+      //    which is the correct fallback — never a filename or a guess.
       var rail = document.querySelector('.tf-toc');
       if (rail && self && self.image) {
         var img = document.createElement('img');
         img.className = 'tf-rail-img tf-photo';
         img.src = self.image;
-        img.alt = '';                 // decorative until per-post alt text ships with real images
-        img.loading = 'lazy';
+        img.alt = self.imageAlt || '';
+        img.loading = 'eager';        // above the fold at the rail top — the LCP candidate; lazy would only cost a flash of empty space
         rail.insertBefore(img, rail.firstChild);
       }
 
