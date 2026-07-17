@@ -1,6 +1,6 @@
 # Three Flows Solutions — Brand Style Guide
 
-v6 · 2026-07-17 — about.html build: `.tf-profile-lg` principals card (natural-aspect headshots, never cropped — square mandate revoked), wash band tint (`--tf-sand-wash` / `.tf-section-wash`), client-logo slot (original colour), tag→tint mapping (v5: sitewide chrome/divider restyle: ink retired as a section divider (sand `--tf-sand` / `--tf-rule-sand`), white dividerless header (`--tf-white`), dropdown cream lightened to a 15% mix; footer keeps its ink top rule (v4: page-header standard — `.tf-kicker` + h1 on every top-level page. v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5)). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
+v7 · 2026-07-17 — blog-004 build: prose tables (`.tf-prose-table` + `.tf-prose table`), the first of the BL-012 deferred body patterns (v6: about.html build: `.tf-profile-lg` principals card (natural-aspect headshots, never cropped — square mandate revoked), wash band tint (`--tf-sand-wash` / `.tf-section-wash`), client-logo slot (original colour), tag→tint mapping (v5: sitewide chrome/divider restyle: ink retired as a section divider (sand `--tf-sand` / `--tf-rule-sand`), white dividerless header (`--tf-white`), dropdown cream lightened to a 15% mix; footer keeps its ink top rule (v4: page-header standard — `.tf-kicker` + h1 on every top-level page. v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5))). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
 
 ---
 
@@ -514,3 +514,44 @@ stays pending a supporting-mention first use elsewhere.
   vocabulary for these five engagement phases: **blog and service pages reusing
   these tags must follow it**, so a reader learns the colour once. A new phase
   takes the next unused data-palette tint; never re-point an existing one.
+
+### Prose tables — blog-amazon-inbound.html (blog-004) — 2026-07-17
+
+First of the four deferred blog body patterns (BL-012). Until now a `<table>` in
+prose rendered browser-default and cramped; the post that needed one defines the
+pattern in `STYLE.css`, per BLOG.md §9. **The remaining three (`.tf-callout`,
+`.tf-stat-grid` first use, disclaimer line) are untouched — BL-012 stays open.**
+
+- **Element-scoped, so a post writes a plain `<table>`.** `.tf-prose table` /
+  `th` / `td` follow the same idiom as the existing `.tf-prose ul/ol/hr` rules:
+  the post introduces **no class of its own**, which is the rule BLOG.md §3
+  states. The one class is the wrapper (below), and it is part of the pattern,
+  not post-local styling.
+- **`.tf-prose-table` — the scroll wrapper.** `overflow-x: auto` on a wrapping
+  `<div>`. Needed because a table **cannot shrink below its content**: at the
+  62ch prose measure a three-column table already sits near its floor, and on a
+  phone it would otherwise widen the page and give the whole document a
+  horizontal scrollbar. Wrapping confines the scroll to the table. No
+  `min-width` is set, so a table that fits **never** scrolls — the wrapper is
+  inert until the content demands it.
+- **Frame ink, internals light — a table is a component, not a section
+  boundary.** The outer border is `--tf-rule` (2px ink), which is **consistent
+  with the divider retirement, not an exception to it**: ink survives on
+  component frames — the edge of a thing (§4) — exactly as on `.tf-stat-grid`
+  and `.tf-journey`, whose cell splits are likewise `--tf-rule-light`. Internal
+  rules stop short of the frame (`tr > :last-child` drops the right border, the
+  last row drops the bottom) so nothing doubles against the 2px edge.
+- **Header row = the `.tf-meta` treatment** (12px, uppercase, 0.14em tracked,
+  ink-soft) on the paper ground — a column label reads as a label, not as a
+  heavier first row of data. **Weight 500, not the UA's bold:** `.tf-meta` sets
+  no weight, and bold at 12px tracked reads as shouting. Same judgement as the
+  blog index, which puts `.tf-meta` in the card's kicker slot rather than
+  reaching for a louder treatment.
+- **Body cells `--tf-text-sm`, padding `--tf-space-1` / `--tf-space-2`,
+  `vertical-align: top`, flush left, square corners.** Top alignment because
+  cells in a prose table hold sentences of unequal length, and centring them
+  ragged-tops a row.
+- **No zebra striping, no hover.** The table is read, not operated — there is no
+  row action, so a hover state would signal an affordance that isn't there, and
+  striping would add another tone to a palette that separates jobs by a tone
+  each. Row separation is the light rule's job.
