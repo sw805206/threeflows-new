@@ -1,6 +1,6 @@
 # Three Flows Solutions — Brand Style Guide
 
-v5 · 2026-07-17 — sitewide chrome/divider restyle: ink retired as a section divider (sand `--tf-sand` / `--tf-rule-sand`), white dividerless header (`--tf-white`), dropdown cream lightened to a 15% mix; footer keeps its ink top rule (v4: page-header standard — `.tf-kicker` + h1 on every top-level page. v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
+v6 · 2026-07-17 — about.html build: `.tf-profile-lg` principals card (natural-aspect headshots, never cropped — square mandate revoked), wash band tint (`--tf-sand-wash` / `.tf-section-wash`), client-logo slot (original colour), tag→tint mapping (v5: sitewide chrome/divider restyle: ink retired as a section divider (sand `--tf-sand` / `--tf-rule-sand`), white dividerless header (`--tf-white`), dropdown cream lightened to a 15% mix; footer keeps its ink top rule (v4: page-header standard — `.tf-kicker` + h1 on every top-level page. v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5)). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
 
 ---
 
@@ -418,3 +418,99 @@ stacked with no content between. Pre-existing (it was ink-on-ink, reading as one
 4px line); the tone split makes it legible as two. It resolves itself as soon as
 a page has more than one section, and the shells are placeholders. Not worked
 around in the sheet — a page-structure artifact, not a rule-hierarchy fault.
+
+### Profile first use + wash band + client logos — about.html — 2026-07-17
+
+The about build adds the patterns the page needed. Note it does **not** discharge
+the v2 Design "pending first use" note on `.tf-profile` / `.tf-avatar`: the
+principals needed a dominant square portrait, so the page built its own
+`.tf-profile-lg` variant rather than consuming the small circular kit, which
+stays pending a supporting-mention first use elsewhere.
+
+- **Principal card — its OWN pattern (`.tf-profile-lg` + `.tf-headshot`), NOT a
+  modifier on `.tf-profile`/`.tf-avatar`.** The two firm principals are the about
+  page's *subject*, and the card is deliberately built to **dominate** the client
+  cards below it — larger padding (`--tf-space-4`), a 220px portrait, a 21px serif
+  name (the client-card title is also serif but smaller). That is the intended
+  page hierarchy: principals read first, clients are the supporting grid. Measured
+  at 1280px the principal card renders **visibly taller** than a client card,
+  confirming the hierarchy holds in layout, not just intent.
+  `.tf-profile-lg` is a **column** card: a top row (`.tf-profile-head` — photo left;
+  name + credential + LinkedIn + role centred beside it), then the **bio as a
+  full-width paragraph below that row** (not a two-column split — the bio spans the
+  whole card). `.tf-headshot` is the portrait, rendered at **natural aspect**. The
+  base `.tf-profile` / `.tf-avatar` kit stands **unchanged** for supporting-mention
+  use on other pages — this variant overrides enough (uncropped rectangle vs
+  circle, size, padding, structure) that bending the base would compromise both, so
+  it is a separate pattern, not a size modifier.
+  - **NATURAL ASPECT, never cropped — square mandate REVOKED.** An interim version
+    forced a 160px then 220px **square** slot with `object-fit: cover`; that was
+    the cause of repeated top-clipping and is **revoked**. The headshot now uses
+    the **original image at its native aspect ratio**: fixed width (220px), height
+    auto, no `object-fit`, no fixed-height slot — so the element renders 100% of
+    the source frame, all headroom included. Assets are the originals downscaled
+    **proportionally** (`440px` wide @2x), never cropped, never upscaled. This also
+    **supersedes §2's "profile photos: circle crop"** for principal portraits: an
+    uncropped editorial rectangle, not a circle. **Scope:** principal cards only —
+    `.tf-avatar` stays a circle for supporting mentions and §2's circle line still
+    governs those. The 96px `.tf-avatar-lg` from an earlier pass is **removed and
+    must not ship**.
+  - **`.tf-photo` grade still applies** (`class="tf-headshot tf-photo"`) — the same
+    brand grade as every content photograph, no per-image grading. `alt=""`: the
+    portrait sits directly beside the name in text, so a repeated name would be
+    screen-reader noise.
+  - **Source-background mismatch — FLAGGED, not resolved.** The two originals do
+    not match. `twg.png` is a portrait on an **opaque dark-brown studio backdrop**
+    (~62% of the frame opaque) with **transparent outer margins** (~36% alpha 0) —
+    not a clean cutout; `sw.jpeg` is a portrait on an **opaque light studio
+    background**, no alpha. Preserved faithfully (twg exported PNG to keep the
+    alpha, sw JPEG) rather than inventing a flatten colour or cropping to the
+    subject — so on-page Thomas reads as a dark-backdrop portrait with thin
+    paper-showing strips at the extreme edges, and Serena as a light rectangle. This
+    is the known background mismatch the user is deciding separately; nothing is
+    normalized here without direction.
+  - Added with it: `.tf-profile-name` / `.tf-profile-role` for the name + one-line
+    discipline; `.tf-profile-head` (the photo + identity row) and `.tf-profile-id`
+    (the identity column, vertically centred against the photo); and
+    **`.tf-profile-grid`** — 1-up by default, **2-up from 820px** (the site's nav
+    breakpoint). A **fixed** breakpoint, not `.tf-card-grid`'s intrinsic auto-fit:
+    there are exactly two cards and the pairing is deliberate, so it shouldn't
+    reflow to 1-up mid-desktop the way an auto-fit track would on a narrow window.
+    **The inline LinkedIn mark is ink-soft → brick on hover, never LinkedIn
+    blue** — the palette stays the logo's four inks; an external brand colour would
+    be the first hue to breach §2.
+- **Wash band (`--tf-sand-wash` `#F6F2ED` + `.tf-section-wash`).** A page-width
+  tinted ground that separates a major band from its neighbours by **field**
+  rather than by a line. **Naming matters here:** `--tf-sand` was already taken
+  by the divider *rule* (`#E5DFD7`), and the two are different jobs — a 2px line
+  versus a field — so the wash took its own token rather than overloading the
+  name. The wash is deliberately **lighter than the rule**, so a tinted band can
+  never read as a thick border. `.tf-section-wash` is a modifier on
+  `.tf-section`, inheriting the band + container idiom (tint spans the viewport,
+  content stays on the shared measure) and keeping its own sand divider. Never
+  page-local. First use: the clients band.
+- **Client logo slot (`.tf-client-logo` + `.tf-client-logo-slot`).** Logos arrive
+  at wildly different aspects (a 0.9:1 square mark next to a 6.5:1 wordmark).
+  The slot normalizes them to a common **visual mass**: 32px height with a
+  **130px width cap**, contain-fitted, flush left. Wide wordmarks hit the cap and
+  render shorter than 32px — **intended**: equal height alone would give a 6.5:1
+  wordmark ~7× the area of a square mark. `.tf-client-logo-slot` reserves a
+  constant 40px band so copy aligns across a row whatever each logo's fitted
+  height. **Asset prep is part of the pattern:** each logo is trimmed of its
+  transparent/white padding, then contain-fitted and exported at **2x** into
+  `assets/images/clients/`; unprocessed sources stay in
+  `assets/images/src/clients/` and are never referenced by a page.
+- **Client logos keep their ORIGINAL colour — and this is the CLIENT-CARD rule
+  only.** It does **not** touch the trusted-by strip: **`.tf-logos` still
+  mandates one-colour ink wordmarks** (§2 "Trusted-by"). The two coexist
+  deliberately — a client card identifies a specific engagement, and the brand's
+  own colour is the identifier; a trusted-by strip is a texture of names and
+  would turn into confetti at full colour. Don't generalize either rule to the
+  other.
+- **Tag → tint mapping (fixed vocabulary).** The engagement tags use the
+  **existing** `.tf-pill-tint-*` set with `.tf-pill-sm`; no new pill or tint was
+  added. **Plan = tint-brick · Source = tint-ochre · Launch = tint-teal ·
+  Scale = tint-slate · Collab = tint-plum.** This mapping is now the site's
+  vocabulary for these five engagement phases: **blog and service pages reusing
+  these tags must follow it**, so a reader learns the colour once. A new phase
+  takes the next unused data-palette tint; never re-point an existing one.

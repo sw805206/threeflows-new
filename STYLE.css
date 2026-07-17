@@ -37,6 +37,10 @@
   /* Sand — the section-divider tone. Ink is retired as a divider (STYLE.md §4);
      it survives only on component frames and the footer's top rule. */
   --tf-sand: #E5DFD7;
+  /* Sand wash — the BAND tint (a page-width ground for an alternating section),
+     not a rule. Distinct token from --tf-sand above: that one is a 2px line, this
+     one is a field. Lighter than the rule so a wash never reads as a border. */
+  --tf-sand-wash: #F6F2ED;
 
   /* Data palette — six equal-weight series colors for charts & category coding.
      Use in order; brick is always series 1. Never for body text. */
@@ -488,6 +492,14 @@ a:hover { color: var(--tf-brick-dark); }
   border-bottom: var(--tf-rule-sand);
 }
 
+/* Wash band — an alternating tinted section ground (--tf-sand-wash), used to
+   separate one major band from its neighbours by FIELD rather than by a line.
+   A modifier on .tf-section, so it inherits the band + container idiom: the
+   tint spans the viewport, the content stays on the shared measure. It carries
+   its own divider like any section; the tint is a ground, never a border.
+   First use: about.html's clients band. */
+.tf-section-wash { background: var(--tf-sand-wash); }
+
 /* Cards — square corners, structure from 2px borders (never shadows).
    Kicker on top, meta pinned to the bottom. */
 .tf-card {
@@ -522,6 +534,10 @@ a:hover { color: var(--tf-brick-dark); }
 }
 .tf-card-body { font-size: var(--tf-text-sm); line-height: 1.6; color: var(--tf-ink-soft); margin: 0; }
 .tf-card-meta { font-size: var(--tf-text-xs); color: var(--tf-stone); margin-top: auto; padding-top: var(--tf-space-1); }
+/* A pill row is the card's bottom furniture — pin it like .tf-card-meta, so
+   pills sit on one line across a row of equal-height cards instead of floating
+   at whatever height each description happens to end. */
+.tf-card > .tf-pills { margin-top: auto; padding-top: var(--tf-space-1); }
 
 /* Card grid — the shared layout for card collections. Intrinsically sized
    rather than breakpoint-driven: tracks are at least 300px (below that a
@@ -753,6 +769,105 @@ a:hover { color: var(--tf-brick-dark); }
 /* Principal profile */
 .tf-profile { border: var(--tf-rule-light); padding: var(--tf-space-3); display: flex; gap: 18px; }
 .tf-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--tf-stone); color: var(--tf-paper); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; flex-shrink: 0; object-fit: cover; }
+/* Principal card (`.tf-profile-lg` + `.tf-headshot`) — the OWN pattern for the
+   two firm principals, who are the about page's subject. Deliberately its own
+   variant, NOT a modifier on .tf-profile/.tf-avatar above: those stay the small
+   supporting-mention kit for other pages, and this card overrides enough (an
+   uncropped natural-aspect portrait, larger padding, dominant scale) that bending
+   the base would muddy both. The natural-aspect headshot SUPERSEDES the brand
+   sheet's "profile photos: circle crop" for principal portraits (STYLE.md §2 +
+   ratchet) — an editorial portrait at this size gives the pair more visual weight
+   than a client card, the intended hierarchy.
+   Structure: the card is a COLUMN — a top row (photo left; name + credential +
+   LinkedIn + role centred beside it), then the bio as a full-width paragraph
+   BELOW that row. Not a two-column split; the bio spans the whole card. */
+.tf-profile-lg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tf-space-3);
+  border: var(--tf-rule-light);
+  padding: var(--tf-space-4);
+  background: var(--tf-paper);
+}
+/* Top row — photo + identity. `align-items: center` vertically centres the short
+   name/role block against the tall photo. flex-wrap lets the identity drop under
+   the photo when a stacked card is too narrow to seat it alongside (phones). */
+.tf-profile-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--tf-space-3);
+}
+/* Headshot — NATURAL ASPECT, never cropped. Fixed width (220px), height auto, so
+   the image renders at its own aspect ratio and shows 100% of the source frame
+   edge to edge — no square slot, no object-fit: cover, no crop. (The square slot
+   was the cause of the repeated top-clipping; that mandate is revoked.) The two
+   source portraits are ~4:5, so each renders ~275px tall. Carries .tf-photo in the
+   markup for the brand grade. flex: 0 0 220px so the width never squeezes. */
+.tf-headshot {
+  flex: 0 0 220px;
+  width: 220px;
+  height: auto;
+  display: block;
+}
+/* Identity column beside the photo (name / credential / LinkedIn + role). */
+.tf-profile-id { flex: 1 1 200px; min-width: 0; }
+/* Profile grid — 1-up by default, 2-up from 820px (the site's nav breakpoint), so
+   the two principal cards sit side by side on desktop and stack below. A FIXED
+   breakpoint, not intrinsic sizing: there are exactly two cards and the pairing is
+   deliberate, so it shouldn't reflow to 1-up mid-desktop the way an auto-fit track
+   would on a narrow window. */
+.tf-profile-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--tf-space-3);
+  margin-top: var(--tf-space-4);
+}
+@media (min-width: 820px) {
+  .tf-profile-grid { grid-template-columns: 1fr 1fr; }
+}
+/* Principal name — 21px serif, dominant over the client-card title (also serif,
+   smaller). Its inline LinkedIn mark FLOWS INLINE after the last word (not a flex
+   row, which would strand the icon at the far edge when the name wraps); ink-soft
+   at rest, brick on hover — no brand-blue, the palette stays closed. */
+.tf-profile-name { font-family: var(--tf-font-heading); font-weight: 700; font-size: 21px; line-height: 1.2; margin: 0; }
+.tf-profile-name a { display: inline-flex; vertical-align: middle; margin-left: 6px; color: var(--tf-ink-soft); }
+.tf-profile-name a:hover { color: var(--tf-brick); }
+/* Role line — the one-line discipline under the name; last item in the identity
+   column, so no bottom margin (the card's gap handles the space to the bio). */
+.tf-profile-role { font-size: var(--tf-text-sm); color: var(--tf-ink-soft); margin: 2px 0 0; }
+
+/* Client logo slot — normalizes logos of wildly different aspect (square marks
+   vs long wordmarks) to a common visual mass: a fixed 32px height with a 130px
+   width cap, contain-fitted and flush left. Wide wordmarks hit the width cap and
+   sit shorter than 32px; that is the point — equal height alone would give a
+   6:1 wordmark several times the area of a square mark. Assets are pre-trimmed
+   and exported at 2x (see STYLE.md); the slot is the display contract.
+   Logos keep their ORIGINAL colour here — this is the client-card rule, and it
+   does NOT govern the .tf-logos trusted-by strip (still one-colour ink
+   wordmarks). */
+.tf-client-logo {
+  display: block;
+  height: 32px;
+  width: auto;
+  max-width: 130px;
+  object-fit: contain;
+  object-position: left center;
+}
+/* The slot reserves a constant band so titles/descriptions align across a row
+   regardless of each logo's fitted height. */
+.tf-client-logo-slot { display: flex; align-items: center; min-height: 40px; }
+/* PROVISIONAL — pending user decision. Two clients (ArtSabers, TOSH) ship no
+   logo asset; the old site set their names as text in the same slot. This is
+   that fallback, restated in brand type rather than carried over as-is. If the
+   real marks are supplied, DELETE this rule — it is not a pattern to reuse. */
+.tf-client-wordmark {
+  font-family: var(--tf-font-heading);
+  font-weight: 700;
+  font-size: var(--tf-text-lg);
+  letter-spacing: 0.02em;
+  color: var(--tf-ink);
+}
 
 /* CTA band — ink field with the brick button carrying the accent; once per page */
 .tf-cta { background: var(--tf-ink); color: var(--tf-paper); padding: var(--tf-space-6) var(--tf-space-4); }
