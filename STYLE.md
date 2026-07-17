@@ -1,6 +1,6 @@
 # Three Flows Solutions — Brand Style Guide
 
-v4 · 2026-07-17 — page-header standard (`.tf-kicker` + h1 on every top-level page); no sheet change (v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
+v5 · 2026-07-17 — sitewide chrome/divider restyle: ink retired as a section divider (sand `--tf-sand` / `--tf-rule-sand`), white dividerless header (`--tf-white`), dropdown cream lightened to a 15% mix; footer keeps its ink top rule (v4: page-header standard — `.tf-kicker` + h1 on every top-level page. v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
 
 ---
 
@@ -31,8 +31,9 @@ The palette is exactly the logo's four inks — **no additional hues**.
 - **Brick `#C2291B`** — brand accent. Primary actions, kickers, emphasis. Use sparingly; most of the page is ink on paper. Hover/pressed: `#8F1E12`. On ink backgrounds use `#D4402C`.
 - **Ink `#26221F`** — body text, 2px rules, dark surfaces (footer, hero bands). Secondary text: `#55504D`.
 - **Stone `#B8ADA5`** — supporting tone: meta text, chart fills, muted labels. Light borders: `#DDD6CF`.
-- **Paper `#FCFBFA`** — the ground. Warm off-white; never pure white.
-- **Cream `--tf-cream`** — derived overlay tint (≈#ECE8E4 with v3 paper) for raised surfaces: dropdowns, popovers, menus.
+- **Paper `#FCFBFA`** — the ground. Warm off-white; **the page is never pure white.**
+- **White `#FFFFFF` (`--tf-white`) — header chrome only.** The one sanctioned use of pure white: the `.tf-nav` band, which reads as chrome floating above the paper page. It is **not** a content ground and never becomes one — "never pure white" still governs every page surface; this is a named exception for the chrome, not a relaxation of the rule. The header carries no bottom rule: the white→paper tone step is what separates it (see §4).
+- **Cream `--tf-cream`** — derived overlay tint (≈#F7F5F4 — a 15% stone-light mix into paper) for raised surfaces: dropdowns, popovers, menus. Lightened from the original 50% mix (≈#ECE8E4), which read as a gray slab against the lighter chrome; still a derived tint of existing tokens, not a new raw hue.
 
 Text on brick is always paper. Body-size text in brick should be avoided (contrast) — use it for labels ≥ 14px bold, buttons, and headings only.
 
@@ -82,7 +83,18 @@ Scale (from style.css tokens): hero 48 / h2 36 / h3 27 / lead 20 / body 16 / cap
 
 ## 4. Layout & rules
 
-- Strong **2px ink rules** divide major sections; light rules (`#DDD6CF`) divide content inside a section. Don't soften them into hairlines.
+### Rule hierarchy
+
+Three rules, by job. All are 2px — the weight is constant; the **tone** assigns the job. Don't soften any of them into hairlines.
+
+**The tone is a role marker, not a strength ranking.** Sand `#E5DFD7` is *lighter* than light `#DDD6CF` (measured against paper: sand contrasts 1.28, light 1.392), so the major-section divider reads slightly quieter than the within-section rule rather than louder. Accepted deliberately: the page's structure is carried by spacing and the footer's ink line, and a section boundary on this site does not need to shout. Don't "fix" this by darkening sand without revisiting the whole hierarchy — the two rules must stay distinguishable from each other, which is the property that actually matters.
+
+- **Sand 2px (`--tf-rule-sand`, `#E5DFD7`) — divides major sections.** `.tf-section` bottoms and `.tf-prose hr`. This is the standard divider.
+- **Light 2px (`--tf-rule-light`, `#DDD6CF`) — divides content *within* a section.** The prose meta line, card borders, stat/journey cell splits, step lists.
+- **Ink 2px (`--tf-rule`) — retired as a divider.** It survives in exactly two roles: **component frames** (`.tf-btn-secondary`, `.tf-nav-toggle`, `.tf-stat-grid`, `.tf-journey`, `.tf-card-strong`, `.tf-card-ink`), where it draws the edge of a *thing* rather than a boundary between things; and **the footer's top rule** — the deliberate exception, and now the page's only strong line. Never reintroduce ink as a section divider.
+- **The header has no rule at all.** The white→paper tone step separates the chrome from the page (see §2).
+
+`--tf-rule` was **not** globally redefined — component borders are unchanged. A divider is a distinct job with its own token.
 - Everything sits **flush left** — headings, copy, and button labels (a wide button starts its label at the left padding edge, never centered).
 - Corners on UI surfaces are square. The only rounded corners in the brand are the logo bars themselves (rx 4).
 - Spacing runs on an 8px base (`--tf-space-*`).
@@ -357,3 +369,52 @@ grandfathered, not the template. `index.html` deferred to the home page design;
 blog post pages excluded (their header is the topnav pattern). No sheet change —
 `.tf-kicker` used as-is. On built pages the h1 is a title, not the page name, so
 kicker and h1 never duplicate; the echo on placeholder shells is temporary.
+
+### Sitewide chrome/divider restyle — all pages — 2026-07-17
+
+One coherent change to the page's structural lines and chrome surfaces. The site
+was built on a single 2px ink rule doing every job — chrome edge, section
+divider, component frame — which made every boundary shout equally. This
+separates those jobs by tone and leaves ink to the two places it earns.
+
+- **Ink retired as a section divider → sand `--tf-sand` `#E5DFD7`.** Applied
+  at the two divider sites only: `.tf-section` `border-bottom` and
+  `.tf-prose hr`, both via the new `--tf-rule-sand` (tone token + rule token,
+  the same idiom as `--tf-ink`/`--tf-rule` and `--tf-stone-light`/
+  `--tf-rule-light`). **`--tf-rule` was
+  deliberately NOT globally redefined** — component frames
+  (`.tf-btn-secondary`, `.tf-nav-toggle`, `.tf-stat-grid`, `.tf-journey`,
+  `.tf-card-strong`, `.tf-card-ink`) keep ink unchanged, because a frame draws
+  the edge of a thing, not a boundary between things. **Candidate chosen from a
+  live comparison:** `#E5DFD7` (warmer sand, per the approved mock) over
+  `var(--tf-stone-light)` `#DDD6CF` (the existing token, no new tone). Reusing
+  stone-light would have made the section divider and the within-section rule
+  *the same colour*, collapsing the distinction the hierarchy exists to draw;
+  the two must differ. The cost is a new raw tone in the sheet, accepted for
+  that separation. Known and accepted: sand is lighter than light, so the major
+  divider reads quieter than the minor rule — see the §4 note.
+- **White dividerless header.** `.tf-nav` background → `--tf-white` `#FFFFFF`
+  and its `border-bottom` **removed**: the chrome is separated from the page by
+  the white→paper tone step alone. `#FFFFFF` is sanctioned **only** here (§2);
+  the page ground stays paper.
+- **Header reservation 74px → 72px.** `#tf-header { min-height }` reserves the
+  rendered band, and the band lost exactly the 2px of its bottom rule. Left at
+  74px it would re-introduce a 2px jump on every partials fetch — the precise
+  bug the reservation exists to kill. Still one value for both breakpoints (the
+  hamburger and the lockup mark are both 40px); the sub-360px wrap gap noted in
+  the original reservation record is unchanged.
+- **Dropdown cream lightened — 50% → 15% stone-light mix** (≈#ECE8E4 →
+  ≈#F7F5F4, measured in-browser, not estimated). Treatment is otherwise
+  **unchanged**: borderless, no shadow, square
+  corners, ink items, brick hover. Against the white chrome the 50% mix read as a
+  gray slab; at 15% the panel still separates from paper by tone alone.
+- **Footer keeps the 2px ink top rule** — the deliberate exception, and now the
+  page's only strong line. It is what makes the retirement read as a hierarchy
+  rather than an absence.
+
+**Known, accepted:** on placeholder shells the single `.tf-section`'s sandy
+bottom divider lands directly above the footer's ink top rule — two 2px lines
+stacked with no content between. Pre-existing (it was ink-on-ink, reading as one
+4px line); the tone split makes it legible as two. It resolves itself as soon as
+a page has more than one section, and the shells are placeholders. Not worked
+around in the sheet — a page-structure artifact, not a rule-hierarchy fault.

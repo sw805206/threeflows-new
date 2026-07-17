@@ -27,11 +27,16 @@
   --tf-ink-soft: #55504D;     /* secondary text */
   --tf-stone: #B8ADA5;        /* supporting tone: meta text, borders, charts */
   --tf-stone-light: #DDD6CF;  /* light borders, subtle rules */
-  --tf-paper: #FCFBFA;        /* ground — warm off-white, never pure white */
+  --tf-paper: #FCFBFA;        /* ground — the page surface; warm off-white, never pure white */
+  --tf-white: #FFFFFF;        /* header chrome surface ONLY — never a content ground (STYLE.md §2) */
   /* Raised-surface tone for overlay elements (dropdowns; future overlays reuse it).
-     A tint derived from existing tokens — NOT a new raw hue (resolves to ~#ECE8E4
-     with the v3 paper). */
-  --tf-cream: color-mix(in srgb, var(--tf-stone-light) 50%, var(--tf-paper));
+     A tint derived from existing tokens — NOT a new raw hue (resolves to ~#F7F5F4
+     at the 15% mix). */
+  --tf-cream: color-mix(in srgb, var(--tf-stone-light) 15%, var(--tf-paper));
+
+  /* Sand — the section-divider tone. Ink is retired as a divider (STYLE.md §4);
+     it survives only on component frames and the footer's top rule. */
+  --tf-sand: #E5DFD7;
 
   /* Data palette — six equal-weight series colors for charts & category coding.
      Use in order; brick is always series 1. Never for body text. */
@@ -63,9 +68,13 @@
   --tf-space-6: 48px;
   --tf-space-8: 64px;
 
-  /* Rules */
+  /* Rules — all 2px; the TONE assigns the job (STYLE.md §4).
+     --tf-rule stays INK and is no longer a divider: it draws component frames
+     (buttons, hamburger, stat grid, journey, strong/ink cards) and the footer's
+     top rule. */
   --tf-rule: 2px solid var(--tf-ink);
-  --tf-rule-light: 2px solid var(--tf-stone-light);
+  --tf-rule-sand: 2px solid var(--tf-sand);         /* divides major sections */
+  --tf-rule-light: 2px solid var(--tf-stone-light); /* divides content within a section */
 }
 
 /* --------------------------------------------------------------------------
@@ -151,8 +160,8 @@ body.tf-app {
 .tf-prose em,
 .tf-prose i { font-style: normal; font-weight: 500; }
 /* Section rule within prose (e.g. between Privacy and Terms) — the brand's
-   2px ink rule. */
-.tf-prose hr { border: none; border-top: var(--tf-rule); margin: var(--tf-space-6) 0; }
+   2px sandy divider (ink retired as a divider; see STYLE.md §4). */
+.tf-prose hr { border: none; border-top: var(--tf-rule-sand); margin: var(--tf-space-6) 0; }
 
 /* --------------------------------------------------------------------------
    "On this page" rail — a sticky table-of-contents for long-form prose pages.
@@ -426,23 +435,27 @@ a:hover { color: var(--tf-brick-dark); }
    partials fetch lands, so with no floor the page paints its content at the top
    and everything jumps down by the band height when the nav arrives. Reserving
    the band means content paints in its final position.
-   74px = the rendered band: --tf-space-2 (16px) + the 40px lockup/hamburger row
-   + --tf-space-2 + the 2px rule. Desktop and mobile measure the SAME, because
-   the hamburger button and the lockup mark are both 40px — so one value covers
-   both breakpoints and no media query is needed.
+   72px = the rendered band: --tf-space-2 (16px) + the 40px lockup/hamburger row
+   + --tf-space-2. (Was 74px when the band carried a 2px bottom rule; the rule is
+   gone with the white dividerless header, so the reservation drops by exactly
+   that 2px — otherwise a 2px jump reappears on every fetch.) Desktop and mobile
+   measure the SAME, because the hamburger button and the lockup mark are both
+   40px — so one value covers both breakpoints and no media query is needed.
    Trade: the soft-fail state changes from "no nav, content at top" to "no nav,
    empty band at top" — accepted (see the STYLE.md ratchet record).
    Known gap: below ~360px the lockup + hamburger wrap to two rows (band = 130px)
    and a residual jump remains there; see the ratchet record. */
-#tf-header { min-height: 74px; }
+#tf-header { min-height: 72px; }
 
 /* Header / nav — full-bleed band; its content is held in .tf-nav-inner
-   (a .tf-container), so the 2px bottom rule spans the viewport while the
-   lockup + nav sit on the shared measure. */
+   (a .tf-container), so the band spans the viewport while the lockup + nav sit
+   on the shared measure. The band is WHITE and carries NO bottom rule: it reads
+   as chrome floating above the paper page, separated by the tone step alone
+   (white → paper), not by a line. --tf-white is sanctioned here and nowhere
+   else — the page ground stays paper (STYLE.md §2). */
 .tf-nav {
   padding-block: var(--tf-space-2);
-  border-bottom: var(--tf-rule);
-  background: var(--tf-paper);
+  background: var(--tf-white);
 }
 .tf-nav-inner {
   display: flex;
@@ -466,13 +479,13 @@ a:hover { color: var(--tf-brick-dark); }
 .tf-nav-links > a:hover { color: var(--tf-brick); }
 
 /* Section — full-bleed band: vertical rhythm (--tf-space-6 top/bottom) and a
-   2px ink divider between major page blocks. Horizontal gutters are NOT set
+   2px sandy divider between major page blocks. Horizontal gutters are NOT set
    here; a nested .tf-container supplies them, so section padding and the
    container's gutters never double up (same band + container idiom as the
    header and footer). */
 .tf-section {
   padding-block: var(--tf-space-6);
-  border-bottom: var(--tf-rule);
+  border-bottom: var(--tf-rule-sand);
 }
 
 /* Cards — square corners, structure from 2px borders (never shadows).
@@ -678,6 +691,8 @@ a:hover { color: var(--tf-brick-dark); }
 /* --------------------------------------------------------------------------
    6. Footer — dark surface, minimal (pairs with .tf-surface-ink)
    -------------------------------------------------------------------------- */
+/* The top rule KEEPS the 2px ink — the deliberate exception to the divider
+   retirement, and now the page's only strong line (STYLE.md §4). */
 .tf-footer {
   padding-block: var(--tf-space-4);
   border-top: var(--tf-rule);
