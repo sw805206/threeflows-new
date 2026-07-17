@@ -510,6 +510,43 @@ a:hover { color: var(--tf-brick-dark); }
 .tf-card-body { font-size: var(--tf-text-sm); line-height: 1.6; color: var(--tf-ink-soft); margin: 0; }
 .tf-card-meta { font-size: var(--tf-text-xs); color: var(--tf-stone); margin-top: auto; padding-top: var(--tf-space-1); }
 
+/* Card grid — the shared layout for card collections. Intrinsically sized
+   rather than breakpoint-driven: tracks are at least 300px (below that a
+   3:2 cap plus a serif title stops being legible) and share the leftover
+   space, so the count falls out of the available measure — 3-up on the full
+   1200px container, 2-up on tablets, 1-up on phones, with no new breakpoint
+   added to the sheet's 768/820 vocabulary. The 1200px container caps it at
+   3 tracks, so cards never stretch thin on wide screens. */
+.tf-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--tf-space-3);
+}
+
+/* Card link — the whole card is one <a> (single tab stop, whole surface
+   clickable). It must NOT take the base link colour: pin every state to
+   inherit so the card's own type colours hold (the :hover selector outranks
+   the base a:hover, same idiom as .tf-lockup). Hover affordance: the light
+   border goes ink and the title goes brick — on an index page brick appears
+   only here, as the hover state. The standard :focus-visible ring applies. */
+.tf-card-link { color: inherit; text-decoration: none; }
+.tf-card-link:hover,
+.tf-card-link:focus,
+.tf-card-link:active { color: inherit; }
+.tf-card-link:hover { border-color: var(--tf-ink); }
+.tf-card-link:hover .tf-card-title { color: var(--tf-brick); }
+
+/* Card image cap — a 3:2 lede image flush to the card's inner edges. The card
+   carries the padding, so the cap cancels it with negative margins rather than
+   the kit dropping it; the card's own 2px border still frames the image. */
+.tf-card-cap {
+  display: block;
+  width: calc(100% + var(--tf-space-3) * 2);
+  margin: calc(var(--tf-space-3) * -1) calc(var(--tf-space-3) * -1) 0;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
 /* Dark (ink) surface — hero bands, footer */
 .tf-surface-ink {
   background: var(--tf-ink);
