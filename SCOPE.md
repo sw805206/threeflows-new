@@ -1,4 +1,4 @@
-v004 | last updated: 2026-07-17
+v005 | last updated: 2026-07-17
 
 # SCOPE.md — threeflows.com Relaunch (new repo)
 
@@ -21,10 +21,17 @@ inventory and is archived at cutover.
 
 **Project type:** website, will deploy from main via GitHub Pages.
 Until the domain flips, merging to main publishes only to the repo's
-default github.io preview URL — so direct commits to main are acceptable
-during the build. From the moment the custom domain is attached, full
-Part B discipline applies: never commit directly to main; one feature
-branch per task → PR → merge.
+default github.io preview URL.
+
+**Branch-per-stream discipline (from 2026-07-17).** The pre-cutover
+permission for direct commits to main is retired. Each work stream lives
+on its own feature branch (`feat/<stream>`) in its own git worktree under
+`../threeflows-worktrees/<stream>`; main receives finished work via PR
+only, so main always holds finished work alone and concurrent streams
+never collide in the working tree. The sole exception is governance-doc
+edits (this file, CLAUDE.md, BACKLOG.md, and the like), which may still be
+committed directly to main. From the moment the custom domain is attached,
+full Part B discipline applies unchanged.
 
 ## Hard constraints
 
