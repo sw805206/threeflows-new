@@ -31,5 +31,16 @@
     "imageAlt": "Workers in blue coats assemble and pack small parts at a row of benches in a factory.",
     "recap": "The physical goods move. The paperwork doesn't. Here's what poor factory data quality actually costs growing brands — and what to do about it.",
     "readMinutes": 6
+  },
+  {
+    "blogID": "blog-004",
+    "filename": "blog-amazon-inbound.html",
+    "title": "How Your Freight Gets Into Amazon's Warehouse",
+    "date": "2025-06-18",
+    "status": "published",
+    "image": "assets/images/blog-amazon-inbound.jpg",
+    "imageAlt": "The Amazon logo with its orange smile arrow, mounted on the light-grey facade of a large warehouse above the employee entrance.",
+    "recap": "What actually happens between the truck arriving at the dock and your listing showing \"In Stock\" — and how to keep your freight moving through it.",
+    "readMinutes": 5
   }
 ]

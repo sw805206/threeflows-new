@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How Your Freight Gets Into Amazon's Warehouse — Three Flows Solutions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+</head>
+<body class="tf-app">
+  <!-- Shared header injected from partials.html -->
+  <div id="tf-header"></div>
+
+  <main class="tf-section" data-blog-id="blog-004">
+    <div class="tf-container">
+      <div class="tf-prose-layout" data-toc>
+      <div class="tf-prose">
+        <div class="tf-post-topnav">
+          <a href="blogs.html">← Blogs</a>
+          <span class="tf-post-pager"></span>
+        </div>
+        <h1>How Your Freight Gets Into Amazon's Warehouse</h1>
+        <p class="tf-prose-intro">What actually happens between the truck arriving at the dock and your listing showing "In Stock" — and how to keep your freight moving through it.</p>
+        <p class="tf-meta">June 18, 2025</p>
+
+        <p>For most FBA sellers, getting inventory "into Amazon" feels like sending a shipment into a black box. Something goes in; eventually your dashboard shows stock. But between those two moments sits a multi-step process — and understanding it explains why things sometimes go wrong, and how to minimize the chances they do.</p>
+
+        <h2>The Allocation Decision: Before Anything Arrives</h2>
+
+        <p>Inbound allocation is — by design — one of the most complex parts of Amazon's supply chain. Unlike outbound fulfillment, which routes orders from existing inventory, inbound allocation decides where to put inventory before demand has materialized. It weighs sales velocity, fulfillment center capacity and fill levels, inter-facility transfer costs, upcoming inventory waves, and the lag between registering a shipment and physically stowing it — probabilistic modeling across dozens of variables. Getting it wrong has direct consequences: inventory placed in the wrong region raises fulfillment cost and slows delivery for every order it serves.</p>
+
+        <h2>Arrival at the Dock</h2>
+
+        <p>The process begins when a truck arrives at the inbound dock. For third-party sellers, the carrier must have been booked through Carrier Central — the scheduling system that links truck, shipment, FBA shipment number, and destination facility. Amazon's central dispatch team coordinates inbound sequencing by urgency: how quickly does this inventory need to reach sellable status?</p>
+
+        <p>Timing is strict. A truck arriving late without notice loses its appointment 30 minutes past the scheduled time; the carrier must rebook and is flagged in Amazon's system. Repeated violations can cost a carrier its receiving privileges, and delivering to the wrong facility puts a violation on record for both carrier and seller.</p>
+
+        <p>Safety checks happen before unloading. If the dock team spots hazards — a trailer sitting too low, no cargo net, uneven flooring, boxes over 50 lb without weight markings — they can refuse receipt. Not bureaucracy: it protects the workers handling the freight.</p>
+
+        <h2>The Six Paths Through Receiving</h2>
+
+        <p>Unloaded freight passes through a PID scanner (internally, a "dragon gate" — a multi-angle barcode scanner that reads labels and weighs each carton simultaneously), which routes each carton to one of six processing paths:</p>
+
+        <div class="tf-prose-table">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Processing Path</th>
+                <th scope="col">What Triggers It</th>
+                <th scope="col">What Happens</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Case Receive</td>
+                <td>Clean, single-SKU carton that matches system records</td>
+                <td>Fastest — entire box routed intact to outbound dock, no unpacking needed</td>
+              </tr>
+              <tr>
+                <td>Each Receive</td>
+                <td>Multi-unit carton requiring item-level scanning</td>
+                <td>Worker opens carton, scans each unit individually, places into tote assigned by indicator light</td>
+              </tr>
+              <tr>
+                <td>Prep</td>
+                <td>Items requiring bagging, wrapping, or re-labeling</td>
+                <td>Prep work completed first, then item rejoins Each Receive path</td>
+              </tr>
+              <tr>
+                <td>Problem Solve</td>
+                <td>System cannot identify item, or anomaly detected</td>
+                <td>Routed to specialist team; resolved manually — human error possible, complaints rarely successful</td>
+              </tr>
+              <tr>
+                <td>Sideline</td>
+                <td>Shipment arrived at wrong facility</td>
+                <td>Set aside until sufficient volume accumulates, then redirected to correct facility as a batch</td>
+              </tr>
+              <tr>
+                <td>Discard</td>
+                <td>No matching system record; seller account may be suspended</td>
+                <td>Worst outcome — item destroyed; common when account is banned mid-shipment</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>The speed implication is significant. A clean, properly labeled, single-SKU case can move from unloading to outbound dock in under five minutes. A mixed-SKU carton with damaged labels and excessive tape can require Problem Solve → Prep → Each Receive — taking far longer and raising the risk of inventory errors the seller has no effective recourse to dispute.</p>
+
+        <h2>The ONT8 Lesson: What "Dirty" Freight Costs</h2>
+
+        <p>When Amazon's ONT8 receive center opened in Southern California in late 2014, third-party sellers' freight flooded in — at a brand-new facility whose staff hadn't been prepared for the quality variance: mixed-SKU cartons sealed in layers of packing tape, unlabeled or mis-labeled items, broken barcodes. The combination nearly paralyzed the facility and sent shockwaves through the network — it took three months to recover. The incident shaped receiving protocols for years, and the lesson hasn't changed: the cleaner your freight, the faster it moves, the less human intervention touches it, and the lower your risk of inventory discrepancies.</p>
+
+        <h2>Available vs. In Stock</h2>
+
+        <p>Two inventory states matter more than most sellers realize:</p>
+
+        <ul>
+          <li><strong>Available:</strong> scanned at a receive center and registered in the network — but possibly still in transit to a fulfillment center.</li>
+          <li><strong>In Stock (Prime-eligible):</strong> scanned into a stow location at a fulfillment center. Only now can it fulfill a Prime order on the two-day guarantee.</li>
+        </ul>
+
+        <p>The gap between the two can span several days, depending on transit and fulfillment center workload — and it's when you're most vulnerable to the misleading appearance of stock that can't yet ship on time.</p>
+
+        <h2>Seven Things Sellers Can Control</h2>
+
+        <p>Most inbound problems have preventable root causes. The highest-leverage moves:</p>
+
+        <ol>
+          <li><strong>Apply FBA labels correctly.</strong> Labels must match the physical item exactly, on quality label stock — labels that peel, smear, or fall off generate Problem Solve routing.</li>
+          <li><strong>No handwritten notes, no local-language-only text.</strong> Supplemental markings (box count, color variants) should be typed and in English.</li>
+          <li><strong>Standardize your carton configuration.</strong> One SKU per carton is ideal; multiple units of one SKU is acceptable; mixed SKUs should be avoided wherever possible.</li>
+          <li><strong>Use structurally sound cartons.</strong> Don't substitute stretch wrap or tape for carton integrity. A box that arrives intact, clean, and easy to open processes faster.</li>
+          <li><strong>Choose reliable carriers.</strong> Missed appointments, wrong-facility deliveries, and undeclared box counts count against the seller, even when the carrier caused them.</li>
+          <li><strong>Plan for floor-load complications.</strong> Non-palletized ocean containers can delay appointments — build that into your timeline and budget for accessorials.</li>
+          <li><strong>Follow Amazon's instructions without hesitation.</strong> If Amazon requests a label fix or facility change, execute immediately. Non-compliance always costs more than compliance.</li>
+        </ol>
+
+        <p>The principle underneath all seven: every human intervention in your inbound process adds error risk and delays sellable status. Your goal is to make your freight invisible — the kind of shipment that moves through the system without triggering a single exception.</p>
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared footer injected from partials.html -->
+  <div id="tf-footer"></div>
+
+  <!-- Fetch snippet: load partials.html (relative), inject header/footer,
+       mark the current nav link, and wire dropdowns + the mobile menu.
+       Fails silently (no nav rather than a broken page). -->
+  <script>
+  (function () {
+    fetch('partials.html').then(function (r) {
+      if (!r.ok) throw new Error('partials ' + r.status);
+      return r.text();
+    }).then(function (html) {
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      ['header', 'footer'].forEach(function (slot) {
+        var src = doc.getElementById('tf-' + slot + '-partial');
+        var dest = document.getElementById('tf-' + slot);
+        if (src && dest) dest.innerHTML = src.innerHTML;
+      });
+
+      var header = document.getElementById('tf-header');
+      if (!header) return;
+      var navBar = header.querySelector('.tf-nav');
+
+      var path = window.location.pathname;
+      var file = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
+      var links = header.querySelectorAll('.tf-nav-links a[href]');
+      for (var i = 0; i < links.length; i++) {
+        if (links[i].getAttribute('href') === file) {
+          links[i].setAttribute('aria-current', 'page');
+        }
+      }
+
+      var toggle = header.querySelector('.tf-nav-toggle');
+      if (toggle && navBar) {
+        toggle.addEventListener('click', function () {
+          var open = navBar.classList.toggle('tf-nav-open');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+
+      var items = header.querySelectorAll('.tf-has-dropdown');
+      function isDesktop() { return window.matchMedia('(min-width: 820px)').matches; }
+      function closeItem(item) {
+        item.classList.remove('is-open');
+        var t = item.querySelector('.tf-nav-trigger');
+        if (t) t.setAttribute('aria-expanded', 'false');
+      }
+      function closeAll() {
+        for (var k = 0; k < items.length; k++) closeItem(items[k]);
+      }
+      function setOpen(item, open) {
+        if (open) {
+          for (var k = 0; k < items.length; k++) {
+            if (items[k] !== item) closeItem(items[k]);
+          }
+        }
+        item.classList.toggle('is-open', open);
+        var t = item.querySelector('.tf-nav-trigger');
+        if (t) t.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      for (var j = 0; j < items.length; j++) {
+        (function (item) {
+          var trigger = item.querySelector('.tf-nav-trigger');
+          if (trigger) {
+            trigger.addEventListener('click', function () {
+              setOpen(item, !item.classList.contains('is-open'));
+            });
+          }
+          item.addEventListener('mouseenter', function () {
+            if (isDesktop()) setOpen(item, true);
+          });
+          item.addEventListener('mouseleave', function () {
+            if (isDesktop()) closeItem(item);
+          });
+        })(items[j]);
+      }
+      document.addEventListener('click', function (e) {
+        if (!header.contains(e.target)) closeAll();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' || e.key === 'Esc') closeAll();
+      });
+      var wasDesktop = isDesktop();
+      window.addEventListener('resize', function () {
+        var nowDesktop = isDesktop();
+        if (nowDesktop === wasDesktop) return;
+        wasDesktop = nowDesktop;
+        closeAll();
+        if (navBar) navBar.classList.remove('tf-nav-open');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      });
+    }).catch(function () { /* fail silently: no nav rather than broken page */ });
+  })();
+  </script>
+  <script src="assets/toc.js"></script>
+  <script src="assets/blog.js"></script>
+</body>
+</html>

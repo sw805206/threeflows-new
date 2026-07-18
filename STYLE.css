@@ -167,6 +167,50 @@ body.tf-app {
    2px sandy divider (ink retired as a divider; see STYLE.md §4). */
 .tf-prose hr { border: none; border-top: var(--tf-rule-sand); margin: var(--tf-space-6) 0; }
 
+/* Prose tables — a data table inside running text. Element-scoped like the
+   list and hr rules above, so a post writes a plain <table> and introduces no
+   class of its own; the only class is the scroll wrapper, which is part of the
+   pattern (a table cannot shrink below its content, and the prose measure is
+   narrow). The frame is INK because a table is a component — the edge of a
+   thing — not a boundary between sections; its internal rules are the light
+   within-a-thing tone (STYLE.md §4). Square corners, flush left, no zebra
+   striping and no hover: the table is read, not operated. */
+.tf-prose-table {
+  overflow-x: auto;
+  margin: 0 0 var(--tf-space-2);
+}
+.tf-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  border: var(--tf-rule);
+  background: var(--tf-paper);
+  font-size: var(--tf-text-sm);
+  line-height: 1.5;
+  text-align: left;
+}
+.tf-prose :is(th, td) {
+  padding: var(--tf-space-1) var(--tf-space-2);
+  border-right: var(--tf-rule-light);
+  border-bottom: var(--tf-rule-light);
+  vertical-align: top;
+}
+/* The outer 2px ink border draws the table's own edge — internal rules stop
+   short of it rather than doubling up against it. */
+.tf-prose tr > :last-child { border-right: none; }
+.tf-prose tbody tr:last-child > * { border-bottom: none; }
+/* Header row — the .tf-meta treatment (12px, uppercase, tracked, ink-soft) on
+   the paper ground, so a column label reads as a label and not as a heavier
+   first row of data. Weight 500 rather than the UA's bold: .tf-meta itself sets
+   no weight, and bold at 12px tracked reads as shouting. */
+.tf-prose th {
+  font-size: var(--tf-text-xs);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tf-ink-soft);
+  line-height: 1.3;
+}
+
 /* --------------------------------------------------------------------------
    "On this page" rail — a sticky table-of-contents for long-form prose pages.
    Opt-in: a page wraps its .tf-prose in <div class="tf-prose-layout" data-toc>,
@@ -333,7 +377,7 @@ h1, h2, h3, h4 {
   font-weight: 700;
   line-height: 1.15;
   margin: 0 0 var(--tf-space-2);
-  text-wrap: balance;
+  text-wrap: pretty;
 }
 
 h1 { font-size: var(--tf-text-3xl); }
