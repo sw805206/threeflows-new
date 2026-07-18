@@ -1,4 +1,4 @@
-v006 | last updated: 2026-07-17
+v007 | last updated: 2026-07-18
 
 # SCOPE.md — threeflows.com Relaunch (new repo)
 
@@ -97,6 +97,10 @@ served from partials.html, fetched per page.
   never into page-local styles. The decision is recorded in STYLE.md.
 - Later pages reuse, not reinvent. If new patterns are still appearing
   after the first 2–3 pages, flag it — the design is drifting.
+- Every tier-1 page build includes a .tf-page-head header: kicker, h1,
+  intro written with the page's content, plus a header image (3:2, per
+  the BLOG.md §7 image process) approved at build time. Pages may ship
+  image-less only by explicit decision.
 - Style-system changes identified but not immediately implemented are
   logged to BACKLOG.md — never left untracked.
 - Style changes always get their own commits, never mixed with other
