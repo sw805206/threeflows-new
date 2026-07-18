@@ -64,5 +64,16 @@
     "imageAlt": "A laptop screen showing the Amazon website open in the Safari browser, with the Amazon logo, a \"Deliver to Australia\" label, and navigation links including Today's Deals, Customer Service, and Gift Cards.",
     "recap": "Within weeks of each other, Amazon announced two platform changes that quietly shift the ground beneath sellers. Neither is catastrophic on its own — but together, they reward sellers who already have their operations in order.",
     "readMinutes": 5
+  },
+  {
+    "blogID": "blog-007",
+    "filename": "blog-warehouse-placement-case-study.html",
+    "title": "Where Should Your Third US Warehouse Be? A Case Study",
+    "date": "2025-09-22",
+    "status": "published",
+    "image": "assets/images/blog-warehouse-placement-case-study.jpg",
+    "imageAlt": "A satellite night-lights view of the continental United States, where dense clusters of city lights mark population centres and the mountain west appears largely dark.",
+    "recap": "A $180M home goods brand had climbing inventory costs and slower deliveries. Here's what our Supply Chain Analyzer and Optimizer found, and the network we recommended.",
+    "readMinutes": 7
   }
 ]

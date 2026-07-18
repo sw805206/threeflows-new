@@ -1,0 +1,702 @@
+<!--
+  blog-template.html — COPY-SOURCE for new blog posts. NOT servable content.
+
+  To create a post: copy this file to blog-<slug>.html, set data-blog-id on
+  <main> to the post's blogID, fill the title / dek / date / body, and
+  add a matching entry to bloglist.json. This file is NOT a post: it is excluded
+  from the nav and the backlog page checklist, its data-blog-id is empty, and it
+  is never listed in bloglist.json — so blog.js never treats it as a post
+  despite its blog- prefix.
+
+  Structure mirrors privacy.html: partials-injected header/footer, the
+  .tf-container two-column layout with the data-toc rail, the .tf-prose measure,
+  and the header divider under the meta line. The header block is adapted for
+  posts (h1 → dek → publish-date meta → divider).
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Where Should Your Third US Warehouse Be? A Case Study — Three Flows Solutions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+  <!-- Page-local component styles for blog-007's placement map. Kept out of
+       STYLE.css (one-off editorial figure, not a shared pattern) and out of
+       .tf-prose, because blog.js's reading-time scope counts any text inside
+       .tf-prose - including CSS/JS source - as words. Every selector is
+       .tf-map-demo-scoped, so nothing leaks. -->
+  <style>
+    .tf-map-demo { margin: var(--tf-space-4) 0; }
+    .tf-map-demo .tf-map-controls {
+    display: flex; flex-wrap: wrap; gap: var(--tf-space-1);
+    margin-bottom: var(--tf-space-2);
+    }
+    .tf-map-demo .tf-map-btn {
+    font-family: var(--tf-font-body); font-size: var(--tf-text-sm);
+    font-weight: 500; line-height: 1.2;
+    padding: 8px 14px; cursor: pointer;
+    background: transparent; color: var(--tf-ink-soft);
+    border: 2px solid var(--tf-stone-light);
+    }
+    .tf-map-demo .tf-map-btn:hover {
+    color: var(--tf-brick); border-color: var(--tf-stone);
+    }
+    .tf-map-demo .tf-map-btn.is-active {
+    background: var(--tf-ink); color: var(--tf-paper);
+    border-color: var(--tf-ink);
+    }
+    .tf-map-demo .tf-map-legend {
+    display: flex; flex-wrap: wrap; gap: var(--tf-space-2);
+    margin-bottom: var(--tf-space-2);
+    font-size: var(--tf-text-xs); letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--tf-ink-soft);
+    }
+    .tf-map-demo .tf-map-key { display: inline-flex; align-items: center; gap: 6px; }
+    .tf-map-demo .tf-map-swatch { width: 13px; height: 13px; display: inline-block; }
+    .tf-map-demo svg { display: block; width: 100%; height: auto; }
+    .tf-map-demo .tf-map-tile text {
+    font-family: var(--tf-font-body); font-size: 13px; font-weight: 500;
+    text-anchor: middle; pointer-events: none;
+    }
+    /* Category scale — existing tokens only. No green exists in the
+    palette; teal (--tf-chart-4) is the closest "good" hue and the
+    data palette is sanctioned for category coding. */
+    .tf-map-demo .cat-1 rect, .tf-map-demo .tf-map-swatch.cat-1 { fill: var(--tf-chart-4); background: var(--tf-chart-4); }
+    .tf-map-demo .cat-2 rect, .tf-map-demo .tf-map-swatch.cat-2 { fill: color-mix(in srgb, var(--tf-chart-4) 42%, var(--tf-paper)); background: color-mix(in srgb, var(--tf-chart-4) 42%, var(--tf-paper)); }
+    .tf-map-demo .cat-3 rect, .tf-map-demo .tf-map-swatch.cat-3 { fill: var(--tf-stone); background: var(--tf-stone); }
+    .tf-map-demo .cat-4 rect, .tf-map-demo .tf-map-swatch.cat-4 { fill: var(--tf-chart-3); background: var(--tf-chart-3); }
+    .tf-map-demo .cat-5 rect, .tf-map-demo .tf-map-swatch.cat-5 { fill: var(--tf-brick); background: var(--tf-brick); }
+    .tf-map-demo .cat-1 text, .tf-map-demo .cat-4 text, .tf-map-demo .cat-5 text { fill: var(--tf-paper); }
+    .tf-map-demo .cat-2 text, .tf-map-demo .cat-3 text { fill: var(--tf-ink); }
+    /* Figure notes — reconcile the map against the framework and the
+    CBM table above. Scoped to the component like everything else. */
+    .tf-map-demo .tf-map-note {
+    margin: var(--tf-space-2) 0 0;
+    font-size: var(--tf-text-sm);
+    line-height: 1.5;
+    color: var(--tf-ink-soft);
+    }
+    .tf-map-demo .tf-map-note span { display: block; }
+  </style>
+</head>
+<body class="tf-app">
+  <!-- Shared header injected from partials.html -->
+  <div id="tf-header"></div>
+
+  <main class="tf-section" data-blog-id="blog-007">
+    <div class="tf-container">
+      <div class="tf-prose-layout" data-toc>
+      <div class="tf-prose">
+        <!-- TOP NAV ROW: back-to-blogs (left) + prev/next pager (right).
+             blog.js fills the pager; an absent neighbour renders muted. -->
+        <div class="tf-post-topnav">
+          <a href="blogs.html">← Blogs</a>
+          <span class="tf-post-pager"></span>
+        </div>
+        <!-- POST HEADER: h1 → dek → date (divider). blog.js appends
+             " · N min read" to the date meta. An optional rail image renders
+             from the manifest's "image" field — never marked up here. -->
+        <h1>Where Should Your Third US Warehouse Be? A Case Study</h1>
+        <p class="tf-prose-intro">A $180M home goods brand had climbing inventory costs and slower deliveries. Here's what our Supply Chain Analyzer and Optimizer found, and the network we recommended.</p>
+        <p class="tf-meta">September 22, 2025</p>
+
+        <p>Most e-commerce brands pick their first two US warehouses on conventional wisdom: Los Angeles for imports from Asia, New Jersey to reach the East Coast. Both defensible. The third one, though, isn't a default — it has to come from the specifics of who's buying what and where. This case study walks through how we sized that decision for one client, and what surfaced along the way.</p>
+
+        <h2>The Client and the Problem</h2>
+
+        <p>The client is a US home goods brand owner with roughly $180 million in annual sales. Their setup is common. Goods are imported from China and land at their primary warehouse in Los Angeles. About 20% of stock is then transferred to a second warehouse in New Jersey to cover the East Coast.</p>
+
+        <p>Inventory costs were climbing. Delivery windows were stretching. Their question: was the two-warehouse network still the right one, and if not, what came next?</p>
+
+        <p>They reached out to us.</p>
+
+        <p>Our <strong>Supply Chain Analyzer and Optimizer</strong> is part of what we offer under ongoing management. It's a two-stage tool. The Analyzer grades a network's current health from a client's own fulfillment data; the Optimizer models what a better network looks like and what it would take to get there. Rather than answer the client's question from generic principles, we ran their real shipment data through it.</p>
+
+        <h2>The Analyzer: Where the Inventory Sits Relative to the Customer</h2>
+
+        <p>The Analyzer half of our Supply Chain Analyzer and Optimizer starts from a single question — <strong>placement</strong>. How close is your inventory to the customers actually buying it?</p>
+
+        <p>Placement is the most powerful lever on fulfillment cost, and the reason is simple. The closer inventory sits to demand, the faster the delivery, the happier the customer, the cheaper the outbound freight, and the less loss and damage along the way. Every one of those moves in the same direction with the same variable. If placement is bad, everything downstream is bad.</p>
+
+        <p>We asked the client to share fulfillment data for three of their SKUs — Products A, B, and C. We classified every outbound shipment into one of five placement categories:</p>
+
+        <ul>
+          <li><strong>Category 1 — BEST. In-region (1–2 days).</strong> For example, LA to Arizona.</li>
+          <li><strong>Category 2 — GOOD. Next-door region (2–4 days).</strong> For example, NJ to Ohio.</li>
+          <li><strong>Category 3 — NEUTRAL. Remote but similar cost from either warehouse (3–5 days).</strong> For example, Kentucky sits at roughly equal distance from LA and NJ — LA is slightly cheaper on outbound freight, NJ is slightly closer.</li>
+          <li><strong>Category 4 — BAD. Cross-country (5–8 days).</strong> For example, LA to Delaware.</li>
+          <li><strong>Category 5 — WORST. Cross-country U-turn (5–8 days).</strong> Inbound to a warehouse near the receiving port, transferred to the cross-country warehouse, then shipped back to a customer in the region the first warehouse already serves. On pure outbound speed and cost, it looks the same as Category 4 — but it's the worst execution failure and the easiest one to fix.</li>
+        </ul>
+
+        <p>Running the three SKUs produced this breakdown:</p>
+
+        <div class="tf-prose-table">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Product</th>
+                <th scope="col">Total CBM</th>
+                <th scope="col">Cat 1</th>
+                <th scope="col">Cat 2</th>
+                <th scope="col">Cat 3</th>
+                <th scope="col">Cat 4</th>
+                <th scope="col">Cat 5</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Product B</td>
+                <td>13,741</td>
+                <td>32%</td>
+                <td>18%</td>
+                <td>10%</td>
+                <td>6%</td>
+                <td>33%</td>
+              </tr>
+              <tr>
+                <td>Product A</td>
+                <td>32,955</td>
+                <td>39%</td>
+                <td>17%</td>
+                <td>11%</td>
+                <td>7%</td>
+                <td>26%</td>
+              </tr>
+              <tr>
+                <td>Product C</td>
+                <td>37,689</td>
+                <td>40%</td>
+                <td>18%</td>
+                <td>13%</td>
+                <td>7%</td>
+                <td>21%</td>
+              </tr>
+              <tr>
+                <td><strong>Weighted average</strong></td>
+                <td><strong>84,384</strong></td>
+                <td><strong>39%</strong></td>
+                <td><strong>18%</strong></td>
+                <td><strong>12%</strong></td>
+                <td><strong>7%</strong></td>
+                <td><strong>25%</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>The table above is the Analyzer's headline finding. Even with a two-node network, execution is being poorly managed — a share of the BAD and WORST shipments should never happen at all. That part is the easy fix, and it doesn't require a bigger network to solve.</p>
+
+        <h2>The Optimizer: What Changes as You Add Nodes</h2>
+
+        <p>The Optimizer half models what happens when you add warehouses to the network. First — the theoretical view — how much delivery speed improves at each step from one to eight nodes:</p>
+
+        <div class="tf-prose-table">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Step</th>
+                <th scope="col">Avg Delivery Days</th>
+                <th scope="col">Warehouses in Network</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>4.6 days</td>
+                <td>LAX</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>4.4 days</td>
+                <td>LAX, EWR</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>4.1 days</td>
+                <td>LAX, EWR, SAV</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>3.9 days</td>
+                <td>LAX, EWR, SAV, DAL</td>
+              </tr>
+              <tr>
+                <td><strong>5</strong></td>
+                <td><strong>3.2 days</strong></td>
+                <td><strong>LAX, EWR, SAV, DAL, CHI</strong></td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>2.9 days</td>
+                <td>LAX, EWR, SAV, DAL, CHI, OAK</td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td>2.6 days</td>
+                <td>LAX, EWR, SAV, DAL, CHI, OAK, MIA</td>
+              </tr>
+              <tr>
+                <td>8</td>
+                <td>2.0 days</td>
+                <td>LAX, EWR, SAV, DAL, CHI, OAK, MIA, SEA</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Node codes: LAX = Los Angeles, EWR = Newark/New Jersey, SAV = Savannah, DAL = Dallas, CHI = Chicago, OAK = Oakland, MIA = Miami, SEA = Seattle.</p>
+
+        <!-- ============================================================
+             PAGE-LOCAL COMPONENT — blog-007 only. Deliberately NOT in
+             STYLE.css: this is a one-off editorial figure, not a shared
+             pattern (SCOPE.md "reuse check before any new pattern").
+             Every rule is scoped under .tf-map-demo so nothing leaks.
+             Colours are existing tokens only — the data palette is the
+             sanctioned vocabulary for category coding (STYLE.md §2).
+             Soft-fail: the SVG renders fully server-side in the default
+             scenario; JS only recolours on toggle.
+             ============================================================ -->
+        <div class="tf-map-demo">
+
+          <div class="tf-map-controls" role="group" aria-label="Shipping network scenario">
+        <button type="button" class="tf-map-btn" data-scenario="lax" aria-pressed="false">LAX only</button>
+        <button type="button" class="tf-map-btn" data-scenario="ewr" aria-pressed="false">EWR only</button>
+        <button type="button" class="tf-map-btn is-active" data-scenario="current" aria-pressed="true">LAX + EWR (current)</button>
+        <button type="button" class="tf-map-btn" data-scenario="optimized" aria-pressed="false">5-node optimized</button>
+          </div>
+
+          <div class="tf-map-legend">
+        <span class="tf-map-key"><span class="tf-map-swatch cat-1"></span>BEST</span>
+        <span class="tf-map-key"><span class="tf-map-swatch cat-2"></span>GOOD</span>
+        <span class="tf-map-key"><span class="tf-map-swatch cat-3"></span>NEUTRAL</span>
+        <span class="tf-map-key"><span class="tf-map-swatch cat-4"></span>BAD</span>
+        <span class="tf-map-key"><span class="tf-map-swatch cat-5"></span>WORST</span>
+          </div>
+
+          <svg viewBox="0 0 616 336" role="img"
+               aria-label="Grid map of US states coloured by delivery placement quality for the selected warehouse network.">
+      <g class="tf-map-tile cat-3" data-state="AK">
+        <rect x="0" y="0" width="52" height="38"></rect>
+        <text x="26" y="24">AK</text>
+      </g>
+      <g class="tf-map-tile cat-3" data-state="ME">
+        <rect x="560" y="0" width="52" height="38"></rect>
+        <text x="586" y="24">ME</text>
+      </g>
+      <g class="tf-map-tile cat-2" data-state="VT">
+        <rect x="448" y="42" width="52" height="38"></rect>
+        <text x="474" y="66">VT</text>
+      </g>
+      <g class="tf-map-tile cat-2" data-state="NH">
+        <rect x="504" y="42" width="52" height="38"></rect>
+        <text x="530" y="66">NH</text>
+      </g>
+      <g class="tf-map-tile cat-1" data-state="WA">
+        <rect x="0" y="84" width="52" height="38"></rect>
+        <text x="26" y="108">WA</text>
+      </g>
+      <g class="tf-map-tile cat-2" data-state="ID">
+        <rect x="56" y="84" width="52" height="38"></rect>
+        <text x="82" y="108">ID</text>
+      </g>
+      <g class="tf-map-tile cat-3" data-state="MT">
+        <rect x="112" y="84" width="52" height="38"></rect>
+        <text x="138" y="108">MT</text>
+      </g>
+      <g class="tf-map-tile cat-4" data-state="ND">
+        <rect x="168" y="84" width="52" height="38"></rect>
+        <text x="194" y="108">ND</text>
+      </g>
+      <g class="tf-map-tile cat-4" data-state="MN">
+        <rect x="224" y="84" width="52" height="38"></rect>
+        <text x="250" y="108">MN</text>
+      </g>
+      <g class="tf-map-tile cat-4" data-state="IL">
+        <rect x="280" y="84" width="52" height="38"></rect>
+        <text x="306" y="108">IL</text>
+      </g>
+      <g class="tf-map-tile cat-4" data-state="WI">
+        <rect x="336" y="84" width="52" height="38"></rect>
+        <text x="362" y="108">WI</text>
+      </g>
+      <g class="tf-map-tile cat-3" data-state="MI">
+        <rect x="392" y="84" width="52" height="38"></rect>
+        <text x="418" y="108">MI</text>
+      </g>
+      <g class="tf-map-tile cat-1" data-state="NY">
+        <rect x="448" y="84" width="52" height="38"></rect>
+        <text x="474" y="108">NY</text>
+      </g>
+      <g class="tf-map-tile cat-1" data-state="CT">
+        <rect x="504" y="84" width="52" height="38"></rect>
+        <text x="530" y="108">CT</text>
+      </g>
+      <g class="tf-map-tile cat-2" data-state="MA">
+        <rect x="560" y="84" width="52" height="38"></rect>
+        <text x="586" y="108">MA</text>
+      </g>
+      <g class="tf-map-tile cat-1" data-state="OR">
+        <rect x="0" y="126" width="52" height="38"></rect>
+        <text x="26" y="150">OR</text>
+      </g>
+      <g class="tf-map-tile cat-1" data-state="NV">
+        <rect x="56" y="126" width="52" height="38"></rect>
+        <text x="82" y="150">NV</text>
+      </g>
+      <g class="tf-map-tile cat-4" data-state="WY">
+        <rect x="112" y="126" width="52" height="38"></rect>
+        <text x="138" y="150">WY</text>
+      </g>
+      <g class="tf-map-tile cat-4" data-state="SD">
+        <rect x="168" y="126" width="52" height="38"></rect>
+        <text x="194" y="150">SD</text>
+      </g>
+      <g class="tf-map-tile cat-4" data-state="IA">
+        <rect x="224" y="126" width="52" height="38"></rect>
+        <text x="250" y="150">IA</text>
+      </g>
+      <g class="tf-map-tile cat-3" data-state="IN">
+        <rect x="280" y="126" width="52" height="38"></rect>
+        <text x="306" y="150">IN</text>
+      </g>
+      <g class="tf-map-tile cat-2" data-state="OH">
+        <rect x="336" y="126" width="52" height="38"></rect>
+        <text x="362" y="150">OH</text>
+      </g>
+      <g class="tf-map-tile cat-1" data-state="PA">
+        <rect x="392" y="126" width="52" height="38"></rect>
+        <text x="418" y="150">PA</text>
+      </g>
+      <g class="tf-map-tile cat-1" data-state="NJ">
+        <rect x="448" y="126" width="52" height="38"></rect>
+        <text x="474" y="150">NJ</text>
+      </g>
+      <g class="tf-map-tile cat-2" data-state="RI">
+        <rect x="504" y="126" width="52" height="38"></rect>
+        <text x="530" y="150">RI</text>
+      </g>
+      <g class="tf-map-tile cat-1" data-state="CA">
+        <rect x="0" y="168" width="52" height="38"></rect>
+        <text x="26" y="192">CA</text>
+      </g>
+      <g class="tf-map-tile cat-2" data-state="UT">
+        <rect x="56" y="168" width="52" height="38"></rect>
+        <text x="82" y="192">UT</text>
+      </g>
+      <g class="tf-map-tile cat-3" data-state="CO">
+        <rect x="112" y="168" width="52" height="38"></rect>
+        <text x="138" y="192">CO</text>
+      </g>
+      <g class="tf-map-tile cat-4" data-state="NE">
+        <rect x="168" y="168" width="52" height="38"></rect>
+        <text x="194" y="192">NE</text>
+      </g>
+      <g class="tf-map-tile cat-4" data-state="MO">
+        <rect x="224" y="168" width="52" height="38"></rect>
+        <text x="250" y="192">MO</text>
+      </g>
+      <g class="tf-map-tile cat-3" data-state="KY">
+        <rect x="280" y="168" width="52" height="38"></rect>
+        <text x="306" y="192">KY</text>
+      </g>
+      <g class="tf-map-tile cat-2" data-state="WV">
+        <rect x="336" y="168" width="52" height="38"></rect>
+        <text x="362" y="192">WV</text>
+      </g>
+      <g class="tf-map-tile cat-2" data-state="VA">
+        <rect x="392" y="168" width="52" height="38"></rect>
+        <text x="418" y="192">VA</text>
+      </g>
+      <g class="tf-map-tile cat-1" data-state="MD">
+        <rect x="448" y="168" width="52" height="38"></rect>
+        <text x="474" y="192">MD</text>
+      </g>
+      <g class="tf-map-tile cat-1" data-state="DE">
+        <rect x="504" y="168" width="52" height="38"></rect>
+        <text x="530" y="192">DE</text>
+      </g>
+      <g class="tf-map-tile cat-1" data-state="AZ">
+        <rect x="56" y="210" width="52" height="38"></rect>
+        <text x="82" y="234">AZ</text>
+      </g>
+      <g class="tf-map-tile cat-3" data-state="NM">
+        <rect x="112" y="210" width="52" height="38"></rect>
+        <text x="138" y="234">NM</text>
+      </g>
+      <g class="tf-map-tile cat-4" data-state="KS">
+        <rect x="168" y="210" width="52" height="38"></rect>
+        <text x="194" y="234">KS</text>
+      </g>
+      <g class="tf-map-tile cat-5" data-state="AR">
+        <rect x="224" y="210" width="52" height="38"></rect>
+        <text x="250" y="234">AR</text>
+      </g>
+      <g class="tf-map-tile cat-5" data-state="TN">
+        <rect x="280" y="210" width="52" height="38"></rect>
+        <text x="306" y="234">TN</text>
+      </g>
+      <g class="tf-map-tile cat-3" data-state="NC">
+        <rect x="336" y="210" width="52" height="38"></rect>
+        <text x="362" y="234">NC</text>
+      </g>
+      <g class="tf-map-tile cat-5" data-state="SC">
+        <rect x="392" y="210" width="52" height="38"></rect>
+        <text x="418" y="234">SC</text>
+      </g>
+      <g class="tf-map-tile cat-1" data-state="DC">
+        <rect x="448" y="210" width="52" height="38"></rect>
+        <text x="474" y="234">DC</text>
+      </g>
+      <g class="tf-map-tile cat-4" data-state="OK">
+        <rect x="168" y="252" width="52" height="38"></rect>
+        <text x="194" y="276">OK</text>
+      </g>
+      <g class="tf-map-tile cat-5" data-state="LA">
+        <rect x="224" y="252" width="52" height="38"></rect>
+        <text x="250" y="276">LA</text>
+      </g>
+      <g class="tf-map-tile cat-5" data-state="MS">
+        <rect x="280" y="252" width="52" height="38"></rect>
+        <text x="306" y="276">MS</text>
+      </g>
+      <g class="tf-map-tile cat-5" data-state="AL">
+        <rect x="336" y="252" width="52" height="38"></rect>
+        <text x="362" y="276">AL</text>
+      </g>
+      <g class="tf-map-tile cat-5" data-state="GA">
+        <rect x="392" y="252" width="52" height="38"></rect>
+        <text x="418" y="276">GA</text>
+      </g>
+      <g class="tf-map-tile cat-2" data-state="HI">
+        <rect x="0" y="294" width="52" height="38"></rect>
+        <text x="26" y="318">HI</text>
+      </g>
+      <g class="tf-map-tile cat-5" data-state="TX">
+        <rect x="168" y="294" width="52" height="38"></rect>
+        <text x="194" y="318">TX</text>
+      </g>
+      <g class="tf-map-tile cat-5" data-state="FL">
+        <rect x="392" y="294" width="52" height="38"></rect>
+        <text x="418" y="318">FL</text>
+      </g>
+          </svg>
+
+          <p class="tf-map-note">
+            <span>Categories 4 and 5 look the same on the map but differ in the failure mode — see the framework above.</span>
+            <span>Map shows share of destination geography, not shipment volume.</span>
+          </p>
+        </div>
+
+
+        <p>Given the client's volume and the balance between delivery-speed improvement and operating cost, <strong>we do not recommend expanding beyond five nodes in the near term.</strong> Steps 6–8 each buy only 0.3 to 0.9 days of average delivery improvement at the full operating cost of another warehouse. The client's per-node throughput at those step sizes would drop below the point where the added location earns its keep, and the operational overhead of running three additional warehouses would consume the marginal freight savings. <strong>The Optimizer's recommendation: build to five nodes — LAX, EWR, SAV, DAL, and CHI</strong> — plus resize the existing LA and NJ warehouses so their capacity matches the smaller regional shares they'll now serve.</p>
+
+        <p>Two more moves round out the recommendation:</p>
+
+        <ul>
+          <li><strong>Inbound freight discipline.</strong> Instead of large lumpy shipments landing at LA and drip-feeding to NJ, ship more frequently in smaller quantities directly to the right locations. Freight cost per unit stays roughly flat; the network runs leaner because inventory buffers shrink.</li>
+          <li><strong>Inventory carrying impact.</strong> With five nodes closer to demand, each node holds less safety stock. Modeling one representative SKU:</li>
+        </ul>
+
+        <div class="tf-prose-table">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Metric</th>
+                <th scope="col">Current (2 nodes)</th>
+                <th scope="col">Recommended (5 nodes)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Beginning inventory</td>
+                <td>837 units</td>
+                <td>837 units</td>
+              </tr>
+              <tr>
+                <td>Ordered inbound</td>
+                <td>2,011 units</td>
+                <td>2,011 units</td>
+              </tr>
+              <tr>
+                <td>Inbound replenishment</td>
+                <td>3,691 units</td>
+                <td>2,750 units</td>
+              </tr>
+              <tr>
+                <td>Ending inventory</td>
+                <td>2,517 units</td>
+                <td>1,576 units</td>
+              </tr>
+              <tr>
+                <td>Months of supply</td>
+                <td>7.51 months</td>
+                <td>4.70 months</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Months of supply drop from 7.5 to 4.7. Working capital tied up in inventory drops with them.</p>
+
+        <h2>What's Next</h2>
+
+        <p>The Optimizer's output is a recommendation, not a decision. The next phase belongs to the client and to us jointly.</p>
+
+        <ul>
+          <li><strong>Build execution and control first.</strong> Even under today's two-node network, the roughly one-third of shipments landing in the BAD or WORST category should be minimized before any new warehouse is signed. Recommendation on a slide is worthless without the mechanism to deliver it — supplier commitments, inbound scheduling, node-level inventory rules, and reporting that catches drift before it costs money.</li>
+          <li><strong>Calibrate against reality.</strong> The analysis above uses customer shipment volume in CBM, not the client's actual per-unit delivery and carrying costs. Feeding real units, weight, and cost data into the model — the four units of measure that a fulfillment network is actually paid in — will refine the recommendation and sharpen the savings number.</li>
+          <li><strong>Factor in growth and set guardrails.</strong> Sizing decisions have to account for the next few years of the business, not just today's volume. Growth assumptions need explicit guardrails before implementation, so the new network doesn't overshoot or undershoot when the actual demand curve deviates from the plan.</li>
+        </ul>
+
+        <p><strong>The expected savings from a well-executed five-node build-out: at least 12.4% of combined delivery cost and inventory carrying cost.</strong> For a business at this client's scale, that's not a rounding error.</p>
+
+        <h2>What This Means for Any Brand Owner</h2>
+
+        <ul>
+          <li><strong>The first warehouse is often tied to your sourcing location or your home base. The second and third are not default decisions.</strong> LA as an inbound gateway works well for products coming from Asia; every node after that has to come from your specific order geography.</li>
+          <li><strong>Disciplined execution alone goes a long way.</strong> Before spending on a bigger network, look at how well the current one is being run. Getting that right requires in-depth data analysis that can reproduce the history and forecast the future.</li>
+          <li><strong>Inbound cost, inventory cost, and outbound freight cost move together.</strong> Optimizing one in isolation misses the interactions between them. Adding nodes closer to demand shortens delivery zones, reduces safety stock, cuts working capital — and often more than offsets the operational cost of running the new location.</li>
+        </ul>
+
+        <h2>Run the Analyzer on Your Data</h2>
+
+        <p>If your inventory costs are climbing or delivery windows stretching, the odds are good that a share of your outbound volume is landing in avoidable BAD or WORST placements — and you can measure how much. The Supply Chain Analyzer and Optimizer runs on your own fulfillment data and produces the diagnostic and recommendation you saw here, mapped to your customer geography. <a href="contact.html">Contact us</a> to talk about running it on your business.</p>
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared footer injected from partials.html -->
+  <div id="tf-footer"></div>
+
+  <!-- Fetch snippet: load partials.html (relative), inject header/footer,
+       mark the current nav link, and wire dropdowns + the mobile menu.
+       Fails silently (no nav rather than a broken page). -->
+  <script>
+    (function () {
+      fetch('partials.html').then(function (r) {
+        if (!r.ok) throw new Error('partials ' + r.status);
+        return r.text();
+      }).then(function (html) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        ['header', 'footer'].forEach(function (slot) {
+          var src = doc.getElementById('tf-' + slot + '-partial');
+          var dest = document.getElementById('tf-' + slot);
+          if (src && dest) dest.innerHTML = src.innerHTML;
+        });
+
+        var header = document.getElementById('tf-header');
+        if (!header) return;
+        var navBar = header.querySelector('.tf-nav');
+
+        var path = window.location.pathname;
+        var file = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
+        var links = header.querySelectorAll('.tf-nav-links a[href]');
+        for (var i = 0; i < links.length; i++) {
+          if (links[i].getAttribute('href') === file) {
+            links[i].setAttribute('aria-current', 'page');
+          }
+        }
+
+        var toggle = header.querySelector('.tf-nav-toggle');
+        if (toggle && navBar) {
+          toggle.addEventListener('click', function () {
+            var open = navBar.classList.toggle('tf-nav-open');
+            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+          });
+        }
+
+        var items = header.querySelectorAll('.tf-has-dropdown');
+        function isDesktop() { return window.matchMedia('(min-width: 820px)').matches; }
+        function closeItem(item) {
+          item.classList.remove('is-open');
+          var t = item.querySelector('.tf-nav-trigger');
+          if (t) t.setAttribute('aria-expanded', 'false');
+        }
+        function closeAll() {
+          for (var k = 0; k < items.length; k++) closeItem(items[k]);
+        }
+        function setOpen(item, open) {
+          if (open) {
+            for (var k = 0; k < items.length; k++) {
+              if (items[k] !== item) closeItem(items[k]);
+            }
+          }
+          item.classList.toggle('is-open', open);
+          var t = item.querySelector('.tf-nav-trigger');
+          if (t) t.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+        for (var j = 0; j < items.length; j++) {
+          (function (item) {
+            var trigger = item.querySelector('.tf-nav-trigger');
+            if (trigger) {
+              trigger.addEventListener('click', function () {
+                setOpen(item, !item.classList.contains('is-open'));
+              });
+            }
+            item.addEventListener('mouseenter', function () {
+              if (isDesktop()) setOpen(item, true);
+            });
+            item.addEventListener('mouseleave', function () {
+              if (isDesktop()) closeItem(item);
+            });
+          })(items[j]);
+        }
+        document.addEventListener('click', function (e) {
+          if (!header.contains(e.target)) closeAll();
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' || e.key === 'Esc') closeAll();
+        });
+        var wasDesktop = isDesktop();
+        window.addEventListener('resize', function () {
+          var nowDesktop = isDesktop();
+          if (nowDesktop === wasDesktop) return;
+          wasDesktop = nowDesktop;
+          closeAll();
+          if (navBar) navBar.classList.remove('tf-nav-open');
+          if (toggle) toggle.setAttribute('aria-expanded', 'false');
+        });
+      }).catch(function () { /* fail silently: no nav rather than broken page */ });
+    })();
+    </script>
+    <script src="assets/toc.js"></script>
+    <script src="assets/blog.js"></script>
+    <!-- Page-local map behaviour. Sits outside .tf-prose for the same
+         reading-time reason as the styles above. Soft-fails to the static
+         default-scenario SVG. -->
+    <script>
+          (function () {
+            try {
+              var root = document.querySelector('.tf-map-demo');
+              if (!root) return;
+              var MAPS = {"current":{"AK":3,"AL":5,"AR":5,"AZ":1,"CA":1,"CO":3,"CT":1,"DC":1,"DE":1,"FL":5,"GA":5,"HI":2,"IA":4,"ID":2,"IL":4,"IN":3,"KS":4,"KY":3,"LA":5,"MA":2,"MD":1,"ME":3,"MI":3,"MN":4,"MO":4,"MS":5,"MT":3,"NC":3,"ND":4,"NE":4,"NH":2,"NJ":1,"NM":3,"NV":1,"NY":1,"OH":2,"OK":4,"OR":1,"PA":1,"RI":2,"SC":5,"SD":4,"TN":5,"TX":5,"UT":2,"VA":2,"VT":2,"WA":1,"WI":4,"WV":2,"WY":4},"ewr":{"AK":5,"AL":4,"AR":4,"AZ":5,"CA":5,"CO":5,"CT":1,"DC":1,"DE":1,"FL":4,"GA":3,"HI":5,"IA":4,"ID":5,"IL":4,"IN":3,"KS":4,"KY":3,"LA":4,"MA":2,"MD":1,"ME":3,"MI":3,"MN":4,"MO":4,"MS":4,"MT":5,"NC":2,"ND":4,"NE":4,"NH":2,"NJ":1,"NM":5,"NV":5,"NY":1,"OH":2,"OK":5,"OR":5,"PA":1,"RI":2,"SC":3,"SD":4,"TN":3,"TX":5,"UT":5,"VA":2,"VT":2,"WA":5,"WI":4,"WV":2,"WY":5},"lax":{"AK":3,"AL":5,"AR":4,"AZ":1,"CA":1,"CO":3,"CT":5,"DC":5,"DE":5,"FL":5,"GA":5,"HI":2,"IA":4,"ID":2,"IL":5,"IN":5,"KS":4,"KY":5,"LA":4,"MA":5,"MD":5,"ME":5,"MI":5,"MN":4,"MO":4,"MS":5,"MT":3,"NC":5,"ND":4,"NE":4,"NH":5,"NJ":5,"NM":2,"NV":1,"NY":5,"OH":5,"OK":4,"OR":1,"PA":5,"RI":5,"SC":5,"SD":4,"TN":5,"TX":4,"UT":2,"VA":5,"VT":5,"WA":2,"WI":5,"WV":5,"WY":3},"optimized":{"AK":3,"AL":1,"AR":1,"AZ":1,"CA":1,"CO":2,"CT":1,"DC":1,"DE":1,"FL":1,"GA":1,"HI":2,"IA":1,"ID":2,"IL":1,"IN":1,"KS":2,"KY":2,"LA":1,"MA":1,"MD":1,"ME":2,"MI":1,"MN":1,"MO":1,"MS":2,"MT":3,"NC":1,"ND":2,"NE":2,"NH":2,"NJ":1,"NM":1,"NV":1,"NY":1,"OH":1,"OK":1,"OR":1,"PA":1,"RI":1,"SC":1,"SD":2,"TN":1,"TX":1,"UT":2,"VA":2,"VT":2,"WA":1,"WI":1,"WV":2,"WY":3}};
+              var tiles = root.querySelectorAll('.tf-map-tile');
+              var btns = root.querySelectorAll('.tf-map-btn');
+              function apply(key) {
+                var m = MAPS[key];
+                if (!m) return;
+                for (var i = 0; i < tiles.length; i++) {
+                  var s = tiles[i].getAttribute('data-state');
+                  tiles[i].setAttribute('class', 'tf-map-tile cat-' + m[s]);
+                }
+                for (var j = 0; j < btns.length; j++) {
+                  var on = btns[j].getAttribute('data-scenario') === key;
+                  btns[j].classList.toggle('is-active', on);
+                  btns[j].setAttribute('aria-pressed', on ? 'true' : 'false');
+                }
+              }
+              for (var k = 0; k < btns.length; k++) {
+                btns[k].addEventListener('click', function () {
+                  apply(this.getAttribute('data-scenario'));
+                });
+              }
+            } catch (e) { /* soft-fail: static default map still renders */ }
+          })();
+  </script>
+</body>
+</html>
