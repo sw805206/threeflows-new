@@ -1,4 +1,4 @@
-/* v003 | last updated: 2026-07-18
+/* v004 | last updated: 2026-07-18
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
@@ -1079,3 +1079,132 @@ a:hover { color: var(--tf-brick-dark); }
 }
 .tf-ref-card:hover .tf-ref-card-name,
 .tf-ref-card:hover .tf-ref-card-action { color: var(--tf-brick); }
+
+/* --------------------------------------------------------------------------
+   Small card + carousel (about.html clients) + third-party brand marks
+   -------------------------------------------------------------------------- */
+/* Small-card SHELL — kit-level furniture only: flex column, 8px internal gap,
+   16px padding (lighter than .tf-card's 24px). What goes inside is the
+   consumer's business; this rule owns no contents.
+   BORDERED, unlike .tf-ref-card — and the surface is why. .tf-ref-card is
+   borderless because it sits on the cream panel, where paper-on-cream carries
+   the separation on its own. This shell sits on the WASH band
+   (--tf-sand-wash #F6F2ED), a narrower step from paper, so it keeps the 2px
+   light border for definition. The ground decides the border, not the card size.
+   DEFERRED GENERALIZATION: .tf-ref-card duplicates these five container
+   properties and should fold into .tf-card-sm the next time references.html is
+   touched. Not done here — refactoring it would pull a just-shipped page into
+   this change's blast radius. Tracked in the ratchet note, not silent. */
+.tf-card-sm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tf-space-1);
+  padding: var(--tf-space-2);
+  background: var(--tf-paper);
+  border: var(--tf-rule-light);
+  /* The sheet has no global box-sizing reset, so without this the card's 16px
+     padding + 2px border would sit OUTSIDE any width given to it — a 208px
+     carousel card would render 244px. border-box keeps --tf-carousel-card-w
+     honest: the variable is the width you actually get. */
+  box-sizing: border-box;
+}
+/* Bottom furniture pins to the bottom, mirroring `.tf-card > .tf-pills`. On a
+   fixed-height card this is what turns the extra height into breathing space
+   BETWEEN the logo and the pills rather than slack beneath both — and it is why
+   a 1-pill and a 2-pill card still bottom-align on the same baseline. */
+.tf-card-sm > .tf-pills { margin-top: auto; }
+
+/* Carousel — a CSS scroll-snap track. The scrolling is native: touch, trackpad,
+   and keyboard all work with assets/carousel.js absent; the script adds only the
+   arrow buttons. Same soft-JS posture as the partials fetch and toc.js.
+   The row is TWO variables — re-pitch it by changing these and nothing else:
+   --tf-carousel-card-w (208px ≈ 5-up on the 1136px inner container; ~260px ≈ 4-up)
+   and --tf-carousel-card-h (160px ≈ a 4:3 card against the 208px width).
+   Height is FIXED rather than content-derived: a uniform row reads as a gallery,
+   and the surplus height becomes deliberate space between the logo (top) and the
+   pills (bottom, pinned via .tf-card-sm > .tf-pills) instead of ragged card
+   bottoms. Every card matches regardless of 1 vs 2 pills.
+   The top margin lives on .tf-carousel-wrap, not here: that makes the wrap's box
+   exactly the card row, so the flanking arrows centre on the cards with a plain
+   top: 50% instead of having to discount a margin. */
+.tf-carousel-wrap {
+  position: relative;
+  margin-top: var(--tf-space-3);
+}
+.tf-carousel {
+  --tf-carousel-card-w: 208px;
+  --tf-carousel-card-h: 160px;
+  display: flex;
+  align-items: stretch;
+  gap: var(--tf-space-3);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;            /* arrows drive it; the bar is redundant */
+}
+.tf-carousel::-webkit-scrollbar { display: none; }
+.tf-carousel > * {
+  flex: 0 0 var(--tf-carousel-card-w);
+  height: var(--tf-carousel-card-h);
+  scroll-snap-align: start;
+}
+/* Honour reduced-motion: the arrows jump instead of animating. */
+@media (prefers-reduced-motion: reduce) {
+  .tf-carousel { scroll-behavior: auto; }
+}
+
+/* Arrow controls — square, borderless, no shadow (the brand has no circular
+   buttons). Ink at rest, brick on hover, stone when the track can travel no
+   further: MUTED, never hidden — the blog pager's absent-neighbour idiom. Real
+   <button>s, so they focus and take the standard :focus-visible brick ring. */
+/* They FLANK the track — one each side, vertically centred on the card row —
+   and they live in the container's own gutter, never over the cards. The
+   geometry is deliberate: the arrow is --tf-space-4 (32px) wide at a -32px
+   offset, so its lane is exactly .tf-container's padding lane. That means it
+   can neither clip the outermost card nor push the page into horizontal
+   overflow at any width where the arrows are visible (>=820px, where the
+   container's padding is always --tf-space-4). A 40px arrow at -40px would
+   overflow the viewport at ~820px, which is why the control is 32px.
+   `display: contents` dissolves the nav's box so each button positions against
+   .tf-carousel-wrap — flanking with no markup change. */
+.tf-carousel-nav { display: contents; }
+.tf-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tf-space-4);
+  height: var(--tf-space-4);
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--tf-ink);
+  cursor: pointer;
+}
+.tf-carousel-nav > :first-child { left: calc(-1 * var(--tf-space-4)); }
+.tf-carousel-nav > :last-child { right: calc(-1 * var(--tf-space-4)); }
+.tf-carousel-arrow:hover { color: var(--tf-brick); }
+.tf-carousel-arrow[disabled] { color: var(--tf-stone); cursor: default; }
+.tf-carousel-arrow[disabled]:hover { color: var(--tf-stone); }
+
+/* Below the nav breakpoint (820px, reused — no new breakpoint): swipe-only.
+   Arrows hide and the card widens to ~75vw so the next card peeks, which is the
+   swipe affordance. */
+@media (max-width: 819px) {
+  .tf-carousel { --tf-carousel-card-w: 75vw; }
+  .tf-carousel-nav { display: none; }
+}
+
+/* Third-party brand marks — the ONE sanctioned non-palette hue, scoped to a
+   class so it cannot leak onto brand surfaces. SUPERSEDES the rule in the
+   about-page ratchet note that pinned the principals' LinkedIn mark to
+   ink-soft → brick: a third-party mark belongs in its owner's colour.
+   Written as `a.tf-icon-brand` (0,1,1) — the SAME specificity as
+   `.tf-profile-name a`, winning on source order because it is declared later.
+   Matching specificity deliberately rather than escalating it: an escalated
+   selector would also override future, more specific intent. */
+a.tf-icon-brand { color: #0A66C2; }              /* LinkedIn blue */
+a.tf-icon-brand:hover,
+a.tf-icon-brand:focus { color: #004182; }        /* LinkedIn blue, pressed */
