@@ -1,4 +1,4 @@
-v006 | last updated: 2026-07-18
+v007 | last updated: 2026-07-18
 
 # BACKLOG.md — threeflows-new
 
@@ -49,27 +49,32 @@ section I.
 
 ### A. Page checklist (new pages to build)
 
-Shells for the 13 top-level pages already exist (PR#1) as placeholders, so
-"not-started" means the content build. Blog posts and the calculator MVP page
-come later.
+Shells for the 13 top-level pages already exist (PR#1) as placeholders, so a row
+at `open` means the content build has not happened — not that the file is absent.
+Blog posts and the calculator MVP page come later.
 
-| New page | Source old page(s) | Status |
-|---|---|---|
-| index.html | index.html | not-started |
-| service-planning.html | svc1.html | not-started |
-| service-sourcing.html | svc2.html | not-started |
-| service-launch.html | svc3.html | not-started |
-| service-management.html | svc4.html | not-started |
-| blogs.html | blog.html + bloglist.json | not-started |
-| references.html | useful-websites.html | not-started |
-| seminars.html | webinars.html (+ livestream.html folded in via redirect) | not-started |
-| tools.html | free-tools.html (shell only; individual tool pages deferred — BL-009) | not-started |
-| about.html | about.html | not-started |
-| contact.html | built fresh — new form + new endpoint (inquiry.html / intake.html redirect in; their old endpoints not carried) | not-started |
-| privacy.html | privacy.html | not-started |
-| surveys.html | surveys.html | not-started |
-| svy###.html (survey pages) | svy001.html, svy002.html | not-started (kept; redesigned later; existing Apps Script endpoints carried) |
-| blog-###.html (posts) | blog-001…024 incl. 010a/010b (25 posts) | not-started |
+**Status vocabulary — §A uses the BL table's flow: open → review → close.**
+`open` = not built; `review` = built, awaiting human ratification; `close` =
+ratified, with evidence (the shipping SHA) in Closed-by. Code never self-closes.
+
+| New page | Source old page(s) / notes | Status | Closed-by |
+|---|---|---|---|
+| index.html | index.html | open | |
+| service-planning.html | svc1.html | open | |
+| service-sourcing.html | svc2.html | open | |
+| service-launch.html | svc3.html | open | |
+| service-management.html | svc4.html | open | |
+| blogs.html | blog.html + bloglist.json | review | |
+| references.html | useful-websites.html — shipped as a data-driven directory backed by `references.json` + `assets/references.js`, both new files not previously recorded in §A | review | |
+| seminars.html | webinars.html (+ livestream.html folded in via redirect) | open | |
+| tools.html | free-tools.html (shell only; individual tool pages deferred — BL-009) | open | |
+| about.html | about.html | review | |
+| contact.html | built fresh — new form + new endpoint (inquiry.html / intake.html redirect in; their old endpoints not carried) | open | |
+| privacy.html | privacy.html | review | |
+| surveys.html | surveys.html | open | |
+| svy###.html (survey pages) | svy001.html, svy002.html — kept; redesigned later; existing Apps Script endpoints carried | open | |
+| blog-&lt;slug&gt;.html (posts) | blog-001…024 incl. 010a/010b (25 posts) — the new repo ships **slug filenames** per BLOG.md §1 (e.g. `blog-welcome-to-three-flows.html`); `blog-###` survives only as the manifest key (`blogID`). Slug scheme for the §B redirect map tracked in BL-014. **5 of 25 built** | open | |
+| Calculator MVP page (filename TBD) | no old-repo source — the SCOPE MVP page, built fresh; deferred/placeholder until built. Added so the cutover gate counts it | open | |
 
 ### B. URL redirect map (old → new — Cloudflare Redirect Rules input at cutover)
 
