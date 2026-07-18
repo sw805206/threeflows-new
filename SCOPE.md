@@ -1,4 +1,4 @@
-v005 | last updated: 2026-07-17
+v006 | last updated: 2026-07-17
 
 # SCOPE.md — threeflows.com Relaunch (new repo)
 
@@ -105,6 +105,11 @@ served from partials.html, fetched per page.
   day one, so a future paid app can share the same math.
 - Preview: localhost for daily work; the repo's github.io URL for
   shareable/on-phone preview.
+- When a style change modifies a value that is quoted verbatim in another
+  governance doc (e.g. a measured y in BLOG.md's post-add check, a token value
+  referenced in a build procedure), that doc must be updated in the same commit
+  as the style change. A ratchet note in STYLE.md alone is not sufficient —
+  quoted values elsewhere go stale silently.
 
 ## Cutover — domain flip
 

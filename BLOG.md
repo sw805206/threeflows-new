@@ -1,4 +1,4 @@
-v001 | last updated: 2026-07-17
+v002 | last updated: 2026-07-17
 
 # BLOG.md — how to add a blog post
 
@@ -92,9 +92,9 @@ Copy `blog-template.html` to the slug, set `data-blog-id` on `<main>`, fill the
 Render the new post at **1280px** and confirm:
 
 - [ ] Title renders **≤2 lines**, recap **≤3 lines**.
-- [ ] **Body top lands at the shared y — currently `456.73`** at desktop
+- [ ] **Body top lands at the shared y — currently `454.73`** at desktop
       (≥820px). A different value means a budget was blown (§4).
-- [ ] Rail: image (if any) → "In this article" → H2 list. Rail top `122`.
+- [ ] Rail: image (if any) → "In this article" → H2 list. Rail top `120`.
 - [ ] Reading time on the date line matches the manifest's `readMinutes` (§6).
 - [ ] Pager: neighbours re-wire **automatically by date** — no manual linking.
       Previous = next older published, Next = next newer; an absent neighbour
