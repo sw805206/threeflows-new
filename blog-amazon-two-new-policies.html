@@ -1,0 +1,205 @@
+<!--
+  blog-template.html — COPY-SOURCE for new blog posts. NOT servable content.
+
+  To create a post: copy this file to blog-<slug>.html, set data-blog-id on
+  <main> to the post's blogID, fill the title / dek / date / body, and
+  add a matching entry to bloglist.json. This file is NOT a post: it is excluded
+  from the nav and the backlog page checklist, its data-blog-id is empty, and it
+  is never listed in bloglist.json — so blog.js never treats it as a post
+  despite its blog- prefix.
+
+  Structure mirrors privacy.html: partials-injected header/footer, the
+  .tf-container two-column layout with the data-toc rail, the .tf-prose measure,
+  and the header divider under the meta line. The header block is adapted for
+  posts (h1 → dek → publish-date meta → divider).
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Amazon's Two New Policies: What They Mean for Sellers — Three Flows Solutions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+</head>
+<body class="tf-app">
+  <!-- Shared header injected from partials.html -->
+  <div id="tf-header"></div>
+
+  <main class="tf-section" data-blog-id="blog-006">
+    <div class="tf-container">
+      <div class="tf-prose-layout" data-toc>
+      <div class="tf-prose">
+        <!-- TOP NAV ROW: back-to-blogs (left) + prev/next pager (right).
+             blog.js fills the pager; an absent neighbour renders muted. -->
+        <div class="tf-post-topnav">
+          <a href="blogs.html">← Blogs</a>
+          <span class="tf-post-pager"></span>
+        </div>
+        <!-- POST HEADER: h1 → dek → date (divider). blog.js appends
+             " · N min read" to the date meta. An optional rail image renders
+             from the manifest's "image" field — never marked up here. -->
+        <h1>Amazon's Two New Policies: What They Mean for Sellers</h1>
+        <p class="tf-prose-intro">Within weeks of each other, Amazon announced two platform changes that quietly shift the ground beneath sellers. Neither is catastrophic on its own — but together, they reward sellers who already have their operations in order.</p>
+        <p class="tf-meta">August 4, 2025</p>
+
+        <p>Both announcements arrived with little press attention, but the effect on how sellers operate is real. Understanding what changed — and what it means for your listings, your ad spend, and your standing on the platform — is worth the read.</p>
+
+        <h2>Policy 1 — Amazon Pulls Out of Google Shopping Ads</h2>
+
+        <h3>What Happened</h3>
+
+        <p>Between July 21 and 23, 2025, Amazon's Google Shopping ad presence dropped to zero across eight major markets. In the US, UK, and Germany alone, its impression share fell from 60%, 55%, and 38% respectively — to nothing, within 48 hours. Digital marketing firms including Merkle and Tinuiti were among the first to detect the change.</p>
+
+        <p>This applies specifically to Google Shopping ads — the image-and-price comparison units that appear at the top of search results. Amazon continues to run standard Google text search ads. The Shopping withdrawal, however, is complete and appears deliberate.</p>
+
+        <h3>Why Amazon Likely Did This</h3>
+
+        <p>Amazon has not formally explained the decision, but the strategic logic is readable. Its advertising business has grown at over 30% annually for five years and is on track to surpass $60 billion in 2024 revenue. The platform's own ad ecosystem has reached a scale where external channels are no longer necessary to drive traffic — and may actively work against Amazon's interests.</p>
+
+        <p>Two considerations stand out. First, running Shopping ads on Google exposes category-level demand signals and user search behaviour to a platform that is increasingly a competitor in commerce search. Second, cost-per-click on Google Shopping has been rising steadily, while the return on Amazon's own on-site advertising already exceeds 1:5. Pulling external spend and redirecting it internally is, at this stage, straightforward margin optimisation.</p>
+
+        <p>There is also a third possibility: this is a negotiation tactic. Amazon's sudden exit gives it significant leverage over Google on data access, pricing terms, or both. Whether the withdrawal is permanent or a pressure play remains to be seen.</p>
+
+        <h3>What This Means for Sellers</h3>
+
+        <ul>
+          <li><strong>External traffic to your listings will decline.</strong> A meaningful share of organic discovery on Amazon has historically flowed through Google Shopping. That pipeline is now closed. Sellers who relied on it — often without realising it — will see lower impression counts and, over time, softer sales where external traffic was a meaningful input.</li>
+          <li><strong>On-site ad competition will intensify.</strong> With external traffic routes narrowing, more sellers will compete for the same internal ad placements. Sponsored Products and Sponsored Brands costs are likely to rise as a result. Larger sellers with deeper ad budgets will absorb this more easily. For small and mid-sized sellers, the margin on paid traffic will compress further.</li>
+          <li><strong>Organic rank becomes more valuable.</strong> If paid traffic costs more and external discovery is reduced, the economics of strong organic ranking improve. Sellers with well-optimised listings, healthy conversion rates, and consistent review velocity will have a structural advantage over those relying primarily on paid amplification.</li>
+        </ul>
+
+        <h2>Policy 2 — Star Ratings Without Written Feedback, Effective August 4</h2>
+
+        <h3>What Changed</h3>
+
+        <p>Starting August 4, 2025, buyers can submit seller feedback using only a star rating — no written comment required. This lowers the friction for leaving feedback, which Amazon likely expects will increase overall feedback volume.</p>
+
+        <p>The consequential part is what sellers lose: feedback consisting only of a star rating cannot be contested through Feedback Manager using the standard dispute process. A buyer can leave a one-star rating with no explanation, and the seller has no conventional removal pathway. The only recourse is to report the feedback as a policy violation and wait for Amazon's review — a process that is not guaranteed to result in removal.</p>
+
+        <p>A one-star rating with no written content still counts against your feedback percentage, order defect rate, Buy Box eligibility, and overall performance score — the same as a fully documented negative review.</p>
+
+        <h3>What This Means for Sellers</h3>
+
+        <ul>
+          <li><strong>Exposure to uncontestable negative ratings increases.</strong> Previously, a negative feedback entry required written content, which gave sellers a basis to identify policy violations and request removal. Silent one-star ratings remove that basis entirely. Bad actors — whether buyers with complaints or competitors engaging in sabotage — now have a lower-effort, harder-to-reverse tool available to them.</li>
+          <li><strong>FBA fulfilment issues become a blind spot.</strong> When an FBA shipment arrives late, damaged, or goes missing, the fulfilment failure belongs to Amazon — not the seller. Under the old system, a buyer who wrote "package never arrived" gave the seller grounds to request removal as an FBA-related issue. A silent one-star rating provides no such grounds, even if the cause was entirely outside the seller's control.</li>
+          <li><strong>Feedback and product reviews will blur further.</strong> Buyers already confuse seller feedback with product reviews. With no written comment to analyse, sellers lose the ability to even assess which category the rating belongs to — let alone route it to the right resolution process.</li>
+          <li><strong>The standard appeals channel is closed for these cases.</strong> Sellers accustomed to using Feedback Manager to dispute and remove problematic entries will find that tool unavailable for rating-only submissions. The only remaining option — reporting as a policy violation — relies entirely on Amazon's judgement and offers no guarantee of removal.</li>
+        </ul>
+
+        <h2>The Bigger Picture</h2>
+
+        <p>Taken separately, each policy is manageable. Taken together, they point in the same direction: Amazon is consolidating control over its platform ecosystem while reducing the levers sellers have to influence their own standing.</p>
+
+        <p>The Google Shopping withdrawal means Amazon is less dependent on external traffic sources — and by extension, less willing to share discovery with channels it does not own. The feedback change means buyer sentiment can now affect seller metrics without generating the kind of written record that sellers can act on.</p>
+
+        <p>Neither change is a crisis for a well-run operation. Sellers with strong organic listings, healthy conversion rates, clean fulfilment track records, and proactive customer communication are largely insulated from both. The pressure falls disproportionately on sellers who have been relying on paid external traffic to compensate for weak organic performance, or who have been managing feedback reactively rather than building the kind of pre-purchase experience that reduces complaints in the first place.</p>
+
+        <p>The underlying message from Amazon is consistent with a pattern we have observed across platform updates over the past several years: operational excellence is not optional — it is the only durable competitive advantage on a platform that controls the rules.</p>
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared footer injected from partials.html -->
+  <div id="tf-footer"></div>
+
+  <!-- Fetch snippet: load partials.html (relative), inject header/footer,
+       mark the current nav link, and wire dropdowns + the mobile menu.
+       Fails silently (no nav rather than a broken page). -->
+  <script>
+  (function () {
+    fetch('partials.html').then(function (r) {
+      if (!r.ok) throw new Error('partials ' + r.status);
+      return r.text();
+    }).then(function (html) {
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      ['header', 'footer'].forEach(function (slot) {
+        var src = doc.getElementById('tf-' + slot + '-partial');
+        var dest = document.getElementById('tf-' + slot);
+        if (src && dest) dest.innerHTML = src.innerHTML;
+      });
+
+      var header = document.getElementById('tf-header');
+      if (!header) return;
+      var navBar = header.querySelector('.tf-nav');
+
+      var path = window.location.pathname;
+      var file = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
+      var links = header.querySelectorAll('.tf-nav-links a[href]');
+      for (var i = 0; i < links.length; i++) {
+        if (links[i].getAttribute('href') === file) {
+          links[i].setAttribute('aria-current', 'page');
+        }
+      }
+
+      var toggle = header.querySelector('.tf-nav-toggle');
+      if (toggle && navBar) {
+        toggle.addEventListener('click', function () {
+          var open = navBar.classList.toggle('tf-nav-open');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+
+      var items = header.querySelectorAll('.tf-has-dropdown');
+      function isDesktop() { return window.matchMedia('(min-width: 820px)').matches; }
+      function closeItem(item) {
+        item.classList.remove('is-open');
+        var t = item.querySelector('.tf-nav-trigger');
+        if (t) t.setAttribute('aria-expanded', 'false');
+      }
+      function closeAll() {
+        for (var k = 0; k < items.length; k++) closeItem(items[k]);
+      }
+      function setOpen(item, open) {
+        if (open) {
+          for (var k = 0; k < items.length; k++) {
+            if (items[k] !== item) closeItem(items[k]);
+          }
+        }
+        item.classList.toggle('is-open', open);
+        var t = item.querySelector('.tf-nav-trigger');
+        if (t) t.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      for (var j = 0; j < items.length; j++) {
+        (function (item) {
+          var trigger = item.querySelector('.tf-nav-trigger');
+          if (trigger) {
+            trigger.addEventListener('click', function () {
+              setOpen(item, !item.classList.contains('is-open'));
+            });
+          }
+          item.addEventListener('mouseenter', function () {
+            if (isDesktop()) setOpen(item, true);
+          });
+          item.addEventListener('mouseleave', function () {
+            if (isDesktop()) closeItem(item);
+          });
+        })(items[j]);
+      }
+      document.addEventListener('click', function (e) {
+        if (!header.contains(e.target)) closeAll();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' || e.key === 'Esc') closeAll();
+      });
+      var wasDesktop = isDesktop();
+      window.addEventListener('resize', function () {
+        var nowDesktop = isDesktop();
+        if (nowDesktop === wasDesktop) return;
+        wasDesktop = nowDesktop;
+        closeAll();
+        if (navBar) navBar.classList.remove('tf-nav-open');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      });
+    }).catch(function () { /* fail silently: no nav rather than broken page */ });
+  })();
+  </script>
+  <script src="assets/toc.js"></script>
+  <script src="assets/blog.js"></script>
+</body>
+</html>
