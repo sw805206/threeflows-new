@@ -148,6 +148,14 @@ body.tf-app {
    (16px), set apart from the body copy by COLOUR (ink-soft), not size. Distinct
    from .tf-lead (20px), which stays reserved for hero moments. */
 .tf-prose-intro { font-size: var(--tf-text-base); color: var(--tf-ink-soft); }
+/* TIER-1 SUBTITLE RHYTHM — the subtitle (intro line) → first content element gap
+   is --tf-space-6 (48px) on EVERY tier-1 page, hero or plain, measured from the
+   intro's text block to the next element's top edge. Scoped to the page-header
+   intro (a DIRECT child of the page container) so the long-form recap that sits
+   inside .tf-prose — blog posts, privacy — keeps its own rhythm untouched.
+   On hero pages the band's internal bottom padding supplies the 48px instead,
+   so the hero zeroes this margin (see .tf-page-head below). */
+.tf-container > .tf-prose-intro { margin-bottom: var(--tf-space-6); }
 /* A direct-child meta line (e.g. "Last updated …") closes the page-header block
    (kicker/h1/intro/meta) with a light within-section rule before the body copy. */
 .tf-prose > .tf-meta {
@@ -943,12 +951,13 @@ a:hover { color: var(--tf-brick-dark); }
   max-width: 62ch;
   color: var(--tf-paper);
   opacity: 0.85;
+  margin-bottom: 0;          /* the band's bottom padding supplies the 48px gap */
 }
-/* Post-hero content gap = the standard post-header gap (--tf-space-2). The band
-   keeps its own framing padding (it frames the text on the photo); only main's
-   top padding is trimmed, so the band-edge → content gap matches a normal page's
-   intro → content gap rather than stacking band-padding + section-padding. */
-.tf-page-head + main { padding-block-start: var(--tf-space-2); }
+/* Hero pages start their content flush to the band edge: main's top padding goes
+   to 0 so the band's OWN internal bottom padding (--tf-space-6) is the entire
+   subtitle → first-content gap — 48px, the same as a plain-header page. Measured
+   from the intro, not the band edge; the band's framing padding is untouched. */
+.tf-page-head + main { padding-block-start: 0; }
 
 /* ── References directory (references.html) ─────────────────────────────────
    A segmented tab control, cream group panels, and a card grid, rendered by
