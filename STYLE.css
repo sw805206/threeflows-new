@@ -919,3 +919,142 @@ a:hover { color: var(--tf-brick-dark); }
 
 /* Photo treatment — every content photograph (profiles: same, circle crop) */
 .tf-photo { filter: saturate(0.72) sepia(0.14) contrast(1.04) brightness(1.02); }
+
+/* ── Page header — shared tier-1 pattern (.tf-page-head) ────────────────────
+   Text block left (kicker / h1 / intro), header image right. SHARED across
+   all tier-1 pages; references.html is the first use, others adopt as built.
+   The image is optional: the element is present only when the page has one —
+   no placeholder, no reserved gap (the same posture as the blog rail image).
+   Below 820px it stacks text-then-image. */
+.tf-page-head {
+  display: flex;
+  align-items: center;
+  gap: var(--tf-space-6);
+  margin-bottom: var(--tf-space-6);
+}
+.tf-page-head-text { flex: 1 1 auto; min-width: 0; }
+.tf-page-head-img {
+  flex: 0 0 380px;
+  width: 380px;
+  height: auto;              /* override the height="" attr so aspect-ratio governs */
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+@media (max-width: 819px) {
+  .tf-page-head { flex-direction: column; align-items: stretch; gap: var(--tf-space-4); }
+  .tf-page-head-img { flex-basis: auto; width: 100%; }
+}
+
+/* ── References directory (references.html) ─────────────────────────────────
+   A segmented tab control, cream group panels, and a card grid, rendered by
+   assets/references.js from references.json. All colours/sizes from tokens
+   except the two literal sizes the card names (17px name, 13px card body) —
+   the same posture as .tf-quote, where no scale token fits. */
+
+/* Segmented tab control. A 2px ink border frames the row; tabs are divided by
+   2px ink rules; the active tab is ink-filled with paper text. Square corners.
+   <button> elements carry aria-selected; JS owns the state. Sized to content on
+   desktop; full-width equal segments (labels wrap) below 820px. */
+.tf-tabs {
+  display: flex;
+  width: max-content;
+  max-width: 100%;
+  border: var(--tf-rule);
+  margin-bottom: var(--tf-space-4);
+}
+.tf-tab {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-left: var(--tf-rule);        /* 2px ink divider between segments */
+  padding: var(--tf-space-1) var(--tf-space-3);
+  font-family: var(--tf-font-body);
+  font-size: var(--tf-text-sm);
+  font-weight: 500;
+  color: var(--tf-ink);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.tf-tab:first-child { border-left: 0; }
+.tf-tab:hover { color: var(--tf-brick); }
+.tf-tab[aria-selected="true"] { background: var(--tf-ink); color: var(--tf-paper); }
+.tf-tab[aria-selected="true"]:hover { color: var(--tf-paper); }  /* active stays paper */
+.tf-tab:focus-visible { outline: 2px solid var(--tf-brick); outline-offset: 2px; }
+@media (max-width: 819px) {
+  .tf-tabs { width: 100%; }
+  /* min-width:0 lets a segment shrink below its longest word so three equal
+     segments fit the row (labels wrap); tighter inline padding buys text room. */
+  .tf-tab {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: var(--tf-space-1);
+    text-align: center;
+    white-space: normal;
+  }
+}
+
+/* Panels — one per tab; exactly one is visible (JS sets [hidden] on the rest). */
+.tf-ref-panel[hidden] { display: none; }
+
+/* Group panel — a cream RAISED/RECESSED surface holding one sub-group, with an
+   uppercase meta-style label. (See STYLE.md: this widens --tf-cream's role from
+   "overlay surfaces" to raised/recessed surfaces generally.) */
+.tf-ref-group {
+  background: var(--tf-cream);
+  padding: var(--tf-space-3);
+  margin-bottom: var(--tf-space-3);
+}
+.tf-ref-group:last-child { margin-bottom: 0; }
+.tf-ref-group-label {
+  font-size: var(--tf-text-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--tf-ink-soft);
+  margin-bottom: var(--tf-space-2);
+}
+
+/* Card grid — intrinsically sized (auto-fill, 250px floor), so the column count
+   falls out of the panel width with no new breakpoint. */
+.tf-ref-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--tf-space-2);
+}
+
+/* Card — a small paper card on the cream panel. Whole card is one <a> (also
+   carries .tf-card-link, which pins colour to inherit and turns the border ink
+   on hover). Head row = 20px favicon + 17px serif name; 13px ink-soft body;
+   action word pinned bottom-right (no arrow). Hover: name + action go brick. */
+.tf-ref-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tf-space-1);
+  background: var(--tf-paper);
+  border: var(--tf-rule-light);
+  padding: var(--tf-space-2);
+}
+.tf-ref-card-head { display: flex; align-items: center; gap: var(--tf-space-1); }
+.tf-ref-favicon { flex: 0 0 20px; width: 20px; height: 20px; }
+.tf-ref-card-name {
+  font-family: var(--tf-font-heading);
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.2;
+  color: var(--tf-ink);
+}
+.tf-ref-card-desc {
+  flex: 1 1 auto;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--tf-ink-soft);
+}
+.tf-ref-card-action {
+  align-self: flex-end;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--tf-ink-soft);
+}
+.tf-ref-card:hover .tf-ref-card-name,
+.tf-ref-card:hover .tf-ref-card-action { color: var(--tf-brick); }

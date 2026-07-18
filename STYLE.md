@@ -1,6 +1,6 @@
 # Three Flows Solutions — Brand Style Guide
 
-v7 · 2026-07-17 — blog-004 build: prose tables (`.tf-prose-table` + `.tf-prose table`), the first of the BL-012 deferred body patterns (v6: about.html build: `.tf-profile-lg` principals card (natural-aspect headshots, never cropped — square mandate revoked), wash band tint (`--tf-sand-wash` / `.tf-section-wash`), client-logo slot (original colour), tag→tint mapping (v5: sitewide chrome/divider restyle: ink retired as a section divider (sand `--tf-sand` / `--tf-rule-sand`), white dividerless header (`--tf-white`), dropdown cream lightened to a 15% mix; footer keeps its ink top rule (v4: page-header standard — `.tf-kicker` + h1 on every top-level page. v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5))). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
+v8 · 2026-07-17 — references.html build: shared `.tf-page-head` (text block + optional header image, tier-1 pattern), segmented tab control (`.tf-tabs` / `.tf-tab`), cream group panels (`.tf-ref-group`) + card grid (`.tf-ref-grid` / `.tf-ref-card`); `--tf-cream` role widened to raised/recessed surfaces generally (v7: blog-004 build: prose tables (`.tf-prose-table` + `.tf-prose table`), the first of the BL-012 deferred body patterns (v6: about.html build: `.tf-profile-lg` principals card (natural-aspect headshots, never cropped — square mandate revoked), wash band tint (`--tf-sand-wash` / `.tf-section-wash`), client-logo slot (original colour), tag→tint mapping (v5: sitewide chrome/divider restyle: ink retired as a section divider (sand `--tf-sand` / `--tf-rule-sand`), white dividerless header (`--tf-white`), dropdown cream lightened to a 15% mix; footer keeps its ink top rule (v4: page-header standard — `.tf-kicker` + h1 on every top-level page. v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5)))). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
 
 ---
 
@@ -576,3 +576,52 @@ The `h1–h4` rule carried `text-wrap: balance`; changed site-wide to
   risk. Accepted: filling the first line to the measure matters more for a
   flush-left heading than an evened silhouette, and `pretty`'s own last-line
   optimisation keeps the orphan case rare.
+
+### References directory — page head, segmented tabs, cream panels, cards — references.html — 2026-07-17
+
+The v3 References directory (a tabbed link index rendered by
+`assets/references.js` from `references.json`) needed four patterns. All are in
+`STYLE.css`, never page-local, and reuse existing tokens except two literal card
+sizes (17px name, 13px body — the same posture as `.tf-quote`).
+
+- **`.tf-page-head` — SHARED tier-1 page-header pattern (first use here; other
+  tier-1 pages adopt it as they are built).** A flex row: the text block
+  (`.tf-kicker` + h1 + `.tf-prose-intro`) on the left, a header image on the
+  right at **flex-basis 380px / `aspect-ratio: 3 / 2` / `.tf-photo`** (the brand
+  grade, like every content photograph). **The image is optional and additive:
+  the `<img>` is present only when the page supplies one — no placeholder and no
+  reserved gap** (the same posture as the blog rail image). Below **820px** it
+  stacks **text-then-image** (reusing the nav breakpoint, no new one). This
+  supersedes the bare `.tf-kicker` + h1 opener from the v4 page-header standard
+  for pages that carry a header image; the kicker/h1/intro trio is unchanged,
+  now wrapped in the left block.
+- **Segmented tab control (`.tf-tabs` / `.tf-tab`).** A `<button>` tablist: a
+  **2px ink border** frames the row, segments are divided by **2px ink rules**
+  (`border-left` on each tab bar the first), the **active tab is ink-filled with
+  paper text**, hover is brick text (the active tab stays paper), square corners,
+  `:focus-visible` brick ring. JS owns state via `aria-selected`; tabs are
+  deep-linkable through `location.hash`. Sized to content on desktop; **full-
+  width equal segments with wrapping labels below 820px** so the long category
+  names stay legible. This is a **distinct control from the pill kit** — a
+  segmented switch reads as one-of-N (a mode selector), which pills-as-filters do
+  not; the two coexist and neither restyles the other.
+- **`.tf-ref-group` / `.tf-ref-group-label` — cream group panel.**
+  `background: var(--tf-cream)`, `--tf-space-3` padding, with an uppercase
+  meta-style label. **This WIDENS `--tf-cream`'s stated role.** Until now cream
+  was defined for *overlay* surfaces (dropdowns, popovers — things floating
+  *above* the page). Here it grounds a **recessed content panel** in the page
+  flow. The role is therefore restated: **`--tf-cream` is the tone for any
+  raised OR recessed surface that must separate from the paper page by tone
+  rather than by a rule** — overlays above, grouping panels within. Still a
+  derived tint of existing tokens (§2), not a new hue; the palette stays closed.
+- **`.tf-ref-grid` / `.tf-ref-card` — card grid on the panel.** `auto-fill,
+  minmax(250px, 1fr)`, `--tf-space-2` gap — intrinsically sized, no new
+  breakpoint. Each card is a **small paper card** (`--tf-paper` on the cream
+  panel) with a **light 2px border** (`--tf-rule-light`), `--tf-space-2` padding,
+  a head row (**20px favicon + 17px serif name**), a **13px ink-soft**
+  description, and the **action word pinned bottom-right** (13px / 500, ink-soft,
+  **no arrow**). The **whole card is one `<a>`** carrying `.tf-card-link` (colour
+  pinned to inherit, border→ink on hover — the shared whole-card-link idiom);
+  on hover the **name and action go brick**. Favicons are the Google s2 service
+  (`sz=32`, lazy) with an `onerror` that hides a blocked glyph rather than
+  showing a broken image.
