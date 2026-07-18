@@ -1,4 +1,4 @@
-v002 | last updated: 2026-07-17
+v003 | last updated: 2026-07-18
 
 # BLOG.md — how to add a blog post
 
@@ -128,18 +128,37 @@ element.
 
 ## 7. Images (optional per post)
 
-1. **Originals → `assets/images/src/`** (gitignored staging; the originals
-   archive — never delete, never edit in place).
-2. **Crop → `assets/images/src/preview/`**: 3:2, **1200×800**, JPEG **q80–85**,
-   **EXIF stripped**, **never upscale** (if a source can't yield 1200px wide at
-   3:2, use the largest clean size and say so). Centred crop by default; **if
-   centring cuts the subject, produce an offset `-crop-alt` too** and say what
-   moved and why.
-3. **The user approves a crop.** Preview files are for review only.
-4. **Promote the approved bytes** — copy, never re-process — to
-   `assets/images/<slug>.jpg` (matching the post slug). Verify the copy is
-   byte-identical.
-5. **Wire the manifest**: `image` + `imageAlt`.
+The pipeline has five stages: an external **master** archive, a disposable
+**intake** tray, **preview** crop candidates, **promotion** into the repo, and a
+post-merge **cleanup**. Only promoted files are ever committed.
+
+1. **MASTER — `/Users/swai/Images`** (external, outside the repo). The permanent
+   originals archive; backing it up is the user's responsibility. Code reads
+   from it **read-only**, and only when the user points at a specific file — it
+   **never modifies, moves, or deletes anything in it.**
+2. **INTAKE — `assets/images/src/`** (gitignored, per-worktree). A disposable
+   staging tray — **not** an archive. The user, or Code copying from the master,
+   drops working files here; because the folder is gitignored and per-worktree,
+   everything in it is throwaway. *(Supersedes the earlier rule that called
+   `src/` "the originals archive — never delete, never edit in place": the master
+   folder is now the archive, and `src/` is disposable.)*
+3. **PREVIEW — `assets/images/src/preview/`** (equally disposable). Crop and
+   processing candidates for the user's approval — mechanics unchanged: 3:2,
+   **1200×800**, JPEG **q80–85**, **EXIF stripped**, **never upscale** (if a
+   source can't yield 1200px wide at 3:2, use the largest clean size and say so).
+   Centred crop by default; **if centring cuts the subject, produce an offset
+   `-crop-alt` too** and say what moved and why. The user approves a crop;
+   preview files are for review only.
+4. **PROMOTION — `assets/images/<name>`** (committed). Copy the **approved
+   bytes** — never re-process — to `assets/images/<slug>.jpg` (matching the post
+   slug), verify the copy is **byte-identical**, then wire the manifest (`image`
+   + `imageAlt`). **The promoted, committed files are the only images git
+   carries.**
+5. **CLEANUP (post-merge).** After a stream's PR merges, its post-merge cleanup
+   includes **purging that stream's promoted items' leftovers from `src/` and
+   `preview/`** in the stream's worktree. Before deleting any file, Code
+   **verifies that file's promoted sibling is committed on main first.** The user
+   never hand-deletes.
 
 **Alt text policy: descriptive, not empty.** One plain factual sentence
 describing what is visibly in the photo — no marketing language, no "image of"
