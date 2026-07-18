@@ -12,9 +12,12 @@ inventory status (per SCOPE.md).
 Code never self-closes: done items move to review; only the user closes,
 with evidence in Closed-by (PR## for code, or the user's stated reason).
 
-**Direct-to-main:** status/bookkeeping edits to this file travel under the
-SCOPE.md governance-doc exception — committed directly to main, not via a
-feature branch (per user decision 2026-07-18).
+**Direct-to-main:** routine bookkeeping on this file — recording state on
+existing rows, and flushing the running block — is committed directly to
+main and pushed immediately, no branch or PR. Structural changes to the
+table's rules or shape need a PR like any governance change. Definitions
+of routine vs structural live in CLAUDE.md Part B → **Exception — routine
+backlog bookkeeping goes direct to main**; they are not repeated here.
 
 ## Backlog
 
