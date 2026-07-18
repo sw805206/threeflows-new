@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>References — Three Flows Solutions</title>
+  <meta name="description" content="A curated directory of tools, platforms and resources for e-commerce sellers and retail businesses.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,14 +17,35 @@
 
   <main class="tf-section">
     <div class="tf-container">
-      <div class="tf-kicker">Resources</div>
-      <h1>References</h1>
-      <p>Placeholder content for this page.</p>
+
+      <!-- Page header — shared .tf-page-head pattern: text block left, header
+           image right (image element added on crop approval; no placeholder
+           until then, per the pattern). -->
+      <div class="tf-page-head">
+        <div class="tf-page-head-text">
+          <div class="tf-kicker">References</div>
+          <h1>The Retailer's Library</h1>
+          <p class="tf-prose-intro">A curated directory of tools, platforms and resources for e-commerce sellers and retail businesses.</p>
+        </div>
+        <img class="tf-page-head-img tf-photo" src="assets/images/references.jpg"
+             alt="Curved shelves of a library filled with colorful books receding into the distance."
+             width="1200" height="800" loading="eager">
+      </div>
+
+      <!-- The tab control + group panels are rendered here by
+           assets/references.js from references.json. Soft-fail: if the script is
+           absent or the fetch fails, this stays empty and the page still renders
+           (header, footer) — the same posture as the partials fetch and toc.js. -->
+      <div id="tf-ref-app" data-ref-app></div>
     </div>
   </main>
 
   <!-- Shared footer injected from partials.html -->
   <div id="tf-footer"></div>
+
+  <!-- Directory renderer (segmented tabs, cream group panels, card grid,
+       favicons). Separate file, vanilla JS; JS enhances, absence never breaks. -->
+  <script src="assets/references.js" defer></script>
 
   <!-- Fetch snippet: load partials.html (relative), inject header/footer,
        mark the current nav link, and wire dropdowns + the mobile menu.
