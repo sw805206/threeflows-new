@@ -1,4 +1,4 @@
-v001 | last updated: 2026-07-18
+v002 | last updated: 2026-07-18
 
 
 # Working Rules
@@ -117,6 +117,29 @@ stream is working to a rule that isn't yet real. After merge, cascade the change
 merge to main → `git pull` locally → the user re-adds the local copy to the
 project folder. This rule holds for every project, including ones where SCOPE.md
 otherwise permits direct commits to main.
+
+
+**Exception — routine backlog bookkeeping goes direct to main.** The one carve-out
+from the rule above: ROUTINE edits to BACKLOG.md may be committed straight to main,
+no branch and no PR — but **committed and pushed immediately**. The exception is on
+the branch/PR ceremony ONLY; it is not an exception to *push is the finish line*. A
+routine edit left sitting uncommitted or unpushed in a working tree is exactly the
+failure this whole rule set exists to prevent.
+
+
+- **ROUTINE = recording state on existing rows.** Status transitions (open→review,
+  review→close with its evidence SHA), Closed-by entries, progress annotations
+  (e.g. "5 of 25 built"), and flushing running-block P-rows into new BL-### rows at
+  the user's request. These record state; they do not change rules or structure.
+- **STRUCTURAL = anything that changes the table's rules or shape.** The §A/BL
+  header or legend, the status VOCABULARY or its definitions, columns
+  (add/remove/rename), the cutover-gate semantics, or the backlog PROCESS itself.
+  Structural changes STILL REQUIRE A PR, like any other governance change.
+- **Every other governance doc is unaffected** — CLAUDE.md, SCOPE.md, STYLE.md,
+  STYLE.css, BLOG.md always go via PR. This exception is BACKLOG.md row-bookkeeping
+  and nothing else.
+- **When in doubt, an edit is structural → PR.** The default on ambiguity is the
+  safe, visible one.
 
 
 **Style changes are committed separately.** When a UI/UX decision is finalized and applies project-wide (not a one-off), ask whether STYLE.md and/or STYLE.css should be created or updated. Any change to STYLE.md or STYLE.css gets its own commit — never mixed into other code changes. STYLE.md and STYLE.css are governance docs, so this is the commit-level half of the rule above: style docs get their own commit AND their own PR.
