@@ -1,8 +1,8 @@
-v011 | last updated: 2026-07-18
+v012 | last updated: 2026-07-18
 
 # Three Flows Solutions — Brand Style Guide
 
-post-header gap corrected: `--tf-space-6` (48px) of page-background white space between the header block (band edge on hero pages, intro text on plain pages) and the first content element; a hero band's internal padding frames its own text and does not count toward it (`.tf-page-head + main` back to `--tf-space-6`) — supersedes v10, which measured from the subtitle and removed the hero white gap (v10: tier-1 subtitle rhythm: subtitle→first-content gap standardised to `--tf-space-6` (48px) on every tier-1 page, hero or plain (`.tf-container > .tf-prose-intro`; hero supplies it from the band's bottom padding with `.tf-page-head + main` at 0) — supersedes the band-edge-measured `--tf-space-2` rule (v9: references.html restyle: `.tf-page-head` → full-bleed HERO band (background photo + dark scrim, light-on-dark text, stone-light kicker, ink fallback); tabs → underline idiom (`.tf-tabs` light track + brick active underline, supersedes the ink-boxed control); `.tf-ref-card` → borderless (paper-on-cream contrast) (v8: references.html build: shared `.tf-page-head` (text block + optional header image, tier-1 pattern), segmented tab control (`.tf-tabs` / `.tf-tab`), cream group panels (`.tf-ref-group`) + card grid (`.tf-ref-grid` / `.tf-ref-card`); `--tf-cream` role widened to raised/recessed surfaces generally (v7: blog-004 build: prose tables (`.tf-prose-table` + `.tf-prose table`), the first of the BL-012 deferred body patterns (v6: about.html build: `.tf-profile-lg` principals card (natural-aspect headshots, never cropped — square mandate revoked), wash band tint (`--tf-sand-wash` / `.tf-section-wash`), client-logo slot (original colour), tag→tint mapping (v5: sitewide chrome/divider restyle: ink retired as a section divider (sand `--tf-sand` / `--tf-rule-sand`), white dividerless header (`--tf-white`), dropdown cream lightened to a 15% mix; footer keeps its ink top rule (v4: page-header standard — `.tf-kicker` + h1 on every top-level page. v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5))))))). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
+v012: about.html client carousel: `.tf-card-sm` kit-level small-card shell (**bordered** — it sits on the wash band, where paper-on-wash is too narrow a step to go borderless like `.tf-ref-card` does on cream); `.tf-carousel` scroll-snap track with vanilla arrow controls (`assets/carousel.js`), 5-up via a single `--tf-carousel-card-w`, swipe-only below 820px; client cards reduced to logo + **≤2** engagement pills (descriptions dropped); `.tf-icon-brand` — third-party brand marks render in their owner's colour, **superseding** the about-page rule that pinned the LinkedIn mark to ink-soft → brick (v011: post-header gap corrected: `--tf-space-6` (48px) of page-background white space between the header block (band edge on hero pages, intro text on plain pages) and the first content element; a hero band's internal padding frames its own text and does not count toward it (`.tf-page-head + main` back to `--tf-space-6`) — supersedes v10, which measured from the subtitle and removed the hero white gap (v10: tier-1 subtitle rhythm: subtitle→first-content gap standardised to `--tf-space-6` (48px) on every tier-1 page, hero or plain (`.tf-container > .tf-prose-intro`; hero supplies it from the band's bottom padding with `.tf-page-head + main` at 0) — supersedes the band-edge-measured `--tf-space-2` rule (v9: references.html restyle: `.tf-page-head` → full-bleed HERO band (background photo + dark scrim, light-on-dark text, stone-light kicker, ink fallback); tabs → underline idiom (`.tf-tabs` light track + brick active underline, supersedes the ink-boxed control); `.tf-ref-card` → borderless (paper-on-cream contrast) (v8: references.html build: shared `.tf-page-head` (text block + optional header image, tier-1 pattern), segmented tab control (`.tf-tabs` / `.tf-tab`), cream group panels (`.tf-ref-group`) + card grid (`.tf-ref-grid` / `.tf-ref-card`); `--tf-cream` role widened to raised/recessed surfaces generally (v7: blog-004 build: prose tables (`.tf-prose-table` + `.tf-prose table`), the first of the BL-012 deferred body patterns (v6: about.html build: `.tf-profile-lg` principals card (natural-aspect headshots, never cropped — square mandate revoked), wash band tint (`--tf-sand-wash` / `.tf-section-wash`), client-logo slot (original colour), tag→tint mapping (v5: sitewide chrome/divider restyle: ink retired as a section divider (sand `--tf-sand` / `--tf-rule-sand`), white dividerless header (`--tf-white`), dropdown cream lightened to a 15% mix; footer keeps its ink top rule (v4: page-header standard — `.tf-kicker` + h1 on every top-level page. v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5)))))))). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
 
 ---
 
@@ -480,7 +480,9 @@ stays pending a supporting-mention first use elsewhere.
     reflow to 1-up mid-desktop the way an auto-fit track would on a narrow window.
     **The inline LinkedIn mark is ink-soft → brick on hover, never LinkedIn
     blue** — the palette stays the logo's four inks; an external brand colour would
-    be the first hue to breach §2.
+    be the first hue to breach §2. *(SUPERSEDED 2026-07-18 — see the client-carousel
+    note: third-party brand marks now render in their owner's colour via
+    `.tf-icon-brand`, a class-scoped exception. The rest of this bullet stands.)*
 - **Wash band (`--tf-sand-wash` `#F6F2ED` + `.tf-section-wash`).** A page-width
   tinted ground that separates a major band from its neighbours by **field**
   rather than by a line. **Naming matters here:** `--tf-sand` was already taken
@@ -652,3 +654,54 @@ bordered cards → borderless); the cream group panel is unchanged.
   **name and action go brick** (no border appears). Favicons are the Google s2
   service (`sz=32`, lazy) with an `onerror` that hides a blocked glyph rather
   than showing a broken image.
+
+### Client carousel + small-card shell + brand-mark rule — about.html — 2026-07-18
+
+The clients band moved from a 13-card grid to a horizontal carousel. Three
+patterns entered the sheet; one older rule is superseded.
+
+- **`.tf-card-sm` — a kit-level small-card SHELL, built fresh.** Container
+  properties only (flex column, `--tf-space-1` gap, `--tf-space-2` padding, paper
+  ground, 2px light border); contents are the consumer's business. **It keeps its
+  border, and the ground is why.** `.tf-ref-card` is borderless because it sits on
+  the cream panel, where paper-on-cream carries the separation; this shell sits on
+  the wash band (`--tf-sand-wash` `#F6F2ED`), a narrower step from paper, so the
+  border does the defining. **The surface decides the border, not the card size.**
+  - **DEFERRED GENERALIZATION (tracked, not silent):** `.tf-ref-card` duplicates
+    these same five container properties and **should fold into `.tf-card-sm` the
+    next time references.html is touched.** Not done in this commit — refactoring
+    it would pull a page that shipped the day before into this change's blast
+    radius, and the duplication is five lines. Whoever next opens references.html
+    owns the merge.
+- **`.tf-carousel` — a CSS scroll-snap track.** Horizontal flex row,
+  `scroll-snap-type: x mandatory`, `scroll-behavior: smooth`, native scrollbar
+  hidden. **The scrolling is CSS, not JS:** touch, trackpad, and keyboard all work
+  with `assets/carousel.js` absent — the script adds only the arrows. Same soft-JS
+  posture as the partials fetch and `toc.js`. Equal card heights come from
+  `align-items: stretch` (the tallest card sets the row; vertical is otherwise
+  unconstrained). **Card width is ONE variable, `--tf-carousel-card-w`** — 208px ≈
+  5-up on the 1136px inner container, ~260px ≈ 4-up — so re-pitching the row is a
+  one-value change, deliberately, because the density is a review decision.
+  **Below 820px** (the nav breakpoint, reused — no new breakpoint) the arrows hide
+  and the card goes 75vw so the next card peeks: swipe-only.
+- **Arrows (`assets/carousel.js`, `.tf-carousel-arrow`).** Vanilla, own file, per
+  SCOPE. One **card** per click (measured from the DOM, so it follows the width
+  variable and the mobile 75vw for free), not one page. No auto-advance, no
+  timers. An arrow at the end of its travel goes **muted, not hidden** — the blog
+  pager's absent-neighbour idiom. Real `<button>`s: focusable, standard
+  `:focus-visible` brick ring. Square and borderless, ink → brick on hover; the
+  brand has no circular buttons. `prefers-reduced-motion` jumps instead of gliding.
+- **Client cards lost their descriptions and are capped at 2 pills.** A carousel
+  card is a glance, not a read: logo + up to two engagement tags. **The note #17
+  tag→tint mapping is UNCHANGED and still governs** (Plan=brick · Source=ochre ·
+  Launch=teal · Scale=slate · Collab=plum) — about simply stops *showing* three or
+  more; blog and service pages keep the full vocabulary.
+- **`.tf-icon-brand` — SUPERSEDES the LinkedIn-blue prohibition.** The about-page
+  note previously pinned the principals' LinkedIn mark to ink-soft → brick,
+  "never LinkedIn blue". That is now reversed for **third-party brand marks**:
+  they render in **their owner's colour** (LinkedIn `#0A66C2`, `#004182` pressed),
+  the one sanctioned non-palette hue, **scoped to a class so it cannot leak** onto
+  brand surfaces. Written as `a.tf-icon-brand` — the *same* specificity as
+  `.tf-profile-name a`, winning on source order rather than escalated specificity,
+  so a future more-specific rule can still override it. The palette itself is
+  unchanged: this is a named, contained exception, not a new brand colour.
