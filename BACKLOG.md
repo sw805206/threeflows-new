@@ -1,4 +1,4 @@
-v008 | last updated: 2026-07-18
+v009 | last updated: 2026-07-18
 
 # BACKLOG.md — threeflows-new
 
@@ -40,6 +40,7 @@ backlog bookkeeping goes direct to main**; they are not repeated here.
 | BL-015 | review | process | Add-a-post process doc: manifest schema (5 fields + optional image/related), slug convention, MD→HTML conversion rules (no-italics → strong, placeholders plain), title ≤2-line / recap ≤3-line budgets + line-count check at post-add, image workflow, title-suffix rule | 2026-07-16 | |
 | BL-016 | review | page | blogs.html index build: consume manifest, card kit first use, published-only, date-descending, thumbnails from image field | 2026-07-16 | |
 | BL-017 | open | feature | Related-articles: optional `related` field (blogID array) in bloglist.json, rendered block at post end | 2026-07-16 | |
+| BL-018 | open | bug | Reading-time scope (BLOG.md §6 / blog.js) counts non-prose text: any inline `<style>`/`<script>` inside `.tf-prose`, plus in-figure UI labels, are tallied as words. Surfaced on blog-007, where the placement-map component inflated the count 1415->1908 (+35%, 7 min shown as 9). Worked around there by moving the component's style/script outside `.tf-prose`; the durable fix is to exclude `style, script` from the clone in blog.js and record it in §6 | 2026-07-18 | |
 
 ## Inventory / page checklist
 
