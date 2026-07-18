@@ -125,11 +125,11 @@
         <p>We asked the client to share fulfillment data for three of their SKUs — Products A, B, and C. We classified every outbound shipment into one of five placement categories:</p>
 
         <ul>
-          <li><strong>Category 1 — BEST. In-region (1–2 days).</strong> For example, LA to Arizona.</li>
-          <li><strong>Category 2 — GOOD. Next-door region (2–4 days).</strong> For example, NJ to Ohio.</li>
-          <li><strong>Category 3 — NEUTRAL. Remote but similar cost from either warehouse (3–5 days).</strong> For example, Kentucky sits at roughly equal distance from LA and NJ — LA is slightly cheaper on outbound freight, NJ is slightly closer.</li>
-          <li><strong>Category 4 — BAD. Cross-country (5–8 days).</strong> For example, LA to Delaware.</li>
-          <li><strong>Category 5 — WORST. Cross-country U-turn (5–8 days).</strong> Inbound to a warehouse near the receiving port, transferred to the cross-country warehouse, then shipped back to a customer in the region the first warehouse already serves. On pure outbound speed and cost, it looks the same as Category 4 — but it's the worst execution failure and the easiest one to fix.</li>
+          <li>Category 1 — <strong>BEST</strong>. In-region (1–2 days). For example, LA to Arizona.</li>
+          <li>Category 2 — <strong>GOOD</strong>. Next-door region (2–4 days). For example, NJ to Ohio.</li>
+          <li>Category 3 — <strong>NEUTRAL</strong>. Remote but similar cost from either warehouse (3–5 days). For example, Kentucky sits at roughly equal distance from LA and NJ — LA is slightly cheaper on outbound freight, NJ is slightly closer.</li>
+          <li>Category 4 — <strong>BAD</strong>. Cross-country (5–8 days). For example, LA to Delaware.</li>
+          <li>Category 5 — <strong>WORST</strong>. Cross-country U-turn (5–8 days). Inbound to a warehouse near the receiving port, transferred to the cross-country warehouse, then shipped back to a customer in the region the first warehouse already serves. On pure outbound speed and cost, it looks the same as Category 4 — but it's the worst execution failure and the easiest one to fix.</li>
         </ul>
 
         <p>Running the three SKUs produced this breakdown:</p>
@@ -279,10 +279,6 @@
 
           <svg viewBox="0 0 616 336" role="img"
                aria-label="Grid map of US states coloured by delivery placement quality for the selected warehouse network.">
-      <g class="tf-map-tile cat-3" data-state="AK">
-        <rect x="0" y="0" width="52" height="38"></rect>
-        <text x="26" y="24">AK</text>
-      </g>
       <g class="tf-map-tile cat-3" data-state="ME">
         <rect x="560" y="0" width="52" height="38"></rect>
         <text x="586" y="24">ME</text>
@@ -471,10 +467,6 @@
         <rect x="392" y="252" width="52" height="38"></rect>
         <text x="418" y="276">GA</text>
       </g>
-      <g class="tf-map-tile cat-2" data-state="HI">
-        <rect x="0" y="294" width="52" height="38"></rect>
-        <text x="26" y="318">HI</text>
-      </g>
       <g class="tf-map-tile cat-5" data-state="TX">
         <rect x="168" y="294" width="52" height="38"></rect>
         <text x="194" y="318">TX</text>
@@ -488,6 +480,7 @@
           <p class="tf-map-note">
             <span>Categories 4 and 5 look the same on the map but differ in the failure mode — see the framework above.</span>
             <span>Map shows share of destination geography, not shipment volume.</span>
+            <span>Map shows the 48 contiguous states only.</span>
           </p>
         </div>
 
@@ -674,7 +667,7 @@
             try {
               var root = document.querySelector('.tf-map-demo');
               if (!root) return;
-              var MAPS = {"current":{"AK":3,"AL":5,"AR":5,"AZ":1,"CA":1,"CO":3,"CT":1,"DC":1,"DE":1,"FL":5,"GA":5,"HI":2,"IA":4,"ID":2,"IL":4,"IN":3,"KS":4,"KY":3,"LA":5,"MA":2,"MD":1,"ME":3,"MI":3,"MN":4,"MO":4,"MS":5,"MT":3,"NC":3,"ND":4,"NE":4,"NH":2,"NJ":1,"NM":3,"NV":1,"NY":1,"OH":2,"OK":4,"OR":1,"PA":1,"RI":2,"SC":5,"SD":4,"TN":5,"TX":5,"UT":2,"VA":2,"VT":2,"WA":1,"WI":4,"WV":2,"WY":4},"ewr":{"AK":5,"AL":4,"AR":4,"AZ":5,"CA":5,"CO":5,"CT":1,"DC":1,"DE":1,"FL":4,"GA":3,"HI":5,"IA":4,"ID":5,"IL":4,"IN":3,"KS":4,"KY":3,"LA":4,"MA":2,"MD":1,"ME":3,"MI":3,"MN":4,"MO":4,"MS":4,"MT":5,"NC":2,"ND":4,"NE":4,"NH":2,"NJ":1,"NM":5,"NV":5,"NY":1,"OH":2,"OK":5,"OR":5,"PA":1,"RI":2,"SC":3,"SD":4,"TN":3,"TX":5,"UT":5,"VA":2,"VT":2,"WA":5,"WI":4,"WV":2,"WY":5},"lax":{"AK":3,"AL":5,"AR":4,"AZ":1,"CA":1,"CO":3,"CT":5,"DC":5,"DE":5,"FL":5,"GA":5,"HI":2,"IA":4,"ID":2,"IL":5,"IN":5,"KS":4,"KY":5,"LA":4,"MA":5,"MD":5,"ME":5,"MI":5,"MN":4,"MO":4,"MS":5,"MT":3,"NC":5,"ND":4,"NE":4,"NH":5,"NJ":5,"NM":2,"NV":1,"NY":5,"OH":5,"OK":4,"OR":1,"PA":5,"RI":5,"SC":5,"SD":4,"TN":5,"TX":4,"UT":2,"VA":5,"VT":5,"WA":2,"WI":5,"WV":5,"WY":3},"optimized":{"AK":3,"AL":1,"AR":1,"AZ":1,"CA":1,"CO":2,"CT":1,"DC":1,"DE":1,"FL":1,"GA":1,"HI":2,"IA":1,"ID":2,"IL":1,"IN":1,"KS":2,"KY":2,"LA":1,"MA":1,"MD":1,"ME":2,"MI":1,"MN":1,"MO":1,"MS":2,"MT":3,"NC":1,"ND":2,"NE":2,"NH":2,"NJ":1,"NM":1,"NV":1,"NY":1,"OH":1,"OK":1,"OR":1,"PA":1,"RI":1,"SC":1,"SD":2,"TN":1,"TX":1,"UT":2,"VA":2,"VT":2,"WA":1,"WI":1,"WV":2,"WY":3}};
+              var MAPS = {"current":{"AL":5,"AR":5,"AZ":1,"CA":1,"CO":3,"CT":1,"DC":1,"DE":1,"FL":5,"GA":5,"IA":4,"ID":2,"IL":4,"IN":3,"KS":4,"KY":3,"LA":5,"MA":2,"MD":1,"ME":3,"MI":3,"MN":4,"MO":4,"MS":5,"MT":3,"NC":3,"ND":4,"NE":4,"NH":2,"NJ":1,"NM":3,"NV":1,"NY":1,"OH":2,"OK":4,"OR":1,"PA":1,"RI":2,"SC":5,"SD":4,"TN":5,"TX":5,"UT":2,"VA":2,"VT":2,"WA":1,"WI":4,"WV":2,"WY":4},"ewr":{"AL":4,"AR":4,"AZ":5,"CA":5,"CO":5,"CT":1,"DC":1,"DE":1,"FL":4,"GA":3,"IA":4,"ID":5,"IL":4,"IN":3,"KS":4,"KY":3,"LA":4,"MA":2,"MD":1,"ME":3,"MI":3,"MN":4,"MO":4,"MS":4,"MT":5,"NC":2,"ND":4,"NE":4,"NH":2,"NJ":1,"NM":5,"NV":5,"NY":1,"OH":2,"OK":5,"OR":5,"PA":1,"RI":2,"SC":3,"SD":4,"TN":3,"TX":5,"UT":5,"VA":2,"VT":2,"WA":5,"WI":4,"WV":2,"WY":5},"lax":{"AL":5,"AR":4,"AZ":1,"CA":1,"CO":3,"CT":5,"DC":5,"DE":5,"FL":5,"GA":5,"IA":4,"ID":2,"IL":5,"IN":5,"KS":4,"KY":5,"LA":4,"MA":5,"MD":5,"ME":5,"MI":5,"MN":4,"MO":4,"MS":5,"MT":3,"NC":5,"ND":4,"NE":4,"NH":5,"NJ":5,"NM":2,"NV":1,"NY":5,"OH":5,"OK":4,"OR":1,"PA":5,"RI":5,"SC":5,"SD":4,"TN":5,"TX":4,"UT":2,"VA":5,"VT":5,"WA":2,"WI":5,"WV":5,"WY":3},"optimized":{"AL":1,"AR":1,"AZ":1,"CA":1,"CO":2,"CT":1,"DC":1,"DE":1,"FL":1,"GA":1,"IA":1,"ID":2,"IL":1,"IN":1,"KS":2,"KY":2,"LA":1,"MA":1,"MD":1,"ME":2,"MI":1,"MN":1,"MO":1,"MS":2,"MT":3,"NC":1,"ND":2,"NE":2,"NH":2,"NJ":1,"NM":1,"NV":1,"NY":1,"OH":1,"OK":1,"OR":1,"PA":1,"RI":1,"SC":1,"SD":2,"TN":1,"TX":1,"UT":2,"VA":2,"VT":2,"WA":1,"WI":1,"WV":2,"WY":3}};
               var tiles = root.querySelectorAll('.tf-map-tile');
               var btns = root.querySelectorAll('.tf-map-btn');
               function apply(key) {
