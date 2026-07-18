@@ -951,13 +951,16 @@ a:hover { color: var(--tf-brick-dark); }
   max-width: 62ch;
   color: var(--tf-paper);
   opacity: 0.85;
-  margin-bottom: 0;          /* the band's bottom padding supplies the 48px gap */
+  margin-bottom: 0;          /* band framing stays symmetric: 48px above the
+                                kicker, 48px below the intro (band padding only) */
 }
-/* Hero pages start their content flush to the band edge: main's top padding goes
-   to 0 so the band's OWN internal bottom padding (--tf-space-6) is the entire
-   subtitle → first-content gap — 48px, the same as a plain-header page. Measured
-   from the intro, not the band edge; the band's framing padding is untouched. */
-.tf-page-head + main { padding-block-start: 0; }
+/* POST-HEADER GAP on hero pages: --tf-space-6 of page-background white space
+   between the BAND EDGE and the first content element. The band's internal
+   padding frames its own text and does NOT count toward this gap, so the two
+   are additive by design. Stated explicitly here rather than left to the
+   inherited .tf-section padding, so the gap holds on any hero page whose <main>
+   does not carry .tf-section. */
+.tf-page-head + main { padding-block-start: var(--tf-space-6); }
 
 /* ── References directory (references.html) ─────────────────────────────────
    A segmented tab control, cream group panels, and a card grid, rendered by

@@ -1,6 +1,6 @@
 # Three Flows Solutions — Brand Style Guide
 
-v10 · 2026-07-18 — tier-1 subtitle rhythm: subtitle→first-content gap standardised to `--tf-space-6` (48px) on every tier-1 page, hero or plain (`.tf-container > .tf-prose-intro`; hero supplies it from the band's bottom padding with `.tf-page-head + main` at 0) — supersedes the band-edge-measured `--tf-space-2` rule (v9: references.html restyle: `.tf-page-head` → full-bleed HERO band (background photo + dark scrim, light-on-dark text, stone-light kicker, ink fallback); tabs → underline idiom (`.tf-tabs` light track + brick active underline, supersedes the ink-boxed control); `.tf-ref-card` → borderless (paper-on-cream contrast) (v8: references.html build: shared `.tf-page-head` (text block + optional header image, tier-1 pattern), segmented tab control (`.tf-tabs` / `.tf-tab`), cream group panels (`.tf-ref-group`) + card grid (`.tf-ref-grid` / `.tf-ref-card`); `--tf-cream` role widened to raised/recessed surfaces generally (v7: blog-004 build: prose tables (`.tf-prose-table` + `.tf-prose table`), the first of the BL-012 deferred body patterns (v6: about.html build: `.tf-profile-lg` principals card (natural-aspect headshots, never cropped — square mandate revoked), wash band tint (`--tf-sand-wash` / `.tf-section-wash`), client-logo slot (original colour), tag→tint mapping (v5: sitewide chrome/divider restyle: ink retired as a section divider (sand `--tf-sand` / `--tf-rule-sand`), white dividerless header (`--tf-white`), dropdown cream lightened to a 15% mix; footer keeps its ink top rule (v4: page-header standard — `.tf-kicker` + h1 on every top-level page. v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5)))))). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
+v11 · 2026-07-18 — post-header gap corrected: `--tf-space-6` (48px) of page-background white space between the header block (band edge on hero pages, intro text on plain pages) and the first content element; a hero band's internal padding frames its own text and does not count toward it (`.tf-page-head + main` back to `--tf-space-6`) — supersedes v10, which measured from the subtitle and removed the hero white gap (v10: tier-1 subtitle rhythm: subtitle→first-content gap standardised to `--tf-space-6` (48px) on every tier-1 page, hero or plain (`.tf-container > .tf-prose-intro`; hero supplies it from the band's bottom padding with `.tf-page-head + main` at 0) — supersedes the band-edge-measured `--tf-space-2` rule (v9: references.html restyle: `.tf-page-head` → full-bleed HERO band (background photo + dark scrim, light-on-dark text, stone-light kicker, ink fallback); tabs → underline idiom (`.tf-tabs` light track + brick active underline, supersedes the ink-boxed control); `.tf-ref-card` → borderless (paper-on-cream contrast) (v8: references.html build: shared `.tf-page-head` (text block + optional header image, tier-1 pattern), segmented tab control (`.tf-tabs` / `.tf-tab`), cream group panels (`.tf-ref-group`) + card grid (`.tf-ref-grid` / `.tf-ref-card`); `--tf-cream` role widened to raised/recessed surfaces generally (v7: blog-004 build: prose tables (`.tf-prose-table` + `.tf-prose table`), the first of the BL-012 deferred body patterns (v6: about.html build: `.tf-profile-lg` principals card (natural-aspect headshots, never cropped — square mandate revoked), wash band tint (`--tf-sand-wash` / `.tf-section-wash`), client-logo slot (original colour), tag→tint mapping (v5: sitewide chrome/divider restyle: ink retired as a section divider (sand `--tf-sand` / `--tf-rule-sand`), white dividerless header (`--tf-white`), dropdown cream lightened to a 15% mix; footer keeps its ink top rule (v4: page-header standard — `.tf-kicker` + h1 on every top-level page. v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5))))))). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
 
 ---
 
@@ -601,19 +601,24 @@ bordered cards → borderless); the cream group panel is unchanged.
   SAME band as a solid-ink field** (the scrim over the ink fallback), never a
   plain light header — so every tier-1 page opens on the same dark band. This
   also supersedes the v4 bare kicker+h1 opener.
-  **Subtitle→first-content gap = `--tf-space-6` (48px) on all tier-1 pages, hero
-  or plain; on hero pages the band's internal bottom padding supplies it (main
-  starts at 0).** Measured from the **intro's text block** to the next element's
-  top edge — not from the band edge. Plain-header pages carry it on the header
-  intro itself (`.tf-container > .tf-prose-intro`), so the rule lives with the
-  header pattern rather than on whatever content happens to follow; the hero
-  zeroes that margin (`.tf-page-head .tf-prose-intro`) and lets its 48px band
-  padding be the whole gap, with `.tf-page-head + main` at `0`. **Scoped to the
-  header intro (a DIRECT child of the page container)**, so the long-form recap
-  that sits inside `.tf-prose` — blog posts, privacy — keeps its own 16px rhythm
-  untouched (the blog post body-top reservation in BLOG.md §5 depends on it).
-  *(Supersedes the earlier "post-hero content gap = `--tf-space-2`" rule, which
-  measured from the band edge rather than from the subtitle and was wrong.)*
+  **Post-header gap = `--tf-space-6` (48px) of page-background white space
+  between the header block and the first content element. Header block = band
+  edge on hero pages, intro text on plain pages. A hero band's internal padding
+  frames its own text and does not count toward this gap.** The band framing and
+  the post-header gap are therefore **additive by design** on hero pages, not
+  alternatives. Implementation: plain pages carry the gap on the header intro
+  (`.tf-container > .tf-prose-intro`), so it lives with the header pattern rather
+  than on whatever content follows; hero pages carry it on `.tf-page-head + main`
+  (`padding-block-start: var(--tf-space-6)`), measured from the band edge. The
+  hero intro's own bottom margin is zeroed (`.tf-page-head .tf-prose-intro`) so
+  the band frames its text symmetrically — 48px above the kicker, 48px below the
+  intro — which is band framing, separate from the gap. **Scoped to the header
+  intro (a DIRECT child of the page container)**, so the long-form recap inside
+  `.tf-prose` — blog posts, privacy — keeps its own 16px rhythm untouched (the
+  blog post body-top reservation in BLOG.md §5 depends on it).
+  *(Supersedes two earlier attempts: the band-edge-measured `--tf-space-2` rule,
+  and the subtitle-measured rule that set `main` to `0` and so removed the hero
+  page's white gap entirely.)*
 - **Tabs (`.tf-tabs` / `.tf-tab`) — the underline idiom (supersedes the ink-boxed
   segmented control).** A full-width strip on a **paper ground** sitting on a
   **light baseline track** (`border-bottom` 2px `--tf-stone-light`); each
