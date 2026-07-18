@@ -1,0 +1,247 @@
+<!--
+  blog-template.html — COPY-SOURCE for new blog posts. NOT servable content.
+
+  To create a post: copy this file to blog-<slug>.html, set data-blog-id on
+  <main> to the post's blogID, fill the title / dek / date / body, and
+  add a matching entry to bloglist.json. This file is NOT a post: it is excluded
+  from the nav and the backlog page checklist, its data-blog-id is empty, and it
+  is never listed in bloglist.json — so blog.js never treats it as a post
+  despite its blog- prefix.
+
+  Structure mirrors privacy.html: partials-injected header/footer, the
+  .tf-container two-column layout with the data-toc rail, the .tf-prose measure,
+  and the header divider under the meta line. The header block is adapted for
+  posts (h1 → dek → publish-date meta → divider).
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What the One Big Beautiful Bill Means for Your Business — Three Flows Solutions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+</head>
+<body class="tf-app">
+  <!-- Shared header injected from partials.html -->
+  <div id="tf-header"></div>
+
+  <main class="tf-section" data-blog-id="blog-005">
+    <div class="tf-container">
+      <div class="tf-prose-layout" data-toc>
+      <div class="tf-prose">
+        <!-- TOP NAV ROW: back-to-blogs (left) + prev/next pager (right).
+             blog.js fills the pager; an absent neighbour renders muted. -->
+        <div class="tf-post-topnav">
+          <a href="blogs.html">← Blogs</a>
+          <span class="tf-post-pager"></span>
+        </div>
+        <!-- POST HEADER: h1 → dek → date (divider). blog.js appends
+             " · N min read" to the date meta. An optional rail image renders
+             from the manifest's "image" field — never marked up here. -->
+        <h1>What the One Big Beautiful Bill Means for Your Business</h1>
+        <p class="tf-prose-intro">The most common mistake is treating these provisions as items to note and revisit at tax time. The value — especially on the R&amp;D side — is in the planning before the filing, not in the filing itself.</p>
+        <p class="tf-meta">July 6, 2025</p>
+
+        <p>The OBBBA was signed into law on July 4, 2025. Amid the coverage of individual tax changes, four business-side provisions went relatively unnoticed — and they directly affect how product-based businesses handle capital expenditure, equipment purchases, R&amp;D costs, and debt. Here is what changed, and what to discuss with your CPA before year-end.</p>
+
+        <h2>Four Provisions Worth Understanding</h2>
+
+        <p>The bill runs to hundreds of pages. Most of the coverage has focused on individual tax rates — the permanent extension of the 2017 brackets, the SALT deduction increase, new deductions for tips and overtime. Those matter for founders personally. But four provisions on the business side have a more direct effect on your operating cash flow and capital planning.</p>
+
+        <p>They share a common thread: each one removes a constraint that previously forced you to spread costs over multiple years when you would have preferred to take the deduction now. That distinction — year-one versus multi-year cost recovery — has a real compounding effect on a business still building its asset base.</p>
+
+        <h2>At a Glance</h2>
+
+        <div class="tf-prose-table">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Provision</th>
+                <th scope="col">What Changed</th>
+                <th scope="col">Effective From</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Bonus depreciation</td>
+                <td>100% first-year deduction on qualifying business assets — permanently restored after a phase-down that would have reached 0% by 2027.</td>
+                <td>Assets acquired after Jan 19, 2025</td>
+                <td>PERMANENT</td>
+              </tr>
+              <tr>
+                <td>§179 expensing</td>
+                <td>Increased annual cap for immediately expensing assets placed in service. More flexible than bonus depreciation — also covers certain used property and building improvements.</td>
+                <td>Assets placed in service after Dec 31, 2024</td>
+                <td>INCREASED</td>
+              </tr>
+              <tr>
+                <td>R&amp;D expensing</td>
+                <td>Domestic R&amp;D costs can be expensed immediately again. A one-time election also allows immediate deduction of previously amortised R&amp;D expenses from 2022–2024.</td>
+                <td>Retroactive</td>
+                <td>RESTORED</td>
+              </tr>
+              <tr>
+                <td>Business interest limitation</td>
+                <td>The §163(j) cap on deductible interest expense has been eased. More of your interest costs on inventory financing, equipment debt, or warehouse loans may now be deductible.</td>
+                <td>2025 tax year</td>
+                <td>EASED</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>What Each Provision Actually Means</h2>
+
+        <h3>Bonus Depreciation — the Full Write-Off Is Back, Permanently</h3>
+
+        <p>Between 2017 and 2022, you could deduct 100% of a qualifying asset's cost in the year you placed it in service. That rate then began phasing down — 80% in 2023, 60% in 2024, 40% in 2025 — with nothing left by 2027. OBBBA permanently restores the 100% rate for assets acquired after January 19, 2025.</p>
+
+        <p>For a brand owner investing in warehouse racking, packaging equipment, forklifts, or technology hardware, the effect is straightforward: the full deduction is available in year one rather than spread across a five-to-seven year depreciation schedule. The planning certainty is arguably as valuable as the deduction itself — you can now model capex with a predictable tax treatment indefinitely.</p>
+
+        <h3>§179 — Broader Coverage, Higher Cap</h3>
+
+        <p>Section 179 has always complemented bonus depreciation rather than duplicating it. Its coverage extends to certain used property, qualified improvement property (leasehold fit-outs, for example), and off-the-shelf software that bonus depreciation does not reach. OBBBA raises the annual limit above the prior $1.16M cap — your CPA can confirm exactly where it lands for 2025.</p>
+
+        <p>The practical distinction between the two is strategic: §179 lets you choose which assets to expense and in what amounts, useful when you want to target a specific taxable income level rather than simply maximising deductions in a given year.</p>
+
+        <h3>R&amp;D Expensing — the 2022 Reversal Is Unwound</h3>
+
+        <p>This one has a history. A provision in the 2017 Tax Cuts and Jobs Act — which took effect in 2022 — required domestic R&amp;D costs to be amortised over five years rather than expensed immediately. For brands investing in product development, tooling design, or process improvement, this created a genuine cash-flow problem: the money went out now, but the tax benefit arrived in small instalments over five years.</p>
+
+        <p>OBBBA restores immediate expensing. More notably, it includes a one-time election to immediately deduct R&amp;D costs that have been sitting on a five-year amortisation schedule since 2022. If you have been carrying those balances, this election could pull forward a meaningful deduction into the current tax year. This warrants a specific conversation with your CPA before December 31.</p>
+
+        <h3>Business Interest — the Ceiling Moves Up</h3>
+
+        <p>Since 2018, §163(j) has capped the deduction for business interest expense at a percentage of adjusted taxable income. The mechanics are technical, and how depreciation interacts with the formula has been a persistent source of friction — particularly for capital-intensive businesses carrying significant debt.</p>
+
+        <p>OBBBA eases the limitation. The precise impact depends on your structure and how your interest is categorised, but the direction is clear: a larger share of your interest expense should now be deductible. If you finance inventory, carry warehouse debt, or hold equipment on credit, this is worth modelling with your accountant.</p>
+
+        <h2>How to Approach the Rest of 2025</h2>
+
+        <p>None of these provisions demand action before a hard deadline in the way that an expiring credit would. But two things are worth doing before the year closes:</p>
+
+        <ul>
+          <li><strong>R&amp;D catch-up election — a one-time opportunity.</strong> If you have amortised R&amp;D balances from 2022–2024, the decision on whether to accelerate them belongs in a Q3 planning conversation, not a year-end scramble.</li>
+          <li><strong>Capital expenditure timing — now backed by permanent certainty.</strong> If you have equipment or infrastructure purchases planned for early 2026, it is worth asking whether pulling them into 2025 changes the tax picture in a meaningful way.</li>
+        </ul>
+
+        <h2>Four Questions for Your CPA</h2>
+
+        <ul>
+          <li><strong>Bonus depreciation — qualifying purchases in 2025.</strong> Do you have planned equipment, machinery, or technology acquisitions this year? Confirm whether they qualify for 100% first-year deduction and whether timing within 2025 matters.</li>
+          <li><strong>§179 — used property and leasehold improvements.</strong> If any purchases involve used equipment, warehouse fit-out, or qualified improvement property, ask whether §179 is the better route over bonus depreciation. Confirm the new annual cap.</li>
+          <li><strong>R&amp;D catch-up election — prior amortised balances.</strong> Have you been amortising domestic R&amp;D expenses since 2022? Ask your CPA whether the one-time election to immediately deduct those accumulated balances makes sense this year.</li>
+          <li><strong>Business interest — debt-financed assets.</strong> If you carry inventory financing, equipment loans, or warehouse debt, ask your CPA to recalculate your §163(j) interest limitation under the revised OBBBA rules.</li>
+        </ul>
+
+        <h2>Disclaimer</h2>
+
+        <p>Three Flows Solutions is an e-commerce operations consultancy, not a tax advisory firm. OBBBA contains many additional provisions beyond the four covered here. Your CPA is the right person to interpret how these rules apply to your specific structure and circumstances.</p>
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared footer injected from partials.html -->
+  <div id="tf-footer"></div>
+
+  <!-- Fetch snippet: load partials.html (relative), inject header/footer,
+       mark the current nav link, and wire dropdowns + the mobile menu.
+       Fails silently (no nav rather than a broken page). -->
+  <script>
+  (function () {
+    fetch('partials.html').then(function (r) {
+      if (!r.ok) throw new Error('partials ' + r.status);
+      return r.text();
+    }).then(function (html) {
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      ['header', 'footer'].forEach(function (slot) {
+        var src = doc.getElementById('tf-' + slot + '-partial');
+        var dest = document.getElementById('tf-' + slot);
+        if (src && dest) dest.innerHTML = src.innerHTML;
+      });
+
+      var header = document.getElementById('tf-header');
+      if (!header) return;
+      var navBar = header.querySelector('.tf-nav');
+
+      var path = window.location.pathname;
+      var file = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
+      var links = header.querySelectorAll('.tf-nav-links a[href]');
+      for (var i = 0; i < links.length; i++) {
+        if (links[i].getAttribute('href') === file) {
+          links[i].setAttribute('aria-current', 'page');
+        }
+      }
+
+      var toggle = header.querySelector('.tf-nav-toggle');
+      if (toggle && navBar) {
+        toggle.addEventListener('click', function () {
+          var open = navBar.classList.toggle('tf-nav-open');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+
+      var items = header.querySelectorAll('.tf-has-dropdown');
+      function isDesktop() { return window.matchMedia('(min-width: 820px)').matches; }
+      function closeItem(item) {
+        item.classList.remove('is-open');
+        var t = item.querySelector('.tf-nav-trigger');
+        if (t) t.setAttribute('aria-expanded', 'false');
+      }
+      function closeAll() {
+        for (var k = 0; k < items.length; k++) closeItem(items[k]);
+      }
+      function setOpen(item, open) {
+        if (open) {
+          for (var k = 0; k < items.length; k++) {
+            if (items[k] !== item) closeItem(items[k]);
+          }
+        }
+        item.classList.toggle('is-open', open);
+        var t = item.querySelector('.tf-nav-trigger');
+        if (t) t.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      for (var j = 0; j < items.length; j++) {
+        (function (item) {
+          var trigger = item.querySelector('.tf-nav-trigger');
+          if (trigger) {
+            trigger.addEventListener('click', function () {
+              setOpen(item, !item.classList.contains('is-open'));
+            });
+          }
+          item.addEventListener('mouseenter', function () {
+            if (isDesktop()) setOpen(item, true);
+          });
+          item.addEventListener('mouseleave', function () {
+            if (isDesktop()) closeItem(item);
+          });
+        })(items[j]);
+      }
+      document.addEventListener('click', function (e) {
+        if (!header.contains(e.target)) closeAll();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' || e.key === 'Esc') closeAll();
+      });
+      var wasDesktop = isDesktop();
+      window.addEventListener('resize', function () {
+        var nowDesktop = isDesktop();
+        if (nowDesktop === wasDesktop) return;
+        wasDesktop = nowDesktop;
+        closeAll();
+        if (navBar) navBar.classList.remove('tf-nav-open');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      });
+    }).catch(function () { /* fail silently: no nav rather than broken page */ });
+  })();
+  </script>
+  <script src="assets/toc.js"></script>
+  <script src="assets/blog.js"></script>
+</body>
+</html>
