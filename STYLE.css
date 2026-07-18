@@ -920,30 +920,35 @@ a:hover { color: var(--tf-brick-dark); }
 /* Photo treatment — every content photograph (profiles: same, circle crop) */
 .tf-photo { filter: saturate(0.72) sepia(0.14) contrast(1.04) brightness(1.02); }
 
-/* ── Page header — shared tier-1 pattern (.tf-page-head) ────────────────────
-   Text block left (kicker / h1 / intro), header image right. SHARED across
-   all tier-1 pages; references.html is the first use, others adopt as built.
-   The image is optional: the element is present only when the page has one —
-   no placeholder, no reserved gap (the same posture as the blog rail image).
-   Below 820px it stacks text-then-image. */
+/* ── Page header — shared tier-1 hero band (.tf-page-head) ──────────────────
+   A FULL-BLEED band placed ABOVE <main>: a background photo under a dark scrim,
+   with light-on-dark text (kicker / h1 / intro) held in a .tf-container. SHARED
+   across all tier-1 pages. The photo is per-page, passed as --tf-page-head-img;
+   with none set the band is solid ink (the scrim laid over the ink fallback).
+   The ink background-color is the MANDATORY fallback if the image fails. */
 .tf-page-head {
-  display: flex;
-  align-items: center;
-  gap: var(--tf-space-6);
-  margin-bottom: var(--tf-space-6);
+  background-color: var(--tf-ink);
+  background-image:
+    linear-gradient(90deg, rgba(38, 34, 31, 0.82) 0%, rgba(38, 34, 31, 0.72) 38%, rgba(38, 34, 31, 0.35) 100%),
+    var(--tf-page-head-img, none);
+  background-size: cover;
+  background-position: center;
+  padding-block: var(--tf-space-6);
 }
-.tf-page-head-text { flex: 1 1 auto; min-width: 0; }
-.tf-page-head-img {
-  flex: 0 0 380px;
-  width: 380px;
-  height: auto;              /* override the height="" attr so aspect-ratio governs */
-  aspect-ratio: 3 / 2;
-  object-fit: cover;
+/* Hero text — light on the dark band. The kicker is stone-light here, NOT
+   brick: brick is reserved for light grounds (hero-only rule). */
+.tf-page-head .tf-kicker { color: var(--tf-stone-light); }
+.tf-page-head h1 { color: var(--tf-paper); }
+.tf-page-head .tf-prose-intro {
+  max-width: 62ch;
+  color: var(--tf-paper);
+  opacity: 0.85;
 }
-@media (max-width: 819px) {
-  .tf-page-head { flex-direction: column; align-items: stretch; gap: var(--tf-space-4); }
-  .tf-page-head-img { flex-basis: auto; width: 100%; }
-}
+/* Post-hero content gap = the standard post-header gap (--tf-space-2). The band
+   keeps its own framing padding (it frames the text on the photo); only main's
+   top padding is trimmed, so the band-edge → content gap matches a normal page's
+   intro → content gap rather than stacking band-padding + section-padding. */
+.tf-page-head + main { padding-block-start: var(--tf-space-2); }
 
 /* ── References directory (references.html) ─────────────────────────────────
    A segmented tab control, cream group panels, and a card grid, rendered by
@@ -951,47 +956,49 @@ a:hover { color: var(--tf-brick-dark); }
    except the two literal sizes the card names (17px name, 13px card body) —
    the same posture as .tf-quote, where no scale token fits. */
 
-/* Segmented tab control. A 2px ink border frames the row; tabs are divided by
-   2px ink rules; the active tab is ink-filled with paper text. Square corners.
-   <button> elements carry aria-selected; JS owns the state. Sized to content on
-   desktop; full-width equal segments (labels wrap) below 820px. */
+/* Tabs — the underline idiom. The strip sits on a light baseline track
+   (border-bottom stone-light); the active tab draws a brick underline ON that
+   track (margin-bottom -2px pulls its own border down onto the line). Paper
+   ground, no fill. Distinct from the pill kit and from underlined prose links.
+   <button> elements carry aria-selected; JS owns the state. */
 .tf-tabs {
   display: flex;
-  width: max-content;
-  max-width: 100%;
-  border: var(--tf-rule);
-  margin-bottom: var(--tf-space-4);
+  width: 100%;
+  background: var(--tf-paper);
+  border-bottom: 2px solid var(--tf-stone-light);
+  margin-bottom: var(--tf-space-3);       /* 24px gap to the first group panel */
 }
 .tf-tab {
   appearance: none;
+  position: relative;
+  flex: 1;
+  text-align: left;
+  padding: 14px 12px;
   background: transparent;
   border: 0;
-  border-left: var(--tf-rule);        /* 2px ink divider between segments */
-  padding: var(--tf-space-1) var(--tf-space-3);
+  border-bottom: 2px solid transparent;    /* reserves the track line for every tab */
+  margin-bottom: -2px;                      /* overlaps the .tf-tabs track */
   font-family: var(--tf-font-body);
-  font-size: var(--tf-text-sm);
+  font-size: 15px;
   font-weight: 500;
-  color: var(--tf-ink);
-  white-space: nowrap;
+  color: var(--tf-ink-soft);
   cursor: pointer;
 }
-.tf-tab:first-child { border-left: 0; }
 .tf-tab:hover { color: var(--tf-brick); }
-.tf-tab[aria-selected="true"] { background: var(--tf-ink); color: var(--tf-paper); }
-.tf-tab[aria-selected="true"]:hover { color: var(--tf-paper); }  /* active stays paper */
-.tf-tab:focus-visible { outline: 2px solid var(--tf-brick); outline-offset: 2px; }
-@media (max-width: 819px) {
-  .tf-tabs { width: 100%; }
-  /* min-width:0 lets a segment shrink below its longest word so three equal
-     segments fit the row (labels wrap); tighter inline padding buys text room. */
-  .tf-tab {
-    flex: 1 1 0;
-    min-width: 0;
-    padding-inline: var(--tf-space-1);
-    text-align: center;
-    white-space: normal;
-  }
+.tf-tab[aria-selected="true"] { color: var(--tf-ink); font-weight: 700; }
+/* Active marker — a SHORT brick underline (~65% of the tab), left-aligned,
+   sitting ON the stone-light track (bottom:-2px = the tab's own -2px overlap).
+   A ::after, not the tab's border-bottom, so the line is shorter than the tab. */
+.tf-tab[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 65%;
+  height: 2px;
+  background: var(--tf-brick);
 }
+.tf-tab:focus-visible { outline: 2px solid var(--tf-brick); outline-offset: 2px; }
 
 /* Panels — one per tab; exactly one is visible (JS sets [hidden] on the rest). */
 .tf-ref-panel[hidden] { display: none; }
@@ -1022,16 +1029,16 @@ a:hover { color: var(--tf-brick-dark); }
   gap: var(--tf-space-2);
 }
 
-/* Card — a small paper card on the cream panel. Whole card is one <a> (also
-   carries .tf-card-link, which pins colour to inherit and turns the border ink
-   on hover). Head row = 20px favicon + 17px serif name; 13px ink-soft body;
+/* Card — a small BORDERLESS paper card on the cream panel: the paper-on-cream
+   surface contrast does the separation, no border needed (none at rest, none on
+   hover). Whole card is one <a> (carries .tf-card-link, colour pinned to
+   inherit). Head row = 20px favicon + 17px serif name; 13px ink-soft body;
    action word pinned bottom-right (no arrow). Hover: name + action go brick. */
 .tf-ref-card {
   display: flex;
   flex-direction: column;
   gap: var(--tf-space-1);
   background: var(--tf-paper);
-  border: var(--tf-rule-light);
   padding: var(--tf-space-2);
 }
 .tf-ref-card-head { display: flex; align-items: center; gap: var(--tf-space-1); }
