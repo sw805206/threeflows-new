@@ -677,13 +677,16 @@ patterns entered the sheet; one older rule is superseded.
   `scroll-snap-type: x mandatory`, `scroll-behavior: smooth`, native scrollbar
   hidden. **The scrolling is CSS, not JS:** touch, trackpad, and keyboard all work
   with `assets/carousel.js` absent — the script adds only the arrows. Same soft-JS
-  posture as the partials fetch and `toc.js`. Equal card heights come from
-  `align-items: stretch` (the tallest card sets the row; vertical is otherwise
-  unconstrained). **Card width is ONE variable, `--tf-carousel-card-w`** — 208px ≈
-  5-up on the 1136px inner container, ~260px ≈ 4-up — so re-pitching the row is a
-  one-value change, deliberately, because the density is a review decision.
-  **Below 820px** (the nav breakpoint, reused — no new breakpoint) the arrows hide
-  and the card goes 75vw so the next card peeks: swipe-only.
+  posture as the partials fetch and `toc.js`. **The row is TWO variables** —
+  `--tf-carousel-card-w` (208px ≈ 5-up on the 1136px inner container, ~260px ≈
+  4-up) and `--tf-carousel-card-h` (160px, ≈ 4:3 against that width) — so
+  re-pitching it is a one-value change either way, deliberately, because density
+  is a review decision. **Card height is FIXED, not content-derived:** a uniform
+  row reads as a gallery, and the surplus height becomes deliberate space between
+  the logo (top) and the pills (bottom, pinned by `.tf-card-sm > .tf-pills`)
+  rather than ragged card bottoms — so a 1-pill and a 2-pill card share a
+  baseline. **Below 820px** (the nav breakpoint, reused — no new breakpoint) the
+  arrows hide and the card goes 75vw so the next card peeks: swipe-only.
 - **Arrows (`assets/carousel.js`, `.tf-carousel-arrow`).** Vanilla, own file, per
   SCOPE. One **card** per click (measured from the DOM, so it follows the width
   variable and the mobile 75vw for free), not one page. No auto-advance, no
@@ -691,6 +694,15 @@ patterns entered the sheet; one older rule is superseded.
   pager's absent-neighbour idiom. Real `<button>`s: focusable, standard
   `:focus-visible` brick ring. Square and borderless, ink → brick on hover; the
   brand has no circular buttons. `prefers-reduced-motion` jumps instead of gliding.
+  **They FLANK the track** — one each side, vertically centred on the card row —
+  and sit in `.tf-container`'s own gutter, never over the cards. The size follows
+  from that: the control is `--tf-space-4` (32px) at a −32px offset, so its lane
+  is *exactly* the container's padding lane and it can neither clip the outermost
+  card nor force horizontal overflow. A 40px arrow at −40px would overflow the
+  viewport around 820px, which is why the control is 32px and not larger. The nav
+  wrapper is `display: contents`, so the buttons position against
+  `.tf-carousel-wrap` with no markup change; the wrap carries the row's top margin
+  so `top: 50%` centres on the cards without discounting it.
 - **Client cards lost their descriptions and are capped at 2 pills.** A carousel
   card is a glance, not a read: logo + up to two engagement tags. **The note #17
   tag→tint mapping is UNCHANGED and still governs** (Plan=brick · Source=ochre ·
