@@ -15,27 +15,22 @@
   <!-- Shared header injected from partials.html -->
   <div id="tf-header"></div>
 
+  <!-- Full-bleed hero band (shared .tf-page-head): background photo under a dark
+       scrim, light-on-dark text. The photo is passed per-page as
+       --tf-page-head-img; the ink background-color is the fallback if it fails. -->
+  <header class="tf-page-head" style="--tf-page-head-img: url('assets/images/references.jpg')">
+    <div class="tf-container">
+      <div class="tf-kicker">References</div>
+      <h1>The Retailer's Library</h1>
+      <p class="tf-prose-intro">A curated directory of tools, platforms and resources for e-commerce sellers and retail businesses.</p>
+    </div>
+  </header>
+
   <main class="tf-section">
     <div class="tf-container">
-
-      <!-- Page header — shared .tf-page-head pattern: text block left, header
-           image right (image element added on crop approval; no placeholder
-           until then, per the pattern). -->
-      <div class="tf-page-head">
-        <div class="tf-page-head-text">
-          <div class="tf-kicker">References</div>
-          <h1>The Retailer's Library</h1>
-          <p class="tf-prose-intro">A curated directory of tools, platforms and resources for e-commerce sellers and retail businesses.</p>
-        </div>
-        <img class="tf-page-head-img tf-photo" src="assets/images/references.jpg"
-             alt="Curved shelves of a library filled with colorful books receding into the distance."
-             width="1200" height="800" loading="eager">
-      </div>
-
-      <!-- The tab control + group panels are rendered here by
-           assets/references.js from references.json. Soft-fail: if the script is
-           absent or the fetch fails, this stays empty and the page still renders
-           (header, footer) — the same posture as the partials fetch and toc.js. -->
+      <!-- Tab control + group panels rendered here by assets/references.js from
+           references.json. Soft-fail: an absent/failed script leaves this empty
+           and the page still renders (hero, header, footer). -->
       <div id="tf-ref-app" data-ref-app></div>
     </div>
   </main>
