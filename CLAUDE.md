@@ -1,4 +1,4 @@
-last updated: 2026-07-15
+v001 | last updated: 2026-07-18
 
 
 # Working Rules
@@ -17,8 +17,14 @@ Process lives in three tiers, by ownership:
 - **Google Doc SOP** — processes done entirely by the human. A user reference, not a source of truth.
 
 
-Every file is version controlled and dated on its first line:
-`v### | last updated: yyyy-mm-dd`
+Every governance file is version controlled and carries a version/date stamp.
+The stamp is a rule, not a convention: every `.md` governance doc opens on
+LINE 1 with exactly `v### | last updated: yyyy-mm-dd` — nothing above it, no
+title, no blank line. The single exception is a file whose format forbids bare
+text at the top (e.g. STYLE.css, which must open with a comment): those carry
+the identical stamp on the FIRST LINE of their opening header comment block,
+which is the closest faithful equivalent. The date in the stamp is always read
+from machine time (Part A → **Dates come from machine time**).
 
 
 This file (CLAUDE.md) is structured as:
@@ -53,6 +59,15 @@ Each project declares its own type, required governance docs, and branch/PR disc
 **Don't guess.** If something is missing, ambiguous, or uncertain, stop and ask. Never guess at a file's contents, a convention, or my intent. When you agree with one of my proposals, rewrite it to be more concise and accurate — never drift back toward your original phrasing in a way that contradicts my intention. If you agree, your write-up must carry my meaning; if you still see a genuine problem with my version, say so explicitly instead of quietly changing the wording.
 
 
+**Dates come from machine time.** Any date written into a doc, a version stamp,
+or a commit is read from the machine (`date +%F`) at the moment of writing —
+never hand-typed, never copied forward from another line, never inferred from
+context or from what today "should" be. A hand-typed date is the only way a doc
+ends up stamped with a date ahead of the actual day, and that is exactly the
+defect this prevents. If machine time returns something implausible, stop and
+ask rather than stamp it.
+
+
 **Ask for content first.** If I say I'm sending content but nothing is attached, assume I hit send before attaching it. Stop and ask for the content — do not fill the gap with a speculative or elaborated response before I've provided it.
 
 
@@ -71,6 +86,18 @@ Each project declares its own type, required governance docs, and branch/PR disc
 These rules apply to any project with a git repo — coding or not, per its SCOPE.md. If the project has no repo, ignore Part B.
 
 
+**Read governance docs from `origin/main`, and check for divergence.** This is
+the git-mechanical form of Part A → **The repo is the source of truth**. Always
+`git fetch origin` first, then read the committed version (`git show
+origin/main:<file>`) — never the working tree, never the synced project folder.
+At the start of any task, compare `origin/main` against the project-folder
+copies. If they diverge, STOP and ask which way to reconcile; never auto-resolve.
+Divergence has two opposite causes and they need opposite fixes: the folder copy
+may be STALE (an update landed on main and the folder needs re-syncing), or it
+may be AHEAD (another stream edited it locally and must commit and push first).
+Guessing wrong destroys work.
+
+
 **Protect main when it deploys from main.** If the project deploys from main (a live website or app), never commit directly to main: one feature branch per task, branched from an up-to-date main → commit locally as you work → push the branch to remote → open a PR only when I ask → merge → delete the branch (see Post-merge cleanup below). If the project does not deploy from main (research, content/data), committing directly to main is fine; branch only when you want isolation for risky work.
 
 
@@ -80,7 +107,26 @@ These rules apply to any project with a git repo — coding or not, per its SCOP
 **No PR unless I explicitly ask.** When I do ask, name it `type/short-description`, where type is one of: feat, fix, docs, refactor, chore, style, test, perf, build, ci, uat.
 
 
-**Style changes are committed separately.** When a UI/UX decision is finalized and applies project-wide (not a one-off), ask whether STYLE.md and/or STYLE.css should be created or updated. Any change to STYLE.md or STYLE.css gets its own commit — never mixed into other code changes.
+**Governance changes get their own PR, merged promptly, then cascade.** A change
+to any governance doc — CLAUDE.md, SCOPE.md, STYLE.md, STYLE.css, BLOG.md,
+BACKLOG.md — goes on a PR of its own: one governance change per PR, never mixed
+into feature work, and never parked open while the stream carries on around it.
+The PR is what makes the change visible to in-flight streams, and merging it
+promptly is what lets them pick it up; a long-lived governance PR means every
+stream is working to a rule that isn't yet real. After merge, cascade the change:
+merge to main → `git pull` locally → the user re-adds the local copy to the
+project folder. This rule holds for every project, including ones where SCOPE.md
+otherwise permits direct commits to main.
+
+
+**Style changes are committed separately.** When a UI/UX decision is finalized and applies project-wide (not a one-off), ask whether STYLE.md and/or STYLE.css should be created or updated. Any change to STYLE.md or STYLE.css gets its own commit — never mixed into other code changes. STYLE.md and STYLE.css are governance docs, so this is the commit-level half of the rule above: style docs get their own commit AND their own PR.
+
+
+**Governance docs carry a version/date stamp.** Every `.md` governance doc's
+first line is exactly `v### | last updated: yyyy-mm-dd`; comment-headed files
+such as STYLE.css carry the same stamp on the first line of their header comment
+(see the preamble). Bump `v###` on every substantive change, and take the date
+from machine time per Part A → **Dates come from machine time**.
 
 
 **Show client-facing changes on localhost.** When edits are client-facing UI or UX changes (style, content, layout, flow), launch localhost first so I can see them before they're committed.

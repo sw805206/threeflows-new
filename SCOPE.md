@@ -1,4 +1,4 @@
-v008 | last updated: 2026-07-18
+v009 | last updated: 2026-07-18
 
 # SCOPE.md — threeflows.com Relaunch (new repo)
 
@@ -28,9 +28,9 @@ permission for direct commits to main is retired. Each work stream lives
 on its own feature branch (`feat/<stream>`) in its own git worktree under
 `../threeflows-worktrees/<stream>`; main receives finished work via PR
 only, so main always holds finished work alone and concurrent streams
-never collide in the working tree. The sole exception is governance-doc
-edits (this file, CLAUDE.md, BACKLOG.md, and the like), which may still be
-committed directly to main. From the moment the custom domain is attached,
+never collide in the working tree. Governance-doc edits are no exception:
+they follow CLAUDE.md Part B → **Governance changes get their own PR,
+merged promptly, then cascade**. From the moment the custom domain is attached,
 full Part B discipline applies unchanged.
 
 ## Hard constraints
@@ -97,6 +97,10 @@ served from partials.html, fetched per page.
   never into page-local styles. The decision is recorded in STYLE.md.
 - Later pages reuse, not reinvent. If new patterns are still appearing
   after the first 2–3 pages, flag it — the design is drifting.
+- Reuse check before any new pattern. Before defining a new shared
+  pattern, grep the ratchet-rule record in origin/main's STYLE.md for one
+  that already does the job, and reuse it if it exists. Only a genuinely
+  new need gets a new pattern.
 - Every tier-1 page build includes a .tf-page-head header: kicker, h1,
   intro written with the page's content, plus a header image (sourced and
   approved via the BLOG.md §7 image process; CSS cover-crops it in the hero
