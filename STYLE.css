@@ -1,4 +1,4 @@
-/* v004 | last updated: 2026-07-18
+/* v005 | last updated: 2026-07-19
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
@@ -158,6 +158,18 @@ body.tf-app {
    On hero pages the band's internal bottom padding supplies the 48px instead,
    so the hero zeroes this margin (see .tf-page-head below). */
 .tf-container > .tf-prose-intro { margin-bottom: var(--tf-space-6); }
+/* SAME GAP WHEN THERE IS NO INTRO. The rule above anchors the plain-page gap on
+   the INTRO, so a page whose header block ends at the h1 had no rule supplying it
+   and fell through to the h1's own 16px. The gap belongs to the HEADER BLOCK, not
+   to the intro specifically: it is 48px below the LAST header element, whichever
+   that is. So an h1 NOT followed by an intro carries the 48px itself.
+   The two rules are mutually exclusive by construction — `:has(+ .tf-prose-intro)`
+   is exactly the case the intro rule already covers — so they can never stack and
+   double. Scoped `main …` because a HERO h1 lives in the band OUTSIDE <main>,
+   where the band's own padding supplies the framing; and `.tf-container >` keeps
+   the same direct-child scoping as the intro rule, so an h1 inside `.tf-prose`
+   (privacy, blog posts) stays on its own 16px rhythm. */
+main .tf-container > h1:not(:has(+ .tf-prose-intro)) { margin-bottom: var(--tf-space-6); }
 /* A direct-child meta line (e.g. "Last updated …") closes the page-header block
    (kicker/h1/intro/meta) with a light within-section rule before the body copy. */
 .tf-prose > .tf-meta {
@@ -963,6 +975,19 @@ a:hover { color: var(--tf-brick-dark); }
    inherited .tf-section padding, so the gap holds on any hero page whose <main>
    does not carry .tf-section. */
 .tf-page-head + main { padding-block-start: var(--tf-space-6); }
+/* MULTI-BAND HERO BRIDGE. The rule above resolves correctly only when <main> is
+   ITSELF the section (references.html: `<main class="tf-section">`) — there both
+   declarations land on the SAME element and the more specific one simply wins,
+   so the gap is 48px, not 96px. A MULTI-BAND hero page cannot do that: its
+   <main> wraps several `<section class="tf-section">` with different grounds, so
+   the two paddings sit on DIFFERENT elements and ADD (48 + 48 = 96). Zeroing
+   <main> when it is not itself the section hands the gap to the first section's
+   own top padding, reproducing the single-band geometry exactly.
+   NB the 48px is then coloured by that first section's ground. For a paper first
+   band (the expected case) that is identical to page background; a hero page
+   opening straight onto a WASH band would tint the gap, and should carry a
+   paper band first rather than override this rule. */
+.tf-page-head + main:not(.tf-section) { padding-block-start: 0; }
 
 /* ── References directory (references.html) ─────────────────────────────────
    A segmented tab control, cream group panels, and a card grid, rendered by
