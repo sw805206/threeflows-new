@@ -1,0 +1,234 @@
+<!--
+  blog-template.html — COPY-SOURCE for new blog posts. NOT servable content.
+
+  To create a post: copy this file to blog-<slug>.html, set data-blog-id on
+  <main> to the post's blogID, fill the title / dek / date / body, and
+  add a matching entry to bloglist.json. This file is NOT a post: it is excluded
+  from the nav and the backlog page checklist, its data-blog-id is empty, and it
+  is never listed in bloglist.json — so blog.js never treats it as a post
+  despite its blog- prefix.
+
+  Structure mirrors privacy.html: partials-injected header/footer, the
+  .tf-container two-column layout with the data-toc rail, the .tf-prose measure,
+  and the header divider under the meta line. The header block is adapted for
+  posts (h1 → dek → publish-date meta → divider).
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Make or Buy, Local or Overseas: A Sourcing Question — Three Flows Solutions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+</head>
+<body class="tf-app">
+  <!-- Shared header injected from partials.html -->
+  <div id="tf-header"></div>
+
+  <main class="tf-section" data-blog-id="blog-008">
+    <div class="tf-container">
+      <div class="tf-prose-layout" data-toc>
+      <div class="tf-prose">
+        <!-- TOP NAV ROW: back-to-blogs (left) + prev/next pager (right).
+             blog.js fills the pager; an absent neighbour renders muted. -->
+        <div class="tf-post-topnav">
+          <a href="blogs.html">← Blogs</a>
+          <span class="tf-post-pager"></span>
+        </div>
+        <!-- POST HEADER: h1 → dek → date (divider). blog.js appends
+             " · N min read" to the date meta. An optional rail image renders
+             from the manifest's "image" field — never marked up here. -->
+        <h1>Make or Buy, Local or Overseas: A Sourcing Question</h1>
+        <p class="tf-prose-intro">A practical framework for small business owners just getting started — the 2×2 that covers most of the decision, and what to do when the theory meets reality.</p>
+        <p class="tf-meta">October 14, 2025</p>
+
+        <p>This post is written for small business owners at the early stage of building a product line — or already selling one, but now looking to insource your sourcing and stop buying through middlemen. The decision looks the same on paper as it does for large brands with their own factories or global procurement teams, but the constraints and the practical answers are entirely different at the small end. If you're deciding where to source your first product line, your next one, or your first direct relationship, this is for you.</p>
+
+        <h2>The 2×2</h2>
+
+        <p>Every sourcing decision sits somewhere on a two-by-two: <strong>make or buy</strong>, and <strong>local or overseas</strong>. That gives four positions:</p>
+
+        <p><strong>Make Local</strong> — you (or your team) manufacture the product yourself, in your home country. Bakeries, candlemakers, leather workshops, small-batch cosmetics. Full control, distinctive product, but hard to scale — every step up requires capital investment in equipment, space, or people.</p>
+
+        <p><strong>Buy Local</strong> — you source a finished product from a domestic supplier. Almost always that supplier is a distributor or wholesaler — a middleman — which means their margin is baked into what you pay. Faster to communicate with and no import overhead, but you rarely reach the actual manufacturer's price.</p>
+
+        <p><strong>Buy Overseas</strong> — you source a finished product from a foreign supplier, typically Asia. Lowest unit cost, most SKU variety, and the most operational complexity for a small buyer.</p>
+
+        <p><strong>Make Overseas</strong> — you own or operate a factory abroad. This is a large-corporation position and mostly outside the scope of this post.</p>
+
+        <h2>Dimensions to Weigh</h2>
+
+        <p>Each corner has a situational fit and a set of business trade-offs. Start with the situational fit, then work the trade-offs.</p>
+
+        <p><strong>Overseas</strong> works when the product itself is regional to somewhere far away (French wine, Italian marble, Turkish rugs), or when what you want is the newest design available in small quantities before it hits the mass market (which usually means China). <strong>Local</strong> works when the product is heavy or bulky enough that logistics costs eat the overseas advantage, when it faces import barriers (regulatory or tariff), or when quality, shelf life, compliance, or day-to-day communication matters more than unit cost. <strong>Make</strong> works when you own the design and engineering, or when you have genuine manufacturing capability or capacity — a workshop, a kitchen, a bench, and the skills to use them. <strong>Buy</strong> works when the product is unique, new, or cheap enough that making it yourself is the wrong use of your time; when the minimum order quantity you need is small; or when you're still in the product validation phase and speed matters more than optimization.</p>
+
+        <p>Beyond situational fit, the four corners differ across a consistent set of business dimensions. Rather than hand you a scored matrix, we recommend the exercise of listing which dimensions matter most for your business, then rating each corner yourself against them:</p>
+
+        <ul>
+          <li>Fixed cost — equipment, tooling, deposits, setup</li>
+          <li>Variable cost — per-unit product and freight cost at your target volume</li>
+          <li>Tariff and compliance risk — exposure to import duties, regulations, product-safety rules</li>
+          <li>Quality controllability — how easily you can inspect, test, and correct</li>
+          <li>Scalability — how much friction sits between you and 10× volume</li>
+          <li>IP protection — how well you can protect your design, brand, and know-how</li>
+          <li>Communication cost — the real time you'll spend managing the relationship</li>
+        </ul>
+
+        <p>No dimension is decisive on its own. What matters is which two or three carry the most weight for your specific business, and how the four corners rank on those. Do the exercise honestly — the answer often surprises founders who assumed they already knew.</p>
+
+        <h2>The Reality Check</h2>
+
+        <p>For most small business owners in retail, the honest answer is that <strong>Make</strong> — local or overseas — isn't the starting point. Both are large-brand positions. Local manufacturing at any real scale requires equipment, space, and staff you don't have yet. Overseas manufacturing requires ownership of a factory you also don't have yet.</p>
+
+        <p>That leaves Buy Local or Buy Overseas. And once you factor in what small retail actually demands — fail fast, test the market, keep the launch budget small, iterate on what works — <strong>Buy Overseas is usually the fastest and lowest-cost way to get a first product line into customers' hands.</strong></p>
+
+        <p>That doesn't make it the right long-term answer for every product. But for a first launch, for a market test, for validating whether an idea has legs, the practical answer is usually to buy it overseas and see what happens.</p>
+
+        <h2>The Challenges of Buying Overseas</h2>
+
+        <p>Buying overseas is the pragmatic default, but it comes with real challenges:</p>
+
+        <ul>
+          <li><strong>You don't know where to find good product.</strong> The internet is full of suppliers of wildly variable quality, and the trustworthy ones don't always show up on the first page of results.</li>
+          <li><strong>Product packaging is not up to your standard.</strong> Overseas suppliers optimize their packaging for wholesale export, not for a Western retail shelf or an unboxing experience.</li>
+          <li><strong>Ongoing language and coordination friction.</strong> Time zones, translation, cultural expectations about lead times and quality tolerances — none of these disappear, and all of them cost real time to manage.</li>
+          <li><strong>Copycats.</strong> A supplier who's willing to make your product for you is often willing to make it for your competitor next month.</li>
+        </ul>
+
+        <p>None of these is fatal. All of them are worth planning for.</p>
+
+        <h2>What We Suggest</h2>
+
+        <p>Once you accept that Buy Overseas is the practical starting point for most small retailers, the question becomes how to do it well. A few principles worth knowing:</p>
+
+        <p><strong>Product + repackaging (white label) is the most common e-commerce pattern.</strong> Buy a stock product overseas, repackage it under your own brand. Whether you repackage overseas (at the supplier or a third-party consolidator) or in-house after import depends on volume, timing, and how much you want to keep the launch confidential.</p>
+
+        <p><strong>Domestic re-engineering opens more doors than most founders realize.</strong> You import a base product and add real value with local work — software, configuration, integration, customization. One of our clients bought a commercial robot and repurposed it with local programming to serve as a daytime receptionist and a nighttime security guard. Same hardware; two products; both built on top of an overseas base.</p>
+
+        <p>Beyond those patterns, three phases in a typical launch are worth thinking through deliberately:</p>
+
+        <ul>
+          <li><strong>Product selection</strong> — get samples from a wide range of vendors. Compare price and quality, identify backups so you're never dependent on one supplier, and learn the market before you commit.</li>
+          <li><strong>Launch</strong> — buy the product, design your own packaging (and find a packaging vendor to produce it), and put the two together via a third-party consolidator or in-house. This is also where you can keep launch details confidential from your primary supplier.</li>
+          <li><strong>Scale</strong> — consider US-side assembly or re-engineering. Lower tariff exposure, better quality control, easier to mix and match SKUs from multiple sources.</li>
+        </ul>
+
+        <h2>How Pathfinder Helps</h2>
+
+        <p>Our <strong>Pathfinder</strong> program supports small businesses through exactly this decision and its execution. A few of the specific offerings that map to what's above:</p>
+
+        <ul>
+          <li><strong>Sample Box delivered to your door.</strong> We source and consolidate samples from a curated set of overseas vendors, so you can compare quality and price without setting up supplier accounts one by one.</li>
+          <li><strong>Packaging design support.</strong> Getting your own packaging right is the single biggest step in turning a bought product into a brand.</li>
+          <li><strong>Landed cost calculation.</strong> Landed cost is the true per-unit cost of your product once it reaches your warehouse — including product price, freight, insurance, tariff, customs fees, and last-mile handling. It is not the invoice number your supplier gives you, and founders who plan on the invoice price get surprised when the shipment arrives 20–40% more expensive than the model said.</li>
+          <li><strong>Sourcing trip and contract negotiation.</strong> For products where an on-the-ground visit changes the deal, we accompany you and negotiate with you.</li>
+        </ul>
+
+        <p>If any of the above matches where you are in your launch, <a href="contact.html">get in touch</a>.</p>
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared footer injected from partials.html -->
+  <div id="tf-footer"></div>
+
+  <!-- Fetch snippet: load partials.html (relative), inject header/footer,
+       mark the current nav link, and wire dropdowns + the mobile menu.
+       Fails silently (no nav rather than a broken page). -->
+  <script>
+  (function () {
+    fetch('partials.html').then(function (r) {
+      if (!r.ok) throw new Error('partials ' + r.status);
+      return r.text();
+    }).then(function (html) {
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      ['header', 'footer'].forEach(function (slot) {
+        var src = doc.getElementById('tf-' + slot + '-partial');
+        var dest = document.getElementById('tf-' + slot);
+        if (src && dest) dest.innerHTML = src.innerHTML;
+      });
+
+      var header = document.getElementById('tf-header');
+      if (!header) return;
+      var navBar = header.querySelector('.tf-nav');
+
+      var path = window.location.pathname;
+      var file = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
+      var links = header.querySelectorAll('.tf-nav-links a[href]');
+      for (var i = 0; i < links.length; i++) {
+        if (links[i].getAttribute('href') === file) {
+          links[i].setAttribute('aria-current', 'page');
+        }
+      }
+
+      var toggle = header.querySelector('.tf-nav-toggle');
+      if (toggle && navBar) {
+        toggle.addEventListener('click', function () {
+          var open = navBar.classList.toggle('tf-nav-open');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+
+      var items = header.querySelectorAll('.tf-has-dropdown');
+      function isDesktop() { return window.matchMedia('(min-width: 820px)').matches; }
+      function closeItem(item) {
+        item.classList.remove('is-open');
+        var t = item.querySelector('.tf-nav-trigger');
+        if (t) t.setAttribute('aria-expanded', 'false');
+      }
+      function closeAll() {
+        for (var k = 0; k < items.length; k++) closeItem(items[k]);
+      }
+      function setOpen(item, open) {
+        if (open) {
+          for (var k = 0; k < items.length; k++) {
+            if (items[k] !== item) closeItem(items[k]);
+          }
+        }
+        item.classList.toggle('is-open', open);
+        var t = item.querySelector('.tf-nav-trigger');
+        if (t) t.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      for (var j = 0; j < items.length; j++) {
+        (function (item) {
+          var trigger = item.querySelector('.tf-nav-trigger');
+          if (trigger) {
+            trigger.addEventListener('click', function () {
+              setOpen(item, !item.classList.contains('is-open'));
+            });
+          }
+          item.addEventListener('mouseenter', function () {
+            if (isDesktop()) setOpen(item, true);
+          });
+          item.addEventListener('mouseleave', function () {
+            if (isDesktop()) closeItem(item);
+          });
+        })(items[j]);
+      }
+      document.addEventListener('click', function (e) {
+        if (!header.contains(e.target)) closeAll();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' || e.key === 'Esc') closeAll();
+      });
+      var wasDesktop = isDesktop();
+      window.addEventListener('resize', function () {
+        var nowDesktop = isDesktop();
+        if (nowDesktop === wasDesktop) return;
+        wasDesktop = nowDesktop;
+        closeAll();
+        if (navBar) navBar.classList.remove('tf-nav-open');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      });
+    }).catch(function () { /* fail silently: no nav rather than broken page */ });
+  })();
+  </script>
+  <script src="assets/toc.js"></script>
+  <script src="assets/blog.js"></script>
+</body>
+</html>
