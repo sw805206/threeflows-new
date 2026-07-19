@@ -1,4 +1,4 @@
-v010 | last updated: 2026-07-19
+v011 | last updated: 2026-07-19
 
 # BACKLOG.md — threeflows-new
 
@@ -62,6 +62,17 @@ Blog posts and the calculator MVP page come later.
 **Status vocabulary — §A uses the BL table's flow: open → review → close.**
 `open` = not built; `review` = built, awaiting human ratification; `close` =
 ratified, with evidence (the shipping SHA) in Closed-by. Code never self-closes.
+
+**Closed-by tracks the LATEST SUBSTANTIVE commit, not the first.** When a page
+already at `close` is materially changed, its Closed-by SHA moves to the most
+recent substantive commit — always a SINGLE SHA, never an accumulating list, since
+git carries the full history and the row does not duplicate it. **Substantive** =
+a change to what the page PRESENTS or how it is BUILT (a new section, a
+layout/pattern change, a migration); typo, copy and whitespace fixes are not, and
+leave the SHA alone. The page **stays `close`** — a material change did not
+un-build it — so only the evidence moves, never the status. Updating a Closed-by
+SHA under this rule is ROUTINE bookkeeping (direct-to-main per the PR#10
+exception), not a structural change.
 
 | New page | Source old page(s) / notes | Status | Closed-by |
 |---|---|---|---|
