@@ -1,8 +1,8 @@
-v013 | last updated: 2026-07-19
+v014 | last updated: 2026-07-19
 
 # Three Flows Solutions — Brand Style Guide
 
-v013: header-gap standard reconciled by measurement: hero/plain parity confirmed ALREADY CORRECT at 48px (no rule added — Defect A satisfied as v011 wrote it); **multi-band hero bridge added** (`.tf-page-head + main:not(.tf-section)` → `padding-block-start: 0`, measured 96px → 48px on a multi-band harness, `references.html` unaffected) — v011 resolved the single-band case by SPECIFICITY COLLISION on a shared `<main>`, which does not survive `<main>` wrapping several sections; **plain-page gap RE-ANCHORED on the header block** (`main .tf-container > h1:not(:has(+ .tf-prose-intro))` → 48px) so the gap sits below the LAST header element rather than below the intro specifically — an intro-less page was falling to the h1's 16px; measured across all four cases (plain-with-intro 48→48, plain-without-intro **16→48**, hero 48→48, grandfathered 16→16), applies to 9 intro-less shells incl. `index.html`, mutually exclusive with the intro rule so it cannot double; one open item flagged, not fixed (hero-vs-plain differ by 48px when measured from the intro TEXT, which is v011's "additive by design") (v012: about.html client carousel: `.tf-card-sm` kit-level small-card shell (**bordered** — it sits on the wash band, where paper-on-wash is too narrow a step to go borderless like `.tf-ref-card` does on cream); `.tf-carousel` scroll-snap track with vanilla arrow controls (`assets/carousel.js`), 5-up via a single `--tf-carousel-card-w`, swipe-only below 820px; client cards reduced to logo + **≤2** engagement pills (descriptions dropped); `.tf-icon-brand` — third-party brand marks render in their owner's colour, **superseding** the about-page rule that pinned the LinkedIn mark to ink-soft → brick (v011: post-header gap corrected: `--tf-space-6` (48px) of page-background white space between the header block (band edge on hero pages, intro text on plain pages) and the first content element; a hero band's internal padding frames its own text and does not count toward it (`.tf-page-head + main` back to `--tf-space-6`) — supersedes v10, which measured from the subtitle and removed the hero white gap (v10: tier-1 subtitle rhythm: subtitle→first-content gap standardised to `--tf-space-6` (48px) on every tier-1 page, hero or plain (`.tf-container > .tf-prose-intro`; hero supplies it from the band's bottom padding with `.tf-page-head + main` at 0) — supersedes the band-edge-measured `--tf-space-2` rule (v9: references.html restyle: `.tf-page-head` → full-bleed HERO band (background photo + dark scrim, light-on-dark text, stone-light kicker, ink fallback); tabs → underline idiom (`.tf-tabs` light track + brick active underline, supersedes the ink-boxed control); `.tf-ref-card` → borderless (paper-on-cream contrast) (v8: references.html build: shared `.tf-page-head` (text block + optional header image, tier-1 pattern), segmented tab control (`.tf-tabs` / `.tf-tab`), cream group panels (`.tf-ref-group`) + card grid (`.tf-ref-grid` / `.tf-ref-card`); `--tf-cream` role widened to raised/recessed surfaces generally (v7: blog-004 build: prose tables (`.tf-prose-table` + `.tf-prose table`), the first of the BL-012 deferred body patterns (v6: about.html build: `.tf-profile-lg` principals card (natural-aspect headshots, never cropped — square mandate revoked), wash band tint (`--tf-sand-wash` / `.tf-section-wash`), client-logo slot (original colour), tag→tint mapping (v5: sitewide chrome/divider restyle: ink retired as a section divider (sand `--tf-sand` / `--tf-rule-sand`), white dividerless header (`--tf-white`), dropdown cream lightened to a 15% mix; footer keeps its ink top rule (v4: page-header standard — `.tf-kicker` + h1 on every top-level page. v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5))))))))). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
+v014: about.html hero migration — `.tf-page-head` adopted (FIRST multi-band hero, first consumer of the multi-band bridge); **`--tf-page-head-pos`** added — per-page cover-crop focal point, default `center` so `references.html` is unchanged (about sets `center 63%`; NB `background-position` X is inert on this band — `cover` scales 3:2 by width, zero horizontal overflow, so panning is vertical-only); **`.tf-container > :first-child { margin-block-start: 0 }`** — about's `.tf-profile-grid` became the container's first child when the header trio moved into the band, and its 32px top margin ADDED to the section's padding (margin never collapses across padding), rendering 80px where the standard is 48px; blast radius measured at exactly one element on one page, same idiom as `.tf-prose > :first-child`; `assets/images/about.jpg` promoted per §7 (byte-identical, decorative hero no alt per BL-019, bare page-name + inline wiring per BL-020) (v013: header-gap standard reconciled by measurement: hero/plain parity confirmed ALREADY CORRECT at 48px (no rule added — Defect A satisfied as v011 wrote it); **multi-band hero bridge added** (`.tf-page-head + main:not(.tf-section)` → `padding-block-start: 0`, measured 96px → 48px on a multi-band harness, `references.html` unaffected) — v011 resolved the single-band case by SPECIFICITY COLLISION on a shared `<main>`, which does not survive `<main>` wrapping several sections; **plain-page gap RE-ANCHORED on the header block** (`main .tf-container > h1:not(:has(+ .tf-prose-intro))` → 48px) so the gap sits below the LAST header element rather than below the intro specifically — an intro-less page was falling to the h1's 16px; measured across all four cases (plain-with-intro 48→48, plain-without-intro **16→48**, hero 48→48, grandfathered 16→16), applies to 9 intro-less shells incl. `index.html`, mutually exclusive with the intro rule so it cannot double; one open item flagged, not fixed (hero-vs-plain differ by 48px when measured from the intro TEXT, which is v011's "additive by design") (v012: about.html client carousel: `.tf-card-sm` kit-level small-card shell (**bordered** — it sits on the wash band, where paper-on-wash is too narrow a step to go borderless like `.tf-ref-card` does on cream); `.tf-carousel` scroll-snap track with vanilla arrow controls (`assets/carousel.js`), 5-up via a single `--tf-carousel-card-w`, swipe-only below 820px; client cards reduced to logo + **≤2** engagement pills (descriptions dropped); `.tf-icon-brand` — third-party brand marks render in their owner's colour, **superseding** the about-page rule that pinned the LinkedIn mark to ink-soft → brick (v011: post-header gap corrected: `--tf-space-6` (48px) of page-background white space between the header block (band edge on hero pages, intro text on plain pages) and the first content element; a hero band's internal padding frames its own text and does not count toward it (`.tf-page-head + main` back to `--tf-space-6`) — supersedes v10, which measured from the subtitle and removed the hero white gap (v10: tier-1 subtitle rhythm: subtitle→first-content gap standardised to `--tf-space-6` (48px) on every tier-1 page, hero or plain (`.tf-container > .tf-prose-intro`; hero supplies it from the band's bottom padding with `.tf-page-head + main` at 0) — supersedes the band-edge-measured `--tf-space-2` rule (v9: references.html restyle: `.tf-page-head` → full-bleed HERO band (background photo + dark scrim, light-on-dark text, stone-light kicker, ink fallback); tabs → underline idiom (`.tf-tabs` light track + brick active underline, supersedes the ink-boxed control); `.tf-ref-card` → borderless (paper-on-cream contrast) (v8: references.html build: shared `.tf-page-head` (text block + optional header image, tier-1 pattern), segmented tab control (`.tf-tabs` / `.tf-tab`), cream group panels (`.tf-ref-group`) + card grid (`.tf-ref-grid` / `.tf-ref-card`); `--tf-cream` role widened to raised/recessed surfaces generally (v7: blog-004 build: prose tables (`.tf-prose-table` + `.tf-prose table`), the first of the BL-012 deferred body patterns (v6: about.html build: `.tf-profile-lg` principals card (natural-aspect headshots, never cropped — square mandate revoked), wash band tint (`--tf-sand-wash` / `.tf-section-wash`), client-logo slot (original colour), tag→tint mapping (v5: sitewide chrome/divider restyle: ink retired as a section divider (sand `--tf-sand` / `--tf-rule-sand`), white dividerless header (`--tf-white`), dropdown cream lightened to a 15% mix; footer keeps its ink top rule (v4: page-header standard — `.tf-kicker` + h1 on every top-level page. v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5))))))))). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
 
 ---
 
@@ -784,3 +784,55 @@ were considered; **one was already satisfied, two were real and are fixed here.*
   twice as far from its content as a plain page's is a **design decision, not a
   bug** — reversing it would supersede a rule one day old, so it is left standing
   and flagged rather than changed.
+
+### about.html hero migration — first multi-band hero — about.html — 2026-07-19
+
+about.html adopts the shared `.tf-page-head` hero band, replacing its v4 bare
+kicker+h1 opener. **It is the FIRST multi-band hero on the site**, so it is the
+first page to exercise the bridge added earlier today — and exercising it exposed
+one further gap. The header trio (kicker / h1 / intro) moved verbatim out of
+BAND 1's `.tf-container` into a `<header class="tf-page-head">` placed before
+`<main>`, exactly as `references.html` does. BAND 1 now opens directly on
+`.tf-profile-grid` with **no heading** — deliberate: the hero labels the page.
+
+- **`--tf-page-head-pos` — per-page cover-crop focal point (NEW).** The band
+  renders WIDE and SHORT, so `cover` discards most of a 3:2 photo's height — at a
+  ~238px band on a 1265px viewport only the **middle 28.17%** survives. `center`
+  is right only when the subject sits mid-frame. about's photo has its subjects
+  **below** centre, and `center` cut them off at chest height. Added
+  `background-position: var(--tf-page-head-pos, center)` so a page can aim that
+  window **without a page-local style** (SCOPE forbids those), exactly as
+  `--tf-page-head-img` carries the photo. **Default `center` = the shipped
+  `references.html` behaviour, verified unchanged at `50% 50%`.** about sets
+  `center 63%`.
+  *Recorded because it is counter-intuitive:* **`background-position` X does
+  nothing on this band.** `cover` scales a 3:2 image by WIDTH here (the box is far
+  wider than 3:2), so the scaled image matches the box width exactly — **zero
+  horizontal overflow**, and 606px vertical. Panning is a VERTICAL-only control;
+  moving a subject sideways requires re-cropping the source, not a position value.
+- **`.tf-container > :first-child { margin-block-start: 0 }` (NEW).** A first
+  child's top margin **adds to** the section's padding rather than collapsing into
+  it (margin never collapses across padding), so the band's top framing silently
+  exceeds `--tf-space-6`. Surfaced the moment about's header trio left BAND 1 and
+  `.tf-profile-grid` (margin-top 32px) became the container's first child:
+  **measured 80px where the standard is 48px.** Zeroed so the section's padding
+  alone owns that edge — **same idiom and same reason as `.tf-prose > :first-child`**,
+  which already existed for the identical problem one level down. Blast radius
+  measured across all 14 pages before landing: **exactly one element on one page**
+  (about's profile grid) — every other `.tf-container` first child already carried
+  a zero top margin, so nothing else can move. Gap measured back to **48px**.
+- **Image promoted per BLOG.md §7 — `assets/images/about.jpg`.** Master
+  `/Users/swai/Images/jumping-02.jpg` (5667×3778, exact 3:2) read **read-only**;
+  preview exported by pure downscale (no upscale), then re-cropped at the user's
+  request to push the group rightward, and the **approved bytes promoted
+  byte-identically** (sha256 verified, never re-processed) to a committed
+  1200×800 q82 EXIF-stripped file. **Decorative hero, NO alt** — a CSS
+  `background-image` structurally cannot carry alt text and the h1 is the
+  accessible heading, per **BL-019**; naming (`about.jpg`, bare page name) and
+  wiring (inline `--tf-page-head-img`, no manifest) follow the `references.jpg`
+  precedent per **BL-020**. Both rows remain open pending the §7 doc edit.
+  *Known constraint, recorded deliberately:* the approved crop is tuned tight —
+  the visible strip equals the subject height with **no vertical spare**. A
+  TALLER band (narrower viewport, wrapped headline) shows more and is safe; a
+  SHORTER band would clip feet. Nothing on the page shortens it today, but hero
+  copy edits should re-check the crop.

@@ -1,4 +1,4 @@
-/* v005 | last updated: 2026-07-19
+/* v006 | last updated: 2026-07-19
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
@@ -125,6 +125,14 @@ body.tf-app {
 @media (min-width: 768px) {
   .tf-container { padding-inline: var(--tf-space-4); }
 }
+/* A first child's TOP MARGIN would ADD to the section's padding rather than
+   collapse into it (margin never collapses across padding), so the band's top
+   framing would silently exceed --tf-space-6. Zeroed here so the section's
+   padding alone owns that edge. Same idiom, same reason as
+   `.tf-prose > :first-child` below. Surfaced when about.html's header trio moved
+   into the hero band and left `.tf-profile-grid` (margin-top 32px) as the first
+   child, rendering an 80px gap where the standard is 48px. */
+.tf-container > :first-child { margin-block-start: 0; }
 
 /* Long-form prose — a readable measure for running body copy (legal pages,
    blog posts, service write-ups). Sits INSIDE a .tf-container and holds text
@@ -954,7 +962,14 @@ a:hover { color: var(--tf-brick-dark); }
     linear-gradient(90deg, rgba(38, 34, 31, 0.82) 0%, rgba(38, 34, 31, 0.72) 38%, rgba(38, 34, 31, 0.35) 100%),
     var(--tf-page-head-img, none);
   background-size: cover;
-  background-position: center;
+  /* COVER-CROP FOCAL POINT. The band renders WIDE and SHORT, so `cover` discards
+     most of a 3:2 photo's height — at a ~238px band on a 1265px viewport only the
+     middle ~28% of the image survives. `center` is right only when the subject
+     sits mid-frame; a subject low or high in the frame gets cut. --tf-page-head-pos
+     lets a page aim that window without a page-local style, exactly as
+     --tf-page-head-img carries the photo. Default `center` = the shipped
+     references.html behaviour, unchanged. */
+  background-position: var(--tf-page-head-pos, center);
   padding-block: var(--tf-space-6);
 }
 /* Hero text — light on the dark band. The kicker is stone-light here, NOT

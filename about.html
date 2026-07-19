@@ -14,14 +14,29 @@
   <!-- Shared header injected from partials.html -->
   <div id="tf-header"></div>
 
+  <!-- Full-bleed hero band (shared .tf-page-head): background photo under a dark
+       scrim, light-on-dark text. The photo is passed per-page as
+       --tf-page-head-img; the ink background-color is the fallback if it fails.
+       Decorative: a CSS background carries no alt, and the h1 is the accessible
+       heading (BL-019).
+       --tf-page-head-pos aims the cover-crop window: the band is wide and short,
+       so `center` would cut the jump off at chest height. 63% holds the whole
+       group, heads to feet. -->
+  <header class="tf-page-head" style="--tf-page-head-img: url('assets/images/about.jpg'); --tf-page-head-pos: center 63%">
+    <div class="tf-container">
+      <div class="tf-kicker">The principals</div>
+      <h1>Education meets Execution</h1>
+      <p class="tf-prose-intro">Together we cover the full journey — from idea validation to profitable, scalable business.</p>
+    </div>
+  </header>
+
   <main>
-    <!-- BAND 1 — principals (paper ground) -->
+    <!-- BAND 1 — principals (paper ground). The header trio now lives in the hero
+         band above, so this band opens straight on the profile grid; <main> is
+         unclassed, so the multi-band bridge zeroes its top padding and this
+         section's own .tf-section padding supplies the single 48px gap. -->
     <section class="tf-section">
       <div class="tf-container">
-        <div class="tf-kicker">The principals</div>
-        <h1>Education meets Execution</h1>
-        <p class="tf-prose-intro">Together we cover the full journey — from idea validation to profitable, scalable business.</p>
-
         <div class="tf-profile-grid">
         <div class="tf-profile-lg">
           <div class="tf-profile-head">
