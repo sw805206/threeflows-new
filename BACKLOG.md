@@ -1,4 +1,4 @@
-v009 | last updated: 2026-07-18
+v010 | last updated: 2026-07-19
 
 # BACKLOG.md — threeflows-new
 
@@ -41,6 +41,8 @@ backlog bookkeeping goes direct to main**; they are not repeated here.
 | BL-016 | review | page | blogs.html index build: consume manifest, card kit first use, published-only, date-descending, thumbnails from image field | 2026-07-16 | |
 | BL-017 | open | feature | Related-articles: optional `related` field (blogID array) in bloglist.json, rendered block at post end | 2026-07-16 | |
 | BL-018 | open | bug | Reading-time scope (BLOG.md §6 / blog.js) counts non-prose text: any inline `<style>`/`<script>` inside `.tf-prose`, plus in-figure UI labels, are tallied as words. Surfaced on blog-007, where the placement-map component inflated the count 1415->1908 (+35%, 7 min shown as 9). Worked around there by moving the component's style/script outside `.tf-prose`; the durable fix is to exclude `style, script` from the clone in blog.js and record it in §6 | 2026-07-18 | |
+| BL-019 | open | governance | BLOG.md §7 hero alt-text exception undocumented: §7 mandates descriptive, user-approved alt for post images, but a page HERO renders through a CSS `background-image` (`--tf-page-head-img`) and structurally CANNOT carry alt at all. references.html's hero has none — the hero is decorative and the h1 is the accessible heading. As written, every hero reads as non-compliant with §7. Record it in §7 as an explicit, sanctioned exception (decorative hero → no alt, h1 carries the heading), so the rule's silence isn't mistaken for an oversight | 2026-07-19 | |
+| BL-020 | open | governance | BLOG.md §7 step 4 naming + wiring are post-only: it directs promotion to `assets/images/<slug>.jpg` "matching the post slug" and to "wire the manifest (`image` + `imageAlt`)" — a page hero has neither a post slug nor a manifest. Shipped precedent (references.jpg → `assets/images/references.jpg`, wired inline as `style="--tf-page-head-img: url(...)"`) is unwritten, so the hero path gets improvised each time. Specify it in §7: bare page-name.jpg + inline custom property. Dimensions need no hero-specific target — references.jpg measures 1200x800 3:2, identical to §7's existing preview spec | 2026-07-19 | |
 
 ## Inventory / page checklist
 
