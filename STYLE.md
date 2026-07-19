@@ -1,8 +1,8 @@
-v012 | last updated: 2026-07-18
+v013 | last updated: 2026-07-19
 
 # Three Flows Solutions — Brand Style Guide
 
-v012: about.html client carousel: `.tf-card-sm` kit-level small-card shell (**bordered** — it sits on the wash band, where paper-on-wash is too narrow a step to go borderless like `.tf-ref-card` does on cream); `.tf-carousel` scroll-snap track with vanilla arrow controls (`assets/carousel.js`), 5-up via a single `--tf-carousel-card-w`, swipe-only below 820px; client cards reduced to logo + **≤2** engagement pills (descriptions dropped); `.tf-icon-brand` — third-party brand marks render in their owner's colour, **superseding** the about-page rule that pinned the LinkedIn mark to ink-soft → brick (v011: post-header gap corrected: `--tf-space-6` (48px) of page-background white space between the header block (band edge on hero pages, intro text on plain pages) and the first content element; a hero band's internal padding frames its own text and does not count toward it (`.tf-page-head + main` back to `--tf-space-6`) — supersedes v10, which measured from the subtitle and removed the hero white gap (v10: tier-1 subtitle rhythm: subtitle→first-content gap standardised to `--tf-space-6` (48px) on every tier-1 page, hero or plain (`.tf-container > .tf-prose-intro`; hero supplies it from the band's bottom padding with `.tf-page-head + main` at 0) — supersedes the band-edge-measured `--tf-space-2` rule (v9: references.html restyle: `.tf-page-head` → full-bleed HERO band (background photo + dark scrim, light-on-dark text, stone-light kicker, ink fallback); tabs → underline idiom (`.tf-tabs` light track + brick active underline, supersedes the ink-boxed control); `.tf-ref-card` → borderless (paper-on-cream contrast) (v8: references.html build: shared `.tf-page-head` (text block + optional header image, tier-1 pattern), segmented tab control (`.tf-tabs` / `.tf-tab`), cream group panels (`.tf-ref-group`) + card grid (`.tf-ref-grid` / `.tf-ref-card`); `--tf-cream` role widened to raised/recessed surfaces generally (v7: blog-004 build: prose tables (`.tf-prose-table` + `.tf-prose table`), the first of the BL-012 deferred body patterns (v6: about.html build: `.tf-profile-lg` principals card (natural-aspect headshots, never cropped — square mandate revoked), wash band tint (`--tf-sand-wash` / `.tf-section-wash`), client-logo slot (original colour), tag→tint mapping (v5: sitewide chrome/divider restyle: ink retired as a section divider (sand `--tf-sand` / `--tf-rule-sand`), white dividerless header (`--tf-white`), dropdown cream lightened to a 15% mix; footer keeps its ink top rule (v4: page-header standard — `.tf-kicker` + h1 on every top-level page. v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5)))))))). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
+v013: header-gap standard reconciled by measurement: hero/plain parity confirmed ALREADY CORRECT at 48px (no rule added — Defect A satisfied as v011 wrote it); **multi-band hero bridge added** (`.tf-page-head + main:not(.tf-section)` → `padding-block-start: 0`, measured 96px → 48px on a multi-band harness, `references.html` unaffected) — v011 resolved the single-band case by SPECIFICITY COLLISION on a shared `<main>`, which does not survive `<main>` wrapping several sections; **plain-page gap RE-ANCHORED on the header block** (`main .tf-container > h1:not(:has(+ .tf-prose-intro))` → 48px) so the gap sits below the LAST header element rather than below the intro specifically — an intro-less page was falling to the h1's 16px; measured across all four cases (plain-with-intro 48→48, plain-without-intro **16→48**, hero 48→48, grandfathered 16→16), applies to 9 intro-less shells incl. `index.html`, mutually exclusive with the intro rule so it cannot double; one open item flagged, not fixed (hero-vs-plain differ by 48px when measured from the intro TEXT, which is v011's "additive by design") (v012: about.html client carousel: `.tf-card-sm` kit-level small-card shell (**bordered** — it sits on the wash band, where paper-on-wash is too narrow a step to go borderless like `.tf-ref-card` does on cream); `.tf-carousel` scroll-snap track with vanilla arrow controls (`assets/carousel.js`), 5-up via a single `--tf-carousel-card-w`, swipe-only below 820px; client cards reduced to logo + **≤2** engagement pills (descriptions dropped); `.tf-icon-brand` — third-party brand marks render in their owner's colour, **superseding** the about-page rule that pinned the LinkedIn mark to ink-soft → brick (v011: post-header gap corrected: `--tf-space-6` (48px) of page-background white space between the header block (band edge on hero pages, intro text on plain pages) and the first content element; a hero band's internal padding frames its own text and does not count toward it (`.tf-page-head + main` back to `--tf-space-6`) — supersedes v10, which measured from the subtitle and removed the hero white gap (v10: tier-1 subtitle rhythm: subtitle→first-content gap standardised to `--tf-space-6` (48px) on every tier-1 page, hero or plain (`.tf-container > .tf-prose-intro`; hero supplies it from the band's bottom padding with `.tf-page-head + main` at 0) — supersedes the band-edge-measured `--tf-space-2` rule (v9: references.html restyle: `.tf-page-head` → full-bleed HERO band (background photo + dark scrim, light-on-dark text, stone-light kicker, ink fallback); tabs → underline idiom (`.tf-tabs` light track + brick active underline, supersedes the ink-boxed control); `.tf-ref-card` → borderless (paper-on-cream contrast) (v8: references.html build: shared `.tf-page-head` (text block + optional header image, tier-1 pattern), segmented tab control (`.tf-tabs` / `.tf-tab`), cream group panels (`.tf-ref-group`) + card grid (`.tf-ref-grid` / `.tf-ref-card`); `--tf-cream` role widened to raised/recessed surfaces generally (v7: blog-004 build: prose tables (`.tf-prose-table` + `.tf-prose table`), the first of the BL-012 deferred body patterns (v6: about.html build: `.tf-profile-lg` principals card (natural-aspect headshots, never cropped — square mandate revoked), wash band tint (`--tf-sand-wash` / `.tf-section-wash`), client-logo slot (original colour), tag→tint mapping (v5: sitewide chrome/divider restyle: ink retired as a section divider (sand `--tf-sand` / `--tf-rule-sand`), white dividerless header (`--tf-white`), dropdown cream lightened to a 15% mix; footer keeps its ink top rule (v4: page-header standard — `.tf-kicker` + h1 on every top-level page. v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5))))))))). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
 
 ---
 
@@ -717,3 +717,70 @@ patterns entered the sheet; one older rule is superseded.
   `.tf-profile-name a`, winning on source order rather than escalated specificity,
   so a future more-specific rule can still override it. The palette itself is
   unchanged: this is a named, contained exception, not a new brand colour.
+
+### Header-gap standard reconciled — measurement pass, all tier-1 pages — 2026-07-19
+
+Audit of the post-header gap across every tier-1 page, by **rendered measurement**
+at 1265×900 rather than by reading the rule — each case measured with the rule
+toggled in place, so before and after come from the same render. Three defects
+were considered; **one was already satisfied, two were real and are fixed here.**
+
+- **DEFECT A — hero vs plain parity: ALREADY SATISFIED, no rule added.** Measured
+  from the visual bottom of the header block as v011 defines it (**band edge** on
+  hero pages, **intro box** on plain pages), the gap is **48px on both**:
+  `references.html` (hero) 48.00px band-edge → first content; `blogs.html` (plain)
+  48.00px intro-box → first content. They already agree to the pixel, so **no rule
+  was added for Defect A.** The v011 implementation is correct as written.
+- **DEFECT B — multi-band hero bridge: REAL, fixed.** `.tf-page-head + main`
+  resolves to 48px only because `references.html` puts `.tf-section` on `<main>`
+  **itself** — both declarations then land on the SAME element and the more
+  specific one wins. That is resolution **by collision, not by design**, and it
+  does not survive a multi-band page: `<main>` wrapping several
+  `<section class="tf-section">` puts the two paddings on DIFFERENT elements,
+  where they **add — measured 96px** on a synthetic multi-band harness. Fixed with
+  `.tf-page-head + main:not(.tf-section) { padding-block-start: 0 }` (specificity
+  0,2,1, so it beats the base rule regardless of source order), handing the gap to
+  the first section's own top padding: **measured 96px → 48px**, identical to the
+  single-band geometry. **Zero current consumers** — no page ships a multi-band
+  hero yet; this fixes the standard AHEAD of the first one (about, then blogs and
+  the service pages). Verified `references.html` is **unaffected**: its `<main>`
+  carries `.tf-section`, so `:not()` excludes it — still 48px, padding still 48px.
+  *Caveat recorded:* the 48px is then coloured by the first section's ground.
+  Paper (the expected case) is indistinguishable from page background; a hero page
+  opening onto a **wash** band would tint the gap and should lead with a paper band.
+- **DEFECT C — the plain-page gap re-anchored on the HEADER BLOCK: REAL, fixed.**
+  v011 hung the plain-page gap on the INTRO (`.tf-container > .tf-prose-intro`),
+  so a page whose header block ends at the **h1** had no rule supplying it and fell
+  through to the h1's own 16px. **The gap belongs to the header block, not to the
+  intro: it is 48px below the LAST header element, whichever that is.** Added
+  `main .tf-container > h1:not(:has(+ .tf-prose-intro)) { margin-bottom:
+  var(--tf-space-6) }` — an h1 **not** followed by an intro carries the 48px itself.
+  **The two rules are mutually exclusive by construction** — `:has(+ .tf-prose-intro)`
+  is precisely the case the intro rule already covers — so they can never stack and
+  double. Scoping does the rest: `main …` excludes a HERO h1 (it lives in the band
+  OUTSIDE `<main>`, where band padding frames it — verified the hero h1 stays at
+  16px), and `.tf-container >` keeps v011's direct-child scoping, so an h1 inside
+  `.tf-prose` (privacy, blog posts) keeps its own 16px rhythm.
+  **Measured, all four cases, before → after:** plain **with** intro (`blogs.html`)
+  48 → **48 unchanged**, rule does not match; plain **without** intro
+  (`contact.html`) 16 → **48, the fix**; hero (`references.html`) 48 → **48
+  unchanged**, rule does not match; grandfathered (`privacy.html`) 16 → **16
+  unchanged**, rule does not match. Full-site sweep: the rule applies to **nine**
+  pages, all 16 → 48 — the eight placeholder shells (contact, seminars, surveys,
+  tools, service ×4) **plus `index.html`**, whose deferred home-page shell is also
+  intro-less. `about.html`, the blog posts and `blog-template.html` are untouched.
+  **`:has()` is used here for the first time in this sheet** — baseline-supported
+  since 2023, and the alternative (a margin on the *following* sibling, relying on
+  margin collapse) was rejected as more fragile and less parallel to the intro rule
+  it sits beside.
+
+**OPEN — not fixed here, needs a decision.** One item remains from the measurement:
+
+- **Measured from the intro TEXT, hero and plain differ by exactly 48px** —
+  `references.html` 96px intro-box → content (48 band padding + 48 gap) versus
+  `blogs.html` 48px. This is **v011's stated "additive by design"**, working as
+  specified, and is the most likely candidate for the discrepancy noticed when
+  flipping between the two pages. Whether the hero's header block *should* sit
+  twice as far from its content as a plain page's is a **design decision, not a
+  bug** — reversing it would supersede a rule one day old, so it is left standing
+  and flagged rather than changed.
