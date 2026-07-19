@@ -1,4 +1,4 @@
-v011 | last updated: 2026-07-19
+v012 | last updated: 2026-07-19
 
 # BACKLOG.md — threeflows-new
 
@@ -81,11 +81,11 @@ exception), not a structural change.
 | service-sourcing.html | svc2.html | open | |
 | service-launch.html | svc3.html | open | |
 | service-management.html | svc4.html | open | |
-| blogs.html | blog.html + bloglist.json | close | 6300957 |
+| blogs.html | blog.html + bloglist.json | close | e337c40 |
 | references.html | useful-websites.html — shipped as a data-driven directory backed by `references.json` + `assets/references.js`, both new files not previously recorded in §A | close | 43209ed |
 | seminars.html | webinars.html (+ livestream.html folded in via redirect) | open | |
 | tools.html | free-tools.html (shell only; individual tool pages deferred — BL-009) | open | |
-| about.html | about.html | close | aae1c3a |
+| about.html | about.html | close | 086e26b |
 | contact.html | built fresh — new form + new endpoint (inquiry.html / intake.html redirect in; their old endpoints not carried) | open | |
 | privacy.html | privacy.html | close | a4c843d |
 | surveys.html | surveys.html | open | |
