@@ -1,4 +1,4 @@
-v009 | last updated: 2026-07-18
+v010 | last updated: 2026-07-20
 
 # SCOPE.md — threeflows.com Relaunch (new repo)
 
@@ -77,16 +77,36 @@ everything the new site must preserve:
 The completed inventory lives in BACKLOG.md as the page checklist; each
 row is tracked to done before cutover.
 
-## Site structure (per user reorg, 2026-07-15)
+## Site structure (per user reorg, 2026-07-15; Services restructured 2026-07-20)
 
-index.html (Home); service-planning.html, service-sourcing.html,
-service-launch.html, service-management.html; blogs.html (index; posts
+index.html (Home); pathfinder.html, runningmate.html (service overviews);
+business-planning.html, sourcing-support.html, launch-hypercare.html,
+ongoing-management.html (service details); blogs.html (index; posts
 blog-###.html later); references.html; seminars.html; tools.html;
 about.html; contact.html; privacy.html (hidden — no nav; linked in the
 shared footer); surveys.html (hidden cover; svy###.html later).
-Nav = Home, Services (dropdown ×4), Resources (dropdown: Blogs,
-References, Seminars, Free tools), About, Contact. Shared header/footer
-served from partials.html, fetched per page.
+Nav = Home, Services (dropdown ×6, two tiers — see below), Resources
+(dropdown: Blogs, References, Seminars, Free tools), About, Contact.
+Shared header/footer served from partials.html, fetched per page.
+
+Services is a two-tier dropdown in a SINGLE panel: two overview pages on
+top, a purely visual divider, then the four detail pages. The divider is
+visual only — there are no nested or expanding sub-panels, and the flat
+`.tf-has-dropdown` mechanism is reused unchanged, so the panel keeps one
+tier of behavior. Link text and targets, in panel order:
+
+- Pathfinder → pathfinder.html (overview; built fresh, no old-repo source)
+- Runningmate → runningmate.html (overview; built fresh, no old-repo source)
+- *(visual divider)*
+- Plan → business-planning.html (ex-svc1)
+- Source → sourcing-support.html (ex-svc2)
+- Launch → launch-hypercare.html (ex-svc3)
+- Grow → ongoing-management.html (ex-svc4)
+
+The four detail pages replace the service-*.html placeholder shells by
+delete-and-build: the shells held only the shared boilerplate, so nothing
+is preserved from them. The two overview pages are new, growing the site
+by two pages. Resources, Home, About and Contact are unchanged.
 
 ## Build strategy
 
