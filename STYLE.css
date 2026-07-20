@@ -2,6 +2,22 @@
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v7 · 2026-07-20 · Services dropdown divider: .tf-dropdown-divider, a visual-only
+                     separator grouping the two overview links apart from the four
+                     detail links inside ONE flat panel (light within-a-section
+                     rule, §4). §5 nav header comment corrected.
+   v6 · 2026-07-19 · about.html hero migration: --tf-page-head-pos added, a per-page
+                     cover-crop focal point (default center, so references.html is
+                     unchanged). .tf-container > :first-child margin-block-start: 0
+                     — a first child's top margin ADDS to the section padding.
+   v5 · 2026-07-19 · Tier-1 header-gap reconcile. Multi-band hero bridge
+                     (.tf-page-head + main:not(.tf-section) → padding-block-start: 0)
+                     for heroes whose <main> wraps several sections. Plain-page gap
+                     re-anchored on the header block, so an intro-less h1 carries it.
+   v4 · 2026-07-18 · about.html client carousel: .tf-card-sm small-card shell
+                     (bordered — it sits on the wash band). .tf-carousel scroll-snap
+                     track, fixed card height, arrows flanking via display: contents.
+                     .tf-icon-brand — third-party marks in their owner's colour.
    v3 · 2026-07-16 · Paper lightened #FBFAF8 → #FCFBFA (user decision).
                      Blog rail: tags block removed, .tf-rail-img slot added.
                      No-italics rule (STYLE.md §3) + .tf-prose em/i normalization.
