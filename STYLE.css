@@ -1,4 +1,4 @@
-/* v006 | last updated: 2026-07-19
+/* v007 | last updated: 2026-07-20
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
@@ -676,7 +676,11 @@ a:hover { color: var(--tf-brick-dark); }
 /* --------------------------------------------------------------------------
    5. Nav — dropdowns & mobile menu
    Shared header carries a Home link, two dropdown groups (Services,
-   Resources), and About / Contact. On desktop a panel opens on its
+   Resources), and About / Contact. Services is visually two-tier: six
+   links in ONE flat panel, a .tf-dropdown-divider separating the two
+   overview links from the four detail links. The grouping is visual
+   only — both groups sit in the same panel and share one trigger, so
+   the machinery below is unchanged. On desktop a panel opens on its
    trigger's hover or click, at most one at a time, and closes on mouse
    leave / outside click / Esc — all driven by the .is-open class the nav
    script sets (JS owns the state; CSS just reflects it). Below the
@@ -740,6 +744,22 @@ a:hover { color: var(--tf-brick-dark); }
 }
 .tf-dropdown a:hover { color: var(--tf-brick); }  /* current-page marker is the underline (see nav-link rules), not brick text */
 .tf-has-dropdown.is-open > .tf-dropdown { display: flex; }
+
+/* Divider — a purely VISUAL separator the markup places between two runs of
+   links inside ONE panel (Services: the two overview links, then the four
+   detail links). It groups; it does not nest. No sub-panel, no second trigger,
+   no behaviour of its own — .tf-has-dropdown and its .is-open state machine are
+   reused unchanged, so the panel stays one flat list to both the nav script and
+   the keyboard. Tone is the LIGHT within-a-section rule (§4): this divides
+   content inside a single surface, which is exactly that rule's job — never
+   sand (reserved for major sections) and never ink (retired as a divider).
+   Spans the panel edge to edge, matching the borderless, square-cornered,
+   flush-left dropdown idiom. */
+.tf-dropdown-divider {
+  border: none;                       /* also normalizes a bare <hr>, if used */
+  border-top: var(--tf-rule-light);
+  margin-block: var(--tf-space-1);
+}
 
 /* Desktop: panel floats below its trigger, sized to its longest item, and
    overlays page content (z-index) — never pushing or bleeding into it. */
