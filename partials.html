@@ -61,6 +61,12 @@
         <img src="assets/logo-mark-reversed.svg" alt="" class="tf-lockup-mark">
         <span class="tf-lockup-name">Three Flows Solutions</span>
       </div>
+      <!-- Copyright — plain paper text (inherits .tf-surface-ink's paper, so it
+           tracks the provisional footer ground). Year is hardcoded by decision:
+           inject scripts don't run inside innerHTML and the injector isn't shared,
+           so auto-year would cost every shell page. <small> gives the fine-print
+           size from the UA default, no new CSS rule needed. -->
+      <small>© 2026 Three Flows Solutions LLC. All rights reserved.</small>
       <nav class="tf-footer-links" aria-label="Footer">
         <a href="privacy.html">Privacy &amp; Terms</a>
       </nav>
