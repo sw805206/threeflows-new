@@ -1,7 +1,12 @@
-/* v007 | last updated: 2026-07-20
+/* v008 | last updated: 2026-07-20
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v8 · 2026-07-20 · Footer ground: --tf-footer-ground, a dark warm stone, so the
+                     footer reads distinct from an ink .tf-cta above it on tone
+                     alone (no seam). Scoped .tf-surface-ink.tf-footer, so hero
+                     bands stay ink. Footer link lightened. PROVISIONAL values,
+                     pending Claude Design.
    v7 · 2026-07-20 · Services dropdown divider: .tf-dropdown-divider, a visual-only
                      separator grouping the two overview links apart from the four
                      detail links inside ONE flat panel (light within-a-section
@@ -51,6 +56,17 @@
      A tint derived from existing tokens — NOT a new raw hue (resolves to ~#F7F5F4
      at the 15% mix). */
   --tf-cream: color-mix(in srgb, var(--tf-stone-light) 15%, var(--tf-paper));
+
+  /* Footer ground — a dark WARM stone, lighter than ink. Exists so the footer
+     reads as its own band when a .tf-cta (ink) sits directly above it: two ink
+     grounds meeting merge into one slab, and this separates them on TONE alone,
+     which is why there is no seam or hairline between them.
+     PROVISIONAL — value pending reconciliation in Claude Design; it may be
+     revised and brought back here. It is also the WRONG SHAPE: a hand-picked
+     hex, where the sheet's idiom for a derived surface is a computed mix off
+     existing tokens (see --tf-cream above). Once ratified it should be redefined
+     as a stone→ink derived tint, not this literal. */
+  --tf-footer-ground: #4A423C;
 
   /* Sand — the section-divider tone. Ink is retired as a divider (STYLE.md §4);
      it survives only on component frames and the footer's top rule. */
@@ -823,6 +839,24 @@ a:hover { color: var(--tf-brick-dark); }
   padding-block: var(--tf-space-4);
   border-top: var(--tf-rule);
 }
+/* GROUND OVERRIDE, footer only. The footer carries BOTH classes
+   (`<footer class="tf-surface-ink tf-footer">`), so it takes its ink ground
+   from .tf-surface-ink; this replaces that ground with the warm stone WITHOUT
+   touching the shared rule, so hero bands — the other .tf-surface-ink consumer
+   — stay ink. Written `.tf-surface-ink.tf-footer` (0,2,0) rather than bare
+   `.tf-footer` (0,1,0): it outranks the shared rule on specificity instead of
+   on source order, so the override survives the sections being reordered.
+   Text stays --tf-paper, inherited from .tf-surface-ink and still ample on this
+   lighter ground. */
+.tf-surface-ink.tf-footer { background: var(--tf-footer-ground); }
+/* Footer links need their own brick: --tf-brick-on-ink is tuned for the INK
+   ground and may not clear contrast on this lighter one. Scoped to the footer
+   so .tf-surface-ink links elsewhere (hero bands) keep the standard treatment.
+   Hover stays paper, inherited from .tf-surface-ink.
+   PROVISIONAL — a lightened brick, pending Claude Design reconciliation along
+   with the ground above. Not contrast-measured; the pairing is an eyeball
+   judgement until Design ratifies both values together. */
+.tf-surface-ink.tf-footer a { color: #E68A76; }
 .tf-footer-inner {
   display: flex;
   align-items: center;
