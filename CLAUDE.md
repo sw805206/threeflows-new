@@ -1,4 +1,4 @@
-v002 | last updated: 2026-07-18
+v003 | last updated: 2026-07-20
 
 
 # Working Rules
@@ -25,6 +25,12 @@ text at the top (e.g. STYLE.css, which must open with a comment): those carry
 the identical stamp on the FIRST LINE of their opening header comment block,
 which is the closest faithful equivalent. The date in the stamp is always read
 from machine time (Part A → **Dates come from machine time**).
+
+
+Per-file counters are independent: each governance doc's `v###` tracks that
+file's own history and is never shared across files. When one commit changes
+several docs, each bumps its own counter separately, so a constant offset
+between two files' numbers is expected and is not a defect to reconcile.
 
 
 This file (CLAUDE.md) is structured as:
@@ -149,7 +155,10 @@ failure this whole rule set exists to prevent.
 first line is exactly `v### | last updated: yyyy-mm-dd`; comment-headed files
 such as STYLE.css carry the same stamp on the first line of their header comment
 (see the preamble). Bump `v###` on every substantive change, and take the date
-from machine time per Part A → **Dates come from machine time**.
+from machine time per Part A → **Dates come from machine time**. Counters are
+per-file and independent (see the preamble): never renumber one governance doc
+to match another's, and never treat a constant offset between two files' numbers
+as drift to fix.
 
 
 **Show client-facing changes on localhost.** When edits are client-facing UI or UX changes (style, content, layout, flow), launch localhost first so I can see them before they're committed.
