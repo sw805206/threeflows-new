@@ -1,6 +1,14 @@
-/* v009 | last updated: 2026-07-20
+/* v010 | last updated: 2026-07-21
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v10 · 2026-07-21 · Secondary button on the ink CTA band. Added a scoped
+                     .tf-cta .tf-btn-secondary — a solid MUTED-fill variant so the
+                     ink band carries an even two-button pair (brick primary +
+                     muted secondary). New derived token --tf-ink-raised
+                     (color-mix ink 80%, stone) as the fill, the --tf-cream idiom.
+                     The base .tf-btn-secondary (light-ground ink outline) is
+                     UNCHANGED — this is additive and .tf-cta-scoped only.
 
    v9 · 2026-07-20 · Design reconciliation. The two v8 footer provisionals ratified
                      as DERIVED mixes (the --tf-cream idiom, no hand-picked hexes):
@@ -72,6 +80,14 @@
      (--tf-cream is the model): 75% ink into stone ≈ #4A4540, within a hair of
      the provisional literal #4A423C it replaces. */
   --tf-footer-ground: color-mix(in srgb, var(--tf-ink) 75%, var(--tf-stone));
+
+  /* Ink-raised — a solid dark surface that reads as RAISED above the ink ground.
+     Derived per the --tf-cream idiom (ink lifted toward stone), not a raw hue.
+     Its home is the secondary action on the ink CTA band, where a filled control
+     needs to sit just above the ink field; darker than --tf-footer-ground so a
+     button on ink stays quieter than the footer's own band. Future overlays on
+     ink may reuse it. */
+  --tf-ink-raised: color-mix(in srgb, var(--tf-ink) 80%, var(--tf-stone));
 
   /* Sand — the section-divider tone. Ink is retired as a divider (STYLE.md §4);
      it survives only on component frames and the footer's top rule. */
@@ -1021,6 +1037,23 @@ a:hover { color: var(--tf-brick-dark); }
 /* CTA band — ink field with the brick button carrying the accent; once per page */
 .tf-cta { background: var(--tf-ink); color: var(--tf-paper); padding: var(--tf-space-6) var(--tf-space-4); }
 .tf-cta .tf-btn-primary:hover { background: var(--tf-brick-on-ink); }
+/* Secondary action ON the ink band. The base .tf-btn-secondary is a LIGHT-ground
+   outline button (ink text + 2px ink border) and is invisible on ink, so the pair
+   is completed here: a solid muted fill that reads as a surface raised above the
+   ink ground — brick primary + muted-fill secondary, a cohesive pair on dark.
+   Scoped .tf-cta .tf-btn-secondary (0,2,0) outranks the base (0,1,0), so the base
+   rule — and its sanctioned 2px ink frame — is untouched everywhere else.
+   1px border in a lighter ink→stone tone for definition; padding is the primary's
+   rhythm trimmed by the 1px border (12/47/12/17 + 1px = 13/48/13/18) so the two
+   buttons share one outer box and pair evenly. Square, tokens only, no shadow. */
+.tf-cta .tf-btn-secondary {
+  background: var(--tf-ink-raised);
+  color: var(--tf-paper);
+  border: 1px solid color-mix(in srgb, var(--tf-ink) 58%, var(--tf-stone));
+  border-radius: 0;
+  padding: 12px 47px 12px 17px;
+}
+.tf-cta .tf-btn-secondary:hover { background: color-mix(in srgb, var(--tf-ink) 66%, var(--tf-stone)); }
 
 /* Photo treatment — every content photograph (profiles: same, circle crop) */
 .tf-photo { filter: saturate(0.72) sepia(0.14) contrast(1.04) brightness(1.02); }
