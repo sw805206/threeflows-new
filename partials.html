@@ -57,16 +57,18 @@
 <template id="tf-footer-partial">
   <footer class="tf-surface-ink tf-footer">
     <div class="tf-container tf-footer-inner">
+      <!-- Left cluster: reversed logo mark + copyright. The wordmark span was
+           removed here — the © line now sits beside the mark. The mark + © align
+           via .tf-lockup's own flex/gap/center rule (no new CSS). The © keeps its
+           <small> fine-print styling — NOT .tf-lockup-name, which is a 2-word
+           wordmark treatment (20px heading, nowrap) and wrong for a long string.
+           Year is hardcoded by decision: inject scripts don't run inside
+           innerHTML and the injector isn't shared, so auto-year would cost every
+           shell page. Paper text inherited from .tf-surface-ink. -->
       <div class="tf-lockup">
         <img src="assets/logo-mark-reversed.svg" alt="" class="tf-lockup-mark">
-        <span class="tf-lockup-name">Three Flows Solutions</span>
+        <small>© 2026 Three Flows Solutions LLC. All rights reserved.</small>
       </div>
-      <!-- Copyright — plain paper text (inherits .tf-surface-ink's paper, so it
-           tracks the provisional footer ground). Year is hardcoded by decision:
-           inject scripts don't run inside innerHTML and the injector isn't shared,
-           so auto-year would cost every shell page. <small> gives the fine-print
-           size from the UA default, no new CSS rule needed. -->
-      <small>© 2026 Three Flows Solutions LLC. All rights reserved.</small>
       <nav class="tf-footer-links" aria-label="Footer">
         <a href="privacy.html">Privacy &amp; Terms</a>
       </nav>
