@@ -1,7 +1,14 @@
-/* v008 | last updated: 2026-07-20
+/* v009 | last updated: 2026-07-20
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v9 · 2026-07-20 · Design reconciliation. The two v8 footer provisionals ratified
+                     as DERIVED mixes (the --tf-cream idiom, no hand-picked hexes):
+                     --tf-footer-ground = color-mix(ink 75%, stone) ≈ #4A4540
+                     (replaces the literal #4A423C); footer link =
+                     color-mix(brick-on-ink 45%, paper) ≈ #EBA89E (~4.8:1 measured;
+                     the provisional #E68A76 was ~3.7:1, under the 4.5:1 minimum).
+                     PROVISIONAL flags cleared. Scoping and hero bands unchanged.
    v8 · 2026-07-20 · Footer ground: --tf-footer-ground, a dark warm stone, so the
                      footer reads distinct from an ink .tf-cta above it on tone
                      alone (no seam). Scoped .tf-surface-ink.tf-footer, so hero
@@ -61,12 +68,10 @@
      reads as its own band when a .tf-cta (ink) sits directly above it: two ink
      grounds meeting merge into one slab, and this separates them on TONE alone,
      which is why there is no seam or hairline between them.
-     PROVISIONAL — value pending reconciliation in Claude Design; it may be
-     revised and brought back here. It is also the WRONG SHAPE: a hand-picked
-     hex, where the sheet's idiom for a derived surface is a computed mix off
-     existing tokens (see --tf-cream above). Once ratified it should be redefined
-     as a stone→ink derived tint, not this literal. */
-  --tf-footer-ground: #4A423C;
+     RATIFIED (Design, 2026-07-20) as a derived mix per the sheet's idiom
+     (--tf-cream is the model): 75% ink into stone ≈ #4A4540, within a hair of
+     the provisional literal #4A423C it replaces. */
+  --tf-footer-ground: color-mix(in srgb, var(--tf-ink) 75%, var(--tf-stone));
 
   /* Sand — the section-divider tone. Ink is retired as a divider (STYLE.md §4);
      it survives only on component frames and the footer's top rule. */
@@ -850,13 +855,13 @@ a:hover { color: var(--tf-brick-dark); }
    lighter ground. */
 .tf-surface-ink.tf-footer { background: var(--tf-footer-ground); }
 /* Footer links need their own brick: --tf-brick-on-ink is tuned for the INK
-   ground and may not clear contrast on this lighter one. Scoped to the footer
+   ground and does not clear contrast on this lighter one. Scoped to the footer
    so .tf-surface-ink links elsewhere (hero bands) keep the standard treatment.
    Hover stays paper, inherited from .tf-surface-ink.
-   PROVISIONAL — a lightened brick, pending Claude Design reconciliation along
-   with the ground above. Not contrast-measured; the pairing is an eyeball
-   judgement until Design ratifies both values together. */
-.tf-surface-ink.tf-footer a { color: #E68A76; }
+   RATIFIED (Design, 2026-07-20): a derived brick tint, 45% brick-on-ink into
+   paper ≈ #EBA89E — measured ~4.8:1 on the footer ground (the provisional
+   #E68A76 measured ~3.7:1 and failed the 4.5:1 minimum for 14px links). */
+.tf-surface-ink.tf-footer a { color: color-mix(in srgb, var(--tf-brick-on-ink) 45%, var(--tf-paper)); }
 .tf-footer-inner {
   display: flex;
   align-items: center;
