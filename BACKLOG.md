@@ -81,7 +81,7 @@ exception), not a structural change.
 | New page | Source old page(s) / notes | Status | Closed-by |
 |---|---|---|---|
 | index.html | index.html | open | |
-| service-planning.html | svc1.html | open | |
+| business-planning.html | svc1.html — renamed from the `service-planning.html` shell per SCOPE.md v010 Services restructure (ex-svc1, &ldquo;Plan&rdquo;). Built as the tier-2 Plan detail page (intro-split opener, painpoints/solves 2-up, FAQ, CTA); orphaned until BL-023 links it in nav. §B redirect still maps `svc1.html → service-planning.html` — the new filename needs a follow-up redirect fix (flagged, NOT changed here) | review | |
 | service-sourcing.html | svc2.html | open | |
 | service-launch.html | svc3.html | open | |
 | service-management.html | svc4.html | open | |

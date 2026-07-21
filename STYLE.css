@@ -1,7 +1,39 @@
-/* v010 | last updated: 2026-07-21
+/* v012 | last updated: 2026-07-21
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v12 · 2026-07-21 · business-planning.html "How we engage" band + FAQ revert.
+                     .tf-flow (NEW) — a vertical numbered process flow (brick
+                     auto-number + bold label + explanation line, body size), kin
+                     to .tf-steps but page-level; sits in the LEFT column of a
+                     two-column band (a reused .tf-grid-2up), FAQ on the RIGHT — the
+                     reusable service-detail template band. .tf-faq REVERTED from
+                     the v10 interactive accordion to a STATIC all-visible list
+                     (question is a plain <dt>, not a <button>); assets/faq.js
+                     deleted and its <script> removed — the FAQ now shows in full
+                     beside the flow, so the fold is gone.
+   v11 · 2026-07-21 · business-planning.html (Plan detail, tier-2). Page patterns +
+                     reuse. WIDTH: every section is full-.tf-container width and
+                     meets one shared right edge (the tier-2 intro image); running
+                     text keeps the blog's 62ch measure inside. TYPE inherits the
+                     blog scale (base h1/h2/h3 + .tf-prose), no page-specific sizes.
+                     .tf-intro-split (tier-2 two-column opener — framed inline
+                     image, NOT a .tf-page-head hero; its right edge is the page's
+                     alignment reference); .tf-section-split (labelled prose row —
+                     heading left, 62ch prose pinned to the container's right edge,
+                     the no-TOC-rail analog of .tf-prose-layout — WIDTH only, type
+                     unchanged); .tf-grid-2up (locked 2-up GENERALIZED out of
+                     .tf-profile-grid, now a thin margin-only modifier consuming it
+                     — about.html renders identically); .tf-faq (FOLDED <dl>
+                     accordion — button triggers + hidden panels, full-width
+                     dividers, answers capped at 62ch; toggle in assets/faq.js,
+                     progressive-enhancement default expanded). Reuse: .tf-callout
+                     gains -warn/-affirm accent modifiers + .tf-callout-list for the
+                     symmetric painpoints|solves cards (bullets at INHERITED body
+                     size, first live .tf-callout use). .tf-btn-row lays the two CTA
+                     actions with clear spacing (first live .tf-cta with two actions;
+                     the secondary's solid muted fill comes from v10's .tf-cta
+                     .tf-btn-secondary, adopted on the main sync).
    v10 · 2026-07-21 · Secondary button on the ink CTA band. Added a scoped
                      .tf-cta .tf-btn-secondary — a solid MUTED-fill variant so the
                      ink band carries an even two-button pair (brick primary +
@@ -9,7 +41,6 @@
                      (color-mix ink 80%, stone) as the fill, the --tf-cream idiom.
                      The base .tf-btn-secondary (light-ground ink outline) is
                      UNCHANGED — this is additive and .tf-cta-scoped only.
-
    v9 · 2026-07-20 · Design reconciliation. The two v8 footer provisionals ratified
                      as DERIVED mixes (the --tf-cream idiom, no hand-picked hexes):
                      --tf-footer-ground = color-mix(ink 75%, stone) ≈ #4A4540
@@ -561,6 +592,10 @@ a:hover { color: var(--tf-brick-dark); }
   padding: 11px 46px 11px 16px;
 }
 .tf-btn-secondary:hover { background: var(--tf-ink); color: var(--tf-paper); }
+/* Button row — lays two or more actions in a line with clear spacing between
+   them, wrapping to stacked full-reading-order on narrow. First use: the
+   business-planning.html CTA (Contact us + See all services). */
+.tf-btn-row { display: flex; flex-wrap: wrap; gap: var(--tf-space-2); }
 
 /* Header band space reservation. #tf-header is an empty placeholder until the
    partials fetch lands, so with no floor the page paints its content at the top
@@ -931,6 +966,56 @@ a:hover { color: var(--tf-brick-dark); }
 .tf-callout-title { font-weight: 700; font-size: var(--tf-text-sm); }
 .tf-callout-body { font-size: 13px; color: var(--tf-ink-soft); margin: 4px 0 0; line-height: 1.55; }
 
+/* Callout accent pair (`.tf-callout-warn` / `.tf-callout-affirm`) — two
+   modifiers for a SYMMETRIC contrast pair (business-planning.html's painpoints |
+   solves). The base .tf-callout gives both the same light border, padding and
+   icon+title row; each modifier flips ONLY the accent — icon and title together —
+   so the two cards differ on that one axis and nothing else. -warn = brick (the
+   problem), -affirm = ink (the answer). The base icon colour is already brick, so
+   -warn restates it for symmetry; -affirm is the real override. First use:
+   business-planning.html (also the first live consumer of .tf-callout, BL-012). */
+.tf-callout-warn  .tf-callout-title,
+.tf-callout-warn  svg { color: var(--tf-brick); }
+.tf-callout-affirm .tf-callout-title,
+.tf-callout-affirm svg { color: var(--tf-ink); }
+/* Header SIZE for the painpoints/solves pair. The base .tf-callout-title (14px,
+   `--tf-text-sm`) is sized for a small note and would render SMALLER than the
+   16px bullets here — an inverted hierarchy. As a card header above a bullet
+   list it sits at the card-title tier: `--tf-text-lg` (20px) is the scale token
+   nearest the sheet's `.tf-card-title` convention (21px), clears the 16px body,
+   and matches the FAQ-question tier. Scoped to the pair, NOT the base, so a
+   generic callout keeps its small-note title elsewhere. */
+.tf-callout-warn  .tf-callout-title,
+.tf-callout-affirm .tf-callout-title { font-size: var(--tf-text-lg); line-height: 1.2; }
+
+/* Callout bullet list — a flush bullet list for the callout body (the painpoints
+   and solves each carry four). No UA indent; a small SQUARE stone marker (brand
+   corners are square; stone reads as a marker, not a second accent — the accent
+   is the header). Identical in both cards, so the pair still contrasts on the
+   header alone. Top margin is `--tf-space-2` — the heading→content gap the sheet
+   already uses (base heading `margin-bottom`, and a section h2 → first paragraph);
+   the card header is a 20px heading, so it takes that gap, not the 8px small-note
+   step. Scoped to `.tf-callout-list` (painpoints/solves only). */
+.tf-callout-list { list-style: none; margin: var(--tf-space-2) 0 0; padding: 0; }
+.tf-callout-list li {
+  position: relative;
+  padding-left: var(--tf-space-2);
+  margin-bottom: var(--tf-space-1);
+  font-size: var(--tf-text-base);   /* INHERITED body size AND colour — identical to the "Our approach" body copy, never reduced or muted */
+  color: var(--tf-ink);
+  line-height: 1.6;
+}
+.tf-callout-list li:last-child { margin-bottom: 0; }
+.tf-callout-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 6px;
+  height: 6px;
+  background: var(--tf-stone);
+}
+
 /* Principal profile */
 .tf-profile { border: var(--tf-rule-light); padding: var(--tf-space-3); display: flex; gap: 18px; }
 .tf-avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--tf-stone); color: var(--tf-paper); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; flex-shrink: 0; object-fit: cover; }
@@ -982,15 +1067,27 @@ a:hover { color: var(--tf-brick-dark); }
    breakpoint, not intrinsic sizing: there are exactly two cards and the pairing is
    deliberate, so it shouldn't reflow to 1-up mid-desktop the way an auto-fit track
    would on a narrow window. */
-.tf-profile-grid {
+/* Locked 2-up grid (`.tf-grid-2up`) — exactly two equal columns from 820px (the
+   nav breakpoint, reused — no new breakpoint), one stacked column below. A FIXED
+   pairing, not intrinsic auto-fit: the two items are a deliberate pair and must
+   not reflow to 1-up mid-desktop the way an auto-fill track would on a narrow
+   window. GENERALIZED from `.tf-profile-grid` (about.html's two principal cards),
+   which now consumes it as a thin modifier — so any deliberate two-item row
+   shares one geometry. Second consumer: business-planning.html's painpoints |
+   solves row. */
+.tf-grid-2up {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--tf-space-3);
-  margin-top: var(--tf-space-4);
 }
 @media (min-width: 820px) {
-  .tf-profile-grid { grid-template-columns: 1fr 1fr; }
+  .tf-grid-2up { grid-template-columns: 1fr 1fr; }
 }
+/* about.html principals — the 2-up plus the top margin from the section opener
+   above. Now a thin modifier on `.tf-grid-2up` (markup carries BOTH classes):
+   the grid geometry moved to the base, this keeps only the about-specific
+   spacing, so the principal cards render identically to before the extraction. */
+.tf-profile-grid { margin-top: var(--tf-space-4); }
 /* Principal name — 21px serif, dominant over the client-card title (also serif,
    smaller). Its inline LinkedIn mark FLOWS INLINE after the last word (not a flex
    row, which would strand the icon at the far edge when the name wraps); ink-soft
@@ -1111,6 +1208,136 @@ a:hover { color: var(--tf-brick-dark); }
    opening straight onto a WASH band would tint the gap, and should carry a
    paper band first rather than override this rule. */
 .tf-page-head + main:not(.tf-section) { padding-block-start: 0; }
+
+/* ── Tier-2 intro split (`.tf-intro-split`) ─────────────────────────────────
+   A two-column page opener for tier-2 (service DETAIL) pages: a text column
+   (kicker / h1 / hook / intro links) beside a framed inline content image. This
+   is the tier-2 SIGNAL — deliberately NOT the full-bleed .tf-page-head hero that
+   tier-1 pages carry. The image is an IN-FLOW framed element (2px light border,
+   square corners, no scrim, no bleed), so a detail page reads a level down from
+   the hero pages without inventing new chrome. Sits inside a .tf-section, so the
+   band rhythm and bottom divider come from there. First use:
+   business-planning.html. Collapses to one stacked column below 820px (the nav
+   breakpoint, reused); text stays first in source order, so it leads on mobile. */
+.tf-intro-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--tf-space-4);
+  align-items: center;
+}
+@media (min-width: 820px) {
+  .tf-intro-split { grid-template-columns: 1fr 1fr; gap: var(--tf-space-6); }
+}
+/* Framed image column — a bordered inline photo, never full-bleed. The 2px light
+   border is the within-a-thing frame (§4); square corners. Carries .tf-photo in
+   the markup for the brand grade. width:100% + height:auto renders the source at
+   its own ratio (the promoted image is 3:2), so nothing is cropped here.
+   Its RIGHT edge sits at the .tf-container edge and is the page's alignment
+   reference: every section below reaches this same right edge (the 2-up, the FAQ
+   dividers, and the prose column of .tf-section-split), so nothing reads narrower
+   than the intro row. */
+.tf-intro-split-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: var(--tf-rule-light);
+  /* The sheet has no global box-sizing reset, so without this the 2px frame would
+     add OUTSIDE width:100% and the image would overflow its grid column by 2px —
+     pushing its right edge ~2px past every other section and breaking the shared
+     right edge this image is the reference for. border-box keeps the frame inside. */
+  box-sizing: border-box;
+}
+/* Intro links line — the plain sentence under the hook ("free planning tools",
+   "paid packages"). Body size, set apart from the hook by role, not scale. */
+.tf-intro-split-links { margin: 0; }
+
+/* ── Labelled prose row (`.tf-section-split`) ───────────────────────────────
+   A full-width content row whose HEADING sits in a left column and whose running
+   prose sits in a right column, the prose's right edge meeting the .tf-container
+   edge — so a running-text section lines up with the tier-2 intro image, the 2-up
+   and the FAQ on the page's shared right edge, instead of hugging the left at a
+   narrow measure. This mirrors the blog's own width idiom (.tf-prose-layout: a
+   left rail + a 62ch prose pinned right) for a page that has NO TOC rail — the
+   heading takes the rail's place. The prose keeps the blog's comfortable 62ch
+   measure (the right track is capped at 62ch), so body copy never runs the full
+   container width. Stacks to heading-above-prose below 820px (the nav breakpoint,
+   reused). First use: business-planning.html (Our approach, Why us).
+   TYPE is unchanged: the label is a base h2 and the body is .tf-prose, so sizes
+   and rhythm match a blog post exactly — this pattern owns WIDTH only. */
+.tf-section-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--tf-space-3);
+}
+@media (min-width: 820px) {
+  .tf-section-split {
+    grid-template-columns: minmax(16ch, 1fr) minmax(0, 62ch);
+    gap: var(--tf-space-6);
+    align-items: start;
+  }
+}
+/* Heading column — a section label at the row's left, top-aligned with the prose.
+   No size override: it is the base h2 (36px), matching a blog h2. */
+.tf-section-split-label { margin: 0; }
+
+/* ── FAQ (`.tf-faq`) ─────────────────────────────────────────────────────────
+   A STATIC question/answer list — every answer fully visible, no folding, no JS.
+   (Reverted from an interactive accordion: the FAQ now sits in the RIGHT column of
+   the "How we engage" two-column band, beside the process flow, and shows in full.)
+   Marked up as a <dl> (dt = question, dd = answer). Question in the heading family
+   at the card-title tier; answer at body size/colour. Items divided by the light
+   within-section rule (§4); the last drops its rule and bottom padding so the list
+   ends clean. First use: business-planning.html. */
+.tf-faq { margin: 0; }
+.tf-faq-item {
+  padding-block: var(--tf-space-3);
+  border-bottom: var(--tf-rule-light);
+}
+.tf-faq-item:first-child { padding-block-start: 0; }
+.tf-faq-item:last-child { padding-block-end: 0; border-bottom: none; }
+.tf-faq-q {
+  margin: 0 0 var(--tf-space-1);
+  font-family: var(--tf-font-heading);
+  font-weight: 700;
+  font-size: var(--tf-text-lg);
+  line-height: 1.25;
+  color: var(--tf-ink);
+}
+/* Answer wraps at the blog 62ch measure (binds only on a full-width single column;
+   inside the engage band's column it fills the track). Body size + colour. */
+.tf-faq-a { max-width: 62ch; margin: 0; color: var(--tf-ink); }
+
+/* ── Process flow (`.tf-flow`) ───────────────────────────────────────────────
+   A vertical numbered process: each step a brick auto-number, a bold label, and
+   one explanation line beneath. Kin to `.tf-steps` (same brick counter idiom) but
+   at BODY size with a two-line step, for a page-level "how we engage" flow rather
+   than the compact 14px inline list. NO dividers between steps — the number +
+   spacing already separate them, and a rule here would clash with the FAQ's
+   dividers in the adjacent column (deliberately unlike `.tf-steps`, which does
+   rule its rows). Sits in the LEFT column of the engage band (a `.tf-grid-2up`
+   shared with the FAQ) — the reusable pattern-setter for the service-detail
+   template. First use: business-planning.html. */
+.tf-flow { list-style: none; margin: 0; padding: 0; counter-reset: tf-flow; }
+.tf-flow li {
+  counter-increment: tf-flow;
+  display: flex;
+  align-items: baseline;
+  gap: var(--tf-space-2);
+  padding-block: var(--tf-space-3);
+}
+.tf-flow li:first-child { padding-block-start: 0; }
+.tf-flow li:last-child { padding-block-end: 0; }
+.tf-flow li::before {
+  content: counter(tf-flow);
+  flex-shrink: 0;
+  min-width: 1.5ch;
+  font-family: var(--tf-font-heading);
+  font-weight: 700;
+  font-size: var(--tf-text-lg);
+  color: var(--tf-brick);
+}
+.tf-flow-label { display: block; font-weight: 700; }   /* bold step label — body size + ink */
+.tf-flow-note { margin: 0; }                            /* explanation line — inherits body size + ink */
 
 /* ── References directory (references.html) ─────────────────────────────────
    A segmented tab control, cream group panels, and a card grid, rendered by
