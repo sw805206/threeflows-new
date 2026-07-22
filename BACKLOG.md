@@ -82,7 +82,7 @@ exception), not a structural change.
 |---|---|---|---|
 | index.html | index.html | open | |
 | business-planning.html | svc1.html — renamed from the `service-planning.html` shell per SCOPE.md v010 Services restructure (ex-svc1, &ldquo;Plan&rdquo;). Built as the tier-2 Plan detail page (intro-split opener, painpoints/solves 2-up, FAQ, CTA); orphaned until BL-023 links it in nav. §B redirect still maps `svc1.html → service-planning.html` — the new filename needs a follow-up redirect fix (flagged, NOT changed here) | review | |
-| service-sourcing.html | svc2.html | open | |
+| sourcing-support.html | svc2.html — renamed from the `service-sourcing.html` shell per SCOPE.md v010 Services restructure (ex-svc2, &ldquo;Source&rdquo;). Built as the tier-2 Source detail page — a TEMPLATE REPEAT of business-planning.html (same intro-split / 2-up / flow+FAQ band / CTA; no new STYLE patterns). Orphaned until BL-023 links it in nav. §B redirect still maps `svc2.html → service-sourcing.html` — the new filename needs a follow-up redirect fix (flagged, NOT changed here) | review | |
 | service-launch.html | svc3.html | open | |
 | service-management.html | svc4.html | open | |
 | blogs.html | blog.html + bloglist.json | close | e337c40 |
