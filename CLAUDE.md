@@ -1,4 +1,4 @@
-v003 | last updated: 2026-07-20
+v004 | last updated: 2026-07-22
 
 
 # Working Rules
@@ -102,6 +102,22 @@ Divergence has two opposite causes and they need opposite fixes: the folder copy
 may be STALE (an update landed on main and the folder needs re-syncing), or it
 may be AHEAD (another stream edited it locally and must commit and push first).
 Guessing wrong destroys work.
+
+
+The check is a **sync audit**, run at the start of every repo-touching task (pure
+discussion turns don't need it). The doc set is not fixed: audit whatever
+governance docs SCOPE.md lists, plus CLAUDE.md and SCOPE.md themselves, plus any
+stamped non-`.md` governance file the project keeps (e.g. STYLE.css). Projects
+differ — never assume a fixed list, and never skip a doc because it wasn't in
+another project. The audit is necessarily **two-part**, because neither side can
+see both: the chat reports each doc's stamp (line 1) and content hash from the
+project folder; Code reports the same from `origin/main`; the human joins the two
+halves. Compare BOTH stamp and hash — matching stamps do not prove matching
+content. Then act on the direction of drift, which determines severity:
+- **Folder BEHIND main** (lower stamp, benign): re-add the doc to the project
+  folder, note it, and proceed. No stop required.
+- **Folder AHEAD of main**, or **stamps match but hashes differ**: STOP and ask.
+  Both mean unmerged or silently diverged content, and either can destroy work.
 
 
 **Protect main when it deploys from main.** If the project deploys from main (a live website or app), never commit directly to main: one feature branch per task, branched from an up-to-date main → commit locally as you work → push the branch to remote → open a PR only when I ask → merge → delete the branch (see Post-merge cleanup below). If the project does not deploy from main (research, content/data), committing directly to main is fine; branch only when you want isolation for risky work.
