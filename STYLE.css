@@ -1,6 +1,12 @@
-/* v012 | last updated: 2026-07-21
+/* v013 | last updated: 2026-07-22
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v13 · 2026-07-22 · .tf-lead 20px → 16px (--tf-text-lg → --tf-text-base), to
+                     align the service-page hook and CTA subline with the site's
+                     16px lead/intro size (.tf-prose-intro). Leading follows from
+                     the inherited unitless 1.6 (→ 25.6px), matching the intro.
+                     Colour deliberately unchanged (ink on paper, paper in .tf-cta).
 
    v12 · 2026-07-21 · business-planning.html "How we engage" band + FAQ revert.
                      .tf-flow (NEW) — a vertical numbered process flow (brick
@@ -504,7 +510,12 @@ p {
   text-wrap: pretty;
 }
 
-.tf-lead { font-size: var(--tf-text-lg); }
+/* Lead paragraph — the service-page hook and CTA subline. 16px, the site's
+   lead/intro size (same --tf-text-base as .tf-prose-intro); leading is the
+   inherited unitless 1.6 → 25.6px, so it stays locked to the intro rhythm.
+   Colour is deliberately NOT set here: ink on paper grounds, --tf-paper inside
+   .tf-cta, both inherited. */
+.tf-lead { font-size: var(--tf-text-base); }
 .tf-secondary { color: var(--tf-ink-soft); }
 .tf-meta {
   font-size: var(--tf-text-xs);
