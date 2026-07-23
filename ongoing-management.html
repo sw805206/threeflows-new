@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ongoing Management — Three Flows Solutions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+</head>
+<body class="tf-app">
+  <!-- Shared header injected from partials.html -->
+  <div id="tf-header"></div>
+
+  <!-- NOTE: this page is intentionally ORPHANED (not yet nav-linked). The shared
+       Services dropdown still carries the OLD four-link service-*.html nav; the
+       two-tier rewrite that would link "Grow → ongoing-management.html" is BL-023,
+       a separate job. Until it ships, this page is reachable by direct URL only. -->
+
+  <main>
+    <!-- BAND 1 — Tier-2 intro split (paper). No .tf-page-head hero: a service
+         DETAIL page opens on the two-column intro (text + framed inline image),
+         which is the tier-2 signal. -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <div class="tf-intro-split">
+          <div class="tf-intro-split-text">
+            <div class="tf-kicker">Services · Runningmate</div>
+            <h1>Ongoing Management</h1>
+            <p class="tf-lead">Focus on your growth. We&rsquo;ll do the rest.</p>
+            <!-- Intro links: "insights" → blogs.html (live); "paid packages" href is a "#" PLACEHOLDER — target TBD (BL follow-up). -->
+            <p class="tf-intro-split-links">Explore our <a href="blogs.html">insights</a> or view our <a href="#">paid packages</a>.</p>
+          </div>
+          <img class="tf-intro-split-img tf-photo" src="assets/images/ongoing-management.jpg"
+               alt="A wall of printed planning canvases covered in handwritten yellow sticky notes, seen at an angle with the far end out of focus."
+               width="1200" height="800" loading="eager">
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 2 — Our approach (paper). Labelled prose row: heading LEFT, prose
+         RIGHT pinned to the container edge (the page's shared right edge). -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <div class="tf-section-split">
+          <h2 class="tf-section-split-label">Our approach</h2>
+          <div class="tf-prose">
+            <p>The sprint is over. The marathon starts.</p>
+            <p>Once you&rsquo;ve been through a full cycle &mdash; first PO to first SO &mdash; everything you assumed at the start needs revalidating. The business plan gets recalibrated against what actually happened, suppliers get re-evaluated against their performance, and the setups get buckled down and toned up. If it all holds up, the game is on.</p>
+            <p>At this stage your attention belongs on the top line: new products, new channels, new customers. You also need the organizational foundation set correctly &mdash; able to run as a solo operation today and ready to take on people tomorrow. What you don&rsquo;t need is the back office quietly eating your time and energy. That&rsquo;s where we come in.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 3 — Painpoints & the solves (paper). Locked 2-up, symmetric
+         .tf-callout headers: alert-triangle/brick vs circle-check/ink. -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <h2>Painpoints &amp; the solves</h2>
+        <div class="tf-grid-2up">
+          <div class="tf-callout tf-callout-warn">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            <div>
+              <div class="tf-callout-title">The painpoints</div>
+              <ul class="tf-callout-list">
+                <li>Administrative work eating the hours that should go to growth</li>
+                <li>No clear read on when to hire and when to keep flying solo</li>
+                <li>Growth outrunning the cash &mdash; aggressive top line, tight cashflow</li>
+                <li>A setup that&rsquo;s either messy or too simple to carry the next stage</li>
+              </ul>
+            </div>
+          </div>
+          <div class="tf-callout tf-callout-affirm">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+            <div>
+              <div class="tf-callout-title">The solves</div>
+              <ul class="tf-callout-list">
+                <li>All-in back office: resupply, logistics, P&amp;L, cashflow &mdash; visibility and a control tower</li>
+                <li>Data-driven process and system improvement, continuously</li>
+                <li>An online dashboard for your business</li>
+                <li>Hiring and training your staff when a function is ready to come in-house</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 4 — Why us (paper). Labelled prose row: heading LEFT, prose RIGHT
+         pinned to the container edge (the page's shared right edge). -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <div class="tf-section-split">
+          <h2 class="tf-section-split-label">Why us</h2>
+          <div class="tf-prose">
+            <p>What separates a startup owner from a billion-dollar company isn&rsquo;t the first step or the last one. It&rsquo;s the ninety-nine in between &mdash; and every one of them has to be right. Fast and nimble, but solid.</p>
+            <p>Our consultants were trained inside large companies to run cross-functional projects and oversight &mdash; the discipline that makes each step solid enough to jump from. And having run small businesses ourselves, we&rsquo;re cost-sensitive in a way big-company thinking usually isn&rsquo;t.</p>
+            <p>The division of labor is clear. You make the decisions and you make the payments. We surface the opportunities and the risks through data, and we manage the execution.</p>
+            <p>We design and implement those steps one at a time, until you&rsquo;re ready to take them over. That&rsquo;s the goal &mdash; not to keep you dependent, but to hand each function across when your team is ready for it.</p>
+            <p><strong>You control the business. We keep the engine room running.</strong></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 5 — "How we engage" band (paper). Two columns via .tf-grid-2up:
+         LEFT = .tf-flow 5-step process; RIGHT = the STATIC .tf-faq (all answers
+         visible, no fold, no JS). Full-width; the right column meets the container
+         edge (the page's shared right edge). Stacks flow-then-FAQ below 820px.
+         This is the reusable service-detail template band. NO pricing question.
+         NB this page has 4 FAQ items against a 5-step flow, so the FAQ column is
+         the shorter of the two — expected, not a defect. -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <div class="tf-grid-2up">
+          <!-- LEFT — process flow -->
+          <div>
+            <h2>How we engage</h2>
+            <ol class="tf-flow">
+              <li><div><span class="tf-flow-label">Free discovery call</span><p class="tf-flow-note">we learn what&rsquo;s eating your time and where the gaps are</p></div></li>
+              <li><div><span class="tf-flow-label">Scope the back office</span><p class="tf-flow-note">which functions we take, which stay with you &mdash; agreed explicitly</p></div></li>
+              <li><div><span class="tf-flow-label">Build the control tower</span><p class="tf-flow-note">systems connected, dashboard live, visibility on material flow and cash flow</p></div></li>
+              <li><div><span class="tf-flow-label">Run the operation</span><p class="tf-flow-note">day-to-day execution, with risks and decisions surfaced to you</p></div></li>
+              <li><div><span class="tf-flow-label">Hand it back</span><p class="tf-flow-note">as you grow, we help you hire, train, and insource &mdash; and step back to oversight</p></div></li>
+            </ol>
+          </div>
+          <!-- RIGHT — static FAQ, all answers visible -->
+          <div>
+            <h2>Frequently asked questions</h2>
+            <dl class="tf-faq">
+              <div class="tf-faq-item">
+                <dt class="tf-faq-q">How do you coordinate with external service providers?</dt>
+                <dd class="tf-faq-a">Think of us as your COO on call. We agree the boundaries of how we can represent you, then handle the day-to-day directly with them. Anything significant comes to you for approval, and we execute once you&rsquo;ve decided.</dd>
+              </div>
+              <div class="tf-faq-item">
+                <dt class="tf-faq-q">How do you handle customer service in my brand voice?</dt>
+                <dd class="tf-faq-a">At the start, we&rsquo;d actually suggest you handle customer service yourself &mdash; early on it&rsquo;s too close to your success to hand over. If and when you do want help, we build brand voice and response guidelines with you first, and operate strictly inside them. Anything outside the guidelines comes back to you before we respond.</dd>
+              </div>
+              <div class="tf-faq-item">
+                <dt class="tf-faq-q">Why are order management and fulfillment always bundled?</dt>
+                <dd class="tf-faq-a">They&rsquo;re two halves of one process. An order that isn&rsquo;t tracked through to fulfillment creates blind spots &mdash; you don&rsquo;t find out something went wrong until a customer tells you. We run both together so there&rsquo;s one accountable party for the whole order-to-delivery cycle.</dd>
+              </div>
+              <div class="tf-faq-item">
+                <dt class="tf-faq-q">What happens as I grow and want to bring things in-house?</dt>
+                <dd class="tf-faq-a">We actively support it. When you&rsquo;re ready to insource a function, we help write the job description, define the handoff, and train your hire using the processes we built together. The institutional knowledge transfers with the role rather than walking out the door.</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA band (ink). The .tf-cta band; the footer's warm-stone ground
+         (--tf-footer-ground) separates it from the ink footer below (BL-022).
+         Primary = the real conversion (contact.html). Secondary "See all
+         services" href is a "#" PLACEHOLDER (targets TBD — BL-023 nav). -->
+    <section class="tf-cta">
+      <div class="tf-container">
+        <h2>Ready for ongoing support?</h2>
+        <p class="tf-lead">Start with a free discovery call or send us your question &mdash; we&rsquo;ll take it from there.</p>
+        <!-- Contact us = PRIMARY (brick, first); See all services = SECONDARY
+             (outline, second, "#" PLACEHOLDER). No arrow glyphs. Spaced via .tf-btn-row. -->
+        <div class="tf-btn-row">
+          <a class="tf-btn tf-btn-primary" href="contact.html">Contact us</a>
+          <a class="tf-btn tf-btn-secondary" href="#">See all services</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Shared footer injected from partials.html -->
+  <div id="tf-footer"></div>
+
+  <!-- Fetch snippet: load partials.html (relative), inject header/footer,
+       mark the current nav link, and wire dropdowns + the mobile menu.
+       Fails silently (no nav rather than a broken page). -->
+  <script>
+  (function () {
+    fetch('partials.html').then(function (r) {
+      if (!r.ok) throw new Error('partials ' + r.status);
+      return r.text();
+    }).then(function (html) {
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      ['header', 'footer'].forEach(function (slot) {
+        var src = doc.getElementById('tf-' + slot + '-partial');
+        var dest = document.getElementById('tf-' + slot);
+        if (src && dest) dest.innerHTML = src.innerHTML;
+      });
+
+      var header = document.getElementById('tf-header');
+      if (!header) return;
+      var navBar = header.querySelector('.tf-nav');
+
+      // Mark the current page's nav link — nav links only (never the
+      // lockup or the dropdown triggers), by exact filename match.
+      var path = window.location.pathname;
+      var file = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
+      var links = header.querySelectorAll('.tf-nav-links a[href]');
+      for (var i = 0; i < links.length; i++) {
+        if (links[i].getAttribute('href') === file) {
+          links[i].setAttribute('aria-current', 'page');
+        }
+      }
+
+      // Hamburger toggle (mobile).
+      var toggle = header.querySelector('.tf-nav-toggle');
+      if (toggle && navBar) {
+        toggle.addEventListener('click', function () {
+          var open = navBar.classList.toggle('tf-nav-open');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+
+      // Dropdowns: at most one open at a time. Open on the trigger's hover
+      // (desktop) or click; close on mouse leave, outside click, or Esc.
+      var items = header.querySelectorAll('.tf-has-dropdown');
+      function isDesktop() { return window.matchMedia('(min-width: 820px)').matches; }
+      function closeItem(item) {
+        item.classList.remove('is-open');
+        var t = item.querySelector('.tf-nav-trigger');
+        if (t) t.setAttribute('aria-expanded', 'false');
+      }
+      function closeAll() {
+        for (var k = 0; k < items.length; k++) closeItem(items[k]);
+      }
+      function setOpen(item, open) {
+        if (open) {
+          for (var k = 0; k < items.length; k++) {
+            if (items[k] !== item) closeItem(items[k]);
+          }
+        }
+        item.classList.toggle('is-open', open);
+        var t = item.querySelector('.tf-nav-trigger');
+        if (t) t.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      for (var j = 0; j < items.length; j++) {
+        (function (item) {
+          var trigger = item.querySelector('.tf-nav-trigger');
+          if (trigger) {
+            trigger.addEventListener('click', function () {
+              setOpen(item, !item.classList.contains('is-open'));
+            });
+          }
+          item.addEventListener('mouseenter', function () {
+            if (isDesktop()) setOpen(item, true);
+          });
+          item.addEventListener('mouseleave', function () {
+            if (isDesktop()) closeItem(item);
+          });
+        })(items[j]);
+      }
+      document.addEventListener('click', function (e) {
+        if (!header.contains(e.target)) closeAll();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' || e.key === 'Esc') closeAll();
+      });
+      // Reset transient state only when actually crossing the breakpoint —
+      // not on every resize (mobile URL-bar show/hide fires resize too, and
+      // must not collapse an open menu).
+      var wasDesktop = isDesktop();
+      window.addEventListener('resize', function () {
+        var nowDesktop = isDesktop();
+        if (nowDesktop === wasDesktop) return;
+        wasDesktop = nowDesktop;
+        closeAll();
+        if (navBar) navBar.classList.remove('tf-nav-open');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      });
+    }).catch(function () { /* fail silently: no nav rather than broken page */ });
+  })();
+  </script>
+</body>
+</html>
