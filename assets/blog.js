@@ -35,12 +35,17 @@
     //    container-minus-exclusions rather than a tag list means body elements
     //    count automatically as they appear — list items do now, and tables or
     //    callouts will when they arrive.
+    //    style and script are excluded too: textContent returns their SOURCE, so a
+    //    post carrying a page-local component inside .tf-prose would have its CSS
+    //    and JS counted as prose (measured on blog-007: 1516 -> 1913 words, 7 min
+    //    shown as 9). They are code, never reader-visible text, so they never count
+    //    wherever an author places them.
     (function () {
       if (!prose) return;
       var meta = prose.querySelector('.tf-meta');
       if (!meta) return;
       var body = prose.cloneNode(true);                              // count off a copy; the page keeps its DOM
-      var skip = body.querySelectorAll('h1, .tf-meta, .tf-post-topnav');
+      var skip = body.querySelectorAll('h1, .tf-meta, .tf-post-topnav, style, script');
       for (var i = 0; i < skip.length; i++) skip[i].remove();
       var parts = body.textContent.trim().split(/\s+/);
       var words = 0;
