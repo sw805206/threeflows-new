@@ -1,4 +1,4 @@
-v004 | last updated: 2026-07-23
+v005 | last updated: 2026-07-23
 
 # BLOG.md — how to add a blog post
 
@@ -111,13 +111,16 @@ post its own date.
 
 ```
 readMinutes = ceil(words / 220)
-words = .tf-prose text, EXCLUDING h1, .tf-meta, .tf-post-topnav
+words = .tf-prose text, EXCLUDING h1, .tf-meta, .tf-post-topnav, style, script
 ```
 
-This is blog.js's exact scope (clone `.tf-prose`, remove those three, count
+This is blog.js's exact scope (clone `.tf-prose`, remove those five, count
 whitespace-separated tokens). The h1 is excluded **so a title edit never moves
 the count**; the topnav is excluded because it sits *inside* `.tf-prose`.
-Everything else counts — paragraphs, headings, list items, and any future body
+**`style` and `script` are excluded because they are code, not prose** — a
+`textContent` count returns their SOURCE, so a post carrying a page-local
+component inside `.tf-prose` would have its CSS and JS tallied as words. Every
+other element counts — paragraphs, headings, list items, and any future body
 element.
 
 - The **post page computes this live from the DOM**. The **index card reads
