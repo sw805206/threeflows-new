@@ -1,4 +1,4 @@
-v003 | last updated: 2026-07-18
+v004 | last updated: 2026-07-23
 
 # BLOG.md — how to add a blog post
 
@@ -169,6 +169,58 @@ Rendering: the image is the rail's top slot on the post (3:2, `.tf-photo`,
 sticky with the rail on desktop, in-flow above the article on mobile) and the
 card cap on the index. `loading="eager"` on the rail (above-fold LCP);
 `loading="lazy"` on index cards.
+
+### Page heroes
+
+Everything above is written for a **post** image. A **page hero** — the
+full-bleed `.tf-page-head` band on a tier-1 page — runs the same pipeline for
+stages 1–3 (master → intake → preview, same 3:2 **1200×800** q80–85 crop spec;
+no hero-specific dimensions are needed) but differs at **promotion** and in what
+alt text it carries. Both differences are recorded here because the rules above,
+read literally, do not cover a hero: a page has neither a post slug nor a
+manifest entry, and a CSS background cannot carry an `alt` attribute at all.
+
+**Alt: a hero is decorative — the sanctioned exception.** A hero renders through
+a CSS `background-image` (`--tf-page-head-img`), so it is structurally incapable
+of carrying alt text; there is no `<img>` element to put it on. That is correct
+rather than a gap: the hero is **decorative**, and the page's `h1` — sitting
+inside the band — is the accessible heading a screen reader announces. So a hero
+gets **no alt and no `imageAlt`**, and this is the one sanctioned exception to
+the alt policy above. **That policy is otherwise unchanged and still binding on
+every inline content image** — the post rail image and the index card cap each
+still take one plain factual user-approved sentence. Do not read this exception
+as licence to drop alt anywhere an `<img>` exists.
+
+**Promotion — bare page name, wired inline.** Step 4 above promotes to
+`assets/images/<slug>.jpg` "matching the post slug" and then wires the manifest.
+A hero has neither, so it promotes to **`assets/images/<page-name>.jpg`** — the
+bare page name, matching the page's own filename (`about.html` →
+`assets/images/about.jpg`) — and is wired **inline on the band**, not through any
+manifest:
+
+```html
+<header class="tf-page-head" style="--tf-page-head-img: url('assets/images/about.jpg')">
+```
+
+Everything else about promotion is unchanged: copy the **approved bytes**, never
+re-process, and verify the copy is **byte-identical**.
+
+Where the default centred cover-crop cuts the subject, the page also sets
+**`--tf-page-head-pos`** to aim the crop window — the band renders wide and
+short, so only a narrow horizontal slice of a 3:2 photo survives:
+
+```html
+<header class="tf-page-head" style="--tf-page-head-img: url('assets/images/about.jpg'); --tf-page-head-pos: center 63%">
+```
+
+Omit `--tf-page-head-pos` when the default `center` loses nothing. Both custom
+properties are consumed by `.tf-page-head` in `STYLE.css`, which also supplies
+the mandatory ink `background-color` fallback if the image fails to load — so a
+hero never needs a page-local style rule beyond these two inline properties.
+
+Shipped precedent: `references.html` (first hero, default crop), `blogs.html`
+(default crop), and `about.html` (`center 63%`, so the group reads heads to
+feet).
 
 ## 8. Ship rhythm
 
