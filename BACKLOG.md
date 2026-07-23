@@ -45,7 +45,7 @@ backlog bookkeeping goes direct to main**; they are not repeated here.
 | BL-020 | open | governance | BLOG.md §7 step 4 naming + wiring are post-only: it directs promotion to `assets/images/<slug>.jpg` "matching the post slug" and to "wire the manifest (`image` + `imageAlt`)" — a page hero has neither a post slug nor a manifest. Shipped precedent (references.jpg → `assets/images/references.jpg`, wired inline as `style="--tf-page-head-img: url(...)"`) is unwritten, so the hero path gets improvised each time. Specify it in §7: bare page-name.jpg + inline custom property. Dimensions need no hero-specific target — references.jpg measures 1200x800 3:2, identical to §7's existing preview spec | 2026-07-19 | |
 | BL-021 | close | style | Footer color reconciliation with Claude Design: ground and link ratified as color-mix derived tokens (ground = ink 75% + stone; link = brick-on-ink 45% + paper), provisional flags cleared, stone-bar contrast resolved (~4.3:1), §2 palette rule corrected to reflect the four inks + scoped exceptions + existing data palette. Recorded in STYLE.md §6 | 2026-07-20 | User ratified; shipped in PR #26 (16f0598) |
 | BL-022 | open | feature | When the `.tf-cta` template ships (currently parked), the CTA-above-footer stacking becomes real — review `--tf-footer-ground` against an actual CTA band on a live page (so far only seen in a since-deleted scratch page) | 2026-07-20 | |
-| BL-023 | open | page | Ship the Services two-tier nav rewrite in partials.html. SCOPE.md describes the six-link structure (Pathfinder, Runningmate, divider, then business-planning / sourcing-support / launch-hypercare / ongoing-management) and `.tf-dropdown-divider` exists in STYLE.css, but the committed partial still carries the OLD four-link service-*.html nav. Docs + CSS shipped; the markup rewrite was never done | 2026-07-20 | |
+| BL-023 | open | page | Ship the Services two-tier nav rewrite in partials.html. SCOPE.md describes the six-link structure (Pathfinder, Runningmate, divider, then business-planning / sourcing-support / launch-hypercare / ongoing-management) and `.tf-dropdown-divider` exists in STYLE.css. **PARTIALLY DONE:** the nav now points at the four DETAIL pages with SCOPE's short labels (Plan / Source / Launch / Grow), which un-orphans them, and the four superseded `service-*.html` shells were deleted with §B redirects added. **STILL PENDING (why this stays open):** the TWO-TIER structure — the Pathfinder + Runningmate overview tier and the `.tf-dropdown-divider` between the tiers — is deferred because `pathfinder.html` and `runningmate.html` do not exist yet; the panel remains ONE flat tier until they are built | 2026-07-20 | |
 | BL-024 | open | refactor | 22 shell pages carry the partials-injection script inline in 3 near-identical variants (13/8/1) — copy-pasted duplication. Centralize into a single `assets/partials.js` loaded via `<script src>`, so injection logic (and future needs like footer auto-year) live in one place. Surfaced by the © line task | 2026-07-20 | |
 
 ## Inventory / page checklist
@@ -112,10 +112,14 @@ assumed "nothing 404s" redirects the user will confirm at review.
 | surveys.html | surveys.html | identity (hidden cover; kept, redesigned later) |
 | blog.html | blogs.html | redirect |
 | blog-001…024, 010a, 010b | blog-###.html (same name) | identity — no redirect needed |
-| svc1.html | service-planning.html | redirect |
-| svc2.html | service-sourcing.html | redirect |
-| svc3.html | service-launch.html | redirect |
-| svc4.html | service-management.html | redirect |
+| svc1.html | business-planning.html | redirect (retargeted from the `service-planning.html` shell, deleted at the nav rewrite) |
+| svc2.html | sourcing-support.html | redirect (retargeted from the `service-sourcing.html` shell, deleted at the nav rewrite) |
+| svc3.html | launch-hypercare.html | redirect (retargeted from the `service-launch.html` shell, deleted at the nav rewrite) |
+| svc4.html | ongoing-management.html | redirect (retargeted from the `service-management.html` shell, deleted at the nav rewrite) |
+| service-planning.html | business-planning.html | redirect — interim PR#1 shell filename, DELETED at the nav rewrite; mapped so any bookmarked preview URL still resolves |
+| service-sourcing.html | sourcing-support.html | redirect — interim PR#1 shell filename, DELETED at the nav rewrite; mapped so any bookmarked preview URL still resolves |
+| service-launch.html | launch-hypercare.html | redirect — interim PR#1 shell filename, DELETED at the nav rewrite; mapped so any bookmarked preview URL still resolves |
+| service-management.html | ongoing-management.html | redirect — interim PR#1 shell filename, DELETED at the nav rewrite; mapped so any bookmarked preview URL still resolves |
 | useful-websites.html | references.html | redirect |
 | webinars.html | seminars.html | redirect |
 | livestream.html | seminars.html | redirect (folded into seminars) |
