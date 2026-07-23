@@ -1,4 +1,4 @@
-v016 | last updated: 2026-07-23
+v017 | last updated: 2026-07-23
 
 # BACKLOG.md — threeflows-new
 
@@ -110,10 +110,12 @@ have 404'd at cutover. The 25 old blog URLs are now enumerated individually.
 Mapping was derived from `bloglist.json` + disk by matching **title and date** —
 NOT by `blogID`, because the new manifest **renumbers** blogIDs (e.g. old
 `blog-011` is manifest `blog-005`), so blogID is not a carry-over key.
-**8 of 25 are carried** and mapped to their slug page; **17 are NOT CARRIED** (no
-slug page exists yet) and are marked with no target rather than an invented one —
-those 17 still 404 at cutover until the posts are built or an interim target is
-chosen. That decision is open; see BL-014.
+**8 of 25 are carried** and mapped to their real slug page. The other **17 are NOT
+CARRIED** (no slug page exists yet); per the user's decision of 2026-07-23 each takes
+an **interim redirect (assumed) → `blogs.html`**, following this section's existing
+idiom, so nothing 404s at cutover. Each is INTERIM, not final: when its post is
+carried over under BL-007, that row retargets from `blogs.html` to the post's real
+slug page. No old blog URL is left unmapped.
 
 | Old URL | Destination | Note |
 |---|---|---|
@@ -126,28 +128,28 @@ chosen. That decision is open; see BL-014.
 | blog-001.html | blog-welcome-to-three-flows.html | redirect — CARRIED (matched on title + date 2025-03-05) |
 | blog-002.html | blog-cut-import-costs.html | redirect — CARRIED (date 2025-04-29 matches; RETITLED, the §D-flagged blog-002 divergence) |
 | blog-003.html | blog-factory-data.html | redirect — CARRIED (title matches; RE-DATED 2025-06-09 → 2025-05-21, the §D-flagged blog-003 divergence) |
-| blog-004.html | — | **NOT CARRIED** — "Navigating the US-China Tariff War" has no slug page; target pending (see BL-014) |
-| blog-005.html | — | **NOT CARRIED** — "Why Data Integrity Is the Foundation…"; target pending (see BL-014) |
-| blog-006.html | — | **NOT CARRIED** — "Is FedEx's 2026 Rate Increase Really Just 5.9%?"; target pending (see BL-014) |
+| blog-004.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Navigating the US-China Tariff War" has no slug page; retargets to its real slug page when that post is carried over (BL-007) |
+| blog-005.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Why Data Integrity Is the Foundation…"; retargets to its real slug page when that post is carried over (BL-007) |
+| blog-006.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Is FedEx's 2026 Rate Increase Really Just 5.9%?"; retargets to its real slug page when that post is carried over (BL-007) |
 | blog-007.html | blog-warehouse-placement-case-study.html | redirect — CARRIED (distinctive title match; re-dated 2025-11-17 → 2025-09-22) |
-| blog-008.html | — | **NOT CARRIED** — "Is a $1.40 Product Worth Selling in the US?"; target pending (see BL-014) |
-| blog-009.html | — | **NOT CARRIED** — "Why Your Whatnot Livestream Needs a Sell-Through Model…"; target pending (see BL-014) |
-| blog-010a.html | — | **NOT CARRIED** — "Dedicated 3PL Service Can Cost $23.33 Per Order…"; target pending (see BL-014) |
-| blog-010b.html | — | **NOT CARRIED** — "The Fifth M: Why Measurement…"; target pending (see BL-014) |
+| blog-008.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Is a $1.40 Product Worth Selling in the US?"; retargets to its real slug page when that post is carried over (BL-007) |
+| blog-009.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Why Your Whatnot Livestream Needs a Sell-Through Model…"; retargets to its real slug page when that post is carried over (BL-007) |
+| blog-010a.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Dedicated 3PL Service Can Cost $23.33 Per Order…"; retargets to its real slug page when that post is carried over (BL-007) |
+| blog-010b.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "The Fifth M: Why Measurement…"; retargets to its real slug page when that post is carried over (BL-007) |
 | blog-011.html | blog-obbba-business-provisions.html | redirect — CARRIED (exact title + exact date 2025-07-06); NB new manifest renumbers this as blogID blog-005 |
 | blog-012.html | blog-amazon-two-new-policies.html | redirect — CARRIED (exact title + exact date 2025-08-04); NB new manifest renumbers this as blogID blog-006 |
-| blog-013.html | — | **NOT CARRIED** — "Which Marketplace Actually Costs Less?…"; target pending (see BL-014) |
-| blog-014.html | — | **NOT CARRIED** — "Inside Amazon's Supply Chain…"; target pending (see BL-014) |
-| blog-015.html | — | **NOT CARRIED** — "How Amazon Built a Global Logistics Network…"; target pending (see BL-014) |
-| blog-016.html | — | **NOT CARRIED** — "The Little Red Button…"; target pending (see BL-014) |
-| blog-017.html | — | **NOT CARRIED** — "Amazon's US Warehouse Network…"; target pending (see BL-014) |
+| blog-013.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Which Marketplace Actually Costs Less?…"; retargets to its real slug page when that post is carried over (BL-007) |
+| blog-014.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Inside Amazon's Supply Chain…"; retargets to its real slug page when that post is carried over (BL-007) |
+| blog-015.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "How Amazon Built a Global Logistics Network…"; retargets to its real slug page when that post is carried over (BL-007) |
+| blog-016.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "The Little Red Button…"; retargets to its real slug page when that post is carried over (BL-007) |
+| blog-017.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Amazon's US Warehouse Network…"; retargets to its real slug page when that post is carried over (BL-007) |
 | blog-018.html | blog-amazon-inbound.html | redirect — CARRIED (Amazon-inbound topic match, title reworded); NB new manifest renumbers this as blogID blog-004 |
-| blog-019.html | — | **NOT CARRIED** — "From Shelf to Doorstep…"; target pending (see BL-014) |
-| blog-020.html | — | **NOT CARRIED** — "The Culture That Built Amazon…"; target pending (see BL-014) |
-| blog-021.html | — | **NOT CARRIED** — "Test Before You List…"; target pending (see BL-014) |
-| blog-022.html | — | **NOT CARRIED** — "Cashflow: Your Unit Economics Over a Time Horizon"; target pending (see BL-014) |
+| blog-019.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "From Shelf to Doorstep…"; retargets to its real slug page when that post is carried over (BL-007) |
+| blog-020.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "The Culture That Built Amazon…"; retargets to its real slug page when that post is carried over (BL-007) |
+| blog-021.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Test Before You List…"; retargets to its real slug page when that post is carried over (BL-007) |
+| blog-022.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Cashflow: Your Unit Economics Over a Time Horizon"; retargets to its real slug page when that post is carried over (BL-007) |
 | blog-023.html | blog-sourcing-strategy-2x2.html | redirect — CARRIED (near-identical title); NB new manifest renumbers this as blogID blog-008 |
-| blog-024.html | — | **NOT CARRIED** — "Last-Mile Shipping Rates Explained…"; target pending (see BL-014) |
+| blog-024.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Last-Mile Shipping Rates Explained…"; retargets to its real slug page when that post is carried over (BL-007) |
 | svc1.html | business-planning.html | redirect (retargeted from the `service-planning.html` shell, deleted at the nav rewrite) |
 | svc2.html | sourcing-support.html | redirect (retargeted from the `service-sourcing.html` shell, deleted at the nav rewrite) |
 | svc3.html | launch-hypercare.html | redirect (retargeted from the `service-launch.html` shell, deleted at the nav rewrite) |
