@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Launch Hypercare — Three Flows Solutions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+</head>
+<body class="tf-app">
+  <!-- Shared header injected from partials.html -->
+  <div id="tf-header"></div>
+
+  <!-- NOTE: this page is intentionally ORPHANED (not yet nav-linked). The shared
+       Services dropdown still carries the OLD four-link service-*.html nav; the
+       two-tier rewrite that would link "Launch → launch-hypercare.html" is BL-023,
+       a separate job. Until it ships, this page is reachable by direct URL only. -->
+
+  <main>
+    <!-- BAND 1 — Tier-2 intro split (paper). No .tf-page-head hero: a service
+         DETAIL page opens on the two-column intro (text + framed inline image),
+         which is the tier-2 signal. -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <div class="tf-intro-split">
+          <div class="tf-intro-split-text">
+            <div class="tf-kicker">Services · Runningmate</div>
+            <h1>Launch Hypercare</h1>
+            <p class="tf-lead">Launch is the exciting part. We make sure it&rsquo;s not the chaotic part.</p>
+            <!-- Intro links: BOTH hrefs are "#" PLACEHOLDERS — the launch checklist page does not exist yet; targets TBD (BL follow-up). -->
+            <p class="tf-intro-split-links">Explore our <a href="#">launch checklist</a> or view our <a href="#">paid packages</a>.</p>
+          </div>
+          <img class="tf-intro-split-img tf-photo" src="assets/images/launch-hypercare.jpg"
+               alt="A group of people seen from below raising and clinking glasses of sparkling wine against a blue sky."
+               width="1200" height="800" loading="eager">
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 2 — Our approach (paper). Labelled prose row: heading LEFT, prose
+         RIGHT pinned to the container edge (the page's shared right edge). -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <div class="tf-section-split">
+          <h2 class="tf-section-split-label">Our approach</h2>
+          <div class="tf-prose">
+            <p>Launch is the most exciting phase &mdash; the first time the rubber actually hits the road. It&rsquo;s also where the task list explodes, the timeline slips, and the same problems keep coming back because nobody had time to fix the cause.</p>
+            <p>Most firms will offer to do it all for you. Having been there ourselves, we don&rsquo;t think that&rsquo;s what you want. You started this because you want to be in charge of it &mdash; but being in charge alone is hard. What you need is someone in it with you: real support on the actual work, and honest support on the days it gets heavy.</p>
+            <p>That&rsquo;s what a runningmate is. Not a cold consultant handing over a report &mdash; more like a coach who runs the course beside you. Someone who shares the founder&rsquo;s drive but keeps a clear head, who&rsquo;s disciplined when you&rsquo;re stretched, and who&rsquo;s seen this stretch of road before.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 3 — Painpoints & the solves (paper). Locked 2-up, symmetric
+         .tf-callout headers: alert-triangle/brick vs circle-check/ink. -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <h2>Painpoints &amp; the solves</h2>
+        <div class="tf-grid-2up">
+          <div class="tf-callout tf-callout-warn">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            <div>
+              <div class="tf-callout-title">The painpoints</div>
+              <ul class="tf-callout-list">
+                <li>Not clear what&rsquo;s needed, or what comes first &mdash; so the timeline drags and slips</li>
+                <li>Too many tasks, too little time, all landing at once &mdash; and the stress starts affecting the work</li>
+                <li>Underestimating how connected everything is &mdash; one wrong setup causing problems downstream</li>
+                <li>Stuck in firefight mode, with the same issues repeating after launch</li>
+              </ul>
+            </div>
+          </div>
+          <div class="tf-callout tf-callout-affirm">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+            <div>
+              <div class="tf-callout-title">The solves</div>
+              <ul class="tf-callout-list">
+                <li>A launch playbook and project plan &mdash; what happens, in what order</li>
+                <li>On-call problem-solving sessions when something needs sorting today</li>
+                <li>A weekly meet-up to recap progress and stay ahead of risk</li>
+                <li>A post-launch package: process, systems, and improvement, documented</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 4 — Why us (paper). Labelled prose row: heading LEFT, prose RIGHT
+         pinned to the container edge (the page's shared right edge). -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <div class="tf-section-split">
+          <h2 class="tf-section-split-label">Why us</h2>
+          <div class="tf-prose">
+            <p>We&rsquo;ve helped more than fifty businesses through their launch &mdash; e-commerce sellers, brand owners, consulting firms, logistics companies, retail stores. The industries differ. The patterns repeat, and we know where they break.</p>
+            <p>The exact fix changes every time; the discipline doesn&rsquo;t. Proactiveness and attention to detail are what separate a launch that holds from one that unravels &mdash; and it takes an experienced eye to spot the problem before it&rsquo;s a problem, and corporate rigor to build a process that&rsquo;s robust from day one.</p>
+            <p>Because we know what matters, we do two things differently. We make sure you understand the why and the how behind every setup &mdash; these decisions are made at launch, but they&rsquo;re built for the long run. And we scan ahead for risks, flagging them early so you can put them out before they become the thing that slows you down.</p>
+            <p><strong>From your first PO to your first SO &mdash; and everything in between, and everything behind it.</strong></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 5 — "How we engage" band (paper). Two columns via .tf-grid-2up:
+         LEFT = .tf-flow 5-step process; RIGHT = the STATIC .tf-faq (all answers
+         visible, no fold, no JS). Full-width; the right column meets the container
+         edge (the page's shared right edge). Stacks flow-then-FAQ below 820px.
+         This is the reusable service-detail template band. NO pricing question. -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <div class="tf-grid-2up">
+          <!-- LEFT — process flow -->
+          <div>
+            <h2>How we engage</h2>
+            <ol class="tf-flow">
+              <li><div><span class="tf-flow-label">Free discovery call</span><p class="tf-flow-note">we learn where you are and what your launch needs</p></div></li>
+              <li><div><span class="tf-flow-label">Build the playbook</span><p class="tf-flow-note">your launch plan and project timeline, sequenced properly</p></div></li>
+              <li><div><span class="tf-flow-label">Set up the foundations</span><p class="tf-flow-note">company registration, brand, sales channels, and operating systems</p></div></li>
+              <li><div><span class="tf-flow-label">Run the first cycle together</span><p class="tf-flow-note">from first purchase order to first sales order, side by side</p></div></li>
+              <li><div><span class="tf-flow-label">Document and debrief</span><p class="tf-flow-note">what worked, what didn&rsquo;t, and the process package you keep</p></div></li>
+            </ol>
+          </div>
+          <!-- RIGHT — static FAQ, all answers visible -->
+          <div>
+            <h2>Frequently asked questions</h2>
+            <dl class="tf-faq">
+              <div class="tf-faq-item">
+                <dt class="tf-faq-q">When should I start launch support?</dt>
+                <dd class="tf-faq-a">Earlier than most people think &mdash; ideally we join you from day one, at plan and source. Otherwise, no later than a month before you set up the company or place the first purchase order.</dd>
+              </div>
+              <div class="tf-faq-item">
+                <dt class="tf-faq-q">What if something goes wrong at the worst possible time?</dt>
+                <dd class="tf-faq-a">That&rsquo;s what the weekly recap (proactive) and the hotline (reactive) are for. We constantly scan the work to minimize risk and prepare for the worst case &mdash; and when it hits, we know what to do.</dd>
+              </div>
+              <div class="tf-faq-item">
+                <dt class="tf-faq-q">How long does launch support run?</dt>
+                <dd class="tf-faq-a">Typically three to six months, depending on how much is being set up and how fast the first cycle moves. We agree the shape at the discovery call.</dd>
+              </div>
+              <div class="tf-faq-item">
+                <dt class="tf-faq-q">What if I&rsquo;ve already started and just need help with part of it?</dt>
+                <dd class="tf-faq-a">That&rsquo;s fine &mdash; we can join mid-process. Common entry points are a pre-shipment inspection briefing, a customs and compliance review, or emergency support when something has already gone wrong. We scope a targeted engagement rather than the full program. Tell us where you are and we&rsquo;ll tell you what makes sense.</dd>
+              </div>
+              <div class="tf-faq-item">
+                <dt class="tf-faq-q">What kind of operating system should I implement on day one?</dt>
+                <dd class="tf-faq-a">If you&rsquo;re launching with a handful of products, start with Google Sheets &mdash; almost every business should. A spreadsheet forces you to understand your data before you automate it, and it&rsquo;s far cheaper to get wrong. Once you&rsquo;ve validated your processes and know what the system actually needs to do, we can build something more permanent. Skipping that step usually produces an expensive system built on processes you don&rsquo;t fully understand yet.</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA band (ink). The .tf-cta band; the footer's warm-stone ground
+         (--tf-footer-ground) separates it from the ink footer below (BL-022).
+         Primary = the real conversion (contact.html). Secondary "See all
+         services" href is a "#" PLACEHOLDER (targets TBD — BL-023 nav). -->
+    <section class="tf-cta">
+      <div class="tf-container">
+        <h2>Ready to launch?</h2>
+        <p class="tf-lead">Start with a free discovery call or send us your question &mdash; we&rsquo;ll take it from there.</p>
+        <!-- Contact us = PRIMARY (brick, first); See all services = SECONDARY
+             (outline, second, "#" PLACEHOLDER). No arrow glyphs. Spaced via .tf-btn-row. -->
+        <div class="tf-btn-row">
+          <a class="tf-btn tf-btn-primary" href="contact.html">Contact us</a>
+          <a class="tf-btn tf-btn-secondary" href="#">See all services</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Shared footer injected from partials.html -->
+  <div id="tf-footer"></div>
+
+  <!-- Fetch snippet: load partials.html (relative), inject header/footer,
+       mark the current nav link, and wire dropdowns + the mobile menu.
+       Fails silently (no nav rather than a broken page). -->
+  <script>
+  (function () {
+    fetch('partials.html').then(function (r) {
+      if (!r.ok) throw new Error('partials ' + r.status);
+      return r.text();
+    }).then(function (html) {
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      ['header', 'footer'].forEach(function (slot) {
+        var src = doc.getElementById('tf-' + slot + '-partial');
+        var dest = document.getElementById('tf-' + slot);
+        if (src && dest) dest.innerHTML = src.innerHTML;
+      });
+
+      var header = document.getElementById('tf-header');
+      if (!header) return;
+      var navBar = header.querySelector('.tf-nav');
+
+      // Mark the current page's nav link — nav links only (never the
+      // lockup or the dropdown triggers), by exact filename match.
+      var path = window.location.pathname;
+      var file = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
+      var links = header.querySelectorAll('.tf-nav-links a[href]');
+      for (var i = 0; i < links.length; i++) {
+        if (links[i].getAttribute('href') === file) {
+          links[i].setAttribute('aria-current', 'page');
+        }
+      }
+
+      // Hamburger toggle (mobile).
+      var toggle = header.querySelector('.tf-nav-toggle');
+      if (toggle && navBar) {
+        toggle.addEventListener('click', function () {
+          var open = navBar.classList.toggle('tf-nav-open');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
+
+      // Dropdowns: at most one open at a time. Open on the trigger's hover
+      // (desktop) or click; close on mouse leave, outside click, or Esc.
+      var items = header.querySelectorAll('.tf-has-dropdown');
+      function isDesktop() { return window.matchMedia('(min-width: 820px)').matches; }
+      function closeItem(item) {
+        item.classList.remove('is-open');
+        var t = item.querySelector('.tf-nav-trigger');
+        if (t) t.setAttribute('aria-expanded', 'false');
+      }
+      function closeAll() {
+        for (var k = 0; k < items.length; k++) closeItem(items[k]);
+      }
+      function setOpen(item, open) {
+        if (open) {
+          for (var k = 0; k < items.length; k++) {
+            if (items[k] !== item) closeItem(items[k]);
+          }
+        }
+        item.classList.toggle('is-open', open);
+        var t = item.querySelector('.tf-nav-trigger');
+        if (t) t.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      for (var j = 0; j < items.length; j++) {
+        (function (item) {
+          var trigger = item.querySelector('.tf-nav-trigger');
+          if (trigger) {
+            trigger.addEventListener('click', function () {
+              setOpen(item, !item.classList.contains('is-open'));
+            });
+          }
+          item.addEventListener('mouseenter', function () {
+            if (isDesktop()) setOpen(item, true);
+          });
+          item.addEventListener('mouseleave', function () {
+            if (isDesktop()) closeItem(item);
+          });
+        })(items[j]);
+      }
+      document.addEventListener('click', function (e) {
+        if (!header.contains(e.target)) closeAll();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' || e.key === 'Esc') closeAll();
+      });
+      // Reset transient state only when actually crossing the breakpoint —
+      // not on every resize (mobile URL-bar show/hide fires resize too, and
+      // must not collapse an open menu).
+      var wasDesktop = isDesktop();
+      window.addEventListener('resize', function () {
+        var nowDesktop = isDesktop();
+        if (nowDesktop === wasDesktop) return;
+        wasDesktop = nowDesktop;
+        closeAll();
+        if (navBar) navBar.classList.remove('tf-nav-open');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      });
+    }).catch(function () { /* fail silently: no nav rather than broken page */ });
+  })();
+  </script>
+</body>
+</html>
