@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="STYLE.css">
 </head>
 <body class="tf-app">
@@ -101,18 +101,18 @@
             <!-- Kicker restored; text is natural case, .tf-kicker uppercases it
                  (no hard-coded caps in markup, per the band-1 convention). -->
             <div class="tf-kicker">Client case study — Kitchen appliance brand</div>
-            <!-- .tf-quote — HELD as UPRIGHT this pass. The true-italic Source
-                 Serif 4 face is not loaded (the Google Fonts request omits the
-                 ital axis), so font-style: italic would synthesize oblique, which
-                 §3 forbids. Flagged for a decision; not applied here. -->
+            <!-- .tf-quote — TRUE italic (band-3-scoped). The font <link> now
+                 requests the Source Serif 4 ital axis (ital,600), so this renders
+                 a real italic FACE, not synthesized oblique (see #client-case-study
+                 .tf-quote in STYLE.css). §3's ban is on Space Grotesk faux-oblique. -->
             <blockquote class="tf-quote">“It took us 18 months of hard work to turn our idea into a product our customers loved. Every step felt painfully slow — but it protected us from very costly mistakes, one after another.”</blockquote>
             <p class="tf-quote-attr">— Founder, Three Flows Solutions client</p>
 
-            <!-- Separated stat cards (.tf-stat-cards / .tf-stat-card, NEW) — the
-                 ink-ground alternative to the ruled .tf-stat-grid. Figures bare on
-                 counts (18/7/5/112), % kept where the sign is the meaning.
-                 Order: row 1 = 18 / 7 / 5, row 2 = 112 / 20% / 45%. Real client
-                 figures — do not alter. -->
+            <!-- Separated stat cards (.tf-stat-cards / .tf-stat-card) — borderless
+                 raised tiles on ink (--tf-ink-raised ground + gap, no outline).
+                 Figures bare on counts, % kept where the sign is the meaning; 4.6
+                 is a rating. Order: row 1 = 18 / 7 / 5, row 2 = 4.6 / 20% / 45%.
+                 Real client figures — do not alter. -->
             <div class="tf-stat-cards">
               <div class="tf-stat-card">
                 <div class="tf-stat-value">18</div>
@@ -120,7 +120,7 @@
               </div>
               <div class="tf-stat-card">
                 <div class="tf-stat-value">7</div>
-                <div class="tf-stat-label">design iterations based on customer feedback</div>
+                <div class="tf-stat-label">iterations based on voice of the customer</div>
               </div>
               <div class="tf-stat-card">
                 <div class="tf-stat-value">5</div>
@@ -128,7 +128,7 @@
               </div>
               <div class="tf-stat-card">
                 <div class="tf-stat-value">4.6</div>
-                <div class="tf-stat-label">average customer rating on Amazon</div>
+                <div class="tf-stat-label">average customer rating on Amazon during launch</div>
               </div>
               <div class="tf-stat-card">
                 <div class="tf-stat-value">20%</div>
