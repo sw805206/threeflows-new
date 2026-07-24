@@ -1,7 +1,21 @@
-/* v018 | last updated: 2026-07-24
+/* v019 | last updated: 2026-07-24
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v19 · 2026-07-24 · index.html BAND 3 — ink-ground contrast pass. No new token,
+                     no new hex; all .tf-surface-ink-scoped, so every paper-ground
+                     rendering is byte-unchanged.
+                     Ink-soft → --tf-stone: WIDENED the existing
+                     .tf-surface-ink .tf-secondary/.tf-meta selector to also carry
+                     .tf-quote-attr, .tf-stat-label, .tf-callout-body (~1.98 →
+                     ~7.18 on ink). Brick on ink: .tf-stat-value and .tf-callout
+                     svg → --tf-brick-on-ink (~2.72 → 3.43, clearing the 3.0
+                     large/graphic threshold and staying brick-family); the 12px
+                     .tf-kicker cannot reach 4.5 in brick, so it takes
+                     --tf-stone-light (~10.96), the .tf-page-head .tf-kicker
+                     precedent. Stat-grid frame: --tf-rule (ink, invisible on ink)
+                     → border-color --tf-stone-light on the dark ground, so the
+                     component reads bounded.
    v18 · 2026-07-24 · index.html (Home) skeleton v2. Three new patterns and one
                      repair.
                      .tf-hero-home (NEW) — Home's OWN opener: paper ground, text
@@ -869,8 +883,46 @@ a:hover { color: var(--tf-brick-dark); }
 }
 .tf-surface-ink a { color: var(--tf-brick-on-ink); }
 .tf-surface-ink a:hover { color: var(--tf-paper); }
+
+/* Ink-soft → stone on the dark ground. These classes all set --tf-ink-soft on
+   paper — secondary text tuned for a light field — which drops to ~1.98:1 on ink
+   (under the 4.5:1 minimum for body/meta). They genuinely share ONE remap, so
+   the selector list is WIDENED rather than met with new rules: on ink they all
+   become --tf-stone (~7.18:1). `.tf-quote-attr`, `.tf-stat-label` and
+   `.tf-callout-body` are index.html BAND 3's first ink use of each; `.tf-secondary`
+   and `.tf-meta` were already here. Each scoped selector is (0,2,0), outranking
+   its own (0,1,0) base, so the paper-ground colour is untouched. */
 .tf-surface-ink .tf-secondary,
-.tf-surface-ink .tf-meta { color: var(--tf-stone); }
+.tf-surface-ink .tf-meta,
+.tf-surface-ink .tf-quote-attr,
+.tf-surface-ink .tf-stat-label,
+.tf-surface-ink .tf-callout-body { color: var(--tf-stone); }
+
+/* Brick on the dark ground. Base brick (#C2291B) reads ~2.72:1 on ink. Two of
+   the three brick elements clear their threshold on --tf-brick-on-ink (#D4402C,
+   ~3.43:1) and stay brick-family, which the brand wants — a stat FIGURE is
+   "always brick" (§2), and the callout icon is brick by the pattern's own rule:
+   - .tf-stat-value — 36px/700, large-text 3.0 threshold: 3.43 ≥ 3.0.
+   - .tf-callout svg — a graphic, 3.0 threshold: 3.43 ≥ 3.0. (0,2,1) beats the
+     base `.tf-callout svg` (0,1,1); band 3's callout is the plain variant, so no
+     warn/affirm accent is in play.
+   The KICKER cannot: at 12px its threshold is 4.5, and brick-on-ink's 3.43 fails
+   it. So it follows the established dark-ground precedent instead — the same
+   remap `.tf-page-head .tf-kicker` already uses — to --tf-stone-light (~10.96:1).
+   All scoped (0,2,x), so paper kickers/figures/icons are unchanged. */
+.tf-surface-ink .tf-kicker { color: var(--tf-stone-light); }
+.tf-surface-ink .tf-stat-value { color: var(--tf-brick-on-ink); }
+.tf-surface-ink .tf-callout svg { color: var(--tf-brick-on-ink); }
+
+/* Stat-grid frame on the dark ground. The outer frame is `--tf-rule` (2px INK):
+   correct on paper (§4, the edge of a component) but invisible on ink, so the
+   grid reads as loose internal rules with no boundary. On ink the frame takes
+   the light rule tone (--tf-stone-light, ~10.96:1) so the component is bounded;
+   the internal cell splits are already that tone, so the grid resolves to a
+   clean uniform hairline mesh with a closed outer edge. border-COLOR only — the
+   2px width and the base rule are untouched, and this is `.tf-surface-ink`-scoped
+   so the paper-ground ink frame is unchanged. */
+.tf-surface-ink .tf-stat-grid { border-color: var(--tf-stone-light); }
 
 /* Stat block */
 .tf-stat-value {
