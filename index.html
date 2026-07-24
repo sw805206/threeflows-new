@@ -85,67 +85,80 @@
     <!-- BAND 3 — client use case, on the INK ground (.tf-surface-ink, existing;
          §4 sanctions ink as a dark surface). --tf-footer-ground is NOT used
          here — that token is footer-scoped.
-         IMAGE PLACEMENT: beside the quote and stats, not stacked beneath —
-         quote + attribution + stats in the left column, photo in the right,
-         paired by a reused .tf-grid-2up. The closing callout runs full width
-         below both, so it reads as the band's conclusion rather than as a third
-         item in the pairing.
-         The client is REAL and is NEVER NAMED. -->
-    <section class="tf-section tf-surface-ink">
+         LAYOUT (reused .tf-grid-2up): LEFT column = kicker, quote, attribution,
+         separated stat cards; RIGHT column = the framed image with the closing
+         callout beneath it. The callout sits in the right column (not full-width
+         below), so it reads as the image column's tail rather than a third row.
+         id="client-case-study" scopes the band-3-only callout-body emphasis in
+         STYLE.css (and, once loaded, the true-italic quote face).
+         The client is REAL and is NEVER NAMED — the kicker carries the category,
+         so the attribution does not repeat "kitchen appliance". -->
+    <section class="tf-section tf-surface-ink" id="client-case-study">
       <div class="tf-container">
-        <!-- Band opens directly on the founder quote — no kicker, no h2, no
-             label of any kind above the quote (user decision). The section's own
-             padding frames the quote as the first element. -->
         <div class="tf-grid-2up">
+          <!-- LEFT column -->
           <div>
-            <!-- .tf-quote / .tf-quote-attr — FIRST CONSUMER of both. Source
-                 Serif 4 Semibold, never italic (§3). -->
+            <!-- Kicker restored; text is natural case, .tf-kicker uppercases it
+                 (no hard-coded caps in markup, per the band-1 convention). -->
+            <div class="tf-kicker">Client case study — Kitchen appliance brand</div>
+            <!-- .tf-quote — HELD as UPRIGHT this pass. The true-italic Source
+                 Serif 4 face is not loaded (the Google Fonts request omits the
+                 ital axis), so font-style: italic would synthesize oblique, which
+                 §3 forbids. Flagged for a decision; not applied here. -->
             <blockquote class="tf-quote">“It took us 18 months of hard work to turn our idea into a product our customers loved. Every step felt painfully slow — but it protected us from very costly mistakes, one after another.”</blockquote>
-            <p class="tf-quote-attr">Kitchen appliance founder, Three Flows Solutions client</p>
+            <p class="tf-quote-attr">— Founder, Three Flows Solutions client</p>
 
-            <!-- .tf-stat-grid — FIRST CONSUMER, SIX cells, on the repaired
-                 6-up rules (see STYLE.css v015). -->
-            <div class="tf-stat-grid">
-              <div>
-                <div class="tf-stat-value">18 months</div>
-                <div class="tf-stat-label">from idea to sales</div>
+            <!-- Separated stat cards (.tf-stat-cards / .tf-stat-card, NEW) — the
+                 ink-ground alternative to the ruled .tf-stat-grid. Figures bare on
+                 counts (18/7/5/112), % kept where the sign is the meaning.
+                 Order: row 1 = 18 / 7 / 5, row 2 = 112 / 20% / 45%. Real client
+                 figures — do not alter. -->
+            <div class="tf-stat-cards">
+              <div class="tf-stat-card">
+                <div class="tf-stat-value">18</div>
+                <div class="tf-stat-label">months it takes from idea to first sales order</div>
               </div>
-              <div>
-                <div class="tf-stat-value">7×</div>
-                <div class="tf-stat-label">design iterations from real customer feedback</div>
+              <div class="tf-stat-card">
+                <div class="tf-stat-value">7</div>
+                <div class="tf-stat-label">design iterations based on real customer feedback</div>
               </div>
-              <div>
-                <div class="tf-stat-value">3</div>
+              <div class="tf-stat-card">
+                <div class="tf-stat-value">5</div>
                 <div class="tf-stat-label">marketplaces benchmarked before choosing a channel</div>
               </div>
-              <div>
+              <div class="tf-stat-card">
+                <div class="tf-stat-value">112</div>
+                <div class="tf-stat-label">orders received in launch month</div>
+              </div>
+              <div class="tf-stat-card">
                 <div class="tf-stat-value">20%</div>
                 <div class="tf-stat-label">supply cost savings navigating tariff changes</div>
               </div>
-              <div>
-                <div class="tf-stat-value">4 mo</div>
-                <div class="tf-stat-label">from first production to first sales</div>
-              </div>
-              <div>
+              <div class="tf-stat-card">
                 <div class="tf-stat-value">45%</div>
-                <div class="tf-stat-label">projected EBITDA by year 3 post-launch</div>
+                <div class="tf-stat-label">projected EBITDA by year three post-launch</div>
               </div>
             </div>
           </div>
 
-          <!-- ALT TEXT IS PENDING USER APPROVAL (BLOG.md §7). The alt describes
-               only what is visibly in the frame and names no brand. -->
-          <img class="tf-img-framed tf-photo" src="assets/images/case-study-kitchen.jpg"
-               alt="Two people cooking together at a kitchen range, one holding a board over a large red stockpot."
-               width="1200" height="800" loading="lazy">
-        </div>
-
-        <!-- Closing note — .tf-callout, Lucide `lightbulb`. -->
-        <div class="tf-callout">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+          <!-- RIGHT column — image + closing callout beneath it. -->
           <div>
-            <div class="tf-callout-title">The biggest takeaway Three Flows and our client learned together over the past two years</div>
-            <p class="tf-callout-body">Becoming a brand owner takes unmatched passion, deep belief in your product, nonstop hard work, and the discipline to always plan at least six months ahead — so you’re never caught off guard, by good news or bad.</p>
+            <!-- ALT TEXT IS PENDING USER APPROVAL (BLOG.md §7). The alt describes
+                 only what is visibly in the frame and names no brand. -->
+            <img class="tf-img-framed tf-photo" src="assets/images/case-study-kitchen.jpg"
+                 alt="Two people cooking together at a kitchen range, one holding a board over a large red stockpot."
+                 width="1200" height="800" loading="lazy">
+
+            <!-- Closing note — .tf-callout, Lucide `lightbulb`. Body emphasised
+                 band-3-scoped (see #client-case-study in STYLE.css) so the
+                 conclusion reads louder than the stat captions. -->
+            <div class="tf-callout">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+              <div>
+                <div class="tf-callout-title">The biggest takeaway Three Flows and our client learned together over the past two years</div>
+                <p class="tf-callout-body">Becoming a brand owner takes unmatched passion, deep belief in your product, nonstop hard work, and the discipline to always plan at least six months ahead — so you’re never caught off guard, by good news or bad.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
