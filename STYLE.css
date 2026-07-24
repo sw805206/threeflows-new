@@ -1,7 +1,20 @@
-/* v021 | last updated: 2026-07-24
+/* v022 | last updated: 2026-07-24
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v22 · 2026-07-24 · index.html BAND 3 polish (band-3-scoped, existing tokens).
+                     Quote TRUE ITALIC: root cause was a MISSING FACE (the font
+                     <link> requested roman only) plus no font-style rule at all —
+                     not a cascade fight. The <link> now adds the Source Serif 4
+                     ital axis (ital,600) and #client-case-study .tf-quote sets
+                     font-style: italic; verified a real italic face renders
+                     (distinct metrics under font-synthesis:none), not oblique.
+                     Callout: border removed, takes the cards' --tf-ink-raised
+                     ground (borderless-on-ink idiom). Callout TITLE lifted to
+                     --tf-text-lg (20px/700) so it reads >= the 16px/400 body
+                     (was 14px, inverted). KPI-card block gets margin-top
+                     --tf-space-8 so its bottom levels with the callout bottom on
+                     desktop (measured 63.3px gap; 64px lands within ~0.7px).
    v21 · 2026-07-24 · index.html BAND 3 correction — stat cards go BORDERLESS.
                      .tf-stat-card loses its 2px --tf-rule-light outline; the
                      boxes now read apart by a subtle raised GROUND + the gap
@@ -983,6 +996,43 @@ a:hover { color: var(--tf-brick-dark); }
   font-size: var(--tf-text-base);
   color: var(--tf-stone-light);
 }
+
+/* Quote TRUE italic (band 3). Root cause of the prior upright renders was a
+   MISSING FACE, not the cascade: no font-style rule existed AND the font <link>
+   requested only roman (opsz,wght). The ital axis is now added to that import
+   (ital,600 — the quote's weight), so this renders a real Source Serif 4 italic
+   FACE, not synthesized oblique. §3's italics ban targets Space Grotesk's
+   faux-oblique, not a true-serif pull-quote; scoped to band 3's quote alone. */
+#client-case-study .tf-quote { font-style: italic; }
+
+/* Callout on ink — borderless raised tile, matching the stat cards. Drops the
+   base --tf-rule-light outline and takes the same --tf-ink-raised ground the
+   cards use, so the callout and the cards share one borderless-on-ink idiom. */
+#client-case-study .tf-callout {
+  border: none;
+  background: var(--tf-ink-raised);
+}
+
+/* Callout title = the heading, and must read >= the body. The base title is
+   --tf-text-sm (14px), which sat BELOW the emphasised 16px body — inverted. Lift
+   to --tf-text-lg (20px); weight stays the base 700. Result: title 20px/700 >
+   body 16px/400 — the title is the strongest element and the body sits beneath
+   it in both size and weight. (This is the sheet's own callout-title enlargement
+   size — the painpoints/solves pair uses --tf-text-lg too.) */
+#client-case-study .tf-callout-title { font-size: var(--tf-text-lg); }
+
+/* Level the KPI-card block's bottom with the takeaway callout's bottom (desktop).
+   The right column (image + taller callout) runs longer than the left stack, so
+   the cards ended ~63px ABOVE the callout. Push the card block DOWN by a buffer
+   above it — NOT by resizing cards or image. The measured gap was 63.3px; the
+   closest space token is --tf-space-8 (64px), which lands the two bottoms within
+   ~0.7px (level).
+   PADDING-top, not margin-top: a margin here COLLAPSES with the attribution's
+   16px margin-bottom (max(16,64)=64), so it would add only 48px of real space
+   and leave the bottoms ~15px off. Padding does not collapse, so --tf-space-8
+   lands the full 64px. When the columns STACK below 820px this is simply vertical
+   space above the cards — a gap, not a break. */
+#client-case-study .tf-stat-cards { padding-top: var(--tf-space-8); }
 
 /* Stat block */
 .tf-stat-value {
