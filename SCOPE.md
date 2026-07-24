@@ -1,4 +1,4 @@
-v011 | last updated: 2026-07-24
+v012 | last updated: 2026-07-24
 
 # SCOPE.md — threeflows.com Relaunch (new repo)
 
@@ -125,7 +125,7 @@ by two pages. Resources, Home, About and Contact are unchanged.
   new need gets a new pattern.
 - Every tier-1 page build includes a .tf-page-head header: kicker, h1,
   intro written with the page's content, plus a header image (sourced and
-  approved via the BLOG.md §7 image process; CSS cover-crops it in the hero
+  approved via the PROCESS.md §1 image process; CSS cover-crops it in the hero
   band) at build time. Pages may ship image-less only by explicit decision.
 - Style-system changes identified but not immediately implemented are
   logged to BACKLOG.md — never left untracked.

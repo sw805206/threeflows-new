@@ -1,4 +1,4 @@
-v005 | last updated: 2026-07-23
+v006 | last updated: 2026-07-24
 
 # BLOG.md — how to add a blog post
 
@@ -131,37 +131,22 @@ element.
 
 ## 7. Images (optional per post)
 
-The pipeline has five stages: an external **master** archive, a disposable
-**intake** tray, **preview** crop candidates, **promotion** into the repo, and a
-post-merge **cleanup**. Only promoted files are ever committed.
+The general image process — master library, preview, promotion, and post-merge
+cleanup — is **authoritative in [PROCESS.md](PROCESS.md) §1** (the sitewide image
+process). This section does not restate it; it records only the **blog- and
+page-specific specializations** of that same process.
 
-1. **MASTER — `/Users/swai/Images`** (external, outside the repo). The permanent
-   originals archive; backing it up is the user's responsibility. Code reads
-   from it **read-only**, and only when the user points at a specific file — it
-   **never modifies, moves, or deletes anything in it.**
-2. **INTAKE — `assets/images/src/`** (gitignored, per-worktree). A disposable
-   staging tray — **not** an archive. The user, or Code copying from the master,
-   drops working files here; because the folder is gitignored and per-worktree,
-   everything in it is throwaway. *(Supersedes the earlier rule that called
-   `src/` "the originals archive — never delete, never edit in place": the master
-   folder is now the archive, and `src/` is disposable.)*
-3. **PREVIEW — `assets/images/src/preview/`** (equally disposable). Crop and
-   processing candidates for the user's approval — mechanics unchanged: 3:2,
-   **1200×800**, JPEG **q80–85**, **EXIF stripped**, **never upscale** (if a
-   source can't yield 1200px wide at 3:2, use the largest clean size and say so).
-   Centred crop by default; **if centring cuts the subject, produce an offset
-   `-crop-alt` too** and say what moved and why. The user approves a crop;
-   preview files are for review only.
-4. **PROMOTION — `assets/images/<name>`** (committed). Copy the **approved
-   bytes** — never re-process — to `assets/images/<slug>.jpg` (matching the post
-   slug), verify the copy is **byte-identical**, then wire the manifest (`image`
-   + `imageAlt`). **The promoted, committed files are the only images git
-   carries.**
-5. **CLEANUP (post-merge).** After a stream's PR merges, its post-merge cleanup
-   includes **purging that stream's promoted items' leftovers from `src/` and
-   `preview/`** in the stream's worktree. Before deleting any file, Code
-   **verifies that file's promoted sibling is committed on main first.** The user
-   never hand-deletes.
+**Blog post images — specializations of the PROCESS.md §1 process:**
+- **Crop spec.** A post's rail/lede image is **3:2, 1200×800, JPEG q80–85, EXIF
+  stripped, never upscaled** (if a source can't yield 1200px wide at 3:2, use the
+  largest clean size and say so). Centred crop by default; **if centring cuts the
+  subject, produce an offset `-crop-alt` too** and say what moved and why.
+- **Naming.** Promote to `assets/images/<slug>.jpg`, matching the post slug.
+- **Manifest wiring.** After promotion, wire the manifest (`image` + `imageAlt`) —
+  the fields the schema table above points to with "per §7".
+
+(Where this section and PROCESS.md §1 ever differ on the general process — e.g. the
+preview location — **PROCESS.md §1 governs.**)
 
 **Alt text policy: descriptive, not empty.** One plain factual sentence
 describing what is visibly in the photo — no marketing language, no "image of"
@@ -176,10 +161,10 @@ card cap on the index. `loading="eager"` on the rail (above-fold LCP);
 ### Page heroes
 
 Everything above is written for a **post** image. A **page hero** — the
-full-bleed `.tf-page-head` band on a tier-1 page — runs the same pipeline for
-stages 1–3 (master → intake → preview, same 3:2 **1200×800** q80–85 crop spec;
-no hero-specific dimensions are needed) but differs at **promotion** and in what
-alt text it carries. Both differences are recorded here because the rules above,
+full-bleed `.tf-page-head` band on a tier-1 page — runs the same
+master → preview process (PROCESS.md §1) with the same 3:2 **1200×800** q80–85
+crop spec (no hero-specific dimensions are needed), but differs at **promotion**
+and in what alt text it carries. Both differences are recorded here because the rules above,
 read literally, do not cover a hero: a page has neither a post slug nor a
 manifest entry, and a CSS background cannot carry an `alt` attribute at all.
 
@@ -194,7 +179,7 @@ every inline content image** — the post rail image and the index card cap each
 still take one plain factual user-approved sentence. Do not read this exception
 as licence to drop alt anywhere an `<img>` exists.
 
-**Promotion — bare page name, wired inline.** Step 4 above promotes to
+**Promotion — bare page name, wired inline.** The Naming rule above promotes to
 `assets/images/<slug>.jpg` "matching the post slug" and then wires the manifest.
 A hero has neither, so it promotes to **`assets/images/<page-name>.jpg`** — the
 bare page name, matching the page's own filename (`about.html` →
