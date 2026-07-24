@@ -1,4 +1,4 @@
-v010 | last updated: 2026-07-20
+v011 | last updated: 2026-07-24
 
 # SCOPE.md — threeflows.com Relaunch (new repo)
 
@@ -52,6 +52,8 @@ full Part B discipline applies unchanged.
 - BLOG.md — blog add-a-post procedure and manifest schema
 - BACKLOG.md — Part C backlog process is ACTIVE; also holds the page
   checklist and carry-over inventory status
+- PROCESS.md — project-specific human/Claude procedures; Images section
+  active, Blog updates and Adding clients are TBD stubs
 
 All are written fresh for this repo. No doc from the old repo is copied
 or cross-referenced.
