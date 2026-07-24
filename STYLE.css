@@ -1,7 +1,18 @@
-/* v022 | last updated: 2026-07-24
+/* v023 | last updated: 2026-07-24
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v23 · 2026-07-24 · Sitewide + BAND 3. .tf-img-framed goes BORDERLESS — the
+                     shared framed-image pattern drops its 2px --tf-rule-light
+                     frame (user decision, all framed images); layout props
+                     (block, width:100%, height:auto, box-sizing) kept. Two
+                     consumers, both index.html: band 1 hero (paper) and band 3
+                     case-study (ink). (`.tf-intro-split-img` on the service pages
+                     is a separate class, intentionally not touched.)
+                     BAND 3 callout title recut: SERIF (--tf-font-heading, was
+                     inheriting Space Grotesk), --tf-text-lg (20px) unchanged, and
+                     line-height tightened 1.6 (32px) → 1.2 (24px) for a two-line
+                     heading. Band-3-scoped.
    v22 · 2026-07-24 · index.html BAND 3 polish (band-3-scoped, existing tokens).
                      Quote TRUE ITALIC: root cause was a MISSING FACE (the font
                      <link> requested roman only) plus no font-style rule at all —
@@ -1013,13 +1024,19 @@ a:hover { color: var(--tf-brick-dark); }
   background: var(--tf-ink-raised);
 }
 
-/* Callout title = the heading, and must read >= the body. The base title is
-   --tf-text-sm (14px), which sat BELOW the emphasised 16px body — inverted. Lift
-   to --tf-text-lg (20px); weight stays the base 700. Result: title 20px/700 >
-   body 16px/400 — the title is the strongest element and the body sits beneath
-   it in both size and weight. (This is the sheet's own callout-title enlargement
-   size — the painpoints/solves pair uses --tf-text-lg too.) */
-#client-case-study .tf-callout-title { font-size: var(--tf-text-lg); }
+/* Callout title = the heading. Three things: (1) SERIF — the base title inherits
+   Space Grotesk (the UI font), which reads awkward at heading size for a full
+   sentence; set --tf-font-heading (Source Serif 4, the site's heading face, §3).
+   (2) SIZE --tf-text-lg (20px, the h4 tier) — >= the 16px body, so the title is
+   the strongest element and the body sits beneath it. (3) LEADING tightened to
+   1.2: it was inheriting the body's 1.6 (→ 32px, far too loose for a two-line
+   heading); 1.2 is the sheet's card-title / warn-affirm-callout heading leading.
+   Sentence case, weight 700 (base) — NOT the kicker's uppercase+tracking. */
+#client-case-study .tf-callout-title {
+  font-family: var(--tf-font-heading);
+  font-size: var(--tf-text-lg);
+  line-height: 1.2;
+}
 
 /* Level the KPI-card block's bottom with the takeaway callout's bottom (desktop).
    The right column (image + taller callout) runs longer than the left stack, so
@@ -1610,25 +1627,23 @@ a:hover { color: var(--tf-brick-dark); }
   .tf-hero-home { grid-template-columns: 1fr 1fr; gap: var(--tf-space-6); }
 }
 /* Framed content image (`.tf-img-framed`) — an in-flow photo that fills its
-   column, never full-bleed and never cover-cropped: the 2px light border is the
-   within-a-thing frame (§4), square corners, no scrim. width:100% + height:auto
-   renders the source at its own ratio (both promoted images are 3:2), so nothing
-   is re-cropped in CSS. Carries .tf-photo in the markup for the brand grade.
-   border-box because the sheet has no global reset — without it the 2px frame
-   would add outside width:100% and push the image past its column edge.
-   Named for the JOB, not for the hero, because two bands need it: the Home hero
+   column, never full-bleed and never cover-cropped. BORDERLESS (user decision,
+   sitewide): the photo sits on its own with no drawn frame; its own image edges
+   bound it. width:100% + height:auto renders the source at its own ratio (both
+   promoted images are 3:2), so nothing is re-cropped in CSS. Carries .tf-photo in
+   the markup for the brand grade. box-sizing: border-box is retained (harmless
+   now that there is no border/padding; kept so any future inset stays inside the
+   column edge). Named for the JOB, not the hero: two bands use it — the Home hero
    image and the BAND 3 case-study photo.
-   DEFERRED GENERALIZATION (tracked, not silent): `.tf-intro-split-img` declares
-   these same five properties for the tier-2 opener and should fold into this
-   class the next time business-planning.html is touched. Not done here —
-   refactoring it would pull four shipped service pages into this change's blast
-   radius. Same posture, and same reason, as the `.tf-ref-card` / `.tf-card-sm`
-   note further down. */
+   DEFERRED GENERALIZATION (tracked, not silent): `.tf-intro-split-img` on the
+   tier-2 service pages still declares its OWN 2px --tf-rule-light frame; it is a
+   SEPARATE class and is intentionally NOT changed here (this task is the
+   .tf-img-framed pattern only). Whether those tier-2 openers also go borderless
+   is a separate decision. */
 .tf-img-framed {
   display: block;
   width: 100%;
   height: auto;
-  border: var(--tf-rule-light);
   box-sizing: border-box;
 }
 /* The action slot. This is the rule the band exists to carry, and the reason
