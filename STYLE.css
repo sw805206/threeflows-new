@@ -1,7 +1,19 @@
-/* v020 | last updated: 2026-07-24
+/* v021 | last updated: 2026-07-24
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v21 · 2026-07-24 · index.html BAND 3 correction — stat cards go BORDERLESS.
+                     .tf-stat-card loses its 2px --tf-rule-light outline; the
+                     boxes now read apart by a subtle raised GROUND + the gap
+                     (old-site idiom). Ground is a raised tile per the sheet's
+                     idiom — --tf-cream on paper (base), --tf-ink-raised on ink
+                     (the existing "raised above ink" token, via
+                     .tf-surface-ink .tf-stat-card). No border, no raw hex, no new
+                     token/breakpoint. KNOWN, flagged not fixed: lifting the tile
+                     under the figure drops the brick-on-ink figure below 3.0 on
+                     ink (the label stays clear) — a decision for the user, not
+                     silently recoloured. Quote italic still HELD (no italic face
+                     loaded; unchanged this pass).
    v20 · 2026-07-24 · index.html BAND 3 polish. One new SHARED pattern, one
                      band-3-scoped override. No new token, hex, type size, or
                      breakpoint.
@@ -943,6 +955,20 @@ a:hover { color: var(--tf-brick-dark); }
    so the paper-ground ink frame is unchanged. */
 .tf-surface-ink .tf-stat-grid { border-color: var(--tf-stone-light); }
 
+/* Stat CARDS on the dark ground — a raised tile, no outline. --tf-ink-raised is
+   the existing "raised above the ink ground" token (color-mix ink 80%, stone);
+   its comment already reserves it for "future overlays on ink", which this is.
+   The base sets --tf-cream (paper raised); this lifts the tile on ink instead so
+   the cards read apart by ground + gap, not by a drawn edge. (0,2,0) beats the
+   base (0,1,0).
+   CONTRAST NOTE: lifting the ground under the figure necessarily lowers the
+   figure's own contrast. The label (--tf-stone) stays clear (~4.8:1 on this
+   tile), but the brick-on-ink FIGURE, only ~3.43:1 on pure ink, drops below the
+   3.0 large-text threshold on any visible lift — flagged in the report for a
+   decision (brighten the figure, or accept it); NOT silently recoloured here,
+   since the figure colour was to be kept. */
+.tf-surface-ink .tf-stat-card { background: var(--tf-ink-raised); }
+
 /* Band 3 callout body — the band's CONCLUSION, made to read LOUDER than the stat
    captions that support it. On ink both were --tf-stone at ~13–14px, so the
    summary read no stronger than a caption. Scoped to band 3 alone via the
@@ -1182,16 +1208,17 @@ a:hover { color: var(--tf-brick-dark); }
 
 /* Separated stat cards — the alternative to the ruled .tf-stat-grid for a ground
    where a shared-rule mesh reads like a spreadsheet (band 3's ink field). Each
-   stat is its OWN bordered box with a gap between boxes and no shared internal
-   rules. Figure and caption REUSE .tf-stat-value / .tf-stat-label unchanged
-   (including their .tf-surface-ink remaps, which are class-scoped and so apply in
-   either container) — only the CONTAINER is new. The border is --tf-rule-light
-   (stone-light): the standard card-kit border on paper AND visible on ink
-   (~10.96:1), so this pattern does NOT repeat .tf-stat-grid's ink frame that
-   vanished on the dark ground. 3-up from 768, 2-up below — the container's own
-   breakpoint, the same responsive story as the .tf-stat-grid repair; no new
-   breakpoint. box-sizing: border-box because the sheet has no global reset, so
-   the 2px border + padding must stay INSIDE each 1fr track or the row overflows.
+   stat is its OWN box, and the boxes are read apart by a SUBTLE GROUND STEP plus
+   the gap between them — NO drawn outline (old-site idiom). Figure and caption
+   REUSE .tf-stat-value / .tf-stat-label unchanged (including their
+   .tf-surface-ink remaps, which are class-scoped and so apply in either
+   container) — only the CONTAINER is new. The ground is a raised tile derived per
+   the sheet's own idiom: --tf-cream on paper (the designated raised-surface tone)
+   and --tf-ink-raised on ink (the existing "raised above the ink ground" token,
+   see the ink override below) — no border, no raw hex. 3-up from 768, 2-up below
+   — the container's own breakpoint, the same responsive story as the
+   .tf-stat-grid repair; no new breakpoint. box-sizing: border-box because the
+   sheet has no global reset, so the padding stays INSIDE each 1fr track.
    First use: index.html BAND 3. */
 .tf-stat-cards {
   display: grid;
@@ -1203,7 +1230,7 @@ a:hover { color: var(--tf-brick-dark); }
 }
 .tf-stat-card {
   padding: 20px 24px;
-  border: var(--tf-rule-light);
+  background: var(--tf-cream);   /* raised tile on paper; ink ground overrides below */
   box-sizing: border-box;
 }
 
