@@ -1,7 +1,14 @@
-/* v016 | last updated: 2026-07-25
+/* v017 | last updated: 2026-07-24
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v17 · 2026-07-24 · index.html (Home) skeleton. ONE new pattern:
+                     .tf-grid-4up — a locked four-item row, the 2-up idiom one
+                     step wider. .tf-card-grid's intrinsic auto-fill lands 3 + 1
+                     on the 1200px container, so a deliberate four-item set needs
+                     declared geometry. Steps 1 → 2 → 4 on the sheet's existing
+                     768 / 820 breakpoints; no new breakpoint, no new token, no
+                     hex. First use: the resources band (BAND 6).
    v16 · 2026-07-25 · Client-logo sizing evened (fix/client-logo-sizing). The 15
                      logos were re-promoted INK-TIGHT (trimmed to the mark, baked
                      padding removed — the real cause of the 72.7× rendered-area
@@ -18,7 +25,6 @@
                      logo in v14), so per that rule's own note the rule AND its
                      comment are DELETED — zero remaining consumers. The carousel
                      is now 15 image logos, no text fallbacks.
-
    v14 · 2026-07-24 · Client logos: real marks promoted for most clients
                      (feat/client-logos). The provisional .tf-client-wordmark
                      text-fallback rule, which covered TWO clients (ArtSabers +
@@ -1117,6 +1123,29 @@ a:hover { color: var(--tf-brick-dark); }
 }
 @media (min-width: 820px) {
   .tf-grid-2up { grid-template-columns: 1fr 1fr; }
+}
+/* Locked 4-up grid (`.tf-grid-4up`) — the same idea as `.tf-grid-2up` one step
+   wider: a FIXED four-item row, not an intrinsic track. Why not `.tf-card-grid`
+   (auto-fill, minmax(300px, 1fr)): on the 1200px container that fits three
+   300px tracks but not four, so a deliberate four-item row lands 3 + 1 — a
+   full row with an orphan under it. The four items here are a set, so the
+   geometry has to be declared rather than derived.
+   Steps 1 -> 2 -> 4 across the sheet's EXISTING breakpoint vocabulary (768 from
+   `.tf-container`, 820 from the nav) — no new breakpoint. The 2-up step at 768
+   exists because 1 -> 4 at 820 would drop four cards straight from full width to
+   ~171px; the tablet band gets the readable pairing instead. Gap is the same
+   `--tf-space-3` as the 2-up, so a 2-up and a 4-up band share one rhythm.
+   First use: index.html's resources band (BAND 6). */
+.tf-grid-4up {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--tf-space-3);
+}
+@media (min-width: 768px) {
+  .tf-grid-4up { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 820px) {
+  .tf-grid-4up { grid-template-columns: repeat(4, 1fr); }
 }
 /* about.html principals — the 2-up plus the top margin from the section opener
    above. Now a thin modifier on `.tf-grid-2up` (markup carries BOTH classes):
