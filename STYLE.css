@@ -1,7 +1,26 @@
-/* v019 | last updated: 2026-07-24
+/* v020 | last updated: 2026-07-24
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v20 · 2026-07-24 · index.html BAND 3 polish. One new SHARED pattern, one
+                     band-3-scoped override. No new token, hex, type size, or
+                     breakpoint.
+                     .tf-stat-cards / .tf-stat-card (NEW) — separated bordered
+                     stat boxes with gaps, no shared rules, for a ground where the
+                     ruled .tf-stat-grid reads like a spreadsheet (band 3's ink).
+                     Figure/caption REUSE .tf-stat-value/.tf-stat-label; only the
+                     container is new; border is --tf-rule-light so it is visible
+                     on ink (unlike .tf-stat-grid's ink frame). .tf-stat-grid is
+                     UNCHANGED and still valid on paper (now zero consumers).
+                     #client-case-study .tf-callout-body (band-3 override) — the
+                     band's conclusion made louder than its stat captions:
+                     --tf-text-base (16px) + --tf-stone-light, id-scoped so it
+                     touches band 3 only, not every ink callout.
+                     NB HELD, not shipped: a band-3 true-italic quote. Source
+                     Serif 4's italic FACE is not loaded (the Google Fonts request
+                     omits the ital axis), so font-style: italic would synthesize
+                     oblique — which §3 forbids. Reported for a decision; not
+                     written here.
    v19 · 2026-07-24 · index.html BAND 3 — ink-ground contrast pass. No new token,
                      no new hex; all .tf-surface-ink-scoped, so every paper-ground
                      rendering is byte-unchanged.
@@ -924,6 +943,21 @@ a:hover { color: var(--tf-brick-dark); }
    so the paper-ground ink frame is unchanged. */
 .tf-surface-ink .tf-stat-grid { border-color: var(--tf-stone-light); }
 
+/* Band 3 callout body — the band's CONCLUSION, made to read LOUDER than the stat
+   captions that support it. On ink both were --tf-stone at ~13–14px, so the
+   summary read no stronger than a caption. Scoped to band 3 alone via the
+   section id (single-use, the #tf-header precedent), NOT to .tf-surface-ink —
+   this is band-3 intent, not a global ink-callout rule. Louder on BOTH axes with
+   existing tokens: --tf-text-base (16px, up from 13px) and --tf-stone-light
+   (~10.96:1, brighter than the caption's --tf-stone ~7.18:1). The id (1,1,0)
+   outranks the v016 `.tf-surface-ink .tf-callout-body` stone remap (0,2,0).
+   Line-height stays the base 1.55. (When the true-italic quote face is loaded,
+   its band-3 italic rule scopes under this same id.) */
+#client-case-study .tf-callout-body {
+  font-size: var(--tf-text-base);
+  color: var(--tf-stone-light);
+}
+
 /* Stat block */
 .tf-stat-value {
   font-family: var(--tf-font-body);
@@ -1144,6 +1178,33 @@ a:hover { color: var(--tf-brick-dark); }
   .tf-stat-grid > div:nth-child(-n+2)  { border-top: var(--tf-rule-light); }
   .tf-stat-grid > div:nth-child(3n+1) { border-left: none; } /* first cell in a 3-up row */
   .tf-stat-grid > div:nth-child(-n+3)  { border-top: none; } /* the 3-up first row */
+}
+
+/* Separated stat cards — the alternative to the ruled .tf-stat-grid for a ground
+   where a shared-rule mesh reads like a spreadsheet (band 3's ink field). Each
+   stat is its OWN bordered box with a gap between boxes and no shared internal
+   rules. Figure and caption REUSE .tf-stat-value / .tf-stat-label unchanged
+   (including their .tf-surface-ink remaps, which are class-scoped and so apply in
+   either container) — only the CONTAINER is new. The border is --tf-rule-light
+   (stone-light): the standard card-kit border on paper AND visible on ink
+   (~10.96:1), so this pattern does NOT repeat .tf-stat-grid's ink frame that
+   vanished on the dark ground. 3-up from 768, 2-up below — the container's own
+   breakpoint, the same responsive story as the .tf-stat-grid repair; no new
+   breakpoint. box-sizing: border-box because the sheet has no global reset, so
+   the 2px border + padding must stay INSIDE each 1fr track or the row overflows.
+   First use: index.html BAND 3. */
+.tf-stat-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--tf-space-2);
+}
+@media (min-width: 768px) {
+  .tf-stat-cards { grid-template-columns: repeat(3, 1fr); }
+}
+.tf-stat-card {
+  padding: 20px 24px;
+  border: var(--tf-rule-light);
+  box-sizing: border-box;
 }
 
 /* Testimonial */
