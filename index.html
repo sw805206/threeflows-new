@@ -14,11 +14,299 @@
   <!-- Shared header injected from partials.html -->
   <div id="tf-header"></div>
 
-  <main class="tf-section">
+  <!-- ======================================================================
+       SKELETON. Every visible string in square brackets is a PLACEHOLDER
+       LABEL naming what will go there — it is not copy. No marketing text is
+       written here and no client is named anywhere on this page. The point of
+       the page in this state is layout and proportion review only.
+       ====================================================================== -->
+
+  <!-- BAND 1 — heading area. Shared tier-1 hero (.tf-page-head): kicker / h1 /
+       intro held in a .tf-container over the scrimmed band, plus ONE CTA.
+       NO HEADER IMAGE YET: assets/images/index.jpg does not exist, and a hero
+       photo must come through the BLOG.md §7 source-and-approve process. With
+       --tf-page-head-img unset the band renders as the pattern's own solid-ink
+       fallback — the sanctioned image-less state, not an invented substitute.
+       NO STATS in this band, by instruction. -->
+  <header class="tf-page-head">
     <div class="tf-container">
-      <h1>Home</h1>
-      <p>Placeholder content for this page.</p>
+      <div class="tf-kicker">[BAND 1 — KICKER: who we are, one line]</div>
+      <h1>[BAND 1 — H1: who we are / what we do]</h1>
+      <p class="tf-prose-intro">[BAND 1 — INTRO: one or two sentences on the promise; caps at 62ch inside this band]</p>
+      <!-- CTA IS NOT IN THIS BAND — see the measurement note below. -->
     </div>
+  </header>
+
+  <!-- ======================================================================
+       BAND 1 CTA — OPEN QUESTION, MEASURED, NOT FORCED.
+       .tf-page-head does NOT accommodate an inline action, and .tf-page-head
+       was NOT restyled to make it. Measured at 1280x900 with the button placed
+       inside the band's .tf-container, directly after the intro:
+         · intro bottom -> button top = 0.00px. .tf-page-head .tf-prose-intro
+           sets margin-bottom: 0 (so the band frames its own text symmetrically),
+           and the base `p` sets margin-top: 0 — nothing supplies a gap, so the
+           button sits flush against the intro text.
+         · button bottom -> band bottom = 64px, not 48px. The button paragraph's
+           base margin-bottom (16px) ADDS to the band's 48px padding, so the
+           band's framing goes 48 top / 64 bottom — breaking the very symmetry
+           that the margin-bottom: 0 rule above exists to protect.
+       Both faults need either a new .tf-page-head-scoped action rule or a
+       change to the band's framing contract. That is a PATTERN DECISION, not a
+       build decision, so the button is placed directly BENEATH the band instead
+       (first element of the next section, where the standard 48px post-header
+       gap frames it). Flagged for STYLE.md.
+       ====================================================================== -->
+
+  <main>
+    <!-- BAND 2 — trusted-partner strip (paper). A PAPER first band deliberately:
+         the multi-band hero bridge hands the 48px post-header gap to this
+         section's own top padding, and that gap takes this band's ground. -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <!-- BAND 1's single CTA, relocated here — see the measurement note
+             above the band. One action, primary, no arrow glyph.
+             href="#" is a PLACEHOLDER: the "how we work" target is either a
+             section id on BAND 4 below or a services overview page
+             (pathfinder.html / runningmate.html), neither of which exists. -->
+        <p><a class="tf-btn tf-btn-primary" href="#">how we work</a></p>
+
+        <div class="tf-kicker">[BAND 2 — KICKER: trusted partner]</div>
+        <h2>[BAND 2 — H2: who we have worked with]</h2>
+
+        <!-- .tf-logos — FIRST CONSUMER. Per STYLE.md §2 "Trusted-by" this strip
+             takes ONE-COLOUR INK WORDMARKS, which is a DIFFERENT rule from the
+             about-page client cards (those keep each brand's original colour;
+             STYLE.md is explicit that neither rule generalizes to the other).
+             The ink wordmark assets DO NOT EXIST — assets/images/clients/ holds
+             only the coloured PNGs, which must not be used here — so the four
+             slots carry placeholder labels in the pattern's own text treatment
+             (.tf-logos span: 15px / 500 / stone). -->
+        <div class="tf-logos">
+          <span>[LOGO 1 — ink wordmark]</span>
+          <span>[LOGO 2 — ink wordmark]</span>
+          <span>[LOGO 3 — ink wordmark]</span>
+          <span>[LOGO 4 — ink wordmark]</span>
+          <!-- NOTE: about.html carries no id="selected-work" yet, so this
+               fragment currently lands at the top of about.html. Adding the id
+               is a one-attribute edit to about.html — OUT OF SCOPE here. -->
+          <a href="about.html#selected-work">more &rarr;</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 3 — client use case. A REAL client, NEVER NAMED on this page.
+         Structure only: quote → stats → image slot → closing callout. No copy
+         is carried over from the old site. -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <div class="tf-kicker">[BAND 3 — KICKER: client use case]</div>
+        <h2>[BAND 3 — H2: the engagement in one line]</h2>
+
+        <!-- .tf-quote / .tf-quote-attr — FIRST CONSUMER. Source Serif 4
+             Semibold, never italic (STYLE.md §3). -->
+        <blockquote class="tf-quote">[BAND 3 — FOUNDER QUOTE: one or two sentences in the founder&rsquo;s voice]</blockquote>
+        <p class="tf-quote-attr">[BAND 3 — ATTRIBUTION: role only, client NEVER named]</p>
+
+        <!-- .tf-stat-grid — FIRST CONSUMER (discharges half of BL-012). SIX
+             cells. NB the sheet sets grid-template-columns: repeat(3, 1fr), so
+             six cells render as 2 rows of 3 — see the report for what that does
+             to the frame and to the row divider. -->
+        <div class="tf-stat-grid">
+          <div>
+            <div class="tf-stat-value">[N1]</div>
+            <div class="tf-stat-label">[STAT 1 — label]</div>
+          </div>
+          <div>
+            <div class="tf-stat-value">[N2]</div>
+            <div class="tf-stat-label">[STAT 2 — label]</div>
+          </div>
+          <div>
+            <div class="tf-stat-value">[N3]</div>
+            <div class="tf-stat-label">[STAT 3 — label]</div>
+          </div>
+          <div>
+            <div class="tf-stat-value">[N4]</div>
+            <div class="tf-stat-label">[STAT 4 — label]</div>
+          </div>
+          <div>
+            <div class="tf-stat-value">[N5]</div>
+            <div class="tf-stat-label">[STAT 5 — label]</div>
+          </div>
+          <div>
+            <div class="tf-stat-value">[N6]</div>
+            <div class="tf-stat-label">[STAT 6 — label]</div>
+          </div>
+        </div>
+
+        <!-- IMAGE SLOT. No asset exists and none is invented: a content photo
+             must come through the BLOG.md §7 source-and-approve process. Marked
+             with a plain .tf-callout (the sheet's Lucide-icon note pattern, used
+             as-is) so the slot is visible in review without a broken <img> and
+             without a page-local box. Lucide `image`. -->
+        <div class="tf-callout">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+          <div>
+            <div class="tf-callout-title">[BAND 3 — IMAGE SLOT]</div>
+            <p class="tf-callout-body">Asset does not exist. To be sourced and approved via the BLOG.md &sect;7 image process, then wired here.</p>
+          </div>
+        </div>
+
+        <!-- Closing note — .tf-callout, Lucide `lightbulb`. -->
+        <div class="tf-callout">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+          <div>
+            <div class="tf-callout-title">[BAND 3 — FOUNDER&rsquo;S BIGGEST LEARNING: heading]</div>
+            <p class="tf-callout-body">[BAND 3 — the closing takeaway, one or two sentences]</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 4 — how we work: 2 programmes x 4 services. ZERO new patterns.
+         Pathfinder and Runningmate are LABELS ONLY over their column pairs.
+         They are deliberately NOT links and NOT filled bands: pathfinder.html
+         and runningmate.html do not exist, and the nav question is BL-023.
+         The programme→service split is taken from the built pages' own kickers:
+         Pathfinder = Plan + Source, Runningmate = Launch + Grow. -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <h2>[BAND 4 — H2: how we work]</h2>
+        <p>[BAND 4 — INTRO: one line on the two programmes]</p>
+
+        <!-- PATHFINDER label. FLAGGED: a BRICK RULE beneath this kicker has no
+             pattern in the sheet — the rule hierarchy (§4) is sand / light /
+             ink only, and no brick rule token or class exists. Rendered as the
+             bare .tf-kicker (pure reuse, zero new CSS) pending that decision;
+             see the report. -->
+        <div class="tf-kicker">Pathfinder</div>
+        <div class="tf-grid-2up">
+          <a class="tf-card-sm tf-card-link" href="business-planning.html">
+            <div class="tf-card-title">Business Planning</div>
+            <ul class="tf-callout-list">
+              <li>[BULLET — what this service does]</li>
+              <li>[BULLET — what this service does]</li>
+            </ul>
+          </a>
+          <a class="tf-card-sm tf-card-link" href="sourcing-support.html">
+            <div class="tf-card-title">Sourcing Support</div>
+            <ul class="tf-callout-list">
+              <li>[BULLET — what this service does]</li>
+              <li>[BULLET — what this service does]</li>
+            </ul>
+          </a>
+        </div>
+
+        <!-- RUNNINGMATE label. Same flag as Pathfinder above. -->
+        <div class="tf-kicker">Runningmate</div>
+        <div class="tf-grid-2up">
+          <a class="tf-card-sm tf-card-link" href="launch-hypercare.html">
+            <div class="tf-card-title">Launch Hypercare</div>
+            <ul class="tf-callout-list">
+              <li>[BULLET — what this service does]</li>
+              <li>[BULLET — what this service does]</li>
+            </ul>
+          </a>
+          <a class="tf-card-sm tf-card-link" href="ongoing-management.html">
+            <div class="tf-card-title">Ongoing Management</div>
+            <ul class="tf-callout-list">
+              <li>[BULLET — what this service does]</li>
+              <li>[BULLET — what this service does]</li>
+            </ul>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 5 — who we are. NOT a repeat of about.html's principal cards: the
+         angle is how the two work TOGETHER — education (learn) + entrepreneur-
+         ship (do). Uses the SMALL circular .tf-profile / .tf-avatar kit, which
+         is the supporting-mention first use the about ratchet entry reserved it
+         for. .tf-profile-lg is about's dominant card and is NOT used here. -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <div class="tf-kicker">[BAND 5 — KICKER: who we are]</div>
+        <h2>[BAND 5 — H2: education + entrepreneurship, working together]</h2>
+
+        <div class="tf-grid-2up">
+          <div class="tf-profile">
+            <div class="tf-avatar" aria-hidden="true">TG</div>
+            <div>
+              <div class="tf-card-title">[BAND 5 — NAME 1]</div>
+              <p class="tf-card-body">[BAND 5 — the LEARN half: what education brings to the pair, one or two sentences]</p>
+            </div>
+          </div>
+          <div class="tf-profile">
+            <div class="tf-avatar" aria-hidden="true">SW</div>
+            <div>
+              <div class="tf-card-title">[BAND 5 — NAME 2]</div>
+              <p class="tf-card-body">[BAND 5 — the DO half: what entrepreneurship brings to the pair, one or two sentences]</p>
+            </div>
+          </div>
+        </div>
+
+        <p><a href="about.html">[BAND 5 — LINK LABEL] &rarr;</a></p>
+      </div>
+    </section>
+
+    <!-- BAND 6 — resources. FOUR blocks; livestream is dropped.
+         Each block reuses the standard .tf-card kit. The only NEW thing in this
+         band is the locked 4-up geometry (.tf-grid-4up): .tf-card-grid's
+         intrinsic auto-fill lands 3+1 on the 1200px container, which is ragged
+         for a deliberate four-item row. Icons are LUCIDE inline SVG at
+         currentColor, so they render INK on the card (STYLE.md §2 sanctions
+         brick OR ink; ink keeps brick to the .tf-card-link hover state).
+         NO EMOJI ANYWHERE — the old site's emoji do not carry over. -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <div class="tf-kicker">[BAND 6 — KICKER: resources]</div>
+        <h2>[BAND 6 — H2: what we publish and give away]</h2>
+
+        <div class="tf-grid-4up">
+          <!-- BUILT — whole card links out. Lucide `file-text`. -->
+          <a class="tf-card tf-card-link" href="blogs.html">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
+            <div class="tf-card-title">Blogs</div>
+            <p class="tf-card-body">[BAND 6 — one line on what the blog covers]</p>
+          </a>
+
+          <!-- BUILT — whole card links out. Lucide `book-open`. -->
+          <a class="tf-card tf-card-link" href="references.html">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
+            <div class="tf-card-title">References</div>
+            <p class="tf-card-body">[BAND 6 — one line on the directory]</p>
+          </a>
+
+          <!-- UNBUILT — NOT a link. seminars.html exists only as a boilerplate
+               shell, so nothing is linked until the page is built.
+               Lucide `presentation`. -->
+          <div class="tf-card">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="m7 21 5-5 5 5"/></svg>
+            <div class="tf-card-title">Seminars</div>
+            <p class="tf-card-body">[BAND 6 — PLACEHOLDER: page unbuilt, not linked]</p>
+          </div>
+
+          <!-- UNBUILT — NOT a link. tools.html exists only as a boilerplate
+               shell, so nothing is linked until the page is built.
+               Lucide `wrench`. -->
+          <div class="tf-card">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            <div class="tf-card-title">Free tools</div>
+            <p class="tf-card-body">[BAND 6 — PLACEHOLDER: page unbuilt, not linked]</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 7 — standard ink-ground CTA (.tf-cta), once per page. -->
+    <section class="tf-cta">
+      <div class="tf-container">
+        <h2>[BAND 7 — H2: the ask]</h2>
+        <p class="tf-lead">[BAND 7 — SUBLINE: one line]</p>
+        <div class="tf-btn-row">
+          <a class="tf-btn tf-btn-primary" href="contact.html">Contact us</a>
+        </div>
+      </div>
+    </section>
   </main>
 
   <!-- Shared footer injected from partials.html -->
