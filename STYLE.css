@@ -1,6 +1,13 @@
-/* v014 | last updated: 2026-07-24
+/* v015 | last updated: 2026-07-24
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v15 · 2026-07-24 · ArtSabers removed from the site (chore/remove-artsabers).
+                     It was the last consumer of the provisional
+                     .tf-client-wordmark text-fallback rule (TOSH moved to a real
+                     logo in v14), so per that rule's own note the rule AND its
+                     comment are DELETED — zero remaining consumers. The carousel
+                     is now 15 image logos, no text fallbacks.
 
    v14 · 2026-07-24 · Client logos: real marks promoted for most clients
                      (feat/client-logos). The provisional .tf-client-wordmark
@@ -1137,19 +1144,6 @@ a:hover { color: var(--tf-brick-dark); }
 /* The slot reserves a constant band so titles/descriptions align across a row
    regardless of each logo's fitted height. */
 .tf-client-logo-slot { display: flex; align-items: center; min-height: 40px; }
-/* PROVISIONAL — pending user decision. ArtSabers ships no usable logo asset
-   (three sourced files all failed on paper: faint, black-box, muddy mid-tone),
-   so its name renders as text in the slot, restated in brand type. TOSH shared
-   this fallback until feat/client-logos, where it received a real logo and was
-   removed from here — this rule now covers ArtSabers ALONE. If ArtSabers's real
-   mark is later supplied, DELETE this rule — it is not a pattern to reuse. */
-.tf-client-wordmark {
-  font-family: var(--tf-font-heading);
-  font-weight: 700;
-  font-size: var(--tf-text-lg);
-  letter-spacing: 0.02em;
-  color: var(--tf-ink);
-}
 
 /* CTA band — ink field with the brick button carrying the accent; once per page */
 .tf-cta { background: var(--tf-ink); color: var(--tf-paper); padding: var(--tf-space-6) var(--tf-space-4); }
