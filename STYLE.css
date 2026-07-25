@@ -1,7 +1,141 @@
-/* v016 | last updated: 2026-07-25
+/* v027 | last updated: 2026-07-25
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v27 · 2026-07-25 · BAND 2 — removed the strip's own top rule (#trusted .tf-logos
+                     border-top: none) so a single line sits at the hero/strip seam
+                     (the hero's .tf-section divider). Band-2-scoped; the shared
+                     .tf-logos border-top is unchanged for any other use.
+   v26 · 2026-07-25 · BAND 2 trusted-by coloured logos — per-logo optical sizing.
+                     Replaced the single-height preview rule with per-logo heights
+                     (NYC 21 / Wayfair 27 / Concentrix 16 / Microsoft 17) so four
+                     wildly different marks read at even OPTICAL weight, not equal
+                     pixel height. Sourced from band-2-only trimmed variants
+                     (client-<slug>-trim.png); the shared padded client-<slug>.png
+                     the about carousel uses are UNTOUCHED (trimming them regressed
+                     the carousel — verified). #trusted-scoped; carousel /
+                     .tf-client-logo unaffected. NB feat/index STYLE.css chain is
+                     independent of main's v14-v16 client-logo stream — renumber
+                     reconcile deferred to merge prep.
+   v25 · 2026-07-24 · BAND 6 (Resources) icon + title inline. #resources
+                     .tf-resource-head — a band-6-scoped flex row so each resource
+                     block's icon and title share one line (description drops
+                     beneath from the card's own column gap). Existing --tf-space-2
+                     gap; shared .tf-card / .tf-grid-4up untouched. No new token,
+                     hex, or size.
+   v24 · 2026-07-24 · BAND 3 column bottom-alignment — robust LAYOUT, not a
+                     spacer. Removed the hand-tuned padding-top: --tf-space-8
+                     buffer above the stat cards. Band 3's LEFT column is now a
+                     flex column and its stat grid takes margin-block-start: auto,
+                     so the cards sit flush to the column bottom = the right
+                     column's callout bottom, automatically, at any width above
+                     the 820px stack. Scoped to #client-case-study; the shared
+                     .tf-grid-2up base is untouched.
+   v23 · 2026-07-24 · Sitewide + BAND 3. .tf-img-framed goes BORDERLESS — the
+                     shared framed-image pattern drops its 2px --tf-rule-light
+                     frame (user decision, all framed images); layout props
+                     (block, width:100%, height:auto, box-sizing) kept. Two
+                     consumers, both index.html: band 1 hero (paper) and band 3
+                     case-study (ink). (`.tf-intro-split-img` on the service pages
+                     is a separate class, intentionally not touched.)
+                     BAND 3 callout title recut: SERIF (--tf-font-heading, was
+                     inheriting Space Grotesk), --tf-text-lg (20px) unchanged, and
+                     line-height tightened 1.6 (32px) → 1.2 (24px) for a two-line
+                     heading. Band-3-scoped.
+   v22 · 2026-07-24 · index.html BAND 3 polish (band-3-scoped, existing tokens).
+                     Quote TRUE ITALIC: root cause was a MISSING FACE (the font
+                     <link> requested roman only) plus no font-style rule at all —
+                     not a cascade fight. The <link> now adds the Source Serif 4
+                     ital axis (ital,600) and #client-case-study .tf-quote sets
+                     font-style: italic; verified a real italic face renders
+                     (distinct metrics under font-synthesis:none), not oblique.
+                     Callout: border removed, takes the cards' --tf-ink-raised
+                     ground (borderless-on-ink idiom). Callout TITLE lifted to
+                     --tf-text-lg (20px/700) so it reads >= the 16px/400 body
+                     (was 14px, inverted). KPI-card block gets margin-top
+                     --tf-space-8 so its bottom levels with the callout bottom on
+                     desktop (measured 63.3px gap; 64px lands within ~0.7px).
+   v21 · 2026-07-24 · index.html BAND 3 correction — stat cards go BORDERLESS.
+                     .tf-stat-card loses its 2px --tf-rule-light outline; the
+                     boxes now read apart by a subtle raised GROUND + the gap
+                     (old-site idiom). Ground is a raised tile per the sheet's
+                     idiom — --tf-cream on paper (base), --tf-ink-raised on ink
+                     (the existing "raised above ink" token, via
+                     .tf-surface-ink .tf-stat-card). No border, no raw hex, no new
+                     token/breakpoint. KNOWN, flagged not fixed: lifting the tile
+                     under the figure drops the brick-on-ink figure below 3.0 on
+                     ink (the label stays clear) — a decision for the user, not
+                     silently recoloured. Quote italic still HELD (no italic face
+                     loaded; unchanged this pass).
+   v20 · 2026-07-24 · index.html BAND 3 polish. One new SHARED pattern, one
+                     band-3-scoped override. No new token, hex, type size, or
+                     breakpoint.
+                     .tf-stat-cards / .tf-stat-card (NEW) — separated bordered
+                     stat boxes with gaps, no shared rules, for a ground where the
+                     ruled .tf-stat-grid reads like a spreadsheet (band 3's ink).
+                     Figure/caption REUSE .tf-stat-value/.tf-stat-label; only the
+                     container is new; border is --tf-rule-light so it is visible
+                     on ink (unlike .tf-stat-grid's ink frame). .tf-stat-grid is
+                     UNCHANGED and still valid on paper (now zero consumers).
+                     #client-case-study .tf-callout-body (band-3 override) — the
+                     band's conclusion made louder than its stat captions:
+                     --tf-text-base (16px) + --tf-stone-light, id-scoped so it
+                     touches band 3 only, not every ink callout.
+                     NB HELD, not shipped: a band-3 true-italic quote. Source
+                     Serif 4's italic FACE is not loaded (the Google Fonts request
+                     omits the ital axis), so font-style: italic would synthesize
+                     oblique — which §3 forbids. Reported for a decision; not
+                     written here.
+   v19 · 2026-07-24 · index.html BAND 3 — ink-ground contrast pass. No new token,
+                     no new hex; all .tf-surface-ink-scoped, so every paper-ground
+                     rendering is byte-unchanged.
+                     Ink-soft → --tf-stone: WIDENED the existing
+                     .tf-surface-ink .tf-secondary/.tf-meta selector to also carry
+                     .tf-quote-attr, .tf-stat-label, .tf-callout-body (~1.98 →
+                     ~7.18 on ink). Brick on ink: .tf-stat-value and .tf-callout
+                     svg → --tf-brick-on-ink (~2.72 → 3.43, clearing the 3.0
+                     large/graphic threshold and staying brick-family); the 12px
+                     .tf-kicker cannot reach 4.5 in brick, so it takes
+                     --tf-stone-light (~10.96), the .tf-page-head .tf-kicker
+                     precedent. Stat-grid frame: --tf-rule (ink, invisible on ink)
+                     → border-color --tf-stone-light on the dark ground, so the
+                     component reads bounded.
+   v18 · 2026-07-24 · index.html (Home) skeleton v2. Three new patterns and one
+                     repair.
+                     .tf-hero-home (NEW) — Home's OWN opener: paper ground, text
+                     left + framed inline image right, and the primary action
+                     INSIDE the band. Home does not wear .tf-page-head (the
+                     tier-1 INTERIOR hero, untouched here) and does not borrow
+                     .tf-intro-split (documented as the tier-2 DETAIL signal) —
+                     near-identical geometry, opposite meaning.
+                     .tf-img-framed (NEW, extracted) — the in-flow framed content
+                     image, named for the job because both the hero and BAND 3's
+                     case-study photo need it. .tf-intro-split-img duplicates it
+                     and should fold in next time business-planning.html is
+                     touched (deferred, tracked).
+                     .tf-prog-group + .tf-card-ink-soft (NEW) — a labelled group
+                     of cards under one filled dark header; the modifier gives a
+                     second group its own dark FIELD (--tf-footer-ground) so two
+                     programs separate on tone, not on a second accent colour.
+                     NB this widens --tf-footer-ground beyond "footer only" —
+                     restate in STYLE.md.
+                     .tf-card-head (NEW) — a --tf-cream header strip flush to a
+                     card's inner edges, the .tf-card-cap negative-margin idiom.
+                     .tf-stat-grid REPAIRED for the 6-up case it always claimed
+                     but never handled: internal rules moved to each cell's TOP
+                     and LEFT so the predicates hold at any cell/column count —
+                     fixes the doubled row-end edge, adds the missing row
+                     divider, and makes the grid 2-up below 768. Zero blast
+                     radius: Home is the pattern's first consumer.
+                     No new token, no new hex, no new type size, no new
+                     breakpoint (768 and 820 are both the sheet's own).
+   v17 · 2026-07-24 · index.html (Home) skeleton. ONE new pattern:
+                     .tf-grid-4up — a locked four-item row, the 2-up idiom one
+                     step wider. .tf-card-grid's intrinsic auto-fill lands 3 + 1
+                     on the 1200px container, so a deliberate four-item set needs
+                     declared geometry. Steps 1 → 2 → 4 on the sheet's existing
+                     768 / 820 breakpoints; no new breakpoint, no new token, no
+                     hex. First use: the resources band (BAND 6).
    v16 · 2026-07-25 · Client-logo sizing evened (fix/client-logo-sizing). The 15
                      logos were re-promoted INK-TIGHT (trimmed to the mark, baked
                      padding removed — the real cause of the 72.7× rendered-area
@@ -18,7 +152,6 @@
                      logo in v14), so per that rule's own note the rule AND its
                      comment are DELETED — zero remaining consumers. The carousel
                      is now 15 image logos, no text fallbacks.
-
    v14 · 2026-07-24 · Client logos: real marks promoted for most clients
                      (feat/client-logos). The provisional .tf-client-wordmark
                      text-fallback rule, which covered TWO clients (ArtSabers +
@@ -736,6 +869,60 @@ a:hover { color: var(--tf-brick-dark); }
    at whatever height each description happens to end. */
 .tf-card > .tf-pills { margin-top: auto; padding-top: var(--tf-space-1); }
 
+/* ── Program group (`.tf-prog-group` + `.tf-card-ink-soft`) ──────────────────
+   A labelled group of cards: ONE filled dark header sitting over the cards it
+   heads, so the grouping is carried by the header's field rather than by a rule
+   or a box around the set. First use: index.html BAND 4, where two programs
+   (Pathfinder, Runningmate) each head two service cards.
+   The wrapper is a plain vertical grid so the header and the card row share the
+   band's own --tf-space-3 rhythm. `align-content: start` matters: the groups sit
+   side by side in a `.tf-grid-2up`, and without it the shorter group would
+   stretch its card row to match the taller one, inventing empty card height.
+   Groups therefore top-align and run to their natural depth. */
+.tf-prog-group { display: grid; gap: var(--tf-space-3); align-content: start; }
+
+/* Second dark ground for a filled card. The header itself is `.tf-card
+   .tf-card-ink` — reused as-is, including `.tf-card-ink .tf-card-body`'s stone
+   text — and this modifier only swaps the field, so a SECOND group reads as its
+   own program without a second accent colour entering the page.
+   The two grounds separate on TONE alone: ink, and --tf-footer-ground (a derived
+   ink→stone mix). That is the identical idiom the footer already uses to sit
+   against an ink `.tf-cta` with no seam between them.
+   NB this WIDENS --tf-footer-ground's documented scope: §2 and its own token
+   comment call it footer-only. The value is a derived mix, not a new hue, so
+   this adds no colour to the palette — but the "footer only" wording no longer
+   holds and needs restating in the STYLE.md governance PR. Flagged, not silently
+   left. The border is pulled to the same tone so the inherited 2px ink frame
+   does not draw a darker edge around the lighter field.
+   Deliberately NOT brick: a filled brick header would be the loudest field on a
+   page already spending brick on the hero button and the CTA (§2, "use
+   sparingly"), and a brick fill reads clickable on a header that links nowhere.
+   Same specificity as `.tf-card-ink` (0,1,0); it wins on source order, so a
+   later, more specific rule can still override it. */
+.tf-card-ink-soft {
+  background: var(--tf-footer-ground);
+  border-color: var(--tf-footer-ground);
+}
+
+/* Card header strip (`.tf-card-head`) — a tinted band across the top of a card,
+   flush to the card's inner edges, holding the card's title and its meta line
+   above the card's body content. First use: index.html BAND 4's service cards
+   (title + duration over the deliverables list).
+   GROUND: --tf-cream. That token's role was widened by the references build from
+   "overlay surfaces" to "any raised OR recessed surface that must separate from
+   the paper page by TONE rather than by a rule" — a header strip inside a card
+   is exactly that. The alternatives were rejected on their own definitions:
+   --tf-sand and --tf-stone-light are RULE tones (§4), and --tf-sand-wash is the
+   page-width BAND tint, a full-bleed ground rather than a panel.
+   It cancels the card's padding with negative margins rather than the card kit
+   dropping its padding — the same idiom, and the same reason, as `.tf-card-cap`
+   directly below. The card's own border still frames it. */
+.tf-card-head {
+  margin: calc(var(--tf-space-3) * -1) calc(var(--tf-space-3) * -1) 0;
+  padding: var(--tf-space-2) var(--tf-space-3);
+  background: var(--tf-cream);
+}
+
 /* Card grid — the shared layout for card collections. Intrinsically sized
    rather than breakpoint-driven: tracks are at least 300px (below that a
    3:2 cap plus a serif title stops being legible) and share the leftover
@@ -780,8 +967,133 @@ a:hover { color: var(--tf-brick-dark); }
 }
 .tf-surface-ink a { color: var(--tf-brick-on-ink); }
 .tf-surface-ink a:hover { color: var(--tf-paper); }
+
+/* Ink-soft → stone on the dark ground. These classes all set --tf-ink-soft on
+   paper — secondary text tuned for a light field — which drops to ~1.98:1 on ink
+   (under the 4.5:1 minimum for body/meta). They genuinely share ONE remap, so
+   the selector list is WIDENED rather than met with new rules: on ink they all
+   become --tf-stone (~7.18:1). `.tf-quote-attr`, `.tf-stat-label` and
+   `.tf-callout-body` are index.html BAND 3's first ink use of each; `.tf-secondary`
+   and `.tf-meta` were already here. Each scoped selector is (0,2,0), outranking
+   its own (0,1,0) base, so the paper-ground colour is untouched. */
 .tf-surface-ink .tf-secondary,
-.tf-surface-ink .tf-meta { color: var(--tf-stone); }
+.tf-surface-ink .tf-meta,
+.tf-surface-ink .tf-quote-attr,
+.tf-surface-ink .tf-stat-label,
+.tf-surface-ink .tf-callout-body { color: var(--tf-stone); }
+
+/* Brick on the dark ground. Base brick (#C2291B) reads ~2.72:1 on ink. Two of
+   the three brick elements clear their threshold on --tf-brick-on-ink (#D4402C,
+   ~3.43:1) and stay brick-family, which the brand wants — a stat FIGURE is
+   "always brick" (§2), and the callout icon is brick by the pattern's own rule:
+   - .tf-stat-value — 36px/700, large-text 3.0 threshold: 3.43 ≥ 3.0.
+   - .tf-callout svg — a graphic, 3.0 threshold: 3.43 ≥ 3.0. (0,2,1) beats the
+     base `.tf-callout svg` (0,1,1); band 3's callout is the plain variant, so no
+     warn/affirm accent is in play.
+   The KICKER cannot: at 12px its threshold is 4.5, and brick-on-ink's 3.43 fails
+   it. So it follows the established dark-ground precedent instead — the same
+   remap `.tf-page-head .tf-kicker` already uses — to --tf-stone-light (~10.96:1).
+   All scoped (0,2,x), so paper kickers/figures/icons are unchanged. */
+.tf-surface-ink .tf-kicker { color: var(--tf-stone-light); }
+.tf-surface-ink .tf-stat-value { color: var(--tf-brick-on-ink); }
+.tf-surface-ink .tf-callout svg { color: var(--tf-brick-on-ink); }
+
+/* Stat-grid frame on the dark ground. The outer frame is `--tf-rule` (2px INK):
+   correct on paper (§4, the edge of a component) but invisible on ink, so the
+   grid reads as loose internal rules with no boundary. On ink the frame takes
+   the light rule tone (--tf-stone-light, ~10.96:1) so the component is bounded;
+   the internal cell splits are already that tone, so the grid resolves to a
+   clean uniform hairline mesh with a closed outer edge. border-COLOR only — the
+   2px width and the base rule are untouched, and this is `.tf-surface-ink`-scoped
+   so the paper-ground ink frame is unchanged. */
+.tf-surface-ink .tf-stat-grid { border-color: var(--tf-stone-light); }
+
+/* Stat CARDS on the dark ground — a raised tile, no outline. --tf-ink-raised is
+   the existing "raised above the ink ground" token (color-mix ink 80%, stone);
+   its comment already reserves it for "future overlays on ink", which this is.
+   The base sets --tf-cream (paper raised); this lifts the tile on ink instead so
+   the cards read apart by ground + gap, not by a drawn edge. (0,2,0) beats the
+   base (0,1,0).
+   CONTRAST NOTE: lifting the ground under the figure necessarily lowers the
+   figure's own contrast. The label (--tf-stone) stays clear (~4.8:1 on this
+   tile), but the brick-on-ink FIGURE, only ~3.43:1 on pure ink, drops below the
+   3.0 large-text threshold on any visible lift — flagged in the report for a
+   decision (brighten the figure, or accept it); NOT silently recoloured here,
+   since the figure colour was to be kept. */
+.tf-surface-ink .tf-stat-card { background: var(--tf-ink-raised); }
+
+/* Band 3 callout body — the band's CONCLUSION, made to read LOUDER than the stat
+   captions that support it. On ink both were --tf-stone at ~13–14px, so the
+   summary read no stronger than a caption. Scoped to band 3 alone via the
+   section id (single-use, the #tf-header precedent), NOT to .tf-surface-ink —
+   this is band-3 intent, not a global ink-callout rule. Louder on BOTH axes with
+   existing tokens: --tf-text-base (16px, up from 13px) and --tf-stone-light
+   (~10.96:1, brighter than the caption's --tf-stone ~7.18:1). The id (1,1,0)
+   outranks the v016 `.tf-surface-ink .tf-callout-body` stone remap (0,2,0).
+   Line-height stays the base 1.55. (When the true-italic quote face is loaded,
+   its band-3 italic rule scopes under this same id.) */
+#client-case-study .tf-callout-body {
+  font-size: var(--tf-text-base);
+  color: var(--tf-stone-light);
+}
+
+/* Quote TRUE italic (band 3). Root cause of the prior upright renders was a
+   MISSING FACE, not the cascade: no font-style rule existed AND the font <link>
+   requested only roman (opsz,wght). The ital axis is now added to that import
+   (ital,600 — the quote's weight), so this renders a real Source Serif 4 italic
+   FACE, not synthesized oblique. §3's italics ban targets Space Grotesk's
+   faux-oblique, not a true-serif pull-quote; scoped to band 3's quote alone. */
+#client-case-study .tf-quote { font-style: italic; }
+
+/* Callout on ink — borderless raised tile, matching the stat cards. Drops the
+   base --tf-rule-light outline and takes the same --tf-ink-raised ground the
+   cards use, so the callout and the cards share one borderless-on-ink idiom. */
+#client-case-study .tf-callout {
+  border: none;
+  background: var(--tf-ink-raised);
+}
+
+/* Callout title = the heading. Three things: (1) SERIF — the base title inherits
+   Space Grotesk (the UI font), which reads awkward at heading size for a full
+   sentence; set --tf-font-heading (Source Serif 4, the site's heading face, §3).
+   (2) SIZE --tf-text-lg (20px, the h4 tier) — >= the 16px body, so the title is
+   the strongest element and the body sits beneath it. (3) LEADING tightened to
+   1.2: it was inheriting the body's 1.6 (→ 32px, far too loose for a two-line
+   heading); 1.2 is the sheet's card-title / warn-affirm-callout heading leading.
+   Sentence case, weight 700 (base) — NOT the kicker's uppercase+tracking. */
+#client-case-study .tf-callout-title {
+  font-family: var(--tf-font-heading);
+  font-size: var(--tf-text-lg);
+  line-height: 1.2;
+}
+
+/* Level the KPI-card block's bottom with the takeaway callout's bottom — by
+   LAYOUT, not a measured spacer. The .tf-grid-2up columns already stretch to
+   equal height (grid align-items defaults to stretch), so both column BOXES end
+   on the same line whichever column is taller. The fix pins each column's LAST
+   block to that shared bottom: make BOTH columns flex columns, and give the
+   stat grid (left) and the callout (right) margin-block-start: auto so each
+   absorbs its column's free space ABOVE it and sits flush to the bottom edge.
+   Because both bottoms track the same stretched box bottom, they stay level
+   regardless of WHICH column is the taller one — and which one is taller flips
+   with width: the RIGHT (image) is taller on wide viewports, the LEFT (wrapped
+   stat labels + a shorter image) becomes taller as the columns narrow. Pinning
+   only the left would level them only while the right stays taller; pinning both
+   is what makes it hold at 1280 / 1024 / 900 with no per-width value.
+   Consequence, by design: when a column is stretched taller than its natural
+   content, its free space opens ABOVE the pinned block — extra space above the
+   cards on the left, or between the image and the callout on the right — which
+   is the correct outcome of a genuine bottom-alignment (not a gap to remove).
+   Scoped to `#client-case-study`, so the shared `.tf-grid-2up` and its other
+   consumers (about, the service pages) are untouched. Below the 820px stack each
+   column is full width at its natural height, auto has no free space to absorb,
+   and the layout is a normal flush stack — no injected gap. */
+#client-case-study .tf-grid-2up > * {
+  display: flex;
+  flex-direction: column;
+}
+#client-case-study .tf-stat-cards,
+#client-case-study .tf-callout { margin-block-start: auto; }
 
 /* Stat block */
 .tf-stat-value {
@@ -967,10 +1279,71 @@ a:hover { color: var(--tf-brick-dark); }
    Icons: Lucide (lucide.dev), 1.75px stroke, 22px default, brick or ink.
    No emoji anywhere in the brand.
    -------------------------------------------------------------------------- */
-/* Stat grid — 3-up or 6-up */
-.tf-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); border: var(--tf-rule); }
-.tf-stat-grid > div { padding: 20px 24px; border-right: var(--tf-rule-light); }
-.tf-stat-grid > div:last-child { border-right: none; }
+/* Stat grid — 3-up or 6-up. REPAIRED for the 6-up case, which the sheet has
+   always claimed but never handled: until index.html (BAND 3) nothing consumed
+   this pattern, so all three faults below shipped unseen. Blast radius of the
+   repair is zero — Home is the first consumer.
+   The internal rules now hang off each cell's TOP and LEFT rather than its right
+   and bottom, and that is the whole fix. "First cell in a row" and "cell in the
+   first row" are position-FROM-THE-START predicates, so they stay correct for
+   any cell count at any column count — where the old `:last-child` test was only
+   ever right for a single full row. Consequences:
+     (a) a row's LAST cell no longer draws a rule 2px inside the outer ink frame
+         (the old `border-right` on every cell but the very last doubled the
+         right edge of every row except the bottom one);
+     (b) rows are now divided — the second row's cells carry the top rule, where
+         before nothing separated row 1 from row 2 at all;
+     (c) the grid is responsive: 2-up below 768, 3-up from 768 up. At 390px the
+         old fixed 3-up gave ~123px cells and wrapped every label.
+   The two "restore" lines in the media query are load-bearing: the base block's
+   2-up predicates must be undone before the 3-up ones are applied, because a
+   cell can be a row-start at one column count and mid-row at the other. Tones
+   are unchanged (§4): ink frames the component, the light rule divides within
+   it. No new token, no new breakpoint — 768 is the container's own. */
+.tf-stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); border: var(--tf-rule); }
+.tf-stat-grid > div {
+  padding: 20px 24px;
+  border-left: var(--tf-rule-light);
+  border-top: var(--tf-rule-light);
+}
+.tf-stat-grid > div:nth-child(2n+1) { border-left: none; }   /* first cell in a 2-up row */
+.tf-stat-grid > div:nth-child(-n+2)  { border-top: none; }   /* the 2-up first row */
+@media (min-width: 768px) {
+  .tf-stat-grid { grid-template-columns: repeat(3, 1fr); }
+  /* restore what the 2-up predicates suppressed, then apply the 3-up ones */
+  .tf-stat-grid > div:nth-child(2n+1) { border-left: var(--tf-rule-light); }
+  .tf-stat-grid > div:nth-child(-n+2)  { border-top: var(--tf-rule-light); }
+  .tf-stat-grid > div:nth-child(3n+1) { border-left: none; } /* first cell in a 3-up row */
+  .tf-stat-grid > div:nth-child(-n+3)  { border-top: none; } /* the 3-up first row */
+}
+
+/* Separated stat cards — the alternative to the ruled .tf-stat-grid for a ground
+   where a shared-rule mesh reads like a spreadsheet (band 3's ink field). Each
+   stat is its OWN box, and the boxes are read apart by a SUBTLE GROUND STEP plus
+   the gap between them — NO drawn outline (old-site idiom). Figure and caption
+   REUSE .tf-stat-value / .tf-stat-label unchanged (including their
+   .tf-surface-ink remaps, which are class-scoped and so apply in either
+   container) — only the CONTAINER is new. The ground is a raised tile derived per
+   the sheet's own idiom: --tf-cream on paper (the designated raised-surface tone)
+   and --tf-ink-raised on ink (the existing "raised above the ink ground" token,
+   see the ink override below) — no border, no raw hex. 3-up from 768, 2-up below
+   — the container's own breakpoint, the same responsive story as the
+   .tf-stat-grid repair; no new breakpoint. box-sizing: border-box because the
+   sheet has no global reset, so the padding stays INSIDE each 1fr track.
+   First use: index.html BAND 3. */
+.tf-stat-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--tf-space-2);
+}
+@media (min-width: 768px) {
+  .tf-stat-cards { grid-template-columns: repeat(3, 1fr); }
+}
+.tf-stat-card {
+  padding: 20px 24px;
+  background: var(--tf-cream);   /* raised tile on paper; ink ground overrides below */
+  box-sizing: border-box;
+}
 
 /* Testimonial */
 .tf-quote { font-family: var(--tf-font-heading); font-weight: 600; font-size: 24px; line-height: 1.4; max-width: 760px; margin: 0; }
@@ -979,6 +1352,26 @@ a:hover { color: var(--tf-brick-dark); }
 /* Trusted-by strip */
 .tf-logos { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; border-top: var(--tf-rule-light); padding-top: 20px; }
 .tf-logos span { font-weight: 500; font-size: 15px; color: var(--tf-stone); }
+/* Band 2 (Resources → trusted-by) coloured logos. .tf-logos ships no <img> rule,
+   and a single shared height does NOT balance these: the four marks differ wildly
+   in shape and density, so equal height gives the wide dense ones (Microsoft) far
+   more area and the thin/square ones (Wayfair, Concentrix) far too little. Each is
+   therefore sized INDIVIDUALLY for even OPTICAL weight — different pixel heights by
+   design, matching perceived weight, not numbers. Sourced from the band-2-only
+   trimmed variants (client-<slug>-trim.png), so ink fills the box (the shared
+   padded client-<slug>.png the carousel uses are untouched). width auto keeps each
+   mark's aspect; align-items:center on .tf-logos puts all four on one baseline.
+   Scoped to #trusted so .tf-client-logo / the about carousel are unaffected. */
+/* Drop the strip's own top rule in band 2 only: the hero band above already ends
+   on a .tf-section divider, so the shared .tf-logos border-top made a SECOND line
+   at the seam. Suppressed #trusted-scoped so the shared .tf-logos rule keeps its
+   border-top for any other use; padding-top stays (spacing above the logos). */
+#trusted .tf-logos { border-top: none; }
+#trusted .tf-logos img { width: auto; display: block; }
+#trusted .tf-tb-nyc        { height: 21px; }   /* dense block — smaller */
+#trusted .tf-tb-wayfair    { height: 27px; }   /* compact wordmark — taller */
+#trusted .tf-tb-concentrix { height: 16px; }   /* thin wide wordmark — runs wide */
+#trusted .tf-tb-microsoft  { height: 17px; }   /* dense icon+wordmark — smallest */
 
 /* Journey stepper — the signature component. Phase labels are pills on the
    v2 pill base: Pathfinder = .tf-pill .tf-pill-sm .tf-pill-tint-brick,
@@ -1118,6 +1511,41 @@ a:hover { color: var(--tf-brick-dark); }
 @media (min-width: 820px) {
   .tf-grid-2up { grid-template-columns: 1fr 1fr; }
 }
+/* Locked 4-up grid (`.tf-grid-4up`) — the same idea as `.tf-grid-2up` one step
+   wider: a FIXED four-item row, not an intrinsic track. Why not `.tf-card-grid`
+   (auto-fill, minmax(300px, 1fr)): on the 1200px container that fits three
+   300px tracks but not four, so a deliberate four-item row lands 3 + 1 — a
+   full row with an orphan under it. The four items here are a set, so the
+   geometry has to be declared rather than derived.
+   Steps 1 -> 2 -> 4 across the sheet's EXISTING breakpoint vocabulary (768 from
+   `.tf-container`, 820 from the nav) — no new breakpoint. The 2-up step at 768
+   exists because 1 -> 4 at 820 would drop four cards straight from full width to
+   ~171px; the tablet band gets the readable pairing instead. Gap is the same
+   `--tf-space-3` as the 2-up, so a 2-up and a 4-up band share one rhythm.
+   First use: index.html's resources band (BAND 6). */
+.tf-grid-4up {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--tf-space-3);
+}
+@media (min-width: 768px) {
+  .tf-grid-4up { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 820px) {
+  .tf-grid-4up { grid-template-columns: repeat(4, 1fr); }
+}
+/* Band 6 (Resources) icon + title on one line. The .tf-card kit stacks its
+   children (icon, title, body) in a flex COLUMN; this wraps the icon and title in
+   a flex ROW so they share a line, with the description dropping beneath from the
+   card's own column gap. Scoped to #resources so the shared .tf-card and
+   .tf-grid-4up are untouched — a band-6 layout hook, not a new shared pattern.
+   Gap is --tf-space-2 (existing token); icon size/colour are unchanged (the
+   22px currentColor SVGs in the markup). */
+#resources .tf-resource-head {
+  display: flex;
+  align-items: center;
+  gap: var(--tf-space-2);
+}
 /* about.html principals — the 2-up plus the top margin from the section opener
    above. Now a thin modifier on `.tf-grid-2up` (markup carries BOTH classes):
    the grid geometry moved to the base, this keeps only the about-specific
@@ -1241,6 +1669,69 @@ a:hover { color: var(--tf-brick-dark); }
    opening straight onto a WASH band would tint the gap, and should carry a
    paper band first rather than override this rule. */
 .tf-page-head + main:not(.tf-section) { padding-block-start: 0; }
+
+/* ── Home hero (`.tf-hero-home`) ─────────────────────────────────────────────
+   The HOME page's opener, and Home's alone. Two columns on a PAPER ground —
+   text left, framed inline image right — with the page's single primary action
+   INSIDE the band.
+
+   WHY NOT `.tf-page-head`: that band is the tier-1 INTERIOR-page hero, and its
+   whole job is that every interior page opens on the same dark band. Home
+   wearing it makes the front door look like a section page. `.tf-page-head` is
+   NOT modified here — references.html and about.html consume it unchanged.
+
+   WHY NOT `.tf-intro-split`: it is geometrically almost this, and it was read
+   first. It is rejected on the sheet's OWN stated semantics, not on style: that
+   pattern is documented as "the tier-2 SIGNAL … deliberately NOT the hero", the
+   thing that marks a page as a service DETAIL page at a glance. Home is tier-1.
+   Borrowing the tier-2 signal would mislabel the page as surely as borrowing the
+   tier-1 band would. The two patterns are deliberately near-identical in
+   geometry and opposite in meaning; that is the point, and it is why this is a
+   third opener rather than a modifier on either.
+
+   Geometry follows the same idiom as both kin — one column, two from 820px (the
+   nav breakpoint, reused; no new breakpoint) — and `align-items: center` seats
+   the shorter text block against the taller image, exactly as `.tf-intro-split`
+   does. Text first in source order, so it leads on mobile. */
+.tf-hero-home {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--tf-space-4);
+  align-items: center;
+}
+@media (min-width: 820px) {
+  .tf-hero-home { grid-template-columns: 1fr 1fr; gap: var(--tf-space-6); }
+}
+/* Framed content image (`.tf-img-framed`) — an in-flow photo that fills its
+   column, never full-bleed and never cover-cropped. BORDERLESS (user decision,
+   sitewide): the photo sits on its own with no drawn frame; its own image edges
+   bound it. width:100% + height:auto renders the source at its own ratio (both
+   promoted images are 3:2), so nothing is re-cropped in CSS. Carries .tf-photo in
+   the markup for the brand grade. box-sizing: border-box is retained (harmless
+   now that there is no border/padding; kept so any future inset stays inside the
+   column edge). Named for the JOB, not the hero: two bands use it — the Home hero
+   image and the BAND 3 case-study photo.
+   DEFERRED GENERALIZATION (tracked, not silent): `.tf-intro-split-img` on the
+   tier-2 service pages still declares its OWN 2px --tf-rule-light frame; it is a
+   SEPARATE class and is intentionally NOT changed here (this task is the
+   .tf-img-framed pattern only). Whether those tier-2 openers also go borderless
+   is a separate decision. */
+.tf-img-framed {
+  display: block;
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+}
+/* The action slot. This is the rule the band exists to carry, and the reason
+   the CTA could not simply be dropped into `.tf-page-head`: measured there, the
+   intro→button gap was 0.00px (that band zeroes its intro's bottom margin to
+   keep its own framing symmetric) and the button's own bottom margin pushed the
+   band to 48 top / 64 bottom. Here the gap is declared, and it collapses with
+   the intro paragraph's 16px bottom margin rather than adding to it — adjacent
+   siblings, no padding or border between — so the result is exactly
+   --tf-space-4, not 48px. `.tf-btn-row` itself is reused unchanged; only the
+   spacing is scoped to this band. */
+.tf-hero-home .tf-btn-row { margin-top: var(--tf-space-4); }
 
 /* ── Tier-2 intro split (`.tf-intro-split`) ─────────────────────────────────
    A two-column page opener for tier-2 (service DETAIL) pages: a text column

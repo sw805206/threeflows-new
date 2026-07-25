@@ -7,18 +7,371 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="STYLE.css">
 </head>
 <body class="tf-app">
   <!-- Shared header injected from partials.html -->
   <div id="tf-header"></div>
 
-  <main class="tf-section">
-    <div class="tf-container">
-      <h1>Home</h1>
-      <p>Placeholder content for this page.</p>
-    </div>
+
+  <!-- ======================================================================
+       SKELETON v2. Bands 1-4 are rebuilt; bands 5-7 stand as built in v1.
+       BANDS 1-4 CARRY REAL COPY where the user supplied it (band 4 verbatim
+       from the user's diagram, band 2's four client names). Remaining square
+       brackets are PLACEHOLDER LABELS naming what will go there, not copy.
+       The band 3 client is REAL and is NEVER NAMED — "kitchen appliance brand"
+       and "Kitchen appliance founder, Three Flows Solutions client" are the
+       only sanctioned forms.
+       ====================================================================== -->
+
+  <main>
+    <!-- BAND 1 — HOME HERO (.tf-hero-home). Home's OWN opener, on PAPER.
+         .tf-page-head is the tier-1 INTERIOR-page hero and is deliberately NOT
+         used here — Home should not look like a section page — and it is not
+         modified in STYLE.css either; references.html and about.html keep it
+         unchanged. .tf-intro-split was read first and rejected: it is the
+         documented tier-2 DETAIL signal, so borrowing it would mislabel Home
+         just as badly in the other direction.
+         The CTA lives INSIDE the band, with a declared --tf-space-4 gap above
+         it — the v1 relocation-beneath-the-band is withdrawn. -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <div class="tf-hero-home">
+          <div>
+            <div class="tf-kicker">We bring passion and rigor to your journey</div>
+            <h1>Launch and Grow Your Business with Confidence</h1>
+            <p class="tf-prose-intro">We help entrepreneurs plan, source, launch, and grow — bringing startup mindset and enterprise-level experiences to businesses at every stage.</p>
+            <!-- Targets BAND 4's section id — a real in-page destination, not
+                 "#", and not pathfinder.html / runningmate.html, which will not
+                 be built. -->
+            <div class="tf-btn-row">
+              <a class="tf-btn tf-btn-primary" href="#what-we-offer">See what we offer</a>
+            </div>
+          </div>
+          <!-- ALT TEXT IS PENDING USER APPROVAL (BLOG.md §7: "one plain factual
+               sentence … and the user approves it"). This is an inline <img>, so
+               §7's no-alt hero exception does NOT apply — that exception is
+               scoped to a CSS background-image band and says so explicitly. -->
+          <img class="tf-img-framed tf-photo" src="assets/images/index.jpg"
+               alt="Team members joining hands over a worktable"
+               width="1200" height="800" loading="eager">
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 2 — trusted-partner line. A quiet coloured-logo row on paper: no
+         kicker, no heading, no wash band. The .tf-logos pattern supplies the
+         light top rule + muted "Trusted by" / tail text.
+         LOGOS: band-2-specific TRIMMED variants (client-<slug>-trim.png), sized
+         per-logo for even optical weight (see #trusted .tf-logos img rules in
+         STYLE.css). These are SEPARATE from the shared client-<slug>.png, which
+         stay padded for the about carousel — trimming the shared assets would
+         shrink/enlarge them inconsistently there (verified), so band 2 gets its
+         own trimmed copies (PROCESS.md §1 "two variants"). Per-logo class on
+         each img drives its height; order NYC / Wayfair / Concentrix / Microsoft. -->
+    <section class="tf-section" id="trusted">
+      <div class="tf-container">
+        <div class="tf-logos">
+          <span>Trusted by</span>
+          <img class="tf-tb-nyc" src="assets/images/clients/client-nyc-sbs-trim.png" alt="NYC Small Business Services">
+          <img class="tf-tb-wayfair" src="assets/images/clients/client-wayfair-trim.png" alt="Wayfair">
+          <img class="tf-tb-concentrix" src="assets/images/clients/client-concentrix-trim.png" alt="Concentrix">
+          <img class="tf-tb-microsoft" src="assets/images/clients/client-microsoft-trim.png" alt="Microsoft">
+          <span>and 40+ small business owners</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 3 — client use case, on the INK ground (.tf-surface-ink, existing;
+         §4 sanctions ink as a dark surface). --tf-footer-ground is NOT used
+         here — that token is footer-scoped.
+         LAYOUT (reused .tf-grid-2up): LEFT column = kicker, quote, attribution,
+         separated stat cards; RIGHT column = the framed image with the closing
+         callout beneath it. The callout sits in the right column (not full-width
+         below), so it reads as the image column's tail rather than a third row.
+         id="client-case-study" scopes the band-3-only callout-body emphasis in
+         STYLE.css (and, once loaded, the true-italic quote face).
+         The client is REAL and is NEVER NAMED — the kicker carries the category,
+         so the attribution does not repeat "kitchen appliance". -->
+    <section class="tf-section tf-surface-ink" id="client-case-study">
+      <div class="tf-container">
+        <div class="tf-grid-2up">
+          <!-- LEFT column -->
+          <div>
+            <!-- Kicker restored; text is natural case, .tf-kicker uppercases it
+                 (no hard-coded caps in markup, per the band-1 convention). -->
+            <div class="tf-kicker">Client case study — Kitchen appliance brand</div>
+            <!-- .tf-quote — TRUE italic (band-3-scoped). The font <link> now
+                 requests the Source Serif 4 ital axis (ital,600), so this renders
+                 a real italic FACE, not synthesized oblique (see #client-case-study
+                 .tf-quote in STYLE.css). §3's ban is on Space Grotesk faux-oblique. -->
+            <blockquote class="tf-quote">“It took us 18 months of hard work to turn our idea into a product our customers loved. Every step felt painfully slow — but it protected us from very costly mistakes, one after another.”</blockquote>
+            <p class="tf-quote-attr">— Founder, Three Flows Solutions client</p>
+
+            <!-- Separated stat cards (.tf-stat-cards / .tf-stat-card) — borderless
+                 raised tiles on ink (--tf-ink-raised ground + gap, no outline).
+                 Figures bare on counts, % kept where the sign is the meaning; 4.6
+                 is a rating. Order: row 1 = 18 / 7 / 5, row 2 = 4.6 / 20% / 45%.
+                 Real client figures — do not alter. -->
+            <div class="tf-stat-cards">
+              <div class="tf-stat-card">
+                <div class="tf-stat-value">18</div>
+                <div class="tf-stat-label">months it takes from idea to first sales order</div>
+              </div>
+              <div class="tf-stat-card">
+                <div class="tf-stat-value">7</div>
+                <div class="tf-stat-label">iterations based on voice of the customer</div>
+              </div>
+              <div class="tf-stat-card">
+                <div class="tf-stat-value">5</div>
+                <div class="tf-stat-label">marketplaces benchmarked for channel decision</div>
+              </div>
+              <div class="tf-stat-card">
+                <div class="tf-stat-value">4.6</div>
+                <div class="tf-stat-label">average customer rating on Amazon during launch</div>
+              </div>
+              <div class="tf-stat-card">
+                <div class="tf-stat-value">20%</div>
+                <div class="tf-stat-label">estimated total supply cost reduction</div>
+              </div>
+              <div class="tf-stat-card">
+                <div class="tf-stat-value">45%</div>
+                <div class="tf-stat-label">projected EBITDA by year three post-launch</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT column — image + closing callout beneath it. -->
+          <div>
+            <!-- ALT TEXT IS PENDING USER APPROVAL (BLOG.md §7). The alt describes
+                 only what is visibly in the frame and names no brand. -->
+            <img class="tf-img-framed tf-photo" src="assets/images/case-study-kitchen.jpg"
+                 alt="Two founders preparing food in a home kitchen"
+                 width="1200" height="800" loading="lazy">
+
+            <!-- Closing note — .tf-callout, Lucide `lightbulb`. Body emphasised
+                 band-3-scoped (see #client-case-study in STYLE.css) so the
+                 conclusion reads louder than the stat captions. -->
+            <div class="tf-callout">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+              <div>
+                <div class="tf-callout-title">The biggest takeaway Three Flows and our client learned together over the past two years</div>
+                <p class="tf-callout-body">Becoming a brand owner takes unmatched passion, deep belief in your product, nonstop hard work, and the discipline to always plan at least six months ahead — so you’re never caught off guard, by good news or bad.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 4 — how we work. REBUILT from the user's diagram; v1's "labels over
+         column pairs" is withdrawn. Two program groups side by side, each a
+         .tf-prog-group: ONE filled dark header over TWO service cards.
+         Headers are filled and dark, NEITHER is brick — Pathfinder on --tf-ink,
+         Runningmate on --tf-footer-ground via .tf-card-ink-soft, separating on
+         tone alone. A brick field would be the loudest thing on a page already
+         spending brick on the hero button and the CTA (§2), and would read
+         clickable on a header that links NOWHERE.
+         Pathfinder and Runningmate are NOT links: no href, no .tf-card-link, no
+         hover affordance. Those two overview pages will not be built.
+         Taglines render UPRIGHT — the diagram sets them italic, but §3 bans
+         italics sitewide (Space Grotesk ships no italic), so no <em>/<i>.
+         The four service cards DO link, in Plan / Source / Launch / Grow order.
+         This section carries the id the BAND 1 CTA targets. -->
+    <section class="tf-section" id="what-we-offer">
+      <div class="tf-container">
+        <h2>What we offer</h2>
+
+        <div class="tf-grid-2up">
+          <!-- PATHFINDER — --tf-ink header -->
+          <div class="tf-prog-group">
+            <div class="tf-card tf-card-ink">
+              <div class="tf-card-title">Pathfinder</div>
+              <p class="tf-card-body">Accelerate the speed to the market</p>
+            </div>
+            <div class="tf-grid-2up">
+              <a class="tf-card tf-card-link" href="business-planning.html">
+                <div class="tf-card-head">
+                  <div class="tf-card-title">Business Planning</div>
+                  <div class="tf-meta">(2~6 weeks)</div>
+                </div>
+                <ul class="tf-callout-list">
+                  <li>SWOT and gap analysis</li>
+                  <li>Competitor research</li>
+                  <li>Customer survey</li>
+                  <li>Marketplace analysis</li>
+                  <li>Three-year financial plan</li>
+                </ul>
+              </a>
+              <a class="tf-card tf-card-link" href="sourcing-support.html">
+                <div class="tf-card-head">
+                  <div class="tf-card-title">Sourcing Support</div>
+                  <div class="tf-meta">(4~12 weeks)</div>
+                </div>
+                <ul class="tf-callout-list">
+                  <li>Resource assessment</li>
+                  <li>Make-or-buy analysis</li>
+                  <li>Vendor system design</li>
+                  <li>Total cost calculation</li>
+                  <li>Sourcing &amp; supplier visits</li>
+                </ul>
+              </a>
+            </div>
+          </div>
+
+          <!-- RUNNINGMATE — --tf-footer-ground header (.tf-card-ink-soft) -->
+          <div class="tf-prog-group">
+            <div class="tf-card tf-card-ink tf-card-ink-soft">
+              <div class="tf-card-title">Runningmate</div>
+              <p class="tf-card-body">Focus on your growth. We do the rest</p>
+            </div>
+            <div class="tf-grid-2up">
+              <a class="tf-card tf-card-link" href="launch-hypercare.html">
+                <div class="tf-card-head">
+                  <div class="tf-card-title">Launch Hypercare</div>
+                  <div class="tf-meta">(1~6 months)</div>
+                </div>
+                <ul class="tf-callout-list">
+                  <li>Launch playbook</li>
+                  <li>Company stand-up</li>
+                  <li>Logo and website design</li>
+                  <li>First PO to first SO</li>
+                  <li>On-call launch support</li>
+                </ul>
+              </a>
+              <a class="tf-card tf-card-link" href="ongoing-management.html">
+                <div class="tf-card-head">
+                  <div class="tf-card-title">Ongoing Management</div>
+                  <div class="tf-meta">(6+ months)</div>
+                </div>
+                <ul class="tf-callout-list">
+                  <li>Supply chain oversight</li>
+                  <li>Bookkeeping &amp; cashflow</li>
+                  <li>Online store management</li>
+                  <li>Marketing coordination</li>
+                  <li>Recruitment and training</li>
+                </ul>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 5 — who we are. NOT a repeat of about.html's principal cards: the
+         angle is how the two work TOGETHER — education (learn) + entrepreneur-
+         ship (do). Uses the SMALL circular .tf-profile / .tf-avatar kit, which
+         is the supporting-mention first use the about ratchet entry reserved it
+         for. .tf-profile-lg is about's dominant card and is NOT used here. -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <div class="tf-kicker">When Education meets Execution</div>
+        <h2>Meet the Principals</h2>
+
+        <!-- First LIVE use of the small circular .tf-profile / .tf-avatar kit
+             (reserved for a supporting mention since the about build). .tf-avatar
+             already circle-crops an <img> via its border-radius:50% + object-fit:
+             cover; .tf-photo adds the brand grade. alt="" — the name sits in text
+             immediately beside the photo (same rationale as about's portraits).
+             Reuses existing portraits; no new image, no new CSS.
+             Thomas LEFT, Serena RIGHT (Education → Execution, left → right). -->
+        <div class="tf-grid-2up">
+          <div class="tf-profile">
+            <img class="tf-avatar tf-photo" src="assets/images/twg-full.png" alt="" width="64" height="64">
+            <div>
+              <div class="tf-card-title">Thomas Gold, Ph.D.</div>
+              <p class="tf-card-body">A rare read on how policy and learning shape what makes a business work — turning entrepreneurship from instinct into a foundation you can reason from.</p>
+            </div>
+          </div>
+          <div class="tf-profile">
+            <img class="tf-avatar tf-photo" src="assets/images/sw-full.jpg" alt="" width="64" height="64">
+            <div>
+              <div class="tf-card-title">Serena Wang, CPIM</div>
+              <p class="tf-card-body">Turns a promising idea into something real and running, where every plan is proven by execution and every execution sharpens the plan.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simplest existing link idiom — a plain base link + arrow in a <p>,
+             the same shape as band 2's "more →" (base a: brick, no underline). -->
+        <p><a href="about.html">Learn more</a></p>
+      </div>
+    </section>
+
+    <!-- BAND 6 — resources. FOUR blocks; livestream is dropped.
+         Each block reuses the standard .tf-card kit. The only NEW thing in this
+         band is the locked 4-up geometry (.tf-grid-4up): .tf-card-grid's
+         intrinsic auto-fill lands 3+1 on the 1200px container, which is ragged
+         for a deliberate four-item row. Icons are LUCIDE inline SVG at
+         currentColor, so they render INK on the card (STYLE.md §2 sanctions
+         brick OR ink; ink keeps brick to the .tf-card-link hover state).
+         NO EMOJI ANYWHERE — the old site's emoji do not carry over. -->
+    <section class="tf-section" id="resources">
+      <div class="tf-container">
+        <!-- kicker natural case; .tf-kicker uppercases it (no hard-coded caps). -->
+        <div class="tf-kicker">We love to share</div>
+        <h2>Check our knowledge bank</h2>
+
+        <!-- Icon + title share one line via .tf-resource-head (a band-6 flex row,
+             scoped under #resources — the shared .tf-card / .tf-grid-4up are NOT
+             touched). Description sits on its own line beneath, from the card's
+             own flex-column gap. Icons are LUCIDE, 22px currentColor, matching the
+             existing icon usage. -->
+        <div class="tf-grid-4up">
+          <!-- LIVE link. Lucide `pen-line` (authoring — "we document…"). -->
+          <a class="tf-card tf-card-link" href="blogs.html">
+            <div class="tf-resource-head">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              <div class="tf-card-title">Blogs</div>
+            </div>
+            <p class="tf-card-body">We document what we’re seeing as trends emerge, so you learn from the field in real time.</p>
+          </a>
+
+          <!-- LIVE link. Lucide `bookmark` (curated, saved sources). -->
+          <a class="tf-card tf-card-link" href="references.html">
+            <div class="tf-resource-head">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+              <div class="tf-card-title">References</div>
+            </div>
+            <p class="tf-card-body">The tools and sources we rely on ourselves, curated and shared for you to study.</p>
+          </a>
+
+          <!-- COMING SOON — NOT a link (seminars.html is an unbuilt shell; no href
+               to a non-existent page). Lucide `presentation` (matches "presentations"). -->
+          <div class="tf-card">
+            <div class="tf-resource-head">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="m7 21 5-5 5 5"/></svg>
+              <div class="tf-card-title">Seminars</div>
+            </div>
+            <p class="tf-card-body">Past presentations across sourcing, launch, and operations, on demand whenever you need them.</p>
+            <p class="tf-meta">Coming soon</p>
+          </div>
+
+          <!-- COMING SOON — NOT a link (tools.html is an unbuilt shell). Lucide
+               `wrench` (matches the "Free tools" category). -->
+          <div class="tf-card">
+            <div class="tf-resource-head">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+              <div class="tf-card-title">Free tools</div>
+            </div>
+            <p class="tf-card-body">Checklists and calculators to get you moving — no cost, no commitment.</p>
+            <p class="tf-meta">Coming soon</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 7 — standard ink-ground CTA (.tf-cta), once per page. -->
+    <section class="tf-cta">
+      <div class="tf-container">
+        <h2>Ready to start with confidence?</h2>
+        <p class="tf-lead">The first conversation is always free — bring your idea, your questions, or just your uncertainty.</p>
+        <div class="tf-btn-row">
+          <a class="tf-btn tf-btn-primary" href="contact.html">Contact us</a>
+        </div>
+      </div>
+    </section>
   </main>
 
   <!-- Shared footer injected from partials.html -->
