@@ -277,27 +277,36 @@
          for. .tf-profile-lg is about's dominant card and is NOT used here. -->
     <section class="tf-section">
       <div class="tf-container">
-        <div class="tf-kicker">[BAND 5 — KICKER: who we are]</div>
-        <h2>[BAND 5 — H2: education + entrepreneurship, working together]</h2>
+        <div class="tf-kicker">When Education meets Execution</div>
+        <h2>Meet the Principals</h2>
 
+        <!-- First LIVE use of the small circular .tf-profile / .tf-avatar kit
+             (reserved for a supporting mention since the about build). .tf-avatar
+             already circle-crops an <img> via its border-radius:50% + object-fit:
+             cover; .tf-photo adds the brand grade. alt="" — the name sits in text
+             immediately beside the photo (same rationale as about's portraits).
+             Reuses existing portraits; no new image, no new CSS.
+             Thomas LEFT, Serena RIGHT (Education → Execution, left → right). -->
         <div class="tf-grid-2up">
           <div class="tf-profile">
-            <div class="tf-avatar" aria-hidden="true">TG</div>
+            <img class="tf-avatar tf-photo" src="assets/images/twg-full.png" alt="" width="64" height="64">
             <div>
-              <div class="tf-card-title">[BAND 5 — NAME 1]</div>
-              <p class="tf-card-body">[BAND 5 — the LEARN half: what education brings to the pair, one or two sentences]</p>
+              <div class="tf-card-title">Thomas Gold, Ph.D.</div>
+              <p class="tf-card-body">A rare read on how policy and learning shape what makes a business work — turning entrepreneurship from instinct into a foundation you can reason from.</p>
             </div>
           </div>
           <div class="tf-profile">
-            <div class="tf-avatar" aria-hidden="true">SW</div>
+            <img class="tf-avatar tf-photo" src="assets/images/sw-full.jpg" alt="" width="64" height="64">
             <div>
-              <div class="tf-card-title">[BAND 5 — NAME 2]</div>
-              <p class="tf-card-body">[BAND 5 — the DO half: what entrepreneurship brings to the pair, one or two sentences]</p>
+              <div class="tf-card-title">Serena Wang, CPIM</div>
+              <p class="tf-card-body">Turns a promising idea into something real and running, where every plan is proven by execution and every execution sharpens the plan.</p>
             </div>
           </div>
         </div>
 
-        <p><a href="about.html">[BAND 5 — LINK LABEL] &rarr;</a></p>
+        <!-- Simplest existing link idiom — a plain base link + arrow in a <p>,
+             the same shape as band 2's "more →" (base a: brick, no underline). -->
+        <p><a href="about.html">Meet the team &rarr;</a></p>
       </div>
     </section>
 
