@@ -1,7 +1,15 @@
-/* v023 | last updated: 2026-07-24
+/* v024 | last updated: 2026-07-24
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v24 · 2026-07-24 · BAND 3 column bottom-alignment — robust LAYOUT, not a
+                     spacer. Removed the hand-tuned padding-top: --tf-space-8
+                     buffer above the stat cards. Band 3's LEFT column is now a
+                     flex column and its stat grid takes margin-block-start: auto,
+                     so the cards sit flush to the column bottom = the right
+                     column's callout bottom, automatically, at any width above
+                     the 820px stack. Scoped to #client-case-study; the shared
+                     .tf-grid-2up base is untouched.
    v23 · 2026-07-24 · Sitewide + BAND 3. .tf-img-framed goes BORDERLESS — the
                      shared framed-image pattern drops its 2px --tf-rule-light
                      frame (user decision, all framed images); layout props
@@ -1038,18 +1046,33 @@ a:hover { color: var(--tf-brick-dark); }
   line-height: 1.2;
 }
 
-/* Level the KPI-card block's bottom with the takeaway callout's bottom (desktop).
-   The right column (image + taller callout) runs longer than the left stack, so
-   the cards ended ~63px ABOVE the callout. Push the card block DOWN by a buffer
-   above it — NOT by resizing cards or image. The measured gap was 63.3px; the
-   closest space token is --tf-space-8 (64px), which lands the two bottoms within
-   ~0.7px (level).
-   PADDING-top, not margin-top: a margin here COLLAPSES with the attribution's
-   16px margin-bottom (max(16,64)=64), so it would add only 48px of real space
-   and leave the bottoms ~15px off. Padding does not collapse, so --tf-space-8
-   lands the full 64px. When the columns STACK below 820px this is simply vertical
-   space above the cards — a gap, not a break. */
-#client-case-study .tf-stat-cards { padding-top: var(--tf-space-8); }
+/* Level the KPI-card block's bottom with the takeaway callout's bottom — by
+   LAYOUT, not a measured spacer. The .tf-grid-2up columns already stretch to
+   equal height (grid align-items defaults to stretch), so both column BOXES end
+   on the same line whichever column is taller. The fix pins each column's LAST
+   block to that shared bottom: make BOTH columns flex columns, and give the
+   stat grid (left) and the callout (right) margin-block-start: auto so each
+   absorbs its column's free space ABOVE it and sits flush to the bottom edge.
+   Because both bottoms track the same stretched box bottom, they stay level
+   regardless of WHICH column is the taller one — and which one is taller flips
+   with width: the RIGHT (image) is taller on wide viewports, the LEFT (wrapped
+   stat labels + a shorter image) becomes taller as the columns narrow. Pinning
+   only the left would level them only while the right stays taller; pinning both
+   is what makes it hold at 1280 / 1024 / 900 with no per-width value.
+   Consequence, by design: when a column is stretched taller than its natural
+   content, its free space opens ABOVE the pinned block — extra space above the
+   cards on the left, or between the image and the callout on the right — which
+   is the correct outcome of a genuine bottom-alignment (not a gap to remove).
+   Scoped to `#client-case-study`, so the shared `.tf-grid-2up` and its other
+   consumers (about, the service pages) are untouched. Below the 820px stack each
+   column is full width at its natural height, auto has no free space to absorb,
+   and the layout is a normal flush stack — no injected gap. */
+#client-case-study .tf-grid-2up > * {
+  display: flex;
+  flex-direction: column;
+}
+#client-case-study .tf-stat-cards,
+#client-case-study .tf-callout { margin-block-start: auto; }
 
 /* Stat block */
 .tf-stat-value {
