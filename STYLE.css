@@ -1,6 +1,16 @@
-/* v015 | last updated: 2026-07-24
+/* v016 | last updated: 2026-07-25
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v16 · 2026-07-25 · Client-logo sizing evened (fix/client-logo-sizing). The 15
+                     logos were re-promoted INK-TIGHT (trimmed to the mark, baked
+                     padding removed — the real cause of the 72.7× rendered-area
+                     spread; trim alone → ~1.7×). .tf-client-logo changed from a
+                     forced `height: 32px` to a two-axis CAP: `max-height: 32px`
+                     + `max-width: 120px` (width/height auto), so wide wordmarks
+                     no longer outgrow compact marks. Per option (c) it does NOT
+                     upscale — low-res sources (tosh, concentrix, kanu, gevi)
+                     render at native size below the cap (sharp), not enlarged.
 
    v15 · 2026-07-24 · ArtSabers removed from the site (chore/remove-artsabers).
                      It was the last consumer of the provisional
@@ -1133,11 +1143,20 @@ a:hover { color: var(--tf-brick-dark); }
    Logos keep their ORIGINAL colour here — this is the client-card rule, and it
    does NOT govern the .tf-logos trusted-by strip (still one-colour ink
    wordmarks). */
+/* Logos are promoted ink-tight (trimmed to the mark, no baked padding), so the
+   file's own pixels ARE the mark — see PROCESS.md §1. Sizing is a two-axis CAP,
+   not a forced height: fit within 32px tall × 120px wide, preserving aspect. The
+   cap evens visual weight (a wide wordmark can't outgrow a compact one). It NEVER
+   upscales: a logo whose native ink is smaller than the cap renders at its own
+   resolution rather than being enlarged and softened — sharp-but-small beats
+   uniform-but-blurry (a few low-res sources, e.g. tosh, render below the cap; a
+   sharper source re-promotes bigger with no rule change). */
 .tf-client-logo {
   display: block;
-  height: 32px;
   width: auto;
-  max-width: 130px;
+  height: auto;
+  max-height: 32px;
+  max-width: 120px;
   object-fit: contain;
   object-position: left center;
 }
