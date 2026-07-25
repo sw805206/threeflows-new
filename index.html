@@ -60,24 +60,25 @@
       </div>
     </section>
 
-    <!-- BAND 2 — trusted-partner line. Stripped to a bare logo row on paper:
-         no kicker, no heading, no wash band, no stat framing. The .tf-logos
-         pattern brings its own light top rule and 20px lead-in, which is all
-         the furniture this band gets.
-         Logo assets: the coloured PNGs in assets/images/clients/ are the
-         CLIENT-CARD rule and must NOT be used here — §2 mandates one-colour INK
-         wordmarks for .tf-logos, and those assets do not exist. So the four
-         slots stay text in the pattern's own .tf-logos span treatment.
-         about.html carries no id="selected-work" yet, so the fragment currently
-         lands at the top of that page — known, still out of scope. -->
-    <section class="tf-section">
+    <!-- BAND 2 — trusted-partner line. A quiet coloured-logo row on paper: no
+         kicker, no heading, no wash band. The .tf-logos pattern supplies the
+         light top rule + muted "Trusted by" / tail text.
+         LOGOS: band-2-specific TRIMMED variants (client-<slug>-trim.png), sized
+         per-logo for even optical weight (see #trusted .tf-logos img rules in
+         STYLE.css). These are SEPARATE from the shared client-<slug>.png, which
+         stay padded for the about carousel — trimming the shared assets would
+         shrink/enlarge them inconsistently there (verified), so band 2 gets its
+         own trimmed copies (PROCESS.md §1 "two variants"). Per-logo class on
+         each img drives its height; order NYC / Wayfair / Concentrix / Microsoft. -->
+    <section class="tf-section" id="trusted">
       <div class="tf-container">
         <div class="tf-logos">
-          <span>NYC Small Business Services</span>
-          <span>Concentrix</span>
-          <span>Microsoft</span>
-          <span>Wayfair</span>
-          <a href="about.html#selected-work">more &rarr;</a>
+          <span>Trusted by</span>
+          <img class="tf-tb-nyc" src="assets/images/clients/client-nyc-sbs-trim.png" alt="NYC Small Business Services">
+          <img class="tf-tb-wayfair" src="assets/images/clients/client-wayfair-trim.png" alt="Wayfair">
+          <img class="tf-tb-concentrix" src="assets/images/clients/client-concentrix-trim.png" alt="Concentrix">
+          <img class="tf-tb-microsoft" src="assets/images/clients/client-microsoft-trim.png" alt="Microsoft">
+          <span>and 40+ small business owners</span>
         </div>
       </div>
     </section>
