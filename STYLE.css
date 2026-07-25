@@ -1,7 +1,13 @@
-/* v024 | last updated: 2026-07-24
+/* v025 | last updated: 2026-07-24
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v25 · 2026-07-24 · BAND 6 (Resources) icon + title inline. #resources
+                     .tf-resource-head — a band-6-scoped flex row so each resource
+                     block's icon and title share one line (description drops
+                     beneath from the card's own column gap). Existing --tf-space-2
+                     gap; shared .tf-card / .tf-grid-4up untouched. No new token,
+                     hex, or size.
    v24 · 2026-07-24 · BAND 3 column bottom-alignment — robust LAYOUT, not a
                      spacer. Removed the hand-tuned padding-top: --tf-space-8
                      buffer above the stat cards. Band 3's LEFT column is now a
@@ -1492,6 +1498,18 @@ a:hover { color: var(--tf-brick-dark); }
 }
 @media (min-width: 820px) {
   .tf-grid-4up { grid-template-columns: repeat(4, 1fr); }
+}
+/* Band 6 (Resources) icon + title on one line. The .tf-card kit stacks its
+   children (icon, title, body) in a flex COLUMN; this wraps the icon and title in
+   a flex ROW so they share a line, with the description dropping beneath from the
+   card's own column gap. Scoped to #resources so the shared .tf-card and
+   .tf-grid-4up are untouched — a band-6 layout hook, not a new shared pattern.
+   Gap is --tf-space-2 (existing token); icon size/colour are unchanged (the
+   22px currentColor SVGs in the markup). */
+#resources .tf-resource-head {
+  display: flex;
+  align-items: center;
+  gap: var(--tf-space-2);
 }
 /* about.html principals — the 2-up plus the top margin from the section opener
    above. Now a thin modifier on `.tf-grid-2up` (markup carries BOTH classes):
