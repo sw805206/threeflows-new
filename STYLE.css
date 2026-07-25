@@ -1,7 +1,18 @@
-/* v025 | last updated: 2026-07-24
+/* v026 | last updated: 2026-07-25
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v26 · 2026-07-25 · BAND 2 trusted-by coloured logos — per-logo optical sizing.
+                     Replaced the single-height preview rule with per-logo heights
+                     (NYC 21 / Wayfair 27 / Concentrix 16 / Microsoft 17) so four
+                     wildly different marks read at even OPTICAL weight, not equal
+                     pixel height. Sourced from band-2-only trimmed variants
+                     (client-<slug>-trim.png); the shared padded client-<slug>.png
+                     the about carousel uses are UNTOUCHED (trimming them regressed
+                     the carousel — verified). #trusted-scoped; carousel /
+                     .tf-client-logo unaffected. NB feat/index STYLE.css chain is
+                     independent of main's v14-v16 client-logo stream — renumber
+                     reconcile deferred to merge prep.
    v25 · 2026-07-24 · BAND 6 (Resources) icon + title inline. #resources
                      .tf-resource-head — a band-6-scoped flex row so each resource
                      block's icon and title share one line (description drops
@@ -1337,6 +1348,21 @@ a:hover { color: var(--tf-brick-dark); }
 /* Trusted-by strip */
 .tf-logos { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; border-top: var(--tf-rule-light); padding-top: 20px; }
 .tf-logos span { font-weight: 500; font-size: 15px; color: var(--tf-stone); }
+/* Band 2 (Resources → trusted-by) coloured logos. .tf-logos ships no <img> rule,
+   and a single shared height does NOT balance these: the four marks differ wildly
+   in shape and density, so equal height gives the wide dense ones (Microsoft) far
+   more area and the thin/square ones (Wayfair, Concentrix) far too little. Each is
+   therefore sized INDIVIDUALLY for even OPTICAL weight — different pixel heights by
+   design, matching perceived weight, not numbers. Sourced from the band-2-only
+   trimmed variants (client-<slug>-trim.png), so ink fills the box (the shared
+   padded client-<slug>.png the carousel uses are untouched). width auto keeps each
+   mark's aspect; align-items:center on .tf-logos puts all four on one baseline.
+   Scoped to #trusted so .tf-client-logo / the about carousel are unaffected. */
+#trusted .tf-logos img { width: auto; display: block; }
+#trusted .tf-tb-nyc        { height: 21px; }   /* dense block — smaller */
+#trusted .tf-tb-wayfair    { height: 27px; }   /* compact wordmark — taller */
+#trusted .tf-tb-concentrix { height: 16px; }   /* thin wide wordmark — runs wide */
+#trusted .tf-tb-microsoft  { height: 17px; }   /* dense icon+wordmark — smallest */
 
 /* Journey stepper — the signature component. Phase labels are pills on the
    v2 pill base: Pathfinder = .tf-pill .tf-pill-sm .tf-pill-tint-brick,
