@@ -1,7 +1,11 @@
-/* v026 | last updated: 2026-07-25
+/* v027 | last updated: 2026-07-25
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v27 · 2026-07-25 · BAND 2 — removed the strip's own top rule (#trusted .tf-logos
+                     border-top: none) so a single line sits at the hero/strip seam
+                     (the hero's .tf-section divider). Band-2-scoped; the shared
+                     .tf-logos border-top is unchanged for any other use.
    v26 · 2026-07-25 · BAND 2 trusted-by coloured logos — per-logo optical sizing.
                      Replaced the single-height preview rule with per-logo heights
                      (NYC 21 / Wayfair 27 / Concentrix 16 / Microsoft 17) so four
@@ -1358,6 +1362,11 @@ a:hover { color: var(--tf-brick-dark); }
    padded client-<slug>.png the carousel uses are untouched). width auto keeps each
    mark's aspect; align-items:center on .tf-logos puts all four on one baseline.
    Scoped to #trusted so .tf-client-logo / the about carousel are unaffected. */
+/* Drop the strip's own top rule in band 2 only: the hero band above already ends
+   on a .tf-section divider, so the shared .tf-logos border-top made a SECOND line
+   at the seam. Suppressed #trusted-scoped so the shared .tf-logos rule keeps its
+   border-top for any other use; padding-top stays (spacing above the logos). */
+#trusted .tf-logos { border-top: none; }
 #trusted .tf-logos img { width: auto; display: block; }
 #trusted .tf-tb-nyc        { height: 21px; }   /* dense block — smaller */
 #trusted .tf-tb-wayfair    { height: 27px; }   /* compact wordmark — taller */
