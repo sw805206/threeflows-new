@@ -1,6 +1,13 @@
-/* v013 | last updated: 2026-07-22
+/* v014 | last updated: 2026-07-24
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v14 · 2026-07-24 · Client logos: real marks promoted for most clients
+                     (feat/client-logos). The provisional .tf-client-wordmark
+                     text-fallback rule, which covered TWO clients (ArtSabers +
+                     TOSH), now covers ArtSabers ALONE — TOSH received a real
+                     logo. Rule body unchanged; comment reduced from two clients
+                     to one. ArtSabers stays text (no usable source yet).
 
    v13 · 2026-07-22 · .tf-lead 20px → 16px (--tf-text-lg → --tf-text-base), to
                      align the service-page hook and CTA subline with the site's
@@ -1130,10 +1137,12 @@ a:hover { color: var(--tf-brick-dark); }
 /* The slot reserves a constant band so titles/descriptions align across a row
    regardless of each logo's fitted height. */
 .tf-client-logo-slot { display: flex; align-items: center; min-height: 40px; }
-/* PROVISIONAL — pending user decision. Two clients (ArtSabers, TOSH) ship no
-   logo asset; the old site set their names as text in the same slot. This is
-   that fallback, restated in brand type rather than carried over as-is. If the
-   real marks are supplied, DELETE this rule — it is not a pattern to reuse. */
+/* PROVISIONAL — pending user decision. ArtSabers ships no usable logo asset
+   (three sourced files all failed on paper: faint, black-box, muddy mid-tone),
+   so its name renders as text in the slot, restated in brand type. TOSH shared
+   this fallback until feat/client-logos, where it received a real logo and was
+   removed from here — this rule now covers ArtSabers ALONE. If ArtSabers's real
+   mark is later supplied, DELETE this rule — it is not a pattern to reuse. */
 .tf-client-wordmark {
   font-family: var(--tf-font-heading);
   font-weight: 700;
