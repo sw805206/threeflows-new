@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stylebook — Three Flows Solutions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+
+  <!-- Stylebook LAYOUT only (grids/cards/specimen rows). Every colour is drawn
+       from a live --tf-* token via var(); each swatch's hex is read at runtime
+       from its own computed background (see the script at the foot of <body>),
+       so neither the colour nor the printed value can drift from STYLE.css. -->
+  <style>
+    .sb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--tf-space-3); margin: var(--tf-space-2) 0 var(--tf-space-6); }
+    .sb-card { display: flex; flex-direction: column; }
+    .sb-swatch { height: 88px; border-radius: 4px; border: var(--tf-rule-light); display: flex; align-items: center; justify-content: center; }
+    .sb-hex { font-family: var(--tf-font-body); font-weight: 500; font-size: var(--tf-text-sm); letter-spacing: 0.06em; color: var(--tf-ink); }
+    .sb-token { font-family: var(--tf-font-body); font-weight: 500; font-size: var(--tf-text-sm); color: var(--tf-ink); margin-top: var(--tf-space-1); }
+    .sb-note { font-size: var(--tf-text-xs); color: var(--tf-ink-soft); margin: 4px 0 0; line-height: 1.45; }
+    .sb-group-note { font-size: var(--tf-text-sm); color: var(--tf-ink-soft); max-width: 62ch; margin: 0 0 var(--tf-space-1); }
+    .sb-specimen { display: flex; align-items: baseline; gap: var(--tf-space-3); flex-wrap: wrap; padding-block: var(--tf-space-2); border-bottom: var(--tf-rule-light); }
+    .sb-specimen:last-child { border-bottom: none; }
+    .sb-specimen-meta { flex: 0 0 auto; min-width: 210px; }
+    .sb-specimen-meta code { font-family: var(--tf-font-body); font-size: var(--tf-text-sm); font-weight: 500; color: var(--tf-brick); }
+    .sb-specimen-meta span { display: block; font-size: var(--tf-text-xs); color: var(--tf-ink-soft); margin-top: 2px; }
+    .sb-fam { display: flex; gap: var(--tf-space-4); flex-wrap: wrap; margin: var(--tf-space-3) 0 var(--tf-space-6); }
+    .sb-fam-card { border: var(--tf-rule-light); padding: var(--tf-space-3); flex: 1 1 300px; }
+    .sb-fam-card .sb-fam-sample { font-size: var(--tf-text-2xl); margin: 0 0 var(--tf-space-1); color: var(--tf-ink); }
+  </style>
+</head>
+<body class="tf-app">
+  <!-- Shared header injected from partials.html (this page is NOT added to the
+       nav — reachable by URL only, like surveys.html / privacy.html). -->
+  <div id="tf-header"></div>
+
+  <main class="tf-section">
+    <div class="tf-container">
+      <div class="tf-kicker">Internal</div>
+      <h1>Stylebook</h1>
+      <p class="tf-prose-intro">Generated from <strong>STYLE.md v025</strong> / <strong>STYLE.css v030</strong>. Hidden page, not in nav — reachable by URL only. Every example links the live <code>STYLE.css</code>, and each swatch's hex is read at runtime from its own computed colour, so neither the colours nor the printed values can drift from the tokens. Regenerate per PROCESS.md when a STYLE version adds, removes, or renames a token — the swatch/specimen <em>set</em> is manual; the values self-update.</p>
+
+      <!-- ══════════════ COLOUR ══════════════ -->
+      <h2>Colour</h2>
+      <p class="sb-group-note">The core palette is the logo's four inks; charts and tags draw on the data palette. <code>--tf-white</code> and <code>--tf-footer-ground</code> are named scoped exceptions, not relaxations (STYLE.md §2).</p>
+
+      <h3>Core inks</h3>
+      <div class="sb-grid">
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-brick)"><span class="sb-hex"></span></div><div class="sb-token">--tf-brick</div><p class="sb-note">Brand accent — primary actions, kickers, emphasis. Use sparingly; text on brick is always paper.</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-ink)"><span class="sb-hex"></span></div><div class="sb-token">--tf-ink</div><p class="sb-note">Body text, 2px rules, dark surfaces (footer, hero bands).</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-stone)"><span class="sb-hex"></span></div><div class="sb-token">--tf-stone</div><p class="sb-note">Supporting tone — meta text, chart fills, muted labels, borders.</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-paper)"><span class="sb-hex"></span></div><div class="sb-token">--tf-paper</div><p class="sb-note">The ground. Warm off-white — the page is <strong>never pure white</strong>.</p></div>
+      </div>
+
+      <h3>Ink &amp; brick variants</h3>
+      <div class="sb-grid">
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-brick-dark)"><span class="sb-hex"></span></div><div class="sb-token">--tf-brick-dark</div><p class="sb-note">Brick hover / pressed state.</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-brick-on-ink)"><span class="sb-hex"></span></div><div class="sb-token">--tf-brick-on-ink</div><p class="sb-note">Brick adjusted for dark (ink) grounds.</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-ink-soft)"><span class="sb-hex"></span></div><div class="sb-token">--tf-ink-soft</div><p class="sb-note">Secondary text.</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-stone-light)"><span class="sb-hex"></span></div><div class="sb-token">--tf-stone-light</div><p class="sb-note">Light borders, subtle within-section rules (<code>--tf-rule-light</code>).</p></div>
+      </div>
+
+      <h3>Named surface exceptions (scoped)</h3>
+      <div class="sb-grid">
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-white)"><span class="sb-hex"></span></div><div class="sb-token">--tf-white</div><p class="sb-note">Header chrome <strong>only</strong> — never a content ground. The one sanctioned pure white.</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-cream)"><span class="sb-hex"></span></div><div class="sb-token">--tf-cream</div><p class="sb-note"><code>color-mix(stone-light 15%, paper)</code>. Raised tint — dropdowns, popovers, menus.</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-footer-ground)"><span class="sb-hex"></span></div><div class="sb-token">--tf-footer-ground</div><p class="sb-note"><code>color-mix(ink 75%, stone)</code>. Scoped — footer band + band-4 Runningmate header. Tone, not a line.</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-ink-raised)"><span class="sb-hex"></span></div><div class="sb-token">--tf-ink-raised</div><p class="sb-note"><code>color-mix(ink 80%, stone)</code>. Raised dark surface — the CTA secondary button.</p></div>
+      </div>
+
+      <h3>Structural tones</h3>
+      <div class="sb-grid">
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-sand)"><span class="sb-hex"></span></div><div class="sb-token">--tf-sand</div><p class="sb-note">Major-section divider tone (<code>--tf-rule-sand</code>). A 2px line, not a field.</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-sand-wash)"><span class="sb-hex"></span></div><div class="sb-token">--tf-sand-wash</div><p class="sb-note">Alternating band tint — a page-width field, lighter than the sand rule.</p></div>
+      </div>
+
+      <h3>Data palette</h3>
+      <p class="sb-group-note">Six equal-weight series colours, used <strong>in order</strong> — <code>--tf-chart-1</code> (brick) is always series 1. Area fills: colour at 20% opacity + a solid 2px line. Never for body text.</p>
+      <div class="sb-grid">
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-chart-1)"><span class="sb-hex"></span></div><div class="sb-token">--tf-chart-1</div><p class="sb-note">brick · series 1</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-chart-2)"><span class="sb-hex"></span></div><div class="sb-token">--tf-chart-2</div><p class="sb-note">slate</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-chart-3)"><span class="sb-hex"></span></div><div class="sb-token">--tf-chart-3</div><p class="sb-note">ochre</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-chart-4)"><span class="sb-hex"></span></div><div class="sb-token">--tf-chart-4</div><p class="sb-note">teal</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-chart-5)"><span class="sb-hex"></span></div><div class="sb-token">--tf-chart-5</div><p class="sb-note">plum</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-chart-6)"><span class="sb-hex"></span></div><div class="sb-token">--tf-chart-6</div><p class="sb-note">stone</p></div>
+      </div>
+
+      <!-- ══════════════ TYPOGRAPHY ══════════════ -->
+      <h2>Typography</h2>
+      <p class="sb-group-note">Two families. <strong>No italics anywhere in the brand</strong> — Space Grotesk ships no italic, so emphasis is <code>&lt;strong&gt;</code> or sentence structure (STYLE.md §3).</p>
+
+      <div class="sb-fam">
+        <div class="sb-fam-card">
+          <p class="sb-fam-sample" style="font-family: var(--tf-font-heading); font-weight: 700;">Source Serif 4</p>
+          <span class="sb-token">--tf-font-heading</span>
+          <p class="sb-note">'Source Serif 4', Georgia, serif — weights 600–700. Wordmark, headlines, pull quotes. Advisory, human register.</p>
+        </div>
+        <div class="sb-fam-card">
+          <p class="sb-fam-sample" style="font-family: var(--tf-font-body); font-weight: 500;">Space Grotesk</p>
+          <span class="sb-token">--tf-font-body</span>
+          <p class="sb-note">'Space Grotesk', 'Helvetica Neue', Arial, sans-serif — 400 body · 500 labels/buttons · 700 stats. Quietly technical.</p>
+        </div>
+      </div>
+
+      <h3>Type scale</h3>
+      <div>
+        <div class="sb-specimen">
+          <span class="sb-specimen-meta"><code>--tf-text-3xl</code><span>48px · h1 / hero · heading font</span></span>
+          <h1 style="margin: 0;">Idea to profitable scale</h1>
+        </div>
+        <div class="sb-specimen">
+          <span class="sb-specimen-meta"><code>--tf-text-2xl</code><span>36px · h2 · heading font</span></span>
+          <h2 style="margin: 0;">How we engage</h2>
+        </div>
+        <div class="sb-specimen">
+          <span class="sb-specimen-meta"><code>--tf-text-xl</code><span>27px · h3 · heading font</span></span>
+          <h3 style="margin: 0;">Where it usually hurts</h3>
+        </div>
+        <div class="sb-specimen">
+          <span class="sb-specimen-meta"><code>--tf-text-lg</code><span>20px · h4 / lead · <code>.tf-lead</code></span></span>
+          <h4 style="margin: 0;">Make data-driven decisions</h4>
+        </div>
+        <div class="sb-specimen">
+          <span class="sb-specimen-meta"><code>--tf-text-base</code><span>16px · body · body font</span></span>
+          <p style="margin: 0; max-width: 62ch;">Body copy at the base size. Sourcing is the quiet work behind every product — and it goes far beyond cost.</p>
+        </div>
+        <div class="sb-specimen">
+          <span class="sb-specimen-meta"><code>--tf-text-sm</code><span>14px · captions / secondary</span></span>
+          <p style="margin: 0; font-size: var(--tf-text-sm); color: var(--tf-ink-soft);">Caption and secondary text — quieter, ink-soft.</p>
+        </div>
+        <div class="sb-specimen">
+          <span class="sb-specimen-meta"><code>--tf-text-xs</code><span>12px · meta / kicker · uppercase, 0.14em</span></span>
+          <p class="tf-meta" style="margin: 0;">Services · Pathfinder</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Shared footer injected from partials.html -->
+  <div id="tf-footer"></div>
+
+  <!-- Fetch snippet: load partials.html (relative), inject header/footer,
+       mark the current nav link, and wire dropdowns + the mobile menu.
+       Fails silently (no nav rather than a broken page). -->
+  <script src="assets/partials.js" defer></script>
+
+  <!-- Swatch labels: print each swatch's hex INSIDE it, read from the token's
+       own computed background so the value can never drift. Text colour flips
+       by the swatch's luminance (YIQ brightness) so it stays legible on every
+       ground. A 1×1 canvas resolves any CSS colour — including the color-mix()
+       tokens — to RGB. -->
+  <script>
+    (function () {
+      var canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 1;
+      var ctx = canvas.getContext('2d');
+      function toRGB(color) {
+        ctx.clearRect(0, 0, 1, 1);
+        ctx.fillStyle = '#000';
+        ctx.fillStyle = color;              // browser resolves var()/color-mix()/named
+        ctx.fillRect(0, 0, 1, 1);
+        var d = ctx.getImageData(0, 0, 1, 1).data;
+        return [d[0], d[1], d[2]];
+      }
+      var swatches = document.querySelectorAll('.sb-swatch');
+      for (var i = 0; i < swatches.length; i++) {
+        var sw = swatches[i];
+        var rgb = toRGB(getComputedStyle(sw).backgroundColor);
+        var hex = '#' + rgb.map(function (x) { return x.toString(16).padStart(2, '0'); }).join('').toUpperCase();
+        var brightness = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;  // YIQ, 0–255
+        var label = sw.querySelector('.sb-hex');
+        label.textContent = hex;
+        label.style.color = brightness > 145 ? 'var(--tf-ink)' : 'var(--tf-paper)';
+      }
+    })();
+  </script>
+</body>
+</html>

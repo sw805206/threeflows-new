@@ -1,4 +1,4 @@
-v012 | last updated: 2026-07-24
+v013 | last updated: 2026-07-26
 
 # SCOPE.md — threeflows.com Relaunch (new repo)
 
@@ -86,7 +86,9 @@ business-planning.html, sourcing-support.html, launch-hypercare.html,
 ongoing-management.html (service details); blogs.html (index; posts
 blog-###.html later); references.html; seminars.html; tools.html;
 about.html; contact.html; privacy.html (hidden — no nav; linked in the
-shared footer); surveys.html (hidden cover; svy###.html later).
+shared footer); surveys.html (hidden cover; svy###.html later);
+stylebook.html (hidden internal reference — the colour + type stylebook;
+no nav, URL only; regenerated per PROCESS.md when STYLE changes).
 Nav = Home, Services (dropdown ×6, two tiers — see below), Resources
 (dropdown: Blogs, References, Seminars, Free tools), About, Contact.
 Shared header/footer served from partials.html, fetched per page.
