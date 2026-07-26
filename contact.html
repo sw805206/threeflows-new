@@ -14,16 +14,164 @@
   <!-- Shared header injected from partials.html -->
   <div id="tf-header"></div>
 
-  <main class="tf-section">
+  <!-- Full-bleed hero band (shared .tf-page-head): background photo under a dark
+       scrim, light-on-dark text. The photo is passed per-page as
+       --tf-page-head-img; the ink background-color is the mandatory fallback if
+       it fails. Decorative: a CSS background carries no alt, and the h1 is the
+       accessible heading (BLOG.md §7 / BL-019).
+       NB assets/images/contact.jpg is QUICK-POPULATED for staging — provisional
+       bytes, not the PROCESS.md §1 approved master-of-record (see the build
+       summary). Copy is sentence case, kept lowercase as authored. -->
+  <header class="tf-page-head" style="--tf-page-head-img: url('assets/images/contact.jpg')">
     <div class="tf-container">
-      <div class="tf-kicker">Contact</div>
-      <h1>Contact</h1>
-      <p>Placeholder content for this page.</p>
+      <div class="tf-kicker">online or in person</div>
+      <h1>we love to hear from you</h1>
+      <p class="tf-prose-intro">let us know what you're working on and see how we can help</p>
     </div>
+  </header>
+
+  <main>
+    <!-- BODY — two columns on desktop (collage left, form right); stacks to one
+         column below 820px with the COLLAGE FIRST, then the form. The order is
+         carried by SOURCE ORDER (collage precedes form) through the reused
+         .tf-grid-2up (locked 2-up ≥820px, single stacked column below, source
+         order preserved). At ≥820px the columns are equal height (grid stretch):
+         the collage is the taller column, so the form column stretches to it and
+         its bottom action block (.tf-form-foot) is pinned to the bottom — landing
+         the intake link level with the collage's bottom edge. <main> is unclassed
+         so the multi-band hero bridge zeroes its top padding and this section's
+         own .tf-section padding supplies the single 48px hero→content gap. -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <div class="tf-grid-2up">
+
+          <!-- LEFT — 3×3 city collage: 8 photo tiles + a "More to come" label
+               tile (9th cell, no <img>), filling the grid exactly. Each photo
+               tile carries a city label ON the tile over a bottom scrim so light
+               text stays legible on any photo. Photos are quick-populated for
+               staging (provisional bytes; the §1 preview→approve→promote pass is
+               still required — see summary). ALT is a clearly-marked PLACEHOLDER
+               pending the user's approved factual sentence (BLOG.md §7 alt
+               policy); the visible label is the city, not the alt.
+               A stone section label spans the collage grid's top row
+               (grid-column 1/-1), so it sits directly above the tiles inside the
+               left column; the collage stays the column's bottom element, so
+               label+collage remain bottom-aligned with the intake link opposite. -->
+          <div class="tf-collage">
+            <p class="tf-meta tf-collage-head">where our teams are located</p>
+            <figure class="tf-collage-tile">
+              <img class="tf-collage-img tf-photo" src="assets/images/contact-new-york.jpg" alt="[alt pending approval — New York]" loading="lazy" width="800" height="800">
+              <figcaption class="tf-collage-label">New York, US</figcaption>
+            </figure>
+            <figure class="tf-collage-tile">
+              <img class="tf-collage-img tf-photo" src="assets/images/contact-los-angeles.jpg" alt="[alt pending approval — Los Angeles]" loading="lazy" width="800" height="800">
+              <figcaption class="tf-collage-label">Los Angeles, US</figcaption>
+            </figure>
+            <figure class="tf-collage-tile">
+              <img class="tf-collage-img tf-photo" src="assets/images/contact-chicago.jpg" alt="[alt pending approval — Chicago]" loading="lazy" width="800" height="800">
+              <figcaption class="tf-collage-label">Chicago, US</figcaption>
+            </figure>
+            <figure class="tf-collage-tile">
+              <img class="tf-collage-img tf-photo" src="assets/images/contact-beijing.jpg" alt="[alt pending approval — Beijing]" loading="lazy" width="800" height="800">
+              <figcaption class="tf-collage-label">Beijing, CN</figcaption>
+            </figure>
+            <figure class="tf-collage-tile">
+              <img class="tf-collage-img tf-photo" src="assets/images/contact-shanghai.jpg" alt="[alt pending approval — Shanghai]" loading="lazy" width="641" height="641">
+              <figcaption class="tf-collage-label">Shanghai, CN</figcaption>
+            </figure>
+            <figure class="tf-collage-tile">
+              <img class="tf-collage-img tf-photo" src="assets/images/contact-shenzhen.jpg" alt="[alt pending approval — Shenzhen]" loading="lazy" width="800" height="800">
+              <figcaption class="tf-collage-label">Shenzhen, CN</figcaption>
+            </figure>
+            <figure class="tf-collage-tile">
+              <img class="tf-collage-img tf-photo" src="assets/images/contact-yiwu.jpg" alt="[alt pending approval — Yiwu]" loading="lazy" width="640" height="640">
+              <figcaption class="tf-collage-label">Yiwu, CN</figcaption>
+            </figure>
+            <figure class="tf-collage-tile">
+              <img class="tf-collage-img tf-photo" src="assets/images/contact-ho-chi-minh-city.jpg" alt="[alt pending approval — Ho Chi Minh City]" loading="lazy" width="800" height="800">
+              <figcaption class="tf-collage-label">Ho Chi Minh City, VN</figcaption>
+            </figure>
+            <div class="tf-collage-tile tf-collage-more">More to come</div>
+          </div>
+
+          <!-- RIGHT — contact form. The column holds BOTH the form and a hidden
+               success panel; on a successful submit the JS hides the form and
+               reveals the ink "Thank you" panel in place (no page navigation). -->
+          <div class="tf-form-col">
+            <!-- novalidate: validation + messaging are owned by
+                 assets/contact-form.js, so the browser's own bubbles don't
+                 double up. -->
+            <form class="tf-form" id="tf-contact-form" aria-label="Contact form" novalidate>
+
+              <!-- First + last on one row (two-up) -->
+              <div class="tf-field-row">
+                <div class="tf-field">
+                  <label class="tf-label" for="cf-first">First name <span class="tf-required" aria-hidden="true">*</span></label>
+                  <input class="tf-input" type="text" id="cf-first" name="first" required autocomplete="given-name" aria-describedby="cf-first-error">
+                  <p class="tf-field-error" id="cf-first-error" hidden>Please enter your first name.</p>
+                </div>
+                <div class="tf-field">
+                  <label class="tf-label" for="cf-last">Last name</label>
+                  <input class="tf-input" type="text" id="cf-last" name="last" autocomplete="family-name">
+                </div>
+              </div>
+
+              <div class="tf-field">
+                <label class="tf-label" for="cf-email">Email <span class="tf-required" aria-hidden="true">*</span></label>
+                <input class="tf-input" type="email" id="cf-email" name="email" required autocomplete="email" aria-describedby="cf-email-error">
+                <p class="tf-field-error" id="cf-email-error" hidden>Please enter a valid email address.</p>
+              </div>
+
+              <div class="tf-field tf-field-grow">
+                <label class="tf-label" for="cf-message">Brief description</label>
+                <textarea class="tf-input tf-textarea" id="cf-message" name="message"></textarea>
+              </div>
+
+              <!-- Honeypot — a visually-hidden decoy a human never sees or tabs
+                   to. A bot that fills every field will fill this one; on submit
+                   the JS silently drops any submission where it is non-empty. No
+                   CAPTCHA. Off-screen (not display:none) so form-filling bots
+                   still see it; aria-hidden + tabindex -1 + autocomplete off keep
+                   humans and AT away. -->
+              <div class="tf-hp" aria-hidden="true">
+                <label for="cf-website">Website</label>
+                <input type="text" id="cf-website" name="website" tabindex="-1" autocomplete="off">
+              </div>
+
+              <!-- Action block — pinned to the column bottom (margin-top:auto) so
+                   the intake link lines up with the collage's bottom edge. -->
+              <div class="tf-form-foot">
+                <p class="tf-form-note"><span class="tf-required" aria-hidden="true">*</span> required</p>
+                <!-- Submit-failure message — shown only when a wired endpoint is
+                     unreachable. Hidden at rest; the JS reveals it. -->
+                <p class="tf-form-error" id="cf-form-error" role="alert" hidden>Something went wrong sending your message. Please try again, or email us directly.</p>
+                <button class="tf-btn tf-btn-primary" type="submit">Send message</button>
+                <a class="tf-intake-link" href="intake.html" target="_blank" rel="noopener">ready to fill the intake form? click here</a>
+              </div>
+            </form>
+
+            <!-- Success swap — an ink panel that replaces the form in place on a
+                 successful submit. Reuses .tf-surface-ink for the ink ground +
+                 paper text; "Thank you" is Source Serif (base h2 heading font). -->
+            <div class="tf-form-success tf-surface-ink" id="tf-contact-success" hidden>
+              <h2>Thank you</h2>
+              <p>We'll respond within 2 business days.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
   </main>
 
   <!-- Shared footer injected from partials.html -->
   <div id="tf-footer"></div>
+
+  <!-- Contact form: client-side validation, honeypot spam drop, and the inline
+       success swap. The POST endpoint is deferred — CONTACT_ENDPOINT is a named
+       placeholder in this file, so wiring the real Google Apps Script URL later
+       is a one-line change. Until then no network POST is made. -->
+  <script src="assets/contact-form.js" defer></script>
 
   <!-- Fetch snippet: load partials.html (relative), inject header/footer,
        mark the current nav link, and wire dropdowns + the mobile menu.
