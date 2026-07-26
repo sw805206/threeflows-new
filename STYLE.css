@@ -1,6 +1,43 @@
-/* v030 | last updated: 2026-07-26
+/* v031 | last updated: 2026-07-26
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v31 · 2026-07-26 · contact.html build (feat/contact-page). Contact is the first
+                     consumer of three new pattern groups, all --tf-* tokens — no
+                     raw hex (the on-tile label scrim derives its translucency from
+                     --tf-ink via color-mix), no new token or type/scale, so no
+                     stylebook re-sync (PROCESS.md §4).
+                     FORM KIT (NEW) — .tf-form-col / .tf-form / .tf-field /
+                     .tf-field-row (first+last two-up) / .tf-field-grow (the brief-
+                     description field absorbs the column's free height) / .tf-label
+                     / .tf-input(+.tf-textarea) / .tf-required, a paper-ground field
+                     (NOT --tf-white: header-chrome-only, §2) with a 2px stone-light
+                     border going brick on focus. Error states:
+                     .tf-input[aria-invalid] brick border + .tf-field-error inline
+                     message; .tf-form-error is the endpoint-unreachable notice.
+                     .tf-form-foot groups the action rows at the column bottom (the
+                     .tf-btn keeps its intrinsic width via align-self; no width/
+                     padding override) so the intake link lines up with the collage
+                     bottom. .tf-form-success is the inline ink swap on success
+                     (reuses .tf-surface-ink). NO arrows anywhere.
+                     HONEYPOT (NEW) — .tf-hp, an off-screen (not display:none)
+                     decoy field a human never sees; JS drops any filled submission.
+                     COLLAGE (NEW) — .tf-collage, a 3×3 square-tile grid (8 photo
+                     tiles + .tf-collage-more label tile). Each photo tile is a
+                     <figure> (.tf-collage-tile) holding a cover-cropped
+                     .tf-collage-img and a .tf-collage-label laid OVER the photo on
+                     a bottom scrim (paper text, legible on any photo); toned
+                     --tf-stone-light shows if a photo is missing. The more-tile is
+                     a --tf-cream ground with a stone label. A stone
+                     .tf-collage-head section label ("where our teams are located")
+                     spans the grid's top row (grid-column 1/-1), reusing the
+                     .tf-meta treatment with a stone colour override — no new label
+                     style.
+                     REUSE (no new pattern): the two-column body is .tf-grid-2up
+                     (collage-first source order → collage-left / form-right ≥820px,
+                     stacked collage-first below), per the SCOPE reuse check, with
+                     the columns equal-height (grid stretch) so the collage bottom
+                     and the intake link meet; the hero is .tf-page-head.
 
    v30 · 2026-07-26 · Brick square MARKER on the service list. A 6px brick square
                      marks each .tf-service-track item, so the services list (the
@@ -2229,3 +2266,227 @@ a:hover { color: var(--tf-brick-dark); }
 a.tf-icon-brand { color: #0A66C2; }              /* LinkedIn blue */
 a.tf-icon-brand:hover,
 a.tf-icon-brand:focus { color: #004182; }        /* LinkedIn blue, pressed */
+
+/* --------------------------------------------------------------------------
+   Contact page (contact.html) — form kit, honeypot, on-tile-labelled collage
+   First consumer: contact.html. All --tf-* tokens; no raw hex (the label scrim
+   derives its translucency from --tf-ink via color-mix, the --tf-cream idiom).
+   The two-column body reuses .tf-grid-2up; the hero reuses .tf-page-head; the
+   success panel reuses .tf-surface-ink.
+   -------------------------------------------------------------------------- */
+
+/* ── Form kit ────────────────────────────────────────────────────────────────
+   The site's first form. A label sits ABOVE each field. The form fills its grid
+   column (flex:1 in a flex-column .tf-form-col) so its content can stretch to
+   the collage's height — see .tf-field-grow and .tf-form-foot below. */
+.tf-form-col { display: flex; flex-direction: column; }
+.tf-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tf-space-3);
+  flex: 1 0 auto;                       /* fill the (stretched) column so the foot can pin to its bottom */
+}
+.tf-field { display: flex; flex-direction: column; gap: var(--tf-space-1); }
+/* First + last name share one row (two-up), holding at every width — no side-by-
+   side/stack breakpoint is added to the sheet's 768/820 vocabulary; the two name
+   fields stay paired. */
+.tf-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--tf-space-3);
+}
+
+/* Label — 14px / 500 Space Grotesk (the UI font), ink on the paper page. */
+.tf-label {
+  font-family: var(--tf-font-body);
+  font-size: var(--tf-text-sm);
+  font-weight: 500;
+  color: var(--tf-ink);
+}
+
+/* Field — a PAPER ground (STYLE.css §1 / §2: --tf-white is header-chrome-only;
+   a content field is a content ground, so it takes --tf-paper, never white),
+   framed by the 2px light within-a-thing rule (§4). font-size is 16px so mobile
+   Safari does not zoom on focus. box-sizing keeps the 2px frame inside the
+   column width (the sheet has no global reset). */
+.tf-input {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--tf-font-body);
+  font-size: var(--tf-text-base);
+  line-height: 1.5;
+  color: var(--tf-ink);
+  background: var(--tf-paper);
+  border: var(--tf-rule-light);
+  border-radius: 0;                     /* square corners (§4) */
+  padding: 10px 14px;
+}
+.tf-input::placeholder { color: var(--tf-stone); }
+.tf-textarea { resize: vertical; min-height: 7.5rem; }
+/* The brief-description field GROWS to consume the column's free height, so the
+   textarea fills down to the action block and the collage/form bottoms meet at
+   the intake link with no floating gap (see .tf-form-foot). The field is a flex
+   column (label + textarea); the textarea takes the slack. */
+.tf-field-grow { flex: 1 1 auto; }
+.tf-field-grow .tf-textarea { flex: 1 1 auto; }
+/* Focus — the border goes BRICK at the same 2px (no ring, no layout shift). The
+   colour change is the focus indicator, so the base :focus-visible outline is
+   suppressed only for these fields. */
+.tf-input:focus,
+.tf-input:focus-visible {
+  outline: none;
+  border-color: var(--tf-brick);
+}
+
+/* Required marker — a brick asterisk in the label and in the "* required" note.
+   The visual asterisk is aria-hidden in the markup; the input's `required`
+   attribute is what conveys requiredness to assistive tech. */
+.tf-required { color: var(--tf-brick); }
+.tf-form-note {
+  margin: 0;
+  font-size: var(--tf-text-sm);
+  color: var(--tf-ink-soft);
+}
+
+/* Invalid field — brick border (driven by aria-invalid, set by the JS) with the
+   inline error message beneath. Both use brick; the message is 14px so it reads
+   as a note, not body copy. */
+.tf-input[aria-invalid="true"] { border-color: var(--tf-brick); }
+.tf-field-error {
+  margin: 0;
+  font-size: var(--tf-text-sm);
+  color: var(--tf-brick);
+}
+
+/* Submit-failure notice — shown only when a wired endpoint is unreachable. A
+   brick-framed block so it reads as a stronger, form-level alert than an inline
+   field error. Hidden at rest ([hidden]); the JS reveals it. */
+.tf-form-error {
+  margin: 0;
+  padding: var(--tf-space-2);
+  font-size: var(--tf-text-sm);
+  color: var(--tf-brick);
+  border: 2px solid var(--tf-brick);
+}
+
+/* Action block — the "* required" note, the submit-failure notice, the send
+   button, and the intake link, grouped at the FOOT of the form. Because
+   .tf-field-grow above absorbs the column's free height, this block naturally
+   sits at the bottom, so the intake link's baseline lines up with the collage's
+   bottom edge across the two columns. The button keeps its intrinsic .tf-btn
+   width (align-self so the flex column does not stretch it full-width and its
+   own padding/width are untouched); the text rows stay full width. */
+.tf-form-foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tf-space-2);
+}
+.tf-form-foot .tf-btn { align-self: flex-start; }
+/* Intake link — a plain brick text link (base `a` colour), no arrow, sized down
+   as a secondary action beneath the button. */
+.tf-intake-link { font-size: var(--tf-text-sm); }
+
+/* Honeypot — an off-screen decoy field. NOT display:none: some spam bots skip
+   hidden fields but fill positioned ones, and a filled honeypot is exactly the
+   signal we want. Pulled off-canvas so no human sees it; the markup also gives
+   it aria-hidden, tabindex -1 and autocomplete off. */
+.tf-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Success swap — the ink panel shown in place of the form on a successful
+   submit. The ink ground + paper text come from .tf-surface-ink (reused, in the
+   markup); this only supplies the band's own padding. "Thank you" is a base h2,
+   so it renders in Source Serif and inherits paper from the ink surface. */
+.tf-form-success { padding: var(--tf-space-6) var(--tf-space-4); }
+
+/* ── City collage (3×3, on-tile labels) ──────────────────────────────────────
+   Nine square cells filling the grid exactly: eight photo tiles + one label tile
+   (the 9th cell). Square corners, flush; the gap is the light within-section
+   rhythm. Each photo tile is a <figure> (positioning context) holding a
+   cover-cropped <img> and a <figcaption> label laid OVER the photo. */
+.tf-collage {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--tf-space-1);
+}
+/* Section label — a stone uppercase caption spanning the collage's top row
+   (grid-column 1/-1), directly above the tiles. REUSES the .tf-meta treatment
+   (12px, uppercase, 0.14em tracked) and overrides only the colour to --tf-stone
+   — the muted-label tone the sheet already uses at meta size on paper (e.g.
+   .tf-card-meta), so this adds no new label style. Placed INSIDE the collage
+   grid so the collage remains the left column's bottom element and the
+   label+collage block stays bottom-aligned with the intake link opposite. The
+   colour overrides .tf-meta's --tf-ink-soft on source order (this rule is later
+   in the sheet). */
+.tf-collage-head {
+  grid-column: 1 / -1;
+  margin: 0 0 var(--tf-space-1);
+  color: var(--tf-stone);
+}
+/* Tile — forced square (aspect-ratio 1/1), clipping its image; a toned
+   --tf-stone-light ground shows through if a photo is missing. margin:0 resets
+   the <figure> UA margin; box-sizing keeps the more-tile's padding inside the
+   track (no global reset); min-width:0 stops an intrinsic image from widening
+   the 1fr track. */
+.tf-collage-tile {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  box-sizing: border-box;
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  background: var(--tf-stone-light);
+  container-type: inline-size;           /* so the on-tile label can size its font to the tile width */
+}
+/* The photo — fills the square and is cover-cropped. .tf-photo (in the markup)
+   applies the brand grade. */
+.tf-collage-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* On-tile label — city + country, laid over the photo's bottom on a scrim so the
+   paper text stays legible on any photo. The scrim is a bottom-up gradient whose
+   translucency is derived from --tf-ink via color-mix (the --tf-cream idiom) so
+   no raw hex/rgba enters the sheet — opaque-ish at the base, clearing by ~55%. */
+.tf-collage-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: var(--tf-space-4) var(--tf-space-1) var(--tf-space-1);
+  color: var(--tf-paper);
+  /* One line, always: never wrap, and size the font to the tile so even the
+     longest label ("Ho Chi Minh City, VN") fits a single line at any tile width.
+     7.4cqi ≈ 13.3px on a 180px desktop tile and ≈ 7.7px on a 104px mobile tile;
+     capped at 14px so it never grows past the sheet's --tf-text-sm. */
+  white-space: nowrap;
+  font-size: min(14px, 7.4cqi);
+  font-weight: 500;
+  line-height: 1.2;
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--tf-ink) 82%, transparent) 0%,
+    color-mix(in srgb, var(--tf-ink) 40%, transparent) 45%,
+    transparent 100%);
+}
+/* The 9th cell — a label tile, not a photo. A --tf-cream ground (the raised /
+   recessed surface tone) with a centred stone label, so it reads as a "more to
+   come" placeholder distinct from the photo tiles. */
+.tf-collage-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--tf-space-2);
+  background: var(--tf-cream);
+  color: var(--tf-stone);
+  font-size: var(--tf-text-sm);
+  line-height: 1.3;
+}
