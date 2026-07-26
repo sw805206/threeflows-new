@@ -1,7 +1,15 @@
-/* v027 | last updated: 2026-07-25
+/* v028 | last updated: 2026-07-26
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v28 · 2026-07-26 · Comment-only reconcile — no rendering change, no token,
+                     selector or value touched. The .tf-prose-intro comment no
+                     longer describes .tf-lead as 20px / hero-reserved (stale
+                     since v13); the two are distinguished by ROLE and by
+                     .tf-lead's colour shift inside .tf-cta. The v26 NB about
+                     the feat/index chain is annotated RESOLVED, not deleted.
+                     Paired with STYLE.md v023, which carried the same stale
+                     claim in §3.
    v27 · 2026-07-25 · BAND 2 — removed the strip's own top rule (#trusted .tf-logos
                      border-top: none) so a single line sits at the hero/strip seam
                      (the hero's .tf-section divider). Band-2-scoped; the shared
@@ -16,7 +24,9 @@
                      the carousel — verified). #trusted-scoped; carousel /
                      .tf-client-logo unaffected. NB feat/index STYLE.css chain is
                      independent of main's v14-v16 client-logo stream — renumber
-                     reconcile deferred to merge prep.
+                     reconcile deferred to merge prep. RESOLVED at v027 — the
+                     chain was renumbered above v14-v16 on the feat/index
+                     rebase; this NB is historical.
    v25 · 2026-07-24 · BAND 6 (Resources) icon + title inline. #resources
                      .tf-resource-head — a band-6-scoped flex row so each resource
                      block's icon and title share one line (description drops
@@ -403,7 +413,9 @@ body.tf-app {
 .tf-prose li { margin-bottom: var(--tf-space-1); }
 /* Prose page intro — the paragraph under the h1 on a long-form page. Body size
    (16px), set apart from the body copy by COLOUR (ink-soft), not size. Distinct
-   from .tf-lead (20px), which stays reserved for hero moments. */
+   from .tf-lead by ROLE, not size — .tf-lead is also 16px since v13, and is set
+   apart by context (the service-page hook and CTA subline) and by its colour
+   shift inside .tf-cta. */
 .tf-prose-intro { font-size: var(--tf-text-base); color: var(--tf-ink-soft); }
 /* TIER-1 SUBTITLE RHYTHM — the subtitle (intro line) → first content element gap
    is --tf-space-6 (48px) on EVERY tier-1 page, hero or plain, measured from the
