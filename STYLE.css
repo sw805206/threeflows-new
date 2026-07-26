@@ -1,7 +1,26 @@
-/* v029 | last updated: 2026-07-26
+/* v030 | last updated: 2026-07-26
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v30 · 2026-07-26 · Brick square MARKER on the service list. A 6px brick square
+                     marks each .tf-service-track item, so the services list (the
+                     OFFERING) reads distinct from band 2's neutral --tf-stone
+                     pain-point bullets (the PROBLEM): same shape, same size, same
+                     alignment, colour alone carrying the emphasis. The square is
+                     the SAME 6px literal .tf-callout-list uses — only the colour
+                     differs, so if it is ever tokenized both consumers move
+                     together. Folded into .tf-service-track itself, NOT a
+                     standalone marker class — that rule is its only consumer and a
+                     one-user marker class invites misapplication (the reasoning
+                     that dissolved -tight into .tf-faq at v29). The v29 item rule
+                     padding-block: --tf-space-1 is superseded by padding-block:
+                     0 --tf-space-2 — still 16px between items (8+8 → 0+16), re-
+                     based to bottom-only so every label sits at its item's top
+                     edge, giving the marker a stable line to align to. NO numeral
+                     or counter: a service list is not a sequence (.tf-flow was
+                     orphaned at v29 for that), so a numbered marker would rebuild
+                     it under a new name. var(--tf-brick) only; no new token, no
+                     raw hex.
    v29 · 2026-07-26 · Service-detail two-content-column pattern
                      (feat/service-detail-pattern), ported from the services-
                      layout spike. .tf-content-split (NEW) — the 40ch / 62ch
@@ -1927,13 +1946,34 @@ a:hover { color: var(--tf-brick-dark); }
 /* ── Service track (`.tf-service-track`) ─────────────────────────────────────
    `.tf-flow`'s label/note shape WITHOUT the brick counter — a service LIST, not a
    sequenced process, so no auto-number. Reuses `.tf-flow-label` and
-   `.tf-flow-note` verbatim; only the list rhythm is respecified. Item padding is
-   `--tf-space-1` (16px between) so the services read as one block; first and last
-   items drop their outer padding so the list sits flush in the column. */
+   `.tf-flow-note` verbatim. A brick square marks each item: it distinguishes the
+   services list (the OFFERING) from band 2's neutral `--tf-stone` pain-point
+   bullets (the PROBLEM) — same shape, same size, same alignment as those
+   `.tf-callout-list` squares, colour alone carrying the emphasis. The 6px square
+   is deliberately the SAME literal `.tf-callout-list` uses; only the colour
+   differs, so if that square is ever tokenized both consumers move together. The
+   marker is folded into this rule, not a standalone class — this is its only
+   consumer and a one-user marker class invites misapplication. Item padding is
+   re-based to bottom-only (`0 --tf-space-2`, still 16px between items, the same
+   rhythm the prior `--tf-space-1` gave) so every label sits at its item's top
+   edge and the marker has a stable line to align to; the last item drops its
+   bottom padding so the list sits flush in the column. */
 .tf-service-track { list-style: none; margin: 0; padding: 0; }
-.tf-service-track li { padding-block: var(--tf-space-1); }
-.tf-service-track li:first-child { padding-block-start: 0; }
+.tf-service-track li {
+  position: relative;
+  padding-block: 0 var(--tf-space-2);
+  padding-left: var(--tf-space-2);
+}
 .tf-service-track li:last-child { padding-block-end: 0; }
+.tf-service-track li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 6px;
+  height: 6px;
+  background: var(--tf-brick);
+}
 
 /* ── Inline CTA (`.tf-cta-inline`) ────────────────────────────────────────────
    The closing action at the foot of the services column. It FOLLOWS the service
