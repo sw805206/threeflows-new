@@ -1,6 +1,20 @@
-/* v028 | last updated: 2026-07-26
+/* v029 | last updated: 2026-07-26
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v29 · 2026-07-26 · Service-detail two-content-column pattern
+                     (feat/service-detail-pattern), ported from the services-
+                     layout spike. .tf-content-split (NEW) — the 40ch / 62ch
+                     asymmetric row where BOTH columns carry heading + body (NOT
+                     a .tf-section-split variant, whose left column IS the
+                     heading). .tf-service-track (NEW) — .tf-flow's label/note
+                     shape without the brick counter. .tf-cta-inline (NEW) — the
+                     closing action following the services list, separated by a
+                     --tf-space-6 break. .tf-faq item rhythm tightened
+                     (--tf-space-3 → --tf-space-1), folding in the spike's -tight
+                     modifier (the four service pages are .tf-faq's only
+                     consumers). .tf-flow and .tf-btn-secondary now orphaned; CSS
+                     retained per BL-012's .tf-stat-grid precedent.
 
    v28 · 2026-07-26 · Comment-only reconcile — no rendering change, no token,
                      selector or value touched. The .tf-prose-intro comment no
@@ -1818,15 +1832,20 @@ a:hover { color: var(--tf-brick-dark); }
 
 /* ── FAQ (`.tf-faq`) ─────────────────────────────────────────────────────────
    A STATIC question/answer list — every answer fully visible, no folding, no JS.
-   (Reverted from an interactive accordion: the FAQ now sits in the RIGHT column of
-   the "How we engage" two-column band, beside the process flow, and shows in full.)
-   Marked up as a <dl> (dt = question, dd = answer). Question in the heading family
-   at the card-title tier; answer at body size/colour. Items divided by the light
-   within-section rule (§4); the last drops its rule and bottom padding so the list
-   ends clean. First use: business-planning.html. */
+   It sits in the RIGHT column of the service-detail two-content-column row
+   (`.tf-content-split`), beside the service track, and shows in full. Marked up
+   as a <dl> (dt = question, dd = answer). Question in the heading family at the
+   card-title tier; answer at body size/colour. Items divided by the light
+   within-section rule (§4); the last drops its rule and bottom padding so the
+   list ends clean.
+   Item rhythm is TIGHT — padding-block `--tf-space-1` (was `--tf-space-3`) — so
+   the FAQ reads as one block beside the service track rather than a scatter. This
+   folds in the throwaway spike's tight-FAQ opt-in modifier: the four service
+   pages are `.tf-faq`'s only consumers, so the tight rhythm lives on the base
+   rule rather than a separate class. First use: business-planning.html. */
 .tf-faq { margin: 0; }
 .tf-faq-item {
-  padding-block: var(--tf-space-3);
+  padding-block: var(--tf-space-1);
   border-bottom: var(--tf-rule-light);
 }
 .tf-faq-item:first-child { padding-block-start: 0; }
@@ -1874,6 +1893,57 @@ a:hover { color: var(--tf-brick-dark); }
 }
 .tf-flow-label { display: block; font-weight: 700; }   /* bold step label — body size + ink */
 .tf-flow-note { margin: 0; }                            /* explanation line — inherits body size + ink */
+
+/* ── Service-detail content row (`.tf-content-split`) ─────────────────────────
+   The two-CONTENT-column row of the service-detail pages: a narrow left column
+   and a 62ch right column, the right pinned to the `.tf-container` edge (the
+   shared right edge of the tier-2 hero image, v019) via space-between. Both
+   columns carry a full content block — its own h2 + body — so each heading sits
+   atop its own content.
+   This is NOT a `.tf-section-split` variant, and cannot be one: in section-split
+   the LEFT column IS the heading (a bare label opposite running prose), whereas
+   here BOTH columns hold heading + body. The left floor is 40ch, not
+   section-split's 16ch label rail — set by the longest left h2 and the longest
+   pain/service lines so headings and bullets do not over-wrap. Stacks to a single
+   column below 820px (the nav breakpoint, reused). The `> * > :first-child` reset
+   drops each column's first child's leading margin so the two h2s share a top
+   baseline. Consumers: the four service-detail pages. Supersedes the v020 engage
+   band (`.tf-flow` left / `.tf-faq` right in a `.tf-grid-2up`). */
+.tf-content-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--tf-space-3);
+}
+@media (min-width: 820px) {
+  .tf-content-split {
+    grid-template-columns: minmax(0, 40ch) minmax(0, 62ch);
+    justify-content: space-between;
+    gap: var(--tf-space-6);
+    align-items: start;
+  }
+}
+.tf-content-split > * > :first-child { margin-block-start: 0; }
+
+/* ── Service track (`.tf-service-track`) ─────────────────────────────────────
+   `.tf-flow`'s label/note shape WITHOUT the brick counter — a service LIST, not a
+   sequenced process, so no auto-number. Reuses `.tf-flow-label` and
+   `.tf-flow-note` verbatim; only the list rhythm is respecified. Item padding is
+   `--tf-space-1` (16px between) so the services read as one block; first and last
+   items drop their outer padding so the list sits flush in the column. */
+.tf-service-track { list-style: none; margin: 0; padding: 0; }
+.tf-service-track li { padding-block: var(--tf-space-1); }
+.tf-service-track li:first-child { padding-block-start: 0; }
+.tf-service-track li:last-child { padding-block-end: 0; }
+
+/* ── Inline CTA (`.tf-cta-inline`) ────────────────────────────────────────────
+   The closing action at the foot of the services column. It FOLLOWS the service
+   list in normal flow — it is NOT bottom-aligned. (This supersedes the spike's
+   pass-7 approach, which stretched the grid row and pushed the CTA down with
+   margin-auto.) It is separated from the last service item by `--tf-space-6`
+   (48px) — the section-rhythm break token, three times the track's own 16px item
+   gap — so it reads as a deliberate break to a new action, not another entry in
+   the list. */
+.tf-cta-inline { margin-block-start: var(--tf-space-6); }
 
 /* ── References directory (references.html) ─────────────────────────────────
    A segmented tab control, cream group panels, and a card grid, rendered by
