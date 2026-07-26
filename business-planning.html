@@ -14,11 +14,6 @@
   <!-- Shared header injected from partials.html -->
   <div id="tf-header"></div>
 
-  <!-- NOTE: this page is intentionally ORPHANED (not yet nav-linked). The shared
-       Services dropdown still carries the OLD four-link service-*.html nav; the
-       two-tier rewrite that would link "Plan → business-planning.html" is BL-023,
-       a separate job. Until it ships, this page is reachable by direct URL only. -->
-
   <main>
     <!-- BAND 1 — Tier-2 intro split (paper). No .tf-page-head hero: a service
          DETAIL page opens on the two-column intro (text + framed inline image),
@@ -30,8 +25,7 @@
             <div class="tf-kicker">Services · Pathfinder</div>
             <h1>Business Planning</h1>
             <p class="tf-lead">Make data-driven decisions before you commit a single dollar.</p>
-            <!-- Intro links: hrefs are "#" PLACEHOLDERS — targets TBD (BL follow-up). -->
-            <p class="tf-intro-split-links">Explore our <a href="#">free planning tools</a> or view our <a href="#">paid packages</a>.</p>
+            <p class="tf-intro-split-links">Explore our <a href="#">free planning tools</a> or <a href="index.html#what-we-offer">view all services</a>.</p>
           </div>
           <img class="tf-intro-split-img tf-photo" src="assets/images/business-planning.jpg"
                alt="Aerial view of cars traveling along a winding two-lane road that curves through dense green forest."
@@ -40,89 +34,50 @@
       </div>
     </section>
 
-    <!-- BAND 2 — Our approach (paper). Labelled prose row: heading LEFT, prose
-         RIGHT pinned to the container edge (the page's shared right edge). -->
+    <!-- BAND 2 — .tf-content-split: pain points LEFT (narrow), approach RIGHT (62ch). -->
     <section class="tf-section">
       <div class="tf-container">
-        <div class="tf-section-split">
-          <h2 class="tf-section-split-label">Our approach</h2>
-          <div class="tf-prose">
-            <p>Every entrepreneur is creative, courageous, and driven. That&rsquo;s what makes you passionate about your work and determined to succeed. But the journey gets confusing &mdash; sometimes frustrating &mdash; whether you&rsquo;re about to start or figuring out your next stage of growth.</p>
-            <p>That&rsquo;s where we come in. We join your journey before it begins, and at every fork along the way &mdash; the copilot in your passenger seat, offering experience, logic, and a second opinion while you keep your eyes on the road. Your passion sets the direction; our support makes sure you can go full speed.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- BAND 3 — Pain points & the solves (paper). Locked 2-up, symmetric
-         .tf-callout headers: alert-triangle/brick vs circle-check/ink. -->
-    <section class="tf-section">
-      <div class="tf-container">
-        <h2>Pain points &amp; the solves</h2>
-        <div class="tf-grid-2up">
-          <div class="tf-callout tf-callout-warn">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-            <div>
-              <div class="tf-callout-title">The pain points</div>
-              <ul class="tf-callout-list">
-                <li>Betting all-in, instead of spending every dollar and every minute strategically</li>
-                <li>Passion and anxiety crowding out clear thinking and methodical doing</li>
-                <li>So much rush to do, so little time to check the edges and corners</li>
-                <li>Setbacks that catch you off guard and shake your confidence</li>
-              </ul>
-            </div>
-          </div>
-          <div class="tf-callout tf-callout-affirm">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
-            <div>
-              <div class="tf-callout-title">The solves</div>
-              <ul class="tf-callout-list">
-                <li>Help you see your real strengths &mdash; and the gaps to cover</li>
-                <li>Find where the market is, and where you create value</li>
-                <li>Get the financial thinking right, and keep you ready for best case and worst</li>
-                <li>Build a plan that&rsquo;s light and flexible, yet durable and scalable</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- BAND 4 — Why us (paper). Labelled prose row: heading LEFT, prose RIGHT
-         pinned to the container edge (the page's shared right edge). -->
-    <section class="tf-section">
-      <div class="tf-container">
-        <div class="tf-section-split">
-          <h2 class="tf-section-split-label">Why us</h2>
-          <div class="tf-prose">
-            <p>We&rsquo;re not the traditional consultant who hands you a to-do list &mdash; we invest in you, because we believe in what you&rsquo;re building and know a bit of structure goes a long way.</p>
-            <p>Our consultants came from the headquarters of highly successful companies &mdash; in finance, supply chain, and project management. That&rsquo;s the &ldquo;brain&rdquo; that separates big business from small, and the part most SMEs skip or get wrong. We&rsquo;ve since left to run our own small businesses, so we know first-hand how hard it is to carry every decision alone &mdash; and how much it helps to hear another voice, and to be heard.</p>
-            <p><strong>You get corporate rigor, without the corporate overhead.</strong></p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- BAND 5 — "How we engage" band (paper). Two columns via .tf-grid-2up:
-         LEFT = .tf-flow 5-step process; RIGHT = the STATIC .tf-faq (all answers
-         visible, no fold, no JS). Full-width; the right column meets the container
-         edge (the page's shared right edge). Stacks flow-then-FAQ below 820px.
-         This is the reusable service-detail template band. NO pricing question. -->
-    <section class="tf-section">
-      <div class="tf-container">
-        <div class="tf-grid-2up">
-          <!-- LEFT — process flow -->
+        <div class="tf-content-split">
           <div>
-            <h2>How we engage</h2>
-            <ol class="tf-flow">
-              <li><div><span class="tf-flow-label">Free discovery call</span><p class="tf-flow-note">we learn your idea and goals, at no cost</p></div></li>
-              <li><div><span class="tf-flow-label">Sign on &amp; begin</span><p class="tf-flow-note">we agree scope and get started</p></div></li>
-              <li><div><span class="tf-flow-label">First draft</span><p class="tf-flow-note">we deliver v1 of your plan</p></div></li>
-              <li><div><span class="tf-flow-label">Review call</span><p class="tf-flow-note">we walk through it together on Zoom and refine</p></div></li>
-              <li><div><span class="tf-flow-label">Final deliverable</span><p class="tf-flow-note">your completed plan and go/no-go call</p></div></li>
-            </ol>
+            <h2>Where it usually hurts</h2>
+            <ul class="tf-callout-list">
+              <li>Betting all-in, instead of spending every dollar and every minute strategically</li>
+              <li>Passion and anxiety crowding out clear thinking and methodical doing</li>
+              <li>So much rush to do, so little time to check the edges and corners</li>
+              <li>Setbacks that catch you off guard and shake your confidence</li>
+            </ul>
           </div>
-          <!-- RIGHT — static FAQ, all answers visible -->
+          <div>
+            <h2>The way we see it</h2>
+            <div class="tf-prose">
+              <p>Most founders want to get to the doing. Reviewing assumptions, checking run rates, arguing about productivity numbers &mdash; it feels like homework standing between you and the actual business.</p>
+              <p>It isn&rsquo;t. Every one of those numbers is an input to a single output: your cashflow projection. Because cash is king &mdash; or rather, it&rsquo;s what kills small businesses.</p>
+              <p>So we work the assumptions until they hold. We test the market, we test the customer, and we carry both into a budget, a P&amp;L, and cashflow scenarios that show you your floor as clearly as your ceiling. You will see the reasoning behind every figure, so you are fully prepared even before everything starts.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BAND 3 — .tf-content-split: services + inline CTA LEFT (narrow), FAQ RIGHT (62ch). -->
+    <section class="tf-section">
+      <div class="tf-container">
+        <div class="tf-content-split">
+          <div>
+            <h2>Our services</h2>
+            <p class="tf-meta">typically 2&ndash;6 weeks</p>
+            <ul class="tf-service-track">
+              <li><span class="tf-flow-label">SWOT and gap analysis</span><p class="tf-flow-note">Where you&rsquo;re strong, where you&rsquo;re exposed, and what has to be closed before you commit.</p></li>
+              <li><span class="tf-flow-label">Competitor research</span><p class="tf-flow-note">Who else serves this customer, what they charge, where they&rsquo;re weak. From live data, not assumptions.</p></li>
+              <li><span class="tf-flow-label">Customer survey</span><p class="tf-flow-note">Demand tested with people who would actually buy, rather than inferred from a category.</p></li>
+              <li><span class="tf-flow-label">Marketplace analysis</span><p class="tf-flow-note">Which channels your customer actually shops, what reaching them costs, and what each one demands of you.</p></li>
+              <li><span class="tf-flow-label">Three-year financial plan</span><p class="tf-flow-note">Budget, P&amp;L and cashflow, each carrying a best case and a worst case, so you see your floor as clearly as your ceiling.</p></li>
+            </ul>
+            <div class="tf-cta-inline">
+              <p>Ready to test your idea?</p>
+              <p>Start with a free discovery call &mdash; we&rsquo;ll take it from there. <a href="contact.html">Contact us</a>.</p>
+            </div>
+          </div>
           <div>
             <h2>Frequently asked questions</h2>
             <dl class="tf-faq">
@@ -139,28 +94,15 @@
                 <dd class="tf-faq-a">That&rsquo;s a success &mdash; you&rsquo;ve saved yourself a much more expensive mistake. We walk you through exactly what the data shows and what would need to change to make the idea viable.</dd>
               </div>
               <div class="tf-faq-item">
-                <dt class="tf-faq-q">What&rsquo;s the difference between this and a business plan?</dt>
-                <dd class="tf-faq-a">A business plan is a document &mdash; this is a process backed by real expertise and live data, with an expert walking you through the logic behind every number.</dd>
+                <dt class="tf-faq-q">How can you project cashflow when I have no history?</dt>
+                <dd class="tf-faq-a">We start from industry standards and build a best case and a worst case around them. What you&rsquo;ll find matters most is your sales run rate &mdash; that&rsquo;s where we spend the bulk of the discussion, because nearly everything else in the model depends on it.</dd>
+              </div>
+              <div class="tf-faq-item">
+                <dt class="tf-faq-q">I already have a business plan. Can you review it instead of starting over?</dt>
+                <dd class="tf-faq-a">Yes, and it&rsquo;s usually the shorter engagement. We pressure-test what you&rsquo;ve built rather than rebuild it: where each assumption came from, whether the numbers still connect to one another, and what changes if the market has moved since you wrote it. You get back a marked-up plan and a clear list of what to fix, not a replacement.</dd>
               </div>
             </dl>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA band (ink). First live .tf-cta; the footer's warm-stone ground
-         (--tf-footer-ground) separates it from the ink footer below (BL-022).
-         Primary = the real conversion (contact.html). Secondary "See all
-         services" href is a "#" PLACEHOLDER (targets TBD — BL-023 nav). -->
-    <section class="tf-cta">
-      <div class="tf-container">
-        <h2>Ready to build your plan?</h2>
-        <p class="tf-lead">Start with a free discovery call or send us your question &mdash; we&rsquo;ll take it from there.</p>
-        <!-- Contact us = PRIMARY (brick, first); See all services = SECONDARY
-             (outline, second, "#" PLACEHOLDER). No arrow glyphs. Spaced via .tf-btn-row. -->
-        <div class="tf-btn-row">
-          <a class="tf-btn tf-btn-primary" href="contact.html">Contact us</a>
-          <a class="tf-btn tf-btn-secondary" href="#">See all services</a>
         </div>
       </div>
     </section>
