@@ -1,4 +1,4 @@
-v001 | last updated: 2026-07-24
+v002 | last updated: 2026-07-26
 
 # PROCESS.md — Human/Claude working procedures (this project)
 
@@ -6,7 +6,7 @@ Collaborative step-by-step procedures the human and Claude run together for this
 project. Processes done entirely by the human live in the Google Doc SOP, not here;
 universal human/Claude rules live in CLAUDE.md Part C. Registered in SCOPE.md.
 
-Sections: (1) Images · (2) Blog updates [TBD] · (3) Adding clients [TBD]
+Sections: (1) Images · (2) Blog updates [TBD] · (3) Adding clients [TBD] · (4) Stylebook maintenance
 
 ---
 
@@ -83,3 +83,31 @@ _TBD — to be specified. Placeholder; do not infer a procedure until worked thr
 
 ## 3. Adding clients
 _TBD — to be specified. Placeholder; do not infer a procedure until worked through._
+
+## 4. Stylebook maintenance
+
+`stylebook.html` (repo root, hidden — no nav, reachable by URL only) is the
+internal reference for the colour + type system. It **links the live `STYLE.css`**,
+so the rendered examples track it automatically — a swatch's colour comes from
+`var(--tf-*)`, and its printed **hex is read at runtime** from that computed
+colour (a small script resolves each swatch, including the `color-mix()` tokens,
+and flips the label to ink/paper by luminance). So a token whose VALUE changes
+needs no edit — both the chip and its printed hex self-update. Type specimens
+likewise re-render at the live sizes.
+
+What does NOT self-update, and must be re-synced by hand:
+
+- **The token SET.** If a `--tf-*` colour token is ADDED, REMOVED, or RENAMED in
+  `STYLE.css`, its swatch card must be added / removed / renamed — the page does
+  not grow or shrink on its own. Same for a type-scale token (add/remove its
+  specimen row).
+- **The labels beside them.** Token names, usage/description notes, `color-mix`
+  derivation notes, group headings, and the printed size/role labels on the type
+  specimens are all static text.
+- **The header version stamps** — "generated from STYLE.md vXX / STYLE.css vXX".
+
+So whenever a STYLE.css / STYLE.md version bumps, check the diff for a token
+ADD / REMOVE / RENAME (a value-only change needs nothing). If there is one, add /
+remove / rename the affected swatch or specimen and its label, then update the two
+header stamps. A pure component or layout change with no token/scale set change
+needs no stylebook update.
