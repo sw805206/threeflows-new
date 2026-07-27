@@ -1,4 +1,4 @@
-v020 | last updated: 2026-07-27
+v021 | last updated: 2026-07-27
 
 # BACKLOG.md — threeflows-new
 
@@ -149,7 +149,7 @@ slug page. No old blog URL is left unmapped.
 | blog-019.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "From Shelf to Doorstep…"; retargets to its real slug page when that post is carried over (BL-007) |
 | blog-020.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "The Culture That Built Amazon…"; retargets to its real slug page when that post is carried over (BL-007) |
 | blog-021.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Test Before You List…"; retargets to its real slug page when that post is carried over (BL-007) |
-| blog-022.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Cashflow: Your Unit Economics Over a Time Horizon"; retargets to its real slug page when that post is carried over (BL-007) |
+| blog-022.html | blog-cashflow-vs-unit-economics.html | rewrite of old blog-022 (reframed as "Cashflow: What Unit Economics Doesn't Tell You" = blog-010); shipped 2025-12-28 |
 | blog-023.html | blog-sourcing-strategy-2x2.html | redirect — CARRIED (near-identical title); NB new manifest renumbers this as blogID blog-008 |
 | blog-024.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Last-Mile Shipping Rates Explained…"; retargets to its real slug page when that post is carried over (BL-007) |
 | svc1.html | business-planning.html | redirect (retargeted from the `service-planning.html` shell, deleted at the nav rewrite) |
@@ -242,7 +242,7 @@ The 25-row table below is retained as-found for redirect derivation and audit.
 | blog-019 | blog-019.html | 2026-04-11 | published | Others | — | From Shelf to Doorstep: Inside Amazon's Fulfillment Center Operations |
 | blog-020 | blog-020.html | 2026-04-25 | published | Others | — | The Culture That Built Amazon: Leadership Principles, Bar Raisers, and What It Really Takes |
 | blog-021 | blog-021.html | 2026-05-03 | published | Plan | Source, Launch | Test Before You List: The Case for Pre-Launch Market Research |
-| blog-022 | blog-022.html | 2026-05-20 | published | Plan | Data | Cashflow: Your Unit Economics Over a Time Horizon |
+| blog-022 | blog-022.html | 2026-05-20 | published | Plan | Data | Cashflow: Your Unit Economics Over a Time Horizon → carried as blog-010 |
 | blog-023 | blog-023.html | 2026-03-25 | published | Plan | Source | Make or Buy? Local or Overseas? How to Think Through Your Sourcing Strategy |
 | blog-024 | blog-024.html | 2026-06-03 | published | Source, Data | Launch, Scale, Setup | Last-Mile Shipping Rates Explained: UPS vs FedEx vs USPS (2026) |
 
