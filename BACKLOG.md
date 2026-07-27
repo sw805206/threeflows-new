@@ -1,4 +1,4 @@
-v019 | last updated: 2026-07-26
+v020 | last updated: 2026-07-27
 
 # BACKLOG.md — threeflows-new
 
@@ -134,7 +134,7 @@ slug page. No old blog URL is left unmapped.
 | blog-005.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Why Data Integrity Is the Foundation…"; retargets to its real slug page when that post is carried over (BL-007) |
 | blog-006.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Is FedEx's 2026 Rate Increase Really Just 5.9%?"; retargets to its real slug page when that post is carried over (BL-007) |
 | blog-007.html | blog-warehouse-placement-case-study.html | redirect — CARRIED (distinctive title match; re-dated 2025-11-17 → 2025-09-22) |
-| blog-008.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Is a $1.40 Product Worth Selling in the US?"; retargets to its real slug page when that post is carried over (BL-007) |
+| blog-008.html | blog-unit-economics-2-vs-20.html | rewrite of old blog-008 (reframed as "Is a $2 or a $20 Product Better for Your Business?" = blog-009); shipped 2025-11-15 |
 | blog-009.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Why Your Whatnot Livestream Needs a Sell-Through Model…"; retargets to its real slug page when that post is carried over (BL-007) |
 | blog-010a.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Dedicated 3PL Service Can Cost $23.33 Per Order…"; retargets to its real slug page when that post is carried over (BL-007) |
 | blog-010b.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "The Fifth M: Why Measurement…"; retargets to its real slug page when that post is carried over (BL-007) |
@@ -227,7 +227,7 @@ The 25-row table below is retained as-found for redirect derivation and audit.
 | blog-005 | blog-005.html | 2025-07-07 | published | Data | Source | Why Data Integrity Is the Foundation of a Scalable Supply Chain |
 | blog-006 | blog-006.html | 2025-07-21 | published | Scale | Data | Is FedEx's 2026 Rate Increase Really Just 5.9%? |
 | blog-007 | blog-007.html | 2025-11-17 | published | Scale | Plan, Data | Where Should Your Third US Warehouse Be? |
-| blog-008 | blog-008.html | 2026-02-09 | published | Plan | Source | Is a $1.40 Product Worth Selling in the US? |
+| blog-008 | blog-008.html | 2026-02-09 | published | Plan | Source | Is a $1.40 Product Worth Selling in the US? → carried as blog-009 |
 | blog-009 | blog-009.html | 2026-02-02 | published | Launch | Data | Why Your Whatnot Livestream Needs a Sell-Through Model Before You Go Live |
 | blog-010a | blog-010a.html | 2025-06-05 | published | Launch | Data, Setup, Scale | Dedicated 3PL Service Can Cost $23.33 Per Order — or $5.71. The Difference Is How You Set It Up. |
 | blog-010b | blog-010b.html | 2025-06-08 | published | Scale | Data | The Fifth M: Why Measurement Is the One That Makes All the Others Work |
