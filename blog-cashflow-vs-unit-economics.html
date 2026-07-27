@@ -1,0 +1,239 @@
+<!--
+  blog-template.html — COPY-SOURCE for new blog posts. NOT servable content.
+
+  To create a post: copy this file to blog-<slug>.html, set data-blog-id on
+  <main> to the post's blogID, fill the title / dek / date / body, and
+  add a matching entry to bloglist.json. This file is NOT a post: it is excluded
+  from the nav and the backlog page checklist, its data-blog-id is empty, and it
+  is never listed in bloglist.json — so blog.js never treats it as a post
+  despite its blog- prefix.
+
+  Structure mirrors privacy.html: partials-injected header/footer, the
+  .tf-container two-column layout with the data-toc rail, the .tf-prose measure,
+  and the header divider under the meta line. The header block is adapted for
+  posts (h1 → dek → publish-date meta → divider).
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cashflow: What Unit Economics Doesn't Tell You — Three Flows Solutions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+  <style>
+            /* blog-010 page-local cashflow viz. Scoped .tf-cashviz; colours are
+               the shared --tf-cat-* tokens (STYLE.css v032). No JS. */
+            .tf-cashviz { margin: var(--tf-space-4) 0; }
+            .tf-cashviz .tf-cv-scroll { overflow-x: auto; }
+            .tf-cashviz table { border-collapse: collapse; width: 100%; font-family: var(--tf-font-body); }
+            .tf-cashviz th, .tf-cashviz td { padding: 3px 5px; font-weight: 400; }
+            .tf-cashviz thead th { font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase;
+              color: var(--tf-ink-soft); border-bottom: 1px solid var(--tf-ink); text-align: right; white-space: nowrap; }
+            .tf-cashviz th.tf-cv-cat { text-align: left; }
+            .tf-cashviz tbody th { text-align: left; font-size: 11px; color: var(--tf-ink); white-space: nowrap; }
+            .tf-cashviz .tf-cv-sw { width: 9px; height: 9px; display: inline-block; margin-right: 7px;
+              border: 1px solid var(--tf-stone-light); vertical-align: middle; position: relative; top: -1px; }
+            .tf-cashviz td.tf-cv-pl { font-size: 11px; text-align: right; color: var(--tf-ink); white-space: nowrap; }
+            .tf-cashviz .tf-cv-pl { border-right: 2px solid var(--tf-stone-light); padding-right: 9px; }
+            .tf-cashviz td.tf-cv-m, .tf-cashviz th.tf-cv-m { font-size: 10px; text-align: right; color: var(--tf-ink-soft);
+              white-space: nowrap; font-variant-numeric: tabular-nums; }
+            .tf-cashviz tr.tf-cv-cum th, .tf-cashviz tr.tf-cv-cum td { font-weight: 700; color: var(--tf-ink);
+              border-top: 1px solid var(--tf-stone-light); padding-top: 5px; }
+            .tf-cashviz tbody tr:not(.tf-cv-cum) td.tf-cv-m:empty { color: transparent; }
+            /* swatches (HTML) */
+            .tf-cashviz .sw-product  { background: var(--tf-cat-product); }
+            .tf-cashviz .sw-shiptar  { background: var(--tf-cat-shiptar); }
+            .tf-cashviz .sw-storage  { background: var(--tf-cat-storage); }
+            .tf-cashviz .sw-ads      { background: var(--tf-cat-ads); }
+            .tf-cashviz .sw-fulfil   { background: var(--tf-cat-fulfil); }
+            .tf-cashviz .sw-platform { background: var(--tf-cat-platform); }
+            .tf-cashviz .sw-sales    { background: var(--tf-cat-sales); }
+            .tf-cashviz .sw-returns  { background: var(--tf-cat-returns); }
+            .tf-cashviz .sw-cumulative { background: var(--tf-cat-cumulative); }
+            /* waterfall (SVG) */
+            .tf-cashviz .tf-cv-wf { display: block; width: 100%; height: auto; margin-top: var(--tf-space-4); }
+            .tf-cashviz .tf-cv-wf text { font-family: var(--tf-font-body); }
+            .tf-cashviz .tf-cv-zero { stroke: var(--tf-ink); stroke-width: 1; }
+            .tf-cashviz .tf-cv-conn { stroke: var(--tf-stone); stroke-width: 1; stroke-dasharray: 3 3; }
+            .tf-cashviz .tf-cv-seg  { stroke: var(--tf-paper); stroke-width: 0.5; }
+            .tf-cashviz .seg-product  { fill: var(--tf-cat-product); }
+            .tf-cashviz .seg-shiptar  { fill: var(--tf-cat-shiptar); }
+            .tf-cashviz .seg-storage  { fill: var(--tf-cat-storage); }
+            .tf-cashviz .seg-ads      { fill: var(--tf-cat-ads); }
+            .tf-cashviz .seg-fulfil   { fill: var(--tf-cat-fulfil); }
+            .tf-cashviz .seg-platform { fill: var(--tf-cat-platform); }
+            .tf-cashviz .seg-sales    { fill: var(--tf-cat-sales); }
+            .tf-cashviz .seg-returns  { fill: var(--tf-cat-returns); }
+            .tf-cashviz .seg-cumulative { fill: var(--tf-cat-cumulative); }
+            .tf-cashviz .tf-cv-val { fill: var(--tf-ink-soft); font-size: 11px; text-anchor: middle; }
+            .tf-cashviz .tf-cv-axis { fill: var(--tf-ink-soft); font-size: 11px; text-anchor: middle; }
+            .tf-cashviz .tf-cv-zerolab { fill: var(--tf-ink-soft); font-size: 11px; text-anchor: start; }
+  </style>
+</head>
+<body class="tf-app">
+  <!-- Shared header injected from partials.html -->
+  <div id="tf-header"></div>
+
+  <main class="tf-section" data-blog-id="blog-010">
+    <div class="tf-container">
+      <div class="tf-prose-layout" data-toc>
+      <div class="tf-prose">
+        <!-- TOP NAV ROW: back-to-blogs (left) + prev/next pager (right).
+             blog.js fills the pager; an absent neighbour renders muted. -->
+        <div class="tf-post-topnav">
+          <a href="blogs.html">← Blogs</a>
+          <span class="tf-post-pager"></span>
+        </div>
+        <!-- POST HEADER: h1 → dek → date (divider). blog.js appends
+             " · N min read" to the date meta. An optional rail image renders
+             from the manifest's "image" field — never marked up here. -->
+        <h1>Cashflow: What Unit Economics Doesn't Tell You</h1>
+        <p class="tf-prose-intro">A follow-up to the unit economics post — because a healthy per-unit P&amp;L can still put you deep in the hole before you see your first dollar back.</p>
+        <p class="tf-meta">December 28, 2025</p>
+
+        <p>In the last post, we broke down the most fundamental part of the P&amp;L — unit economics — and worked through what it takes to make money on a $2 coaster set or a $20 coffee maker. If you haven't read it, this post picks up where that one left off.</p>
+
+        <p>Let's take the $20 coffee maker forward. Assume you sell it for $200 (10× ex-factory) with free shipping. Working through the six variable cost categories, the unit P&amp;L stacks up to a $48 profit at 24% gross margin. On paper, that's a solid business.</p>
+
+        <p>But that number is incomplete. The moment you account for <strong>when</strong> those costs hit versus <strong>when</strong> revenue arrives, the picture changes.</p>
+
+        <h2>The Unit P&amp;L Ignores Time</h2>
+
+        <p>The unit P&amp;L stacks every cost and the revenue into a single column, as if they all happen simultaneously. In reality, those events are spread across months — and the gap between when cash goes out and when it comes back in is where businesses get into trouble.</p>
+
+        <p>Assume it takes seven months from placing your first purchase order to your first sale hitting the customer. Suppliers want to be paid when their service is completed. Ads and storage run every month while the goods are in transit and sitting on a shelf. Your marketplace holds your revenue, and returns can settle a month after the sale — so a single unit's cashflow cycle actually stretches across eight months from PO to close.</p>
+
+        <p>Here's what the same unit looks like plotted across the cycle:</p>
+
+        <!-- ============================================================
+             PAGE-LOCAL COMPONENT — blog-010 only. One integrated cashflow
+             visualization (not a reusable pattern), so it lives here, not in
+             STYLE.css — same footing as blog-007's map and blog-009's bar chart.
+             Static, no JS. Everything scoped under .tf-cashviz; colours are the
+             shared --tf-cat-* category palette (STYLE.css v032), so this figure,
+             its swatches, and blog-009's bar chart read in one colour language.
+             Three panels: the table pairs each category's unit-P&L total (Panel
+             A, left) with its month-by-month cash timing (Panel B, m1-m9), the
+             cumulative row running the balance to the trough and back; the
+             waterfall (Panel C) draws the same movements, each bar stacking its
+             categories and stepping from the running total, the m9 bar holding
+             the +$48 close in the Cumulative P&L tint. Scoped <style> in <head>,
+             outside .tf-prose's text flow, so §6 reading-time never counts it.
+             ============================================================ -->
+        <div class="tf-cashviz">
+          <div class="tf-cv-scroll">
+            <table>
+              <thead>
+                <tr><th scope="col" class="tf-cv-cat">Cost category</th><th scope="col" class="tf-cv-pl">Unit P&amp;L</th><th scope="col" class="tf-cv-m">m1</th><th scope="col" class="tf-cv-m">m2</th><th scope="col" class="tf-cv-m">m3</th><th scope="col" class="tf-cv-m">m4</th><th scope="col" class="tf-cv-m">m5</th><th scope="col" class="tf-cv-m">m6</th><th scope="col" class="tf-cv-m">m7</th><th scope="col" class="tf-cv-m">m8</th><th scope="col" class="tf-cv-m">m9</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row"><span class="tf-cv-sw sw-product"></span>Product Purchase</th><td class="tf-cv-pl">($20)</td><td class="tf-cv-m">($20)</td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td></tr>
+                <tr><th scope="row"><span class="tf-cv-sw sw-shiptar"></span>Shipping &amp; Tariff</th><td class="tf-cv-pl">($21)</td><td class="tf-cv-m"></td><td class="tf-cv-m">($21)</td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td></tr>
+                <tr><th scope="row"><span class="tf-cv-sw sw-storage"></span>3PL Storage</th><td class="tf-cv-pl">($10)</td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m">($2.50)</td><td class="tf-cv-m">($2.50)</td><td class="tf-cv-m">($2.50)</td><td class="tf-cv-m">($2.50)</td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td></tr>
+                <tr><th scope="row"><span class="tf-cv-sw sw-ads"></span>Online Ads</th><td class="tf-cv-pl">($40)</td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m">($10)</td><td class="tf-cv-m">($10)</td><td class="tf-cv-m">($10)</td><td class="tf-cv-m">($10)</td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td></tr>
+                <tr><th scope="row"><span class="tf-cv-sw sw-fulfil"></span>Fulfillment</th><td class="tf-cv-pl">($21)</td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m">($21)</td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td></tr>
+                <tr><th scope="row"><span class="tf-cv-sw sw-platform"></span>e-Comm Platform</th><td class="tf-cv-pl">($30)</td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m">($30)</td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td></tr>
+                <tr><th scope="row"><span class="tf-cv-sw sw-sales"></span>Sales Revenue</th><td class="tf-cv-pl">+$200</td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m">+$200</td><td class="tf-cv-m"></td><td class="tf-cv-m"></td></tr>
+                <tr><th scope="row"><span class="tf-cv-sw sw-returns"></span>Return &amp; Discard</th><td class="tf-cv-pl">($10)</td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m"></td><td class="tf-cv-m">($10)</td><td class="tf-cv-m"></td></tr>
+                <tr class="tf-cv-cum"><th scope="row"><span class="tf-cv-sw sw-cumulative"></span>Cumulative P&amp;L</th><td class="tf-cv-pl">+$48</td><td class="tf-cv-m">($20)</td><td class="tf-cv-m">($41)</td><td class="tf-cv-m">($53.50)</td><td class="tf-cv-m">($66)</td><td class="tf-cv-m">($78.50)</td><td class="tf-cv-m">($142)</td><td class="tf-cv-m">+$58</td><td class="tf-cv-m">+$48</td><td class="tf-cv-m">+$48</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <svg class="tf-cv-wf" viewBox="0 0 636 294" role="img" aria-label="Cashflow waterfall across the nine-month cycle: each month's bar is colour-coded by cost category and steps down from the running total to a trough of minus $142 by Month 6, up $200 of sales in Month 7, down $10 of returns in Month 8, settling at a net position of plus $48 held through Month 9.">
+            <line class="tf-cv-zero" x1="14" y1="86.7" x2="622" y2="86.7"/>
+            <text class="tf-cv-zerolab" x="14" y="81.7">$0</text>
+            <rect class="tf-cv-seg seg-product" x="25.8" y="86.7" width="44" height="23.0"><title>Product Purchase — $20</title></rect>
+            <text class="tf-cv-val" x="47.8" y="123.7">($20)</text>
+            <text class="tf-cv-axis" x="47.8" y="286.0">m1</text>
+            <rect class="tf-cv-seg seg-shiptar" x="93.3" y="109.7" width="44" height="24.1"><title>Shipping & Tariff — $21</title></rect>
+            <text class="tf-cv-val" x="115.3" y="147.8">($21)</text>
+            <text class="tf-cv-axis" x="115.3" y="286.0">m2</text>
+            <rect class="tf-cv-seg seg-storage" x="160.9" y="133.8" width="44" height="2.9"><title>3PL Storage — $2.50</title></rect>
+            <rect class="tf-cv-seg seg-ads" x="160.9" y="136.7" width="44" height="11.5"><title>Online Ads — $10</title></rect>
+            <text class="tf-cv-val" x="182.9" y="162.2">($12.50)</text>
+            <text class="tf-cv-axis" x="182.9" y="286.0">m3</text>
+            <rect class="tf-cv-seg seg-storage" x="228.4" y="148.2" width="44" height="2.9"><title>3PL Storage — $2.50</title></rect>
+            <rect class="tf-cv-seg seg-ads" x="228.4" y="151.1" width="44" height="11.5"><title>Online Ads — $10</title></rect>
+            <text class="tf-cv-val" x="250.4" y="176.6">($12.50)</text>
+            <text class="tf-cv-axis" x="250.4" y="286.0">m4</text>
+            <rect class="tf-cv-seg seg-storage" x="296.0" y="162.6" width="44" height="2.9"><title>3PL Storage — $2.50</title></rect>
+            <rect class="tf-cv-seg seg-ads" x="296.0" y="165.5" width="44" height="11.5"><title>Online Ads — $10</title></rect>
+            <text class="tf-cv-val" x="318.0" y="191.0">($12.50)</text>
+            <text class="tf-cv-axis" x="318.0" y="286.0">m5</text>
+            <rect class="tf-cv-seg seg-storage" x="363.6" y="177.0" width="44" height="2.9"><title>3PL Storage — $2.50</title></rect>
+            <rect class="tf-cv-seg seg-ads" x="363.6" y="179.8" width="44" height="11.5"><title>Online Ads — $10</title></rect>
+            <rect class="tf-cv-seg seg-fulfil" x="363.6" y="191.3" width="44" height="24.1"><title>Fulfillment — $21</title></rect>
+            <rect class="tf-cv-seg seg-platform" x="363.6" y="215.5" width="44" height="34.5"><title>e-Comm Platform — $30</title></rect>
+            <text class="tf-cv-val" x="385.6" y="264.0">($63.50)</text>
+            <text class="tf-cv-axis" x="385.6" y="286.0">m6</text>
+            <rect class="tf-cv-seg seg-sales" x="431.1" y="20.0" width="44" height="230.0"><title>Sales Revenue — $200</title></rect>
+            <text class="tf-cv-val" x="453.1" y="14.0">+$200</text>
+            <text class="tf-cv-axis" x="453.1" y="286.0">m7</text>
+            <rect class="tf-cv-seg seg-returns" x="498.7" y="20.0" width="44" height="11.5"><title>Return & Discard — $10</title></rect>
+            <text class="tf-cv-val" x="520.7" y="45.5">($10)</text>
+            <text class="tf-cv-axis" x="520.7" y="286.0">m8</text>
+            <rect class="tf-cv-seg seg-cumulative" x="566.2" y="31.5" width="44" height="55.2"><title>Cumulative P&amp;L — +$48</title></rect>
+            <text class="tf-cv-val" x="588.2" y="25.5">+$48</text>
+            <text class="tf-cv-axis" x="588.2" y="286.0">m9</text>
+            <line class="tf-cv-conn" x1="69.8" y1="109.7" x2="93.3" y2="109.7"/>
+            <line class="tf-cv-conn" x1="137.3" y1="133.8" x2="160.9" y2="133.8"/>
+            <line class="tf-cv-conn" x1="204.9" y1="148.2" x2="228.4" y2="148.2"/>
+            <line class="tf-cv-conn" x1="272.4" y1="162.6" x2="296.0" y2="162.6"/>
+            <line class="tf-cv-conn" x1="340.0" y1="177.0" x2="363.6" y2="177.0"/>
+            <line class="tf-cv-conn" x1="407.6" y1="250.0" x2="431.1" y2="250.0"/>
+            <line class="tf-cv-conn" x1="475.1" y1="20.0" x2="498.7" y2="20.0"/>
+            <line class="tf-cv-conn" x1="542.7" y1="31.5" x2="566.2" y2="31.5"/>
+          </svg>
+        </div>
+
+        <p>Read left to right along the waterfall. You place the purchase order in Month 1. By Month 6 — before a single dollar of revenue arrives — you are <strong>$142 in the hole</strong> on this one unit. The sale happens in Month 6; the revenue hits your bank account in Month 7, finally turning you net positive. In Month 8, the 5% return probability catches up, and you settle at the $48 profit that the unit P&amp;L predicted from the start.</p>
+
+        <p>That's an <strong>eight-month cashflow cycle on a single unit</strong>. The unit P&amp;L says $48 profit. The cashflow timeline says you're down $142 before you make that $48. That gives you an ROI of $48 ÷ $142 = <strong>33.8%</strong>. Extremely healthy — a genuinely lucrative business, if you have the working capital to run it.</p>
+
+        <h2>Now Multiply by 100 Units</h2>
+
+        <p>Here's where it gets more complicated.</p>
+
+        <p>If you're buying and selling 100 units, is it true that you'll need $142 × 100 = $14,200 in working capital, and at the end you'll pocket $48 × 100 = $4,800?</p>
+
+        <p><strong>No.</strong> The cash gap will be much larger than $14,200.</p>
+
+        <p>You have to buy and ship all 100 units at once — the ex-factory, ocean, and tariff costs land as one lump in Month 1 or 2. But you only sell them one at a time. If you move 10 units a month, it takes ten months to work through the batch — and by Month 8 you'll need to place the <strong>next</strong> purchase order, so a new $142 hole opens on 100 more units while the first batch is still selling through.</p>
+
+        <p>Do the math for yourself, or come to one of our seminars where we work through it together. Either way, the takeaway is the same: batch buying and per-unit selling mean the cash trough scales worse than linearly with volume.</p>
+
+        <h2>And Then There's Everything Else</h2>
+
+        <p>None of the above accounts for the costs of running the <strong>business</strong>, as opposed to selling the <strong>unit</strong>.</p>
+
+        <p>On an annual basis, for example, you have entity filing fees (amount varies by state and entity type) and CPA service fees. On a monthly basis, you're paying the Amazon Professional Seller plan (a flat $39.99, separate from the 15% referral fee that lives in the unit P&amp;L), a business phone line, a mailbox, office or storage rent. Per-shipment or per-batch you're paying for thermal labels, UPS barcodes, carton boxes, bank transaction fees. And there are compliance costs — the ones you can't afford to skip, because the fine is worse than the fee. Every business will have its own list.</p>
+
+        <p>Some of these are truly fixed — you pay them whether you sell one unit or a million. Others are variable but on their own schedule. Some you can absorb by doing yourself; others you want a professional to handle because the cost of getting them wrong is much larger than the cost of doing them right.</p>
+
+        <p>Don't let the startup urge push you into spending on the wrong things. <strong>Cash is king; every penny counts.</strong> But don't skimp on the things where DIY costs you more than it saves — CPAs, entity setup, and compliance are near the top of that list.</p>
+
+        <h2>What to Take Away</h2>
+
+        <p>Unit economics tell you whether a product <strong>can</strong> make money. Cashflow tells you whether you can <strong>afford to run</strong> the business that produces it. Both matter — one without the other is a partial picture.</p>
+
+        <p>If you're at the stage of stress-testing your own numbers, browse our free resources and knowledge bank to jump-start the work — or <a href="contact.html">contact us</a> if you'd like to walk through it together.</p>
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared footer injected from partials.html -->
+  <div id="tf-footer"></div>
+
+  <!-- Fetch snippet: load partials.html (relative), inject header/footer,
+       mark the current nav link, and wire dropdowns + the mobile menu.
+       Fails silently (no nav rather than a broken page). -->
+  <script src="assets/partials.js" defer></script>
+  <script src="assets/toc.js"></script>
+  <script src="assets/blog.js"></script>
+</body>
+</html>
