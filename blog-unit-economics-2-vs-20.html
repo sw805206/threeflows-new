@@ -1,0 +1,269 @@
+<!--
+  blog-template.html — COPY-SOURCE for new blog posts. NOT servable content.
+
+  To create a post: copy this file to blog-<slug>.html, set data-blog-id on
+  <main> to the post's blogID, fill the title / dek / date / body, and
+  add a matching entry to bloglist.json. This file is NOT a post: it is excluded
+  from the nav and the backlog page checklist, its data-blog-id is empty, and it
+  is never listed in bloglist.json — so blog.js never treats it as a post
+  despite its blog- prefix.
+
+  Structure mirrors privacy.html: partials-injected header/footer, the
+  .tf-container two-column layout with the data-toc rail, the .tf-prose measure,
+  and the header divider under the meta line. The header block is adapted for
+  posts (h1 → dek → publish-date meta → divider).
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Is a $2 or a $20 Product Better for Your Business? — Three Flows Solutions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+  <!-- Page-local styles for blog-009's stacked-bar figure. Kept out of
+       STYLE.css (a one-off editorial figure, not a shared pattern) and out of
+       .tf-prose (so the reading-time scope never counts CSS as words). Every
+       selector is .tf-bar-chart-scoped; existing tokens only. -->
+  <style>
+            .tf-bar-chart { margin: var(--tf-space-4) 0; }
+            .tf-bar-chart .tf-bar-scroll { overflow-x: auto; }
+            .tf-bar-chart .tf-bar-group + .tf-bar-group {
+              margin-top: var(--tf-space-4);
+              padding-top: var(--tf-space-4);
+              border-top: 1px solid var(--tf-stone-light);
+            }
+            .tf-bar-chart .tf-bar-heading {
+              font-family: var(--tf-font-body); font-size: var(--tf-text-sm);
+              font-weight: 700; color: var(--tf-ink);
+              margin: 0 0 var(--tf-space-3); text-transform: none; letter-spacing: normal;
+            }
+            .tf-bar-chart .tf-bar-row {
+              display: flex; align-items: flex-start;
+              gap: 12px; margin: 0 0 var(--tf-space-3);
+            }
+            .tf-bar-chart .tf-bar-rowlabel {
+              flex: 0 0 auto; width: 88px; height: 36px;
+              display: flex; align-items: center; justify-content: flex-end;
+              text-align: right; font-size: var(--tf-text-xs); color: var(--tf-ink-soft);
+            }
+            .tf-bar-chart .tf-bar-plot { flex: 0 0 auto; position: relative; }
+            .tf-bar-chart .tf-bar-track {
+              display: flex; height: 36px;
+              border: 1px solid var(--tf-stone-light); background: var(--tf-paper);
+            }
+            .tf-bar-chart .tf-bar-seg {
+              height: 100%; flex: 0 0 auto; box-sizing: border-box;
+              display: flex; align-items: center; justify-content: center; overflow: hidden;
+            }
+            .tf-bar-chart .tf-bar-seg + .tf-bar-seg { border-left: 1px solid var(--tf-paper); }
+            .tf-bar-chart .tf-bar-inval {
+              font-size: 11px; line-height: 1; color: var(--tf-ink); white-space: nowrap;
+            }
+            .tf-bar-chart .tf-bar-total {
+              flex: 0 0 auto; height: 36px; display: flex; align-items: center;
+              font-size: var(--tf-text-sm); color: var(--tf-ink); white-space: nowrap;
+            }
+            .tf-bar-chart .tf-bar-callouts { position: relative; height: 40px; }
+            .tf-bar-chart .tf-bar-co {
+              position: absolute; top: 0; transform: translateX(-50%);
+              display: flex; flex-direction: column; align-items: center;
+            }
+            .tf-bar-chart .tf-bar-lead { width: 1px; background: var(--tf-stone); }
+            .tf-bar-chart .tf-bar-co.lvl0 .tf-bar-lead { height: 8px; }
+            .tf-bar-chart .tf-bar-co.lvl1 .tf-bar-lead { height: 22px; }
+            .tf-bar-chart .tf-bar-coval {
+              font-size: 11px; line-height: 1.1; color: var(--tf-ink-soft); white-space: nowrap;
+            }
+            .tf-bar-chart .tf-bar-foot {
+              font-size: var(--tf-text-xs); color: var(--tf-ink-soft);
+              margin: 2px 0 0; white-space: nowrap;
+            }
+            .tf-bar-chart .tf-bar-legend {
+              display: flex; flex-wrap: wrap; gap: var(--tf-space-1) var(--tf-space-2);
+              margin-top: var(--tf-space-3);
+              font-size: var(--tf-text-xs); letter-spacing: 0.06em;
+              text-transform: uppercase; color: var(--tf-ink-soft);
+            }
+            .tf-bar-chart .tf-bar-key { display: inline-flex; align-items: center; gap: 6px; }
+            .tf-bar-chart .tf-bar-sw { width: 13px; height: 13px; display: inline-block; border: 1px solid var(--tf-stone-light); }
+            .tf-bar-chart .seg-product { background: color-mix(in srgb, var(--tf-chart-2) 55%, var(--tf-paper)); }
+            .tf-bar-chart .seg-shiptar { background: color-mix(in srgb, var(--tf-chart-3) 55%, var(--tf-paper)); }
+            .tf-bar-chart .seg-storage { background: color-mix(in srgb, var(--tf-stone) 75%, var(--tf-paper)); }
+            .tf-bar-chart .seg-fulfil { background: color-mix(in srgb, var(--tf-chart-4) 55%, var(--tf-paper)); }
+            .tf-bar-chart .seg-selling { background: color-mix(in srgb, var(--tf-chart-5) 55%, var(--tf-paper)); }
+            .tf-bar-chart .seg-returns { background: color-mix(in srgb, var(--tf-chart-1) 55%, var(--tf-paper)); }
+            .tf-bar-chart .seg-margin { background: var(--tf-ink); }
+  </style>
+</head>
+<body class="tf-app">
+  <!-- Shared header injected from partials.html -->
+  <div id="tf-header"></div>
+
+  <main class="tf-section" data-blog-id="blog-009">
+    <div class="tf-container">
+      <div class="tf-prose-layout" data-toc>
+      <div class="tf-prose">
+        <!-- TOP NAV ROW: back-to-blogs (left) + prev/next pager (right).
+             blog.js fills the pager; an absent neighbour renders muted. -->
+        <div class="tf-post-topnav">
+          <a href="blogs.html">← Blogs</a>
+          <span class="tf-post-pager"></span>
+        </div>
+        <!-- POST HEADER: h1 → dek → date (divider). blog.js appends
+             " · N min read" to the date meta. An optional rail image renders
+             from the manifest's "image" field — never marked up here. -->
+        <h1>Is a $2 or a $20 Product Better for Your Business?</h1>
+        <p class="tf-prose-intro">A quick unit economics walk-down, the "free shipping" trap, and how to tell whether a product is worth your time to sell.</p>
+        <p class="tf-meta">November 15, 2025</p>
+
+        <p>If you're buying a $2 or a $20 product from a vendor to resell, you want to know how much you should mark it up to make a profit — and, ultimately, whether it's worth your time to do at all.</p>
+
+        <p>The honest answer starts with "it depends" — because there are a lot of ifs and buts. Let's start simple: break down the detailed cost stack for one unit — calculate the <strong>unit economics</strong>, the per-unit P&amp;L, and understand the cost of goods sold (COGS) structure.</p>
+
+        <h2>The Six Variable Cost Categories — and How to Reduce Them</h2>
+
+        <p><strong>1. Product cost.</strong> A $2 product might be something like a coaster or a small coin pouch. A $20 product might be a coffee maker or a folding chair. You can find both on Alibaba, but the secret is 1688.com if you can navigate the language barrier — it's Alibaba's Chinese domestic version, with roughly 10× more products than Alibaba, meaningfully cheaper prices, and fresh designs that typically appear about three months before they surface elsewhere. However, quality and packaging are hit or miss, which is why sampling matters.</p>
+
+        <p><strong>2. Shipping and tariff.</strong> If you have volume and can absorb the wait, ocean freight is the answer — roughly $3 per kg. Air freight is a lot faster but a lot more expensive. Tariff depends on the product category and current US policy. For illustration, we'll use 30% of product cost. Therefore, on a $2 product at 0.5 kg, that's about $1.50 shipping + $0.60 tariff. On a $20 product at 5 kg, it's about $15 + $6.</p>
+
+        <p><strong>3. Storage.</strong> Once your goods arrive in the US, they need somewhere to sit. A small light product might fit in your garage — effectively free until you outgrow it. A larger product will need a paid storage unit or a 3PL warehouse — they charge by product volume and how long it sits there — typically $5-15 per unit across a 4-month holding period for that $20 product.</p>
+
+        <p><strong>4. Selling cost.</strong> Whether you sell online or offline, this line is significant — usually 20-50% of your selling price. It includes the platform's referral or commission (Amazon: ~15%; Shopify: lower base but you pay for traffic yourself), plus advertising to actually get the product in front of buyers (typically another 15-25%). Retail and wholesale channels replace platform fees with trade margins in the same 30-50% range. Skipping ads is possible; skipping fees is not.</p>
+
+        <p><strong>5. Fulfillment.</strong> Pick, pack, label, and last-mile delivery. Pick and pack is "free" if you're doing it yourself, typically $1-2 per order at a 3PL. Last-mile parcel delivery is where the real money goes: $7-30 per shipment for B2C, depending on weight and zone. Parcel rate aggregators can save 35-75% off retail carrier rates, though the actual discount depends on volume, package profile, and negotiation. (This is one of the places where getting outside help pays off — <a href="contact.html">contact us</a> if you want a look at your rate structure.) Selling through retail stores or a flea market eliminates last-mile cost entirely — though you'll pick up other costs in exchange (retail trade margin, booth or shelf fees, staffing).</p>
+
+        <p><strong>6. Loss, damage, and returns.</strong> Return rates typically run 5-20% depending on category. Once returned, it's unlikely you can resell at full price — so treat the return cost as full unit loss plus any return shipping. For illustration, we'll use 5% of selling price.</p>
+
+        <h2>The "Free Shipping" Trap</h2>
+
+        <p>Everyone offers free shipping when selling online. But we all know there's no free lunch. In fact, "free shipping" is a sales pitch. The cost is always baked into the selling price. The consumer pays for the convenience one way or another; the seller's job is to find shipping cheap enough that neither party bears too much of the burden.</p>
+
+        <p>On the flip side, last-mile is the <strong>only</strong> cost the seller has real control over as a strategic lever. Every other line is largely set by the market — factory prices, tariffs, platform fees. Shipping is the one you can either <strong>charge</strong> (recovering the cost, at the price of some conversion) or <strong>absorb</strong> (killing the margin, but lifting the conversion). "Free shipping" isn't a checkbox; it's a strategic choice that changes the whole math.</p>
+
+        <p>Put the six categories together and you can back into a breakeven markup — how many times your ex-factory cost you need to charge just to break even, before margin. Two rough ratios worth carrying:</p>
+
+        <ul>
+          <li>A <strong>$2 product</strong> breaks even at roughly <strong>4× ex-factory</strong> ($8 selling) if the buyer pays shipping, and around <strong>10× ex-factory</strong> ($20 selling) if you offer free shipping.</li>
+          <li>A <strong>$20 product</strong> breaks even at roughly <strong>4.5× ex-factory</strong> ($90 selling) with paid shipping, and around <strong>6×</strong> ($120 selling) with free shipping.</li>
+        </ul>
+
+        <p>Here's what each of the four scenarios looks like as a full stack — small ($2 ex-factory, 0.5 kg) and medium ($20 ex-factory, 5 kg), each at their breakeven markup with paid shipping and with free shipping.</p>
+
+        <!-- ============================================================
+             PAGE-LOCAL COMPONENT — blog-009 only. One-off editorial figure
+             (not a reusable pattern), so it lives here, not in STYLE.css — same
+             footing as blog-007's map. Every rule is scoped under .tf-bar-chart.
+             Pure static HTML + CSS, no JS. Scoped <style> in <head>, outside
+             .tf-prose, so the reading-time scope never counts it (§6).
+             TWO GROUPS, each its own scale: $2 coaster set 20px/$, $20
+             coffee maker 3.5px/$. Within a product, same-$ = same-width;
+             across products widths aren't comparable — the group headings, row
+             labels, and right-hand totals carry the cross-product read. Segment
+             $-values sit inside wide segments; narrow segments get a leader-line
+             callout below (2 levels avoid collisions). Sizes fit the 636px prose
+             measure (label + bar + total) without internal scroll; the overflow-x
+             wrapper only ever engages below the measure.
+             ============================================================ -->
+        <div class="tf-bar-chart">
+          <div class="tf-bar-scroll">
+          <div class="tf-bar-group">
+            <h3 class="tf-bar-heading">$2 coaster set — breakeven</h3>
+            <div class="tf-bar-row">
+              <div class="tf-bar-rowlabel">no free shipping</div>
+              <div class="tf-bar-plot" style="width:160px">
+                <div class="tf-bar-track" role="img" aria-label="no free shipping, $8 (4× cost)">
+                  <span class="tf-bar-seg seg-product" style="width:40px" title="Product $2"><span class="tf-bar-inval">$2</span></span><span class="tf-bar-seg seg-shiptar" style="width:42px" title="Shipping + Tariff $2.10"><span class="tf-bar-inval">$2.10</span></span><span class="tf-bar-seg seg-storage" style="width:10px" title="Storage $0.50"></span><span class="tf-bar-seg seg-selling" style="width:56px" title="Selling $2.80"><span class="tf-bar-inval">$2.80</span></span><span class="tf-bar-seg seg-returns" style="width:8px" title="Returns $0.40"></span><span class="tf-bar-seg seg-margin" style="width:4px" title="Margin $0.20"></span>
+                </div>
+                <div class="tf-bar-callouts"><span class="tf-bar-co lvl0" style="left:87px"><span class="tf-bar-lead"></span><span class="tf-bar-coval">$0.50</span></span><span class="tf-bar-co lvl0" style="left:152px"><span class="tf-bar-lead"></span><span class="tf-bar-coval">$0.40</span></span><span class="tf-bar-co lvl1" style="left:158px"><span class="tf-bar-lead"></span><span class="tf-bar-coval">$0.20</span></span></div>
+                <p class="tf-bar-foot">+ $7 shipping paid by buyer</p>
+              </div>
+              <div class="tf-bar-total">$8 (4× cost)</div>
+            </div>
+            <div class="tf-bar-row">
+              <div class="tf-bar-rowlabel">free shipping</div>
+              <div class="tf-bar-plot" style="width:400px">
+                <div class="tf-bar-track" role="img" aria-label="free shipping, $20 (10× cost)">
+                  <span class="tf-bar-seg seg-product" style="width:40px" title="Product $2"><span class="tf-bar-inval">$2</span></span><span class="tf-bar-seg seg-shiptar" style="width:42px" title="Shipping + Tariff $2.10"><span class="tf-bar-inval">$2.10</span></span><span class="tf-bar-seg seg-storage" style="width:10px" title="Storage $0.50"></span><span class="tf-bar-seg seg-fulfil" style="width:140px" title="Fulfillment $7"><span class="tf-bar-inval">$7</span></span><span class="tf-bar-seg seg-selling" style="width:140px" title="Selling $7"><span class="tf-bar-inval">$7</span></span><span class="tf-bar-seg seg-returns" style="width:20px" title="Returns $1"></span><span class="tf-bar-seg seg-margin" style="width:8px" title="Margin $0.40"></span>
+                </div>
+                <div class="tf-bar-callouts"><span class="tf-bar-co lvl0" style="left:87px"><span class="tf-bar-lead"></span><span class="tf-bar-coval">$0.50</span></span><span class="tf-bar-co lvl0" style="left:382px"><span class="tf-bar-lead"></span><span class="tf-bar-coval">$1</span></span><span class="tf-bar-co lvl1" style="left:396px"><span class="tf-bar-lead"></span><span class="tf-bar-coval">$0.40</span></span></div>
+              </div>
+              <div class="tf-bar-total">$20 (10× cost)</div>
+            </div>
+          </div>
+          <div class="tf-bar-group">
+            <h3 class="tf-bar-heading">$20 coffee maker — breakeven</h3>
+            <div class="tf-bar-row">
+              <div class="tf-bar-rowlabel">no free shipping</div>
+              <div class="tf-bar-plot" style="width:315px">
+                <div class="tf-bar-track" role="img" aria-label="no free shipping, $90 (4.5× cost)">
+                  <span class="tf-bar-seg seg-product" style="width:70px" title="Product $20"><span class="tf-bar-inval">$20</span></span><span class="tf-bar-seg seg-shiptar" style="width:73.5px" title="Shipping + Tariff $21"><span class="tf-bar-inval">$21</span></span><span class="tf-bar-seg seg-storage" style="width:38.5px" title="Storage $11"><span class="tf-bar-inval">$11</span></span><span class="tf-bar-seg seg-selling" style="width:110.25px" title="Selling $31.50"><span class="tf-bar-inval">$31.50</span></span><span class="tf-bar-seg seg-returns" style="width:15.75px" title="Returns $4.50"></span><span class="tf-bar-seg seg-margin" style="width:7px" title="Margin $2"></span>
+                </div>
+                <div class="tf-bar-callouts"><span class="tf-bar-co lvl0" style="left:300.125px"><span class="tf-bar-lead"></span><span class="tf-bar-coval">$4.50</span></span><span class="tf-bar-co lvl1" style="left:311.5px"><span class="tf-bar-lead"></span><span class="tf-bar-coval">$2</span></span></div>
+                <p class="tf-bar-foot">+ $20 shipping paid by buyer</p>
+              </div>
+              <div class="tf-bar-total">$90 (4.5× cost)</div>
+            </div>
+            <div class="tf-bar-row">
+              <div class="tf-bar-rowlabel">free shipping</div>
+              <div class="tf-bar-plot" style="width:420px">
+                <div class="tf-bar-track" role="img" aria-label="free shipping, $120 (6× cost)">
+                  <span class="tf-bar-seg seg-product" style="width:70px" title="Product $20"><span class="tf-bar-inval">$20</span></span><span class="tf-bar-seg seg-shiptar" style="width:73.5px" title="Shipping + Tariff $21"><span class="tf-bar-inval">$21</span></span><span class="tf-bar-seg seg-storage" style="width:38.5px" title="Storage $11"><span class="tf-bar-inval">$11</span></span><span class="tf-bar-seg seg-fulfil" style="width:70px" title="Fulfillment $20"><span class="tf-bar-inval">$20</span></span><span class="tf-bar-seg seg-selling" style="width:147px" title="Selling $42"><span class="tf-bar-inval">$42</span></span><span class="tf-bar-seg seg-returns" style="width:21px" title="Returns $6"></span>
+                </div>
+                <div class="tf-bar-callouts"><span class="tf-bar-co lvl0" style="left:409.5px"><span class="tf-bar-lead"></span><span class="tf-bar-coval">$6</span></span></div>
+              </div>
+              <div class="tf-bar-total">$120 (6× cost)</div>
+            </div>
+          </div>
+          </div>
+          <div class="tf-bar-legend">
+            <span class="tf-bar-key"><span class="tf-bar-sw seg-product"></span>Product</span>
+            <span class="tf-bar-key"><span class="tf-bar-sw seg-shiptar"></span>Shipping + Tariff</span>
+            <span class="tf-bar-key"><span class="tf-bar-sw seg-storage"></span>Storage</span>
+            <span class="tf-bar-key"><span class="tf-bar-sw seg-fulfil"></span>Fulfillment</span>
+            <span class="tf-bar-key"><span class="tf-bar-sw seg-selling"></span>Selling</span>
+            <span class="tf-bar-key"><span class="tf-bar-sw seg-returns"></span>Returns</span>
+            <span class="tf-bar-key"><span class="tf-bar-sw seg-margin"></span>Margin</span>
+          </div>
+        </div>
+
+        <p>Keep in mind, every product is different — the graph and numbers above are for illustration.</p>
+
+        <h2>Caveats for Unit Economics</h2>
+
+        <p>The breakeven walk-down above is useful, but it's a partial picture. Three things it doesn't capture:</p>
+
+        <ul>
+          <li><strong>Only per-unit variable costs (COGS) are in here.</strong> OPEX (rent, staff, subscriptions, insurance) and CAPEX (equipment, tooling, product development, launch spend) sit outside the per-unit math and still have to be paid — and covered by margin from the units you sell.</li>
+          <li><strong>Volume changes the math, in both directions.</strong> Larger orders raise your upfront cost, but they lower nearly every unit cost line — freight rates, 3PL rates, ads efficiency, platform fee tiers, returns processing. The lever that reconciles the two is <strong>velocity</strong>: how fast you can sell what you buy.</li>
+          <li><strong>Unit economics don't show you cash flow.</strong> Most of the costs above are paid weeks or months before the first sale. Whether a good unit-economics product is also a good cash-flow product is a different question — and one we'll cover in the next post.</li>
+        </ul>
+
+        <h2>Don't Get Discouraged</h2>
+
+        <p>Every cost above is knowable, calculable, and optimizable. Suppliers can be negotiated. Shipping rates can be brought down. Storage can be right-sized. Ad efficiency can be tuned. The mechanical side of unit economics rewards patience and discipline — none of it is mysterious.</p>
+
+        <p>What makes the difference between a product that sells and one that doesn't is the <strong>velocity enablers</strong>: a genuinely unique product idea, an audience you know how to reach, an existing sales channel or community you can activate. If any of those are true for you, the cost stack becomes a solvable problem. If none of them are true yet, that's the work — not the math.</p>
+
+        <p>When you're just getting started, you have no clue what will work. Invest as little as possible, DIY as much as possible, and get first-hand experience — that's how you validate whether the cost structure above actually fits your specific product. Once you have a real signal, the optimization work above becomes worth doing.</p>
+
+        <p>We'll be there along the way with you. If you want a walk-through on your specific product, <a href="contact.html">get in touch</a>.</p>
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared footer injected from partials.html -->
+  <div id="tf-footer"></div>
+
+  <!-- Fetch snippet: load partials.html (relative), inject header/footer,
+       mark the current nav link, and wire dropdowns + the mobile menu.
+       Fails silently (no nav rather than a broken page). -->
+  <script src="assets/partials.js" defer></script>
+  <script src="assets/toc.js"></script>
+  <script src="assets/blog.js"></script>
+</body>
+</html>
