@@ -1,4 +1,4 @@
-v002 | last updated: 2026-07-26
+v003 | last updated: 2026-07-27
 
 # PROCESS.md — Human/Claude working procedures (this project)
 
@@ -105,9 +105,19 @@ What does NOT self-update, and must be re-synced by hand:
   derivation notes, group headings, and the printed size/role labels on the type
   specimens are all static text.
 - **The header version stamps** — "generated from STYLE.md vXX / STYLE.css vXX".
+- **The category tint pairings.** The six `.tf-pill-tint-*` samples (background +
+  text) in the Colour section are RAW HEX LITERALS in `STYLE.css`, not tokens, so
+  they CANNOT self-read — their hexes are hardcoded in the stylebook. If a tint's
+  background or text hex changes in `STYLE.css`, update the matching sample and its
+  printed hexes by hand; likewise update the tag→tint labels (Plan · Source ·
+  Launch · Scale · Collab) if STYLE.md's tag→tint map changes. This is the tints'
+  manual-drift surface, distinct from the self-reading token swatches.
 
 So whenever a STYLE.css / STYLE.md version bumps, check the diff for a token
 ADD / REMOVE / RENAME (a value-only change needs nothing). If there is one, add /
 remove / rename the affected swatch or specimen and its label, then update the two
-header stamps. A pure component or layout change with no token/scale set change
-needs no stylebook update.
+header stamps. Separately, check for a change to any `.tf-pill-tint-*` literal (bg
+or text) or the tag→tint map, and hand-sync the tint pairings — a raw-literal edit
+is NOT a token change and will not surface as one. A pure component or layout
+change with no token/scale set change and no tint-literal change needs no stylebook
+update.
