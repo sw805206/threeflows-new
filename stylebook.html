@@ -30,6 +30,11 @@
     .sb-fam { display: flex; gap: var(--tf-space-4); flex-wrap: wrap; margin: var(--tf-space-3) 0 var(--tf-space-6); }
     .sb-fam-card { border: var(--tf-rule-light); padding: var(--tf-space-3); flex: 1 1 300px; }
     .sb-fam-card .sb-fam-sample { font-size: var(--tf-text-2xl); margin: 0 0 var(--tf-space-1); color: var(--tf-ink); }
+    /* Tint pairings: a FLAT sample block (bg + text colour only — deliberately
+       NOT the pill's radius/padding), so it shows the colour pairing, not the
+       component shape. Hexes are hardcoded literals (tints are not tokens), so
+       these are NOT read by the .sb-swatch script. */
+    .sb-tint { height: 88px; border-radius: 4px; border: var(--tf-rule-light); display: flex; align-items: center; justify-content: center; font-family: var(--tf-font-body); font-weight: 600; font-size: 13px; letter-spacing: 0.02em; }
   </style>
 </head>
 <body class="tf-app">
@@ -41,7 +46,7 @@
     <div class="tf-container">
       <div class="tf-kicker">Internal</div>
       <h1>Stylebook</h1>
-      <p class="tf-prose-intro">Generated from <strong>STYLE.md v025</strong> / <strong>STYLE.css v030</strong>. Hidden page, not in nav — reachable by URL only. Every example links the live <code>STYLE.css</code>, and each swatch's hex is read at runtime from its own computed colour, so neither the colours nor the printed values can drift from the tokens. Regenerate per PROCESS.md when a STYLE version adds, removes, or renames a token — the swatch/specimen <em>set</em> is manual; the values self-update.</p>
+      <p class="tf-prose-intro">Generated from <strong>STYLE.md v028</strong> / <strong>STYLE.css v031</strong>. Hidden page, not in nav — reachable by URL only. Every example links the live <code>STYLE.css</code>, and each swatch's hex is read at runtime from its own computed colour, so neither the colours nor the printed values can drift from the tokens. Regenerate per PROCESS.md when a STYLE version adds, removes, or renames a token — the swatch/specimen <em>set</em> is manual; the values self-update.</p>
 
       <!-- ══════════════ COLOUR ══════════════ -->
       <h2>Colour</h2>
@@ -86,6 +91,17 @@
         <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-chart-4)"><span class="sb-hex"></span></div><div class="sb-token">--tf-chart-4</div><p class="sb-note">teal</p></div>
         <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-chart-5)"><span class="sb-hex"></span></div><div class="sb-token">--tf-chart-5</div><p class="sb-note">plum</p></div>
         <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-chart-6)"><span class="sb-hex"></span></div><div class="sb-token">--tf-chart-6</div><p class="sb-note">stone</p></div>
+      </div>
+
+      <h3>Category tint pairings</h3>
+      <p class="sb-group-note">The six <code>.tf-pill-tint-*</code> pairings — a wash background + a deep text of the same hue — carry the engagement category tags. Each sample below shows the real text-on-background combination (colour pairing only, not the pill's shape). <strong>Tint pairs are hardcoded literals in STYLE.css (not tokens) — if a tint's hex changes, update here manually.</strong> Unlike the token swatches above, these hexes cannot self-read. Tag → tint vocabulary is fixed by STYLE.md §2 ("Tag → tint mapping"); a new phase takes the next unused hue, never re-pointing an existing one.</p>
+      <div class="sb-grid">
+        <div class="sb-card"><div class="sb-tint" style="background: #F7E4E1; color: #8F1E12;">Plan</div><div class="sb-token">tint-brick</div><p class="sb-note">bg <code>#F7E4E1</code> · text <code>#8F1E12</code><br>Tag: <strong>Plan</strong></p></div>
+        <div class="sb-card"><div class="sb-tint" style="background: #E3EAF2; color: #24466B;">Scale</div><div class="sb-token">tint-slate</div><p class="sb-note">bg <code>#E3EAF2</code> · text <code>#24466B</code><br>Tag: <strong>Scale</strong></p></div>
+        <div class="sb-card"><div class="sb-tint" style="background: #F4EAD4; color: #7A5410;">Source</div><div class="sb-token">tint-ochre</div><p class="sb-note">bg <code>#F4EAD4</code> · text <code>#7A5410</code><br>Tag: <strong>Source</strong></p></div>
+        <div class="sb-card"><div class="sb-tint" style="background: #DDEDED; color: #175355;">Launch</div><div class="sb-token">tint-teal</div><p class="sb-note">bg <code>#DDEDED</code> · text <code>#175355</code><br>Tag: <strong>Launch</strong></p></div>
+        <div class="sb-card"><div class="sb-tint" style="background: #F2E3EA; color: #632846;">Collab</div><div class="sb-token">tint-plum</div><p class="sb-note">bg <code>#F2E3EA</code> · text <code>#632846</code><br>Tag: <strong>Collab</strong></p></div>
+        <div class="sb-card"><div class="sb-tint" style="background: #ECE7E1; color: #55504D;">reserved</div><div class="sb-token">tint-stone</div><p class="sb-note">bg <code>#ECE7E1</code> · text <code>#55504D</code><br>Tag: <strong>— (reserved / unmapped)</strong></p></div>
       </div>
 
       <!-- ══════════════ TYPOGRAPHY ══════════════ -->
