@@ -46,7 +46,7 @@
     <div class="tf-container">
       <div class="tf-kicker">Internal</div>
       <h1>Stylebook</h1>
-      <p class="tf-prose-intro">Generated from <strong>STYLE.md v028</strong> / <strong>STYLE.css v031</strong>. Hidden page, not in nav — reachable by URL only. Every example links the live <code>STYLE.css</code>, and each swatch's hex is read at runtime from its own computed colour, so neither the colours nor the printed values can drift from the tokens. Regenerate per PROCESS.md when a STYLE version adds, removes, or renames a token — the swatch/specimen <em>set</em> is manual; the values self-update.</p>
+      <p class="tf-prose-intro">Generated from <strong>STYLE.md v029</strong> / <strong>STYLE.css v032</strong>. Hidden page, not in nav — reachable by URL only. Every example links the live <code>STYLE.css</code>, and each swatch's hex is read at runtime from its own computed colour, so neither the colours nor the printed values can drift from the tokens. Regenerate per PROCESS.md when a STYLE version adds, removes, or renames a token — the swatch/specimen <em>set</em> is manual; the values self-update.</p>
 
       <!-- ══════════════ COLOUR ══════════════ -->
       <h2>Colour</h2>
@@ -93,15 +93,40 @@
         <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-chart-6)"><span class="sb-hex"></span></div><div class="sb-token">--tf-chart-6</div><p class="sb-note">stone</p></div>
       </div>
 
-      <h3>Category tint pairings</h3>
-      <p class="sb-group-note">The six <code>.tf-pill-tint-*</code> pairings — a wash background + a deep text of the same hue — carry the engagement category tags. Each sample below shows the real text-on-background combination (colour pairing only, not the pill's shape). <strong>Tint pairs are hardcoded literals in STYLE.css (not tokens) — if a tint's hex changes, update here manually.</strong> Unlike the token swatches above, these hexes cannot self-read. Tag → tint vocabulary is fixed by STYLE.md §2 ("Tag → tint mapping"); a new phase takes the next unused hue, never re-pointing an existing one.</p>
+      <h3>Category washes</h3>
+      <p class="sb-group-note">Six pale hue tints, one per data-palette hue. Promoted from the <code>.tf-pill-tint-*</code> literals (v032) so the engagement-tag pills and the <code>--tf-cat-*</code> data-viz palette below share one source; the pill DEEP TEXT colours remain literals (see Category tint pairings).</p>
       <div class="sb-grid">
-        <div class="sb-card"><div class="sb-tint" style="background: #F7E4E1; color: #8F1E12;">Plan</div><div class="sb-token">tint-brick</div><p class="sb-note">bg <code>#F7E4E1</code> · text <code>#8F1E12</code><br>Tag: <strong>Plan</strong></p></div>
-        <div class="sb-card"><div class="sb-tint" style="background: #E3EAF2; color: #24466B;">Scale</div><div class="sb-token">tint-slate</div><p class="sb-note">bg <code>#E3EAF2</code> · text <code>#24466B</code><br>Tag: <strong>Scale</strong></p></div>
-        <div class="sb-card"><div class="sb-tint" style="background: #F4EAD4; color: #7A5410;">Source</div><div class="sb-token">tint-ochre</div><p class="sb-note">bg <code>#F4EAD4</code> · text <code>#7A5410</code><br>Tag: <strong>Source</strong></p></div>
-        <div class="sb-card"><div class="sb-tint" style="background: #DDEDED; color: #175355;">Launch</div><div class="sb-token">tint-teal</div><p class="sb-note">bg <code>#DDEDED</code> · text <code>#175355</code><br>Tag: <strong>Launch</strong></p></div>
-        <div class="sb-card"><div class="sb-tint" style="background: #F2E3EA; color: #632846;">Collab</div><div class="sb-token">tint-plum</div><p class="sb-note">bg <code>#F2E3EA</code> · text <code>#632846</code><br>Tag: <strong>Collab</strong></p></div>
-        <div class="sb-card"><div class="sb-tint" style="background: #ECE7E1; color: #55504D;">reserved</div><div class="sb-token">tint-stone</div><p class="sb-note">bg <code>#ECE7E1</code> · text <code>#55504D</code><br>Tag: <strong>— (reserved / unmapped)</strong></p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-wash-brick)"><span class="sb-hex"></span></div><div class="sb-token">--tf-wash-brick</div><p class="sb-note">brick wash</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-wash-slate)"><span class="sb-hex"></span></div><div class="sb-token">--tf-wash-slate</div><p class="sb-note">slate wash</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-wash-ochre)"><span class="sb-hex"></span></div><div class="sb-token">--tf-wash-ochre</div><p class="sb-note">ochre wash</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-wash-teal)"><span class="sb-hex"></span></div><div class="sb-token">--tf-wash-teal</div><p class="sb-note">teal wash</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-wash-plum)"><span class="sb-hex"></span></div><div class="sb-token">--tf-wash-plum</div><p class="sb-note">plum wash</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-wash-stone)"><span class="sb-hex"></span></div><div class="sb-token">--tf-wash-stone</div><p class="sb-note">stone wash</p></div>
+      </div>
+
+      <h3>Category (data-viz) tints</h3>
+      <p class="sb-group-note">Nine per-category fills for the cashflow / unit-economics stacked visualizations (blog-009, blog-010). Product, Shipping &amp; Fulfillment take existing weighted tones (<code>--tf-ink-soft</code> / <code>--tf-stone</code> / <code>--tf-sand</code>); the other six alias the category washes above. Segment labels are ink, never these fills.</p>
+      <div class="sb-grid">
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-cat-product)"><span class="sb-hex"></span></div><div class="sb-token">--tf-cat-product</div><p class="sb-note">Product Purchase · = ink-soft</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-cat-shiptar)"><span class="sb-hex"></span></div><div class="sb-token">--tf-cat-shiptar</div><p class="sb-note">Shipping &amp; Tariff · = stone</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-cat-storage)"><span class="sb-hex"></span></div><div class="sb-token">--tf-cat-storage</div><p class="sb-note">3PL Storage · = ochre wash</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-cat-ads)"><span class="sb-hex"></span></div><div class="sb-token">--tf-cat-ads</div><p class="sb-note">Online Ads · = slate wash</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-cat-fulfil)"><span class="sb-hex"></span></div><div class="sb-token">--tf-cat-fulfil</div><p class="sb-note">Fulfillment · = sand</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-cat-platform)"><span class="sb-hex"></span></div><div class="sb-token">--tf-cat-platform</div><p class="sb-note">e-Comm Platform · = teal wash</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-cat-sales)"><span class="sb-hex"></span></div><div class="sb-token">--tf-cat-sales</div><p class="sb-note">Sales Revenue · = brick wash</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-cat-returns)"><span class="sb-hex"></span></div><div class="sb-token">--tf-cat-returns</div><p class="sb-note">Return &amp; Discard · = stone wash</p></div>
+        <div class="sb-card"><div class="sb-swatch" style="background: var(--tf-cat-cumulative)"><span class="sb-hex"></span></div><div class="sb-token">--tf-cat-cumulative</div><p class="sb-note">Cumulative P&amp;L · = plum wash</p></div>
+      </div>
+
+      <h3>Category tint pairings</h3>
+      <p class="sb-group-note">The six <code>.tf-pill-tint-*</code> engagement-tag pairings — a wash background + a deep text of the same hue. As of v032 the backgrounds are the <code>--tf-wash-*</code> tokens above (self-reading via their swatch cards); only the DEEP TEXT colours remain hardcoded literals here — if a text hex changes in STYLE.css, update the matching sample below by hand. Tag → tint vocabulary is fixed by STYLE.md §2 ("Tag → tint mapping"); a new phase takes the next unused hue, never re-pointing an existing one.</p>
+      <div class="sb-grid">
+        <div class="sb-card"><div class="sb-tint" style="background: var(--tf-wash-brick); color: #8F1E12;">Plan</div><div class="sb-token">tint-brick</div><p class="sb-note">bg <code>--tf-wash-brick</code> · text <code>#8F1E12</code><br>Tag: <strong>Plan</strong></p></div>
+        <div class="sb-card"><div class="sb-tint" style="background: var(--tf-wash-slate); color: #24466B;">Scale</div><div class="sb-token">tint-slate</div><p class="sb-note">bg <code>--tf-wash-slate</code> · text <code>#24466B</code><br>Tag: <strong>Scale</strong></p></div>
+        <div class="sb-card"><div class="sb-tint" style="background: var(--tf-wash-ochre); color: #7A5410;">Source</div><div class="sb-token">tint-ochre</div><p class="sb-note">bg <code>--tf-wash-ochre</code> · text <code>#7A5410</code><br>Tag: <strong>Source</strong></p></div>
+        <div class="sb-card"><div class="sb-tint" style="background: var(--tf-wash-teal); color: #175355;">Launch</div><div class="sb-token">tint-teal</div><p class="sb-note">bg <code>--tf-wash-teal</code> · text <code>#175355</code><br>Tag: <strong>Launch</strong></p></div>
+        <div class="sb-card"><div class="sb-tint" style="background: var(--tf-wash-plum); color: #632846;">Collab</div><div class="sb-token">tint-plum</div><p class="sb-note">bg <code>--tf-wash-plum</code> · text <code>#632846</code><br>Tag: <strong>Collab</strong></p></div>
+        <div class="sb-card"><div class="sb-tint" style="background: var(--tf-wash-stone); color: #55504D;">reserved</div><div class="sb-token">tint-stone</div><p class="sb-note">bg <code>--tf-wash-stone</code> · text <code>#55504D</code><br>Tag: <strong>— (reserved / unmapped)</strong></p></div>
       </div>
 
       <!-- ══════════════ TYPOGRAPHY ══════════════ -->

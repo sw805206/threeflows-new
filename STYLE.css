@@ -1,4 +1,4 @@
-/* v031 | last updated: 2026-07-26
+/* v032 | last updated: 2026-07-28
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
@@ -380,6 +380,31 @@
   --tf-chart-5: #8A3A62;  /* plum */
   --tf-chart-6: #B8ADA5;  /* stone */
 
+  /* Category washes — six pale hue tints. Promoted from the .tf-pill-tint-*
+     literals so the engagement-tag pills and the data-viz category palette
+     share one source (the hexes were raw literals in the pill rules and,
+     by hand, in the stylebook). */
+  --tf-wash-brick: #F7E4E1;
+  --tf-wash-slate: #E3EAF2;
+  --tf-wash-ochre: #F4EAD4;
+  --tf-wash-teal:  #DDEDED;
+  --tf-wash-plum:  #F2E3EA;
+  --tf-wash-stone: #ECE7E1;
+
+  /* Category (data-viz) tints — per-category fills for the cashflow /
+     unit-economics stacked visualizations (blog-009, blog-010). Product,
+     Shipping & Fulfillment take existing weighted tones; the other six
+     alias the category washes above. */
+  --tf-cat-product:    var(--tf-ink-soft);   /* Product Purchase  */
+  --tf-cat-shiptar:    var(--tf-stone);      /* Shipping & Tariff */
+  --tf-cat-fulfil:     var(--tf-sand);       /* Fulfillment       */
+  --tf-cat-storage:    var(--tf-wash-ochre); /* 3PL Storage       */
+  --tf-cat-ads:        var(--tf-wash-slate); /* Online Ads        */
+  --tf-cat-platform:   var(--tf-wash-teal);  /* e-Comm Platform   */
+  --tf-cat-sales:      var(--tf-wash-brick); /* Sales Revenue     */
+  --tf-cat-returns:    var(--tf-wash-stone); /* Return & Discard  */
+  --tf-cat-cumulative: var(--tf-wash-plum);  /* Cumulative P&L    */
+
   /* Type */
   --tf-font-heading: 'Source Serif 4', Georgia, serif;
   --tf-font-body: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
@@ -684,12 +709,12 @@ main .tf-container > h1:not(:has(+ .tf-prose-intro)) { margin-bottom: var(--tf-s
 /* Outline — filters & interactive states */
 .tf-pill-outline { border-color: var(--tf-stone); background: transparent; }
 /* Tints — category tags, one per data-palette hue (wash bg + deep text) */
-.tf-pill-tint-brick { background: #F7E4E1; color: #8F1E12; }
-.tf-pill-tint-slate { background: #E3EAF2; color: #24466B; }
-.tf-pill-tint-ochre { background: #F4EAD4; color: #7A5410; }
-.tf-pill-tint-teal  { background: #DDEDED; color: #175355; }
-.tf-pill-tint-plum  { background: #F2E3EA; color: #632846; }
-.tf-pill-tint-stone { background: #ECE7E1; color: #55504D; }
+.tf-pill-tint-brick { background: var(--tf-wash-brick); color: #8F1E12; }
+.tf-pill-tint-slate { background: var(--tf-wash-slate); color: #24466B; }
+.tf-pill-tint-ochre { background: var(--tf-wash-ochre); color: #7A5410; }
+.tf-pill-tint-teal  { background: var(--tf-wash-teal);  color: #175355; }
+.tf-pill-tint-plum  { background: var(--tf-wash-plum);  color: #632846; }
+.tf-pill-tint-stone { background: var(--tf-wash-stone); color: #55504D; }
 /* Small uppercase modifier — journey phases, compact labels */
 .tf-pill-sm { padding: 4px 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
 /* State aliases: primary = solid brick, secondary = brick outline, muted =
@@ -1461,7 +1486,7 @@ a:hover { color: var(--tf-brick-dark); }
 .tf-journey { display: grid; grid-template-columns: repeat(4, 1fr); border: var(--tf-rule); }
 .tf-journey-step { padding: 22px 24px; border-right: var(--tf-rule-light); position: relative; cursor: pointer; }
 .tf-journey-step:last-child { border-right: none; }
-.tf-journey-step:hover, .tf-journey-step[aria-current] { background: #F7E4E1; }
+.tf-journey-step:hover, .tf-journey-step[aria-current] { background: var(--tf-wash-brick); }
 .tf-journey-num { font-weight: 700; font-size: 30px; color: var(--tf-stone); }
 
 /* Numbered step list */
