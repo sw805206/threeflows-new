@@ -1,6 +1,21 @@
-/* v035 | last updated: 2026-07-28
+/* v036 | last updated: 2026-07-28
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v36 · 2026-07-28 · index.html band-4 + band-6 equal-height fix
+                     (fix/band4-band6-equal-height). `.tf-prog-group` moves from
+                     `align-content: start` to `grid-template-rows: auto 1fr`,
+                     so band-4's four service cards equalize ACROSS the
+                     Pathfinder/Runningmate groups, not just within each —
+                     reverses that rule's original top-align rationale, now
+                     superseded. `#resources .tf-card > .tf-meta` gets
+                     margin-top:auto (the existing `.tf-card-meta`/`.tf-pills`
+                     bottom-pin idiom), so the Seminars/Free tools "Coming soon"
+                     tags land on one baseline regardless of description length.
+                     Both scoped to their one consumer each (`.tf-prog-group`,
+                     `#resources`); shared `.tf-grid-2up`/`.tf-grid-4up`/`.tf-card`
+                     bases and band-4's own `.tf-meta` duration-tag use are
+                     untouched. No new token/hex/breakpoint.
 
    v35 · 2026-07-28 · Intake forward-reference retired (style/retire-intake-link).
                      intake.html will NOT be built (decision reversed); the
@@ -1084,12 +1099,16 @@ a:hover { color: var(--tf-brick-dark); }
    heads, so the grouping is carried by the header's field rather than by a rule
    or a box around the set. First use: index.html BAND 4, where two programs
    (Pathfinder, Runningmate) each head two service cards.
-   The wrapper is a plain vertical grid so the header and the card row share the
-   band's own --tf-space-3 rhythm. `align-content: start` matters: the groups sit
-   side by side in a `.tf-grid-2up`, and without it the shorter group would
-   stretch its card row to match the taller one, inventing empty card height.
-   Groups therefore top-align and run to their natural depth. */
-.tf-prog-group { display: grid; gap: var(--tf-space-3); align-content: start; }
+   `grid-template-rows: auto 1fr` pins the header to its natural height and lets
+   ONLY the card row absorb the extra height when the two groups sit side by side
+   in a `.tf-grid-2up` and one program's cards run naturally taller than the
+   other's. That row stretch cascades into the nested card `.tf-grid-2up` (a
+   grid item, default stretch) and from there into each card (same default),
+   so all four service cards land on one height regardless of which group is
+   taller. (Reverses an earlier `align-content: start` here that deliberately
+   kept groups top-aligned at their natural, unequal depth — superseded by the
+   band-4 equal-height requirement.) */
+.tf-prog-group { display: grid; grid-template-rows: auto 1fr; gap: var(--tf-space-3); }
 
 /* Second dark ground for a filled card. The header itself is `.tf-card
    .tf-card-ink` — reused as-is, including `.tf-card-ink .tf-card-body`'s stone
@@ -1755,6 +1774,18 @@ a:hover { color: var(--tf-brick-dark); }
   display: flex;
   align-items: center;
   gap: var(--tf-space-2);
+}
+/* Band 6 "Coming soon" tag — bottom-pinned so it sits on one baseline across
+   the row regardless of description length (Seminars vs Free tools wrap
+   differently). `.tf-card` is already a flex column, so the existing
+   margin-top:auto idiom (`.tf-card-meta`, `.tf-card > .tf-pills`) applies the
+   same way here. Scoped to #resources so it targets only the generic `.tf-meta`
+   class's use as this band's tag, not band-4's inline "(2~6 weeks)" duration
+   use of the same class. Blogs/References have no `.tf-meta` child, so their
+   description remains the last flex child, unaffected. */
+#resources .tf-card > .tf-meta {
+  margin-top: auto;
+  padding-top: var(--tf-space-1);
 }
 /* about.html principals — the 2-up plus the top margin from the section opener
    above. Now a thin modifier on `.tf-grid-2up` (markup carries BOTH classes):
