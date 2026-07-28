@@ -108,5 +108,16 @@
     "imageAlt": "A white ceramic piggy bank on a green background, with three coins suspended in a line above its coin slot.",
     "recap": "A follow-up to the unit economics post — because a healthy per-unit P&L can still put you deep in the hole before you see your first dollar back.",
     "readMinutes": 5
+  },
+  {
+    "blogID": "blog-011",
+    "filename": "blog-fedex-2026-rate-heatmap.html",
+    "title": "FedEx's 5.9% GRI: What the Heat Map Reveals",
+    "date": "2026-01-14",
+    "status": "published",
+    "image": "assets/images/blog-fedex-2026-rate-heatmap.jpg",
+    "imageAlt": "A FedEx delivery truck parked on a snow-covered street during heavy snowfall, framed by bare winter trees.",
+    "recap": "The headline FedEx 2026 rate increase is 5.9% \u2014 but a weight-by-zone heat map shows the increase is far from uniform, and residential surcharges push the effective hike higher for common e-commerce shipments. Really a lesson in turning a wall of numbers into a decision.",
+    "readMinutes": 5
   }
 ]

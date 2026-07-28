@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FedEx's 5.9% GRI: What the Heat Map Reveals — Three Flows Solutions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+</head>
+<body class="tf-app">
+  <!-- Shared header injected from partials.html -->
+  <div id="tf-header"></div>
+
+  <main class="tf-section" data-blog-id="blog-011">
+    <div class="tf-container">
+      <div class="tf-prose-layout" data-toc>
+      <div class="tf-prose">
+        <div class="tf-post-topnav">
+          <a href="blogs.html">← Blogs</a>
+          <span class="tf-post-pager"></span>
+        </div>
+        <!-- POST HEADER: h1 → dek → date (divider). blog.js appends
+             " · N min read" to the date meta. The rail image renders from the
+             manifest's "image" field — never marked up here. -->
+        <h1>FedEx's 5.9% GRI: What the Heat Map Reveals</h1>
+        <p class="tf-prose-intro">The headline rate increase is 5.9%. The actual distribution across weights and zones tells a different story — and every business owner should know how to see it.</p>
+        <p class="tf-meta">January 14, 2026</p>
+
+        <p>Every January, FedEx announces its annual General Rate Increase. 2026 is no exception. Search "FedEx 2026 rate increase" and you'll find one number repeated everywhere: <strong>5.9% GRI</strong>, effective January 6, 2026. FedEx published it. Industry publications confirmed it. It matches the 2025 increase almost exactly.</p>
+
+        <p>The last-mile seller and logistics communities weren't happy — but they weren't surprised. Similar announcements from UPS, USPS, and other carriers will follow within weeks.</p>
+
+        <p>So your last-mile cost goes up 5.9%. Case closed?</p>
+
+        <p>Not quite.</p>
+
+        <h2>Understand the Rate Structure First</h2>
+
+        <p>Every last-mile carrier publishes its rates online, and the rate cards are not designed to be easy to understand. The good news: you don't need to memorize the entire structure. You need the principles. Plenty of online tools do the arithmetic.</p>
+
+        <p>When you ship a package, the rate is calculated as:</p>
+
+        <p><strong>Base Rate + Surcharges + Peak Surcharge + Fuel Surcharge</strong></p>
+
+        <p>Each piece:</p>
+
+        <ul>
+          <li><strong>Base rate</strong> — the dollar amount tied to your package's chargeable weight and the distance it travels (its zone).</li>
+          <li><strong>Surcharges</strong> — the most complex line. Residential surcharge (delivery to a home vs. a business), Delivery Area Surcharge (DAS, for remote zip codes), Additional Handling Surcharge (AHS, for oversized or overweight packages), and exception fees (address change, signature, insurance, and so on).</li>
+          <li><strong>Peak surcharges</strong> — seasonal fees tacked onto packages during high-volume periods, typically late September through mid-January.</li>
+          <li><strong>Fuel surcharge</strong> — a percentage adjustment applied to most of the above, indexed to the national average diesel price published every Monday.</li>
+        </ul>
+
+        <p>One subtlety worth knowing: <strong>chargeable weight is not always the actual weight</strong>. It's the higher of actual weight or dimensional weight, where DIM weight converts the package's volume into a "weight equivalent" using the formula (L × W × H) ÷ divisor. The standard DIM divisor is 139. For example, an 18″×18″×12″ package weighing 5 lb:</p>
+
+        <ul>
+          <li>DIM weight = (18 × 18 × 12) ÷ 139 = 27.97</li>
+          <li>Chargeable weight = max(27.97, 5) = 28 lb (rounded up)</li>
+        </ul>
+
+        <p>The full 2026 FedEx service guide is <a href="https://www.fedex.com/content/dam/fedex/us-united-states/services/Service_Guide_2026.pdf" target="_blank" rel="noopener noreferrer">here</a>.</p>
+
+        <h2>Visualize the Increase</h2>
+
+        <p>Now the fun part. This post is about last-mile rates, but it's really about <strong>data analysis</strong> — specifically, how a simple tool (Excel with conditional formatting) can turn a wall of numbers into a picture that leads to a decision.</p>
+
+        <p>To compare FedEx's 2025 and 2026 published base rates across weight × zone combinations (1–150 lbs, Zones 2–8), the fastest tool is a heat map. Cell colors show the percentage increase:</p>
+
+        <div class="tf-figure-aside">
+          <figure>
+            <button type="button" class="tf-figure-zoom" aria-label="Enlarge the commercial rate heat map">
+              <img src="assets/images/blog-fedex-2026-rate-heatmap-commercial.png" alt="A weight-by-zone comparison of FedEx 2025 and 2026 commercial rates — base rates for 1 to 150 pounds across Zones 2 to 8, plus surcharges — with a heat map of the percentage increase averaging 5.98%.">
+            </button>
+          </figure>
+          <div class="tf-figure-aside-body">
+            <p>Across all weight and zone combinations, the average base rate increase is <strong>5.98%</strong> — consistent with FedEx's stated 5.9% GRI. But the distribution is far from uniform. Three patterns jump out.</p>
+          </div>
+        </div>
+
+        <h3>The 11–30 lb band takes the biggest hit</h3>
+
+        <p>This weight-and-zone segment has the highest concentration of above-average increases, with individual cells reaching <strong>6.71%</strong>. Zone 7 and Zone 8 cover longer-haul lanes — typically West Coast to East Coast, or the reverse. Shippers whose packages cross the Rockies feel this disproportionately. Zones 4–6 in the same weight band are also heavily hit. Most small-business owners keep their inventory in one or two locations (West Coast and/or East Coast), which means roughly 70% of their volume lands in Zone 4 or higher. This is the band and zone range where the pain shows up first.</p>
+
+        <h3>Flat "one-size" increases from 50 lbs onward</h3>
+
+        <p>At 50 lbs and above, the rate card abandons granular weight-based pricing and applies uniform zone-level increases: exactly <strong>6.0%</strong> for Zones 2–6 and <strong>6.2%</strong> for Zones 7–8. The likely explanation: heavier shipments skew toward specific product categories (furniture being the largest) where major contract customers' volume is excluded from the published rate card. With the remaining data volume too thin to support statistically stable per-weight pricing, the rate team defaulted to rounded, zone-level blended rates. If your business ships heavy, you're paying a smoothed number rather than a precisely calibrated one.</p>
+
+        <h3>Residential surcharge creates a counter-intuitive inversion</h3>
+
+        <p>The heat map above shows <strong>commercial rates</strong>. If you're an e-commerce seller, most of your packages go to residential addresses — which means adding the residential surcharge to every base rate. Rerun the comparison with residential surcharges included:</p>
+
+        <div class="tf-figure-aside">
+          <figure>
+            <button type="button" class="tf-figure-zoom" aria-label="Enlarge the commercial and residential rate heat maps">
+              <img src="assets/images/blog-fedex-2026-rate-heatmap-residential.png" alt="Two side-by-side weight-by-zone heat maps of the 2026 versus 2025 rate increase — commercial (averaging 5.98%) and residential (averaging 6.25%) — showing the residential increase running higher, especially in the light-weight, short-haul corner.">
+            </button>
+          </figure>
+          <div class="tf-figure-aside-body">
+            <p>The overall effective increase rises to <strong>6.25%</strong>, and the distribution <strong>inverts</strong> in one corner. The <strong>1–10 lb, Zone 2–3</strong> segment — where the residential surcharge represents a proportionally large share of total cost — ends up with a higher effective increase than mid-weight, mid-zone shipments. This looks like a case where the base structure and surcharge structure were calibrated independently, without a check on the combined effect. If your business is heavy in small, short-haul residential shipments (a very common e-commerce profile), your effective 2026 rate hike may exceed the headline.</p>
+          </div>
+        </div>
+
+        <h2>How to Use This</h2>
+
+        <p>These are published retail rates. Almost nobody actually pays them. Use the heat map to compare and to structure your negotiation with the carrier.</p>
+
+        <p>Beyond that, the "so what" depends on who you are:</p>
+
+        <ul>
+          <li><strong>If you're a 3PL</strong> — remember our <a href="blog-warehouse-placement-case-study.html">warehouse placement case study</a>? If you have a network — especially in the middle states — you have a lot to offer. See how much you could save a client by offering Zone 2–3 shipping instead of Zone 7–8. Your aggregate volume is your leverage. Analyze your clients' combined shipping profile and use it to negotiate your discount with a rate aggregator, or directly with your UPS or FedEx account manager.</li>
+          <li><strong>If you're a seller</strong> — remember in the <a href="blog-cashflow-vs-unit-economics.html">cashflow post</a> we called last-mile a deal breaker? This is the post to help you reduce your cost, and your customers'. If you ship a narrow range of weights and zones, ignore the rest of the rate card. Concentrate on where your actual volume lives and how <strong>your</strong> density profile interacts with DIM weight and residential surcharges — and find the right 3PL, which usually gets you 30–60% off the retail rate.</li>
+          <li><strong>If you're anywhere in the analysis role</strong> (whether at a seller, a 3PL, or on your own) — the real value you bring is turning data into a picture that tells a clear story and drives a fast, accurate decision. Learn to build these visualizations. That skill is where the leverage actually lives.</li>
+        </ul>
+
+        <p>The headline is 5.9%. The picture is different. Learn to see the picture.</p>
+
+        <p>Whichever role fits you, we can help — with rate analysis, network design, or the data-modeling skills behind both. <a href="contact.html">Get in touch</a>.</p>
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared footer injected from partials.html -->
+  <div id="tf-footer"></div>
+
+  <script src="assets/partials.js" defer></script>
+  <script src="assets/toc.js"></script>
+  <script src="assets/blog.js"></script>
+  <script src="assets/lightbox.js"></script>
+</body>
+</html>
