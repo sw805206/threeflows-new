@@ -1,4 +1,4 @@
-v006 | last updated: 2026-07-24
+v007 | last updated: 2026-07-28
 
 # BLOG.md — how to add a blog post
 
@@ -157,6 +157,19 @@ Rendering: the image is the rail's top slot on the post (3:2, `.tf-photo`,
 sticky with the rail on desktop, in-flow above the article on mobile) and the
 card cap on the index. `loading="eager"` on the rail (above-fold LCP);
 `loading="lazy"` on index cards.
+
+**In-body images that render below native size must be zoomable.** Any inline
+content image that displays smaller than its own detail — a `.tf-figure-aside`
+image sized down beside its text, or a wide figure scaled to fit the `.tf-prose`
+measure — is wrapped in the shared **`.tf-figure-zoom`** control (a `<button>`
+thumbnail whose `data-full` points at the full-resolution source). Click or tap
+opens it full-size in the `.tf-lightbox` overlay for detail viewing. The rail/lede
+image and the index card cap are **exempt** — they already render at their
+intended size. The zoom + lightbox live in shared CSS (`STYLE.css`) and JS
+(`assets/lightbox.js`, loaded by every post through the blog template), so **a
+post never implements its own** — it only applies the class and supplies
+`data-full`. The pattern degrades safely: if the script never loads, the thumbnail
+stays a static (capped) image.
 
 ### Page heroes
 
