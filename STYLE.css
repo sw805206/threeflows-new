@@ -1,4 +1,4 @@
-/* v032 | last updated: 2026-07-28
+/* v033 | last updated: 2026-07-28
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
@@ -593,6 +593,85 @@ main .tf-container > h1:not(:has(+ .tf-prose-intro)) { margin-bottom: var(--tf-s
   text-transform: uppercase;
   color: var(--tf-ink-soft);
   line-height: 1.3;
+}
+
+/* --------------------------------------------------------------------------
+   Blog body figures — images inside running prose. Two shapes, first needed by
+   blog-011 (BLOG.md §9: a body pattern lives here, never page-local).
+
+   • .tf-prose-figure — a full-width in-flow figure. Its <img> carries
+     .tf-img-framed for sizing (borderless, width:100%); this wrapper owns only
+     the vertical rhythm. Screenshots / data-graphics do NOT take the .tf-photo
+     grade — that treatment is for photographs.
+   • .tf-figure-aside — an image-alongside-text split for a wide-and-tall figure
+     that must stay tied to its explanation: image one side, the prose that reads
+     it beside. On desktop the image is held to a modest height (and ≤46% of the
+     row) so it never towers past its explanation — figure and text read as one
+     unit. A very tall figure therefore renders small, so every figure image is
+     click-to-enlarge via the lightbox. Below 820px it stacks image-on-top
+     (source order = image first), capped so a tall figure is not a full-screen
+     tower. Zoom + lightbox: .tf-figure-zoom / .tf-lightbox (assets/lightbox.js).
+   -------------------------------------------------------------------------- */
+.tf-prose-figure {
+  margin: var(--tf-space-4) 0;
+}
+.tf-figure-aside {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--tf-space-3);
+  margin: var(--tf-space-4) 0;
+}
+.tf-figure-aside > figure { margin: 0; min-width: 0; }
+.tf-figure-aside > * > :first-child { margin-block-start: 0; }
+
+/* Zoom control — the thumbnail is a real <button> so it opens by keyboard;
+   assets/lightbox.js shows the full image on click. UA button chrome reset;
+   the cursor signals the enlarge. Default full-width (the full-width figure and
+   the mobile-stacked aside); the desktop aside overrides below. */
+.tf-figure-zoom {
+  display: block; margin: 0; padding: 0; border: 0; background: none;
+  width: 100%; font: inherit; color: inherit; cursor: zoom-in;
+}
+.tf-figure-zoom img { display: block; width: 100%; height: auto; }
+/* Mobile aside (stacked): cap a very tall figure so it is not a full-screen
+   tower; the detail lives in the lightbox. */
+.tf-figure-aside .tf-figure-zoom img {
+  width: auto; max-width: 100%; max-height: 80vh; margin-inline: auto;
+}
+
+@media (min-width: 820px) {
+  /* Desktop aside: the image sits BESIDE the text, held to a modest height (and
+     at most ~46% of the row) so a wide-and-tall figure never towers past its
+     explanation — figure and text read as one unit. A tall figure therefore
+     renders small; that is the trade, so every figure image is click-to-enlarge
+     (the lightbox shows it full size). */
+  .tf-figure-aside { display: flex; align-items: flex-start; gap: var(--tf-space-4); }
+  .tf-figure-aside > figure { flex: 0 1 auto; max-width: 46%; min-width: 0; }
+  .tf-figure-aside > .tf-figure-aside-body { flex: 1 1 0; min-width: 0; }
+  .tf-figure-aside > figure .tf-figure-zoom img {
+    width: auto; height: auto; max-width: 100%; max-height: 22em; margin: 0;
+    object-fit: contain;
+  }
+}
+
+/* Lightbox overlay (assets/lightbox.js). Full-viewport scrim; the image shows
+   as large as the viewport allows on a paper ground so a pale heat map keeps its
+   edges. Dismissed by the button, a backdrop click, or Escape. */
+.tf-lightbox {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  padding: var(--tf-space-4);
+  background: color-mix(in srgb, var(--tf-ink) 88%, transparent);
+}
+.tf-lightbox img {
+  max-width: 96vw; max-height: 92vh; width: auto; height: auto;
+  object-fit: contain; background: var(--tf-paper);
+}
+.tf-lightbox-close {
+  position: absolute; top: var(--tf-space-2); right: var(--tf-space-2);
+  width: 40px; height: 40px; padding: 0; border: 0;
+  font-size: 30px; line-height: 1; color: var(--tf-paper);
+  background: none; cursor: pointer;
 }
 
 /* --------------------------------------------------------------------------
