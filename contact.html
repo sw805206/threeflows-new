@@ -38,7 +38,7 @@
          order preserved). At ≥820px the columns are equal height (grid stretch):
          the collage is the taller column, so the form column stretches to it and
          its bottom action block (.tf-form-foot) is pinned to the bottom — landing
-         the intake link level with the collage's bottom edge. <main> is unclassed
+         the send button level with the collage's bottom edge. <main> is unclassed
          so the multi-band hero bridge zeroes its top padding and this section's
          own .tf-section padding supplies the single 48px hero→content gap. -->
     <section class="tf-section">
@@ -56,7 +56,7 @@
                A stone section label spans the collage grid's top row
                (grid-column 1/-1), so it sits directly above the tiles inside the
                left column; the collage stays the column's bottom element, so
-               label+collage remain bottom-aligned with the intake link opposite. -->
+               label+collage remain bottom-aligned with the send button opposite. -->
           <div class="tf-collage">
             <p class="tf-meta tf-collage-head">where our teams are located</p>
             <figure class="tf-collage-tile">
@@ -139,14 +139,13 @@
               </div>
 
               <!-- Action block — pinned to the column bottom (margin-top:auto) so
-                   the intake link lines up with the collage's bottom edge. -->
+                   the send button lines up with the collage's bottom edge. -->
               <div class="tf-form-foot">
                 <p class="tf-form-note"><span class="tf-required" aria-hidden="true">*</span> required</p>
                 <!-- Submit-failure message — shown only when a wired endpoint is
                      unreachable. Hidden at rest; the JS reveals it. -->
                 <p class="tf-form-error" id="cf-form-error" role="alert" hidden>Something went wrong sending your message. Please try again, or email us directly.</p>
                 <button class="tf-btn tf-btn-primary" type="submit">Send message</button>
-                <a class="tf-intake-link" href="intake.html" target="_blank" rel="noopener">ready to fill the intake form? click here</a>
               </div>
             </form>
 
