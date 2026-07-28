@@ -1,6 +1,19 @@
-/* v034 | last updated: 2026-07-28
+/* v035 | last updated: 2026-07-28
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v35 · 2026-07-28 · Intake forward-reference retired (style/retire-intake-link).
+                     intake.html will NOT be built (decision reversed); the
+                     .tf-intake-link rule + its comment are removed, and the
+                     .tf-form-foot / .tf-field-grow / collage-head comments are
+                     re-anchored on the SEND BUTTON. With the link gone,
+                     .tf-field-grow's flex still pins .tf-form-foot to the column
+                     bottom, so the send button (not the link) meets the collage's
+                     bottom edge — measured 0px shift. Only .tf-intake-link is
+                     deleted; no token/scale change. Full reversal + BACKLOG-
+                     divergence resolution in STYLE.md v032. (NB: this header
+                     changelog was not kept for v32–v34; those bumps are recorded
+                     in STYLE.md's ratchet.)
 
    v31 · 2026-07-26 · contact.html build (feat/contact-page). Contact is the first
                      consumer of three new pattern groups, all --tf-* tokens — no
@@ -2440,7 +2453,7 @@ a.tf-icon-brand:focus { color: #004182; }        /* LinkedIn blue, pressed */
 .tf-textarea { resize: vertical; min-height: 7.5rem; }
 /* The brief-description field GROWS to consume the column's free height, so the
    textarea fills down to the action block and the collage/form bottoms meet at
-   the intake link with no floating gap (see .tf-form-foot). The field is a flex
+   the send button with no floating gap (see .tf-form-foot). The field is a flex
    column (label + textarea); the textarea takes the slack. */
 .tf-field-grow { flex: 1 1 auto; }
 .tf-field-grow .tf-textarea { flex: 1 1 auto; }
@@ -2484,22 +2497,19 @@ a.tf-icon-brand:focus { color: #004182; }        /* LinkedIn blue, pressed */
   border: 2px solid var(--tf-brick);
 }
 
-/* Action block — the "* required" note, the submit-failure notice, the send
-   button, and the intake link, grouped at the FOOT of the form. Because
-   .tf-field-grow above absorbs the column's free height, this block naturally
-   sits at the bottom, so the intake link's baseline lines up with the collage's
-   bottom edge across the two columns. The button keeps its intrinsic .tf-btn
-   width (align-self so the flex column does not stretch it full-width and its
-   own padding/width are untouched); the text rows stay full width. */
+/* Action block — the "* required" note, the submit-failure notice, and the send
+   button, grouped at the FOOT of the form. Because .tf-field-grow above absorbs
+   the column's free height, this block naturally sits at the bottom, so the send
+   button lines up with the collage's bottom edge across the two columns. The
+   button keeps its intrinsic .tf-btn width (align-self so the flex column does
+   not stretch it full-width and its own padding/width are untouched); the text
+   rows stay full width. */
 .tf-form-foot {
   display: flex;
   flex-direction: column;
   gap: var(--tf-space-2);
 }
 .tf-form-foot .tf-btn { align-self: flex-start; }
-/* Intake link — a plain brick text link (base `a` colour), no arrow, sized down
-   as a secondary action beneath the button. */
-.tf-intake-link { font-size: var(--tf-text-sm); }
 
 /* Honeypot — an off-screen decoy field. NOT display:none: some spam bots skip
    hidden fields but fill positioned ones, and a filled honeypot is exactly the
@@ -2535,7 +2545,7 @@ a.tf-icon-brand:focus { color: #004182; }        /* LinkedIn blue, pressed */
    — the muted-label tone the sheet already uses at meta size on paper (e.g.
    .tf-card-meta), so this adds no new label style. Placed INSIDE the collage
    grid so the collage remains the left column's bottom element and the
-   label+collage block stays bottom-aligned with the intake link opposite. The
+   label+collage block stays bottom-aligned with the send button opposite. The
    colour overrides .tf-meta's --tf-ink-soft on source order (this rule is later
    in the sheet). */
 .tf-collage-head {
