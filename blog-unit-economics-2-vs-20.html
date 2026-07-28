@@ -27,7 +27,7 @@
   <!-- Page-local styles for blog-009's stacked-bar figure. Kept out of
        STYLE.css (a one-off editorial figure, not a shared pattern) and out of
        .tf-prose (so the reading-time scope never counts CSS as words). Every
-       selector is .tf-bar-chart-scoped; existing tokens only. -->
+       selector is .tf-bar-chart-scoped; colours are the shared --tf-cat-* palette. -->
   <style>
             .tf-bar-chart { margin: var(--tf-space-4) 0; }
             .tf-bar-chart .tf-bar-scroll { overflow-x: auto; }
@@ -90,13 +90,14 @@
             }
             .tf-bar-chart .tf-bar-key { display: inline-flex; align-items: center; gap: 6px; }
             .tf-bar-chart .tf-bar-sw { width: 13px; height: 13px; display: inline-block; border: 1px solid var(--tf-stone-light); }
-            .tf-bar-chart .seg-product { background: color-mix(in srgb, var(--tf-chart-2) 55%, var(--tf-paper)); }
-            .tf-bar-chart .seg-shiptar { background: color-mix(in srgb, var(--tf-chart-3) 55%, var(--tf-paper)); }
-            .tf-bar-chart .seg-storage { background: color-mix(in srgb, var(--tf-stone) 75%, var(--tf-paper)); }
-            .tf-bar-chart .seg-fulfil { background: color-mix(in srgb, var(--tf-chart-4) 55%, var(--tf-paper)); }
-            .tf-bar-chart .seg-selling { background: color-mix(in srgb, var(--tf-chart-5) 55%, var(--tf-paper)); }
-            .tf-bar-chart .seg-returns { background: color-mix(in srgb, var(--tf-chart-1) 55%, var(--tf-paper)); }
-            .tf-bar-chart .seg-margin { background: var(--tf-ink); }
+            .tf-bar-chart .seg-product  { background: var(--tf-cat-product); }
+            .tf-bar-chart .seg-shiptar  { background: var(--tf-cat-shiptar); }
+            .tf-bar-chart .seg-storage  { background: var(--tf-cat-storage); }
+            .tf-bar-chart .seg-fulfil   { background: var(--tf-cat-fulfil); }
+            .tf-bar-chart .seg-ads      { background: var(--tf-cat-ads); }
+            .tf-bar-chart .seg-platform { background: var(--tf-cat-platform); }
+            .tf-bar-chart .seg-returns  { background: var(--tf-cat-returns); }
+            .tf-bar-chart .seg-margin   { background: var(--tf-ink); }
   </style>
 </head>
 <body class="tf-app">
@@ -176,7 +177,7 @@
               <div class="tf-bar-rowlabel">no free shipping</div>
               <div class="tf-bar-plot" style="width:160px">
                 <div class="tf-bar-track" role="img" aria-label="no free shipping, $8 (4× cost)">
-                  <span class="tf-bar-seg seg-product" style="width:40px" title="Product $2"><span class="tf-bar-inval">$2</span></span><span class="tf-bar-seg seg-shiptar" style="width:42px" title="Shipping + Tariff $2.10"><span class="tf-bar-inval">$2.10</span></span><span class="tf-bar-seg seg-storage" style="width:10px" title="Storage $0.50"></span><span class="tf-bar-seg seg-selling" style="width:56px" title="Selling $2.80"><span class="tf-bar-inval">$2.80</span></span><span class="tf-bar-seg seg-returns" style="width:8px" title="Returns $0.40"></span><span class="tf-bar-seg seg-margin" style="width:4px" title="Margin $0.20"></span>
+                  <span class="tf-bar-seg seg-product" style="width:40px" title="Product $2"><span class="tf-bar-inval">$2</span></span><span class="tf-bar-seg seg-shiptar" style="width:42px" title="Shipping + Tariff $2.10"><span class="tf-bar-inval">$2.10</span></span><span class="tf-bar-seg seg-storage" style="width:10px" title="Storage $0.50"></span><span class="tf-bar-seg seg-ads" style="width:32px" title="Online Ads $1.60"></span><span class="tf-bar-seg seg-platform" style="width:24px" title="e-Comm Platform $1.20"></span><span class="tf-bar-seg seg-returns" style="width:8px" title="Returns $0.40"></span><span class="tf-bar-seg seg-margin" style="width:4px" title="Margin $0.20"></span>
                 </div>
                 <div class="tf-bar-callouts"><span class="tf-bar-co lvl0" style="left:87px"><span class="tf-bar-lead"></span><span class="tf-bar-coval">$0.50</span></span><span class="tf-bar-co lvl0" style="left:152px"><span class="tf-bar-lead"></span><span class="tf-bar-coval">$0.40</span></span><span class="tf-bar-co lvl1" style="left:158px"><span class="tf-bar-lead"></span><span class="tf-bar-coval">$0.20</span></span></div>
                 <p class="tf-bar-foot">+ $7 shipping paid by buyer</p>
@@ -187,7 +188,7 @@
               <div class="tf-bar-rowlabel">free shipping</div>
               <div class="tf-bar-plot" style="width:400px">
                 <div class="tf-bar-track" role="img" aria-label="free shipping, $20 (10× cost)">
-                  <span class="tf-bar-seg seg-product" style="width:40px" title="Product $2"><span class="tf-bar-inval">$2</span></span><span class="tf-bar-seg seg-shiptar" style="width:42px" title="Shipping + Tariff $2.10"><span class="tf-bar-inval">$2.10</span></span><span class="tf-bar-seg seg-storage" style="width:10px" title="Storage $0.50"></span><span class="tf-bar-seg seg-fulfil" style="width:140px" title="Fulfillment $7"><span class="tf-bar-inval">$7</span></span><span class="tf-bar-seg seg-selling" style="width:140px" title="Selling $7"><span class="tf-bar-inval">$7</span></span><span class="tf-bar-seg seg-returns" style="width:20px" title="Returns $1"></span><span class="tf-bar-seg seg-margin" style="width:8px" title="Margin $0.40"></span>
+                  <span class="tf-bar-seg seg-product" style="width:40px" title="Product $2"><span class="tf-bar-inval">$2</span></span><span class="tf-bar-seg seg-shiptar" style="width:42px" title="Shipping + Tariff $2.10"><span class="tf-bar-inval">$2.10</span></span><span class="tf-bar-seg seg-storage" style="width:10px" title="Storage $0.50"></span><span class="tf-bar-seg seg-fulfil" style="width:140px" title="Fulfillment $7"><span class="tf-bar-inval">$7</span></span><span class="tf-bar-seg seg-ads" style="width:80px" title="Online Ads $4"><span class="tf-bar-inval">$4</span></span><span class="tf-bar-seg seg-platform" style="width:60px" title="e-Comm Platform $3"><span class="tf-bar-inval">$3</span></span><span class="tf-bar-seg seg-returns" style="width:20px" title="Returns $1"></span><span class="tf-bar-seg seg-margin" style="width:8px" title="Margin $0.40"></span>
                 </div>
                 <div class="tf-bar-callouts"><span class="tf-bar-co lvl0" style="left:87px"><span class="tf-bar-lead"></span><span class="tf-bar-coval">$0.50</span></span><span class="tf-bar-co lvl0" style="left:382px"><span class="tf-bar-lead"></span><span class="tf-bar-coval">$1</span></span><span class="tf-bar-co lvl1" style="left:396px"><span class="tf-bar-lead"></span><span class="tf-bar-coval">$0.40</span></span></div>
               </div>
@@ -200,7 +201,7 @@
               <div class="tf-bar-rowlabel">no free shipping</div>
               <div class="tf-bar-plot" style="width:315px">
                 <div class="tf-bar-track" role="img" aria-label="no free shipping, $90 (4.5× cost)">
-                  <span class="tf-bar-seg seg-product" style="width:70px" title="Product $20"><span class="tf-bar-inval">$20</span></span><span class="tf-bar-seg seg-shiptar" style="width:73.5px" title="Shipping + Tariff $21"><span class="tf-bar-inval">$21</span></span><span class="tf-bar-seg seg-storage" style="width:38.5px" title="Storage $11"><span class="tf-bar-inval">$11</span></span><span class="tf-bar-seg seg-selling" style="width:110.25px" title="Selling $31.50"><span class="tf-bar-inval">$31.50</span></span><span class="tf-bar-seg seg-returns" style="width:15.75px" title="Returns $4.50"></span><span class="tf-bar-seg seg-margin" style="width:7px" title="Margin $2"></span>
+                  <span class="tf-bar-seg seg-product" style="width:70px" title="Product $20"><span class="tf-bar-inval">$20</span></span><span class="tf-bar-seg seg-shiptar" style="width:73.5px" title="Shipping + Tariff $21"><span class="tf-bar-inval">$21</span></span><span class="tf-bar-seg seg-storage" style="width:38.5px" title="Storage $11"><span class="tf-bar-inval">$11</span></span><span class="tf-bar-seg seg-ads" style="width:63px" title="Online Ads $18"><span class="tf-bar-inval">$18</span></span><span class="tf-bar-seg seg-platform" style="width:47.25px" title="e-Comm Platform $13.50"><span class="tf-bar-inval">$13.50</span></span><span class="tf-bar-seg seg-returns" style="width:15.75px" title="Returns $4.50"></span><span class="tf-bar-seg seg-margin" style="width:7px" title="Margin $2"></span>
                 </div>
                 <div class="tf-bar-callouts"><span class="tf-bar-co lvl0" style="left:300.125px"><span class="tf-bar-lead"></span><span class="tf-bar-coval">$4.50</span></span><span class="tf-bar-co lvl1" style="left:311.5px"><span class="tf-bar-lead"></span><span class="tf-bar-coval">$2</span></span></div>
                 <p class="tf-bar-foot">+ $20 shipping paid by buyer</p>
@@ -211,7 +212,7 @@
               <div class="tf-bar-rowlabel">free shipping</div>
               <div class="tf-bar-plot" style="width:420px">
                 <div class="tf-bar-track" role="img" aria-label="free shipping, $120 (6× cost)">
-                  <span class="tf-bar-seg seg-product" style="width:70px" title="Product $20"><span class="tf-bar-inval">$20</span></span><span class="tf-bar-seg seg-shiptar" style="width:73.5px" title="Shipping + Tariff $21"><span class="tf-bar-inval">$21</span></span><span class="tf-bar-seg seg-storage" style="width:38.5px" title="Storage $11"><span class="tf-bar-inval">$11</span></span><span class="tf-bar-seg seg-fulfil" style="width:70px" title="Fulfillment $20"><span class="tf-bar-inval">$20</span></span><span class="tf-bar-seg seg-selling" style="width:147px" title="Selling $42"><span class="tf-bar-inval">$42</span></span><span class="tf-bar-seg seg-returns" style="width:21px" title="Returns $6"></span>
+                  <span class="tf-bar-seg seg-product" style="width:70px" title="Product $20"><span class="tf-bar-inval">$20</span></span><span class="tf-bar-seg seg-shiptar" style="width:73.5px" title="Shipping + Tariff $21"><span class="tf-bar-inval">$21</span></span><span class="tf-bar-seg seg-storage" style="width:38.5px" title="Storage $11"><span class="tf-bar-inval">$11</span></span><span class="tf-bar-seg seg-fulfil" style="width:70px" title="Fulfillment $20"><span class="tf-bar-inval">$20</span></span><span class="tf-bar-seg seg-ads" style="width:84px" title="Online Ads $24"><span class="tf-bar-inval">$24</span></span><span class="tf-bar-seg seg-platform" style="width:63px" title="e-Comm Platform $18"><span class="tf-bar-inval">$18</span></span><span class="tf-bar-seg seg-returns" style="width:21px" title="Returns $6"></span>
                 </div>
                 <div class="tf-bar-callouts"><span class="tf-bar-co lvl0" style="left:409.5px"><span class="tf-bar-lead"></span><span class="tf-bar-coval">$6</span></span></div>
               </div>
@@ -220,12 +221,13 @@
           </div>
           </div>
           <div class="tf-bar-legend">
-            <span class="tf-bar-key"><span class="tf-bar-sw seg-product"></span>Product</span>
-            <span class="tf-bar-key"><span class="tf-bar-sw seg-shiptar"></span>Shipping + Tariff</span>
-            <span class="tf-bar-key"><span class="tf-bar-sw seg-storage"></span>Storage</span>
+            <span class="tf-bar-key"><span class="tf-bar-sw seg-product"></span>Product Purchase</span>
+            <span class="tf-bar-key"><span class="tf-bar-sw seg-shiptar"></span>Shipping &amp; Tariff</span>
+            <span class="tf-bar-key"><span class="tf-bar-sw seg-storage"></span>3PL Storage</span>
             <span class="tf-bar-key"><span class="tf-bar-sw seg-fulfil"></span>Fulfillment</span>
-            <span class="tf-bar-key"><span class="tf-bar-sw seg-selling"></span>Selling</span>
-            <span class="tf-bar-key"><span class="tf-bar-sw seg-returns"></span>Returns</span>
+            <span class="tf-bar-key"><span class="tf-bar-sw seg-ads"></span>Online Ads</span>
+            <span class="tf-bar-key"><span class="tf-bar-sw seg-platform"></span>e-Comm Platform</span>
+            <span class="tf-bar-key"><span class="tf-bar-sw seg-returns"></span>Return &amp; Discard</span>
             <span class="tf-bar-key"><span class="tf-bar-sw seg-margin"></span>Margin</span>
           </div>
         </div>
