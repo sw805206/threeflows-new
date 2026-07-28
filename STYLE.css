@@ -1,4 +1,4 @@
-/* v033 | last updated: 2026-07-28
+/* v034 | last updated: 2026-07-28
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
@@ -654,25 +654,36 @@ main .tf-container > h1:not(:has(+ .tf-prose-intro)) { margin-bottom: var(--tf-s
   }
 }
 
-/* Lightbox overlay (assets/lightbox.js). Full-viewport scrim; the image shows
-   as large as the viewport allows on a paper ground so a pale heat map keeps its
-   edges. Dismissed by the button, a backdrop click, or Escape. */
+/* Lightbox overlay (assets/lightbox.js) — a full-viewport scrim over a scrollable
+   stage. The image opens fit-to-viewport, then zooms in/out (buttons, +/- keys,
+   or wheel) so a dense heat map is actually readable; when zoomed past the
+   viewport the stage scrolls and drag pans it. Dismissed by ×, a background
+   click, or Escape. */
 .tf-lightbox {
   position: fixed; inset: 0; z-index: 1000;
-  display: flex; align-items: center; justify-content: center;
-  padding: var(--tf-space-4);
   background: color-mix(in srgb, var(--tf-ink) 88%, transparent);
 }
-.tf-lightbox img {
-  max-width: 96vw; max-height: 92vh; width: auto; height: auto;
-  object-fit: contain; background: var(--tf-paper);
+.tf-lightbox-stage {
+  position: absolute; inset: 0; overflow: auto; display: flex;
+  cursor: grab; overscroll-behavior: contain;
 }
-.tf-lightbox-close {
+.tf-lightbox-stage.is-panning { cursor: grabbing; }
+/* margin:auto centres a fit-or-smaller image and collapses so a larger one
+   scrolls from the top-left. JS sets the pixel width/height (the zoom level). */
+.tf-lightbox-stage img {
+  margin: auto; display: block; flex: 0 0 auto; background: var(--tf-paper);
+  max-width: none; user-select: none; -webkit-user-drag: none;
+}
+.tf-lightbox-controls {
   position: absolute; top: var(--tf-space-2); right: var(--tf-space-2);
-  width: 40px; height: 40px; padding: 0; border: 0;
-  font-size: 30px; line-height: 1; color: var(--tf-paper);
-  background: none; cursor: pointer;
+  display: flex; gap: 1px; z-index: 1;
 }
+.tf-lightbox-controls button {
+  width: 40px; height: 40px; padding: 0; border: 0; cursor: pointer;
+  font-size: 22px; line-height: 40px; text-align: center;
+  font-family: var(--tf-font-body); color: var(--tf-ink); background: var(--tf-paper);
+}
+.tf-lightbox-controls button:disabled { color: var(--tf-stone); cursor: default; }
 
 /* --------------------------------------------------------------------------
    "On this page" rail — a sticky table-of-contents for long-form prose pages.
