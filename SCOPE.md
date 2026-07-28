@@ -1,4 +1,4 @@
-v013 | last updated: 2026-07-26
+v014 | last updated: 2026-07-28
 
 # SCOPE.md — threeflows.com Relaunch (new repo)
 
@@ -84,13 +84,16 @@ row is tracked to done before cutover.
 index.html (Home); pathfinder.html, runningmate.html (service overviews);
 business-planning.html, sourcing-support.html, launch-hypercare.html,
 ongoing-management.html (service details); blogs.html (index; posts
-blog-###.html later); references.html; seminars.html; tools.html;
+blog-###.html later); references.html; seminars.html, tools.html
+(built but HIDDEN UNTIL READY — the files exist and are noindexed, and
+their nav links are removed; reachable by URL only until relinked);
 about.html; contact.html; privacy.html (hidden — no nav; linked in the
 shared footer); surveys.html (hidden cover; svy###.html later);
 stylebook.html (hidden internal reference — the colour + type stylebook;
 no nav, URL only; regenerated per PROCESS.md when STYLE changes).
 Nav = Home, Services (dropdown ×6, two tiers — see below), Resources
-(dropdown: Blogs, References, Seminars, Free tools), About, Contact.
+(dropdown: Blogs, References; Seminars and Free tools are hidden until
+ready — see above), About, Contact.
 Shared header/footer served from partials.html, fetched per page.
 
 Services is a two-tier dropdown in a SINGLE panel: two overview pages on
