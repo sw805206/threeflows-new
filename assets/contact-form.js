@@ -127,8 +127,27 @@
       if (success) success.hidden = false;
     }
 
+    /* Send-button pending state + in-flight guard. The button's `disabled`
+       property alone only blocks CLICKS on the button; a flag is needed so a
+       submit fired any OTHER way (Enter-key implicit submission, or a
+       dispatched/native submit) cannot fire a second POST while one is in
+       flight — the cause of the duplicate rows. */
+    var submitBtn = form.querySelector('[type="submit"]');
+    var submitBtnLabel = submitBtn ? submitBtn.textContent : '';
+    var submitting = false;
+
+    function setPending(on) {
+      if (!submitBtn) return;
+      submitBtn.disabled = on;
+      submitBtn.textContent = on ? 'Sending…' : submitBtnLabel;
+    }
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
+
+      /* Duplicate/concurrent-submit guard: if a POST is already in flight, do
+         nothing — no second request, however this submit was triggered. */
+      if (submitting) return;
 
       if (formError) formError.hidden = true;
 
@@ -148,21 +167,24 @@
         return;
       }
 
-      /* Live path (runs only once a real endpoint is wired). On a network/HTTP
-         failure, reveal the submit-failure message and leave the form intact so
-         the user can retry. */
-      var submitBtn = form.querySelector('[type="submit"]');
-      if (submitBtn) submitBtn.disabled = true;
+      /* Live path (runs only once a real endpoint is wired). Mark in-flight and
+         show the pending state SYNCHRONOUSLY, before the POST, so a slow ~1–2s
+         Apps Script round-trip gives immediate feedback and cannot be re-submitted.
+         On a network/HTTP failure, restore the button + reveal the retry message,
+         leaving the form intact so the user can try again. */
+      submitting = true;
+      setPending(true);
 
       fetch(CONTACT_ENDPOINT, {
         method: 'POST',
         body: new FormData(form)
       }).then(function (res) {
         if (!res.ok) throw new Error('Bad response');
-        showSuccess();
+        showSuccess();                 // form hides; button state is moot
       }).catch(function () {
+        submitting = false;            // allow another attempt
+        setPending(false);             // re-enable + restore the label
         if (formError) formError.hidden = false;
-        if (submitBtn) submitBtn.disabled = false;
       });
     });
   } catch (e) {
