@@ -152,12 +152,16 @@
               </div>
             </form>
 
-            <!-- Success swap — an ink panel that replaces the form in place on a
-                 successful submit. Reuses .tf-surface-ink for the ink ground +
-                 paper text; "Thank you" is Source Serif (base h2 heading font). -->
-            <div class="tf-form-success tf-surface-ink" id="tf-contact-success" hidden>
-              <h2>Thank You</h2>
-              <p>We'll respond within 2 business days.</p>
+            <!-- Success swap — replaces the form in place on a successful submit
+                 (JS toggles [hidden]; behaviour unchanged). Reskinned to the light
+                 .tf-callout idiom: brick Lucide check-circle + paper ground. The h2
+                 title is intentionally SENTENCE CASE (confirmation UI — STYLE.md §3). -->
+            <div class="tf-form-success tf-callout" id="tf-contact-success" hidden>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <div>
+                <h2 class="tf-callout-title">Thank you</h2>
+                <p class="tf-callout-body">We'll respond within 2 business days.</p>
+              </div>
             </div>
           </div>
 
