@@ -1,6 +1,15 @@
-/* v038 | last updated: 2026-07-28
+/* v039 | last updated: 2026-07-28
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v39 · 2026-07-28 · contact.html success block hidden-until-submit fix. Since the
+                     v37 reskin, .tf-form-success is a .tf-callout (display:flex),
+                     which defeated its [hidden] attribute and rendered the "Thank
+                     you" block ON PAGE LOAD (regression — v37 added the guard for
+                     .tf-form but not .tf-form-success). Adds .tf-form-success[hidden]
+                     { display: none } — the same guard idiom as .tf-form[hidden] /
+                     .tf-ref-panel[hidden] — so the default hidden state holds without
+                     JS; the swap JS still reveals it on a successful submit. CSS-only.
 
    v38 · 2026-07-28 · contact.html success callout goes BORDERLESS (instance-scoped).
                      `.tf-form-success` drops `.tf-callout`'s `--tf-rule-light`
@@ -2594,6 +2603,12 @@ a.tf-icon-brand:focus { color: #004182; }        /* LinkedIn blue, pressed */
    .tf-callout-title tier — intentionally SENTENCE CASE (confirmation UI, STYLE.md
    §3), not a section heading. */
 .tf-form-success { margin-block-start: var(--tf-space-4); border: none; }
+/* Hidden-until-submit guard — .tf-form-success is a .tf-callout, whose
+   display:flex would otherwise defeat the [hidden] attribute and render the
+   "Thank you" block on page load (the same gotcha .tf-form[hidden] and
+   .tf-ref-panel[hidden] handle). Force it hidden so the DEFAULT state holds
+   without JS; the swap JS clears [hidden] to reveal it on a successful submit. */
+.tf-form-success[hidden] { display: none; }
 
 /* ── City collage (3×3, on-tile labels) ──────────────────────────────────────
    Nine square cells filling the grid exactly: eight photo tiles + one label tile
