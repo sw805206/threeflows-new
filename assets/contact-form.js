@@ -17,7 +17,7 @@
   /* Deferred endpoint. Replace this ONE string with the live Apps Script /exec
      URL to go live — nothing else changes. While it equals the placeholder (or
      is empty), the success swap runs without a network POST. */
-  var CONTACT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxzHVQm6G6SUxyFrI_5bT_2GRmkSqJFR9VeK0K5-Lk_gQhK8fZUdStopuJCXehL96lyiQ/exec';
+  var CONTACT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwNn7LqZ9zlVmBDaH9FU7NBJIqr3-gt0F-7SYxYNbtu4HlIQM5ecnEa_GXXbXBR8uyM6w/exec';
 
   function endpointReady() {
     return CONTACT_ENDPOINT && CONTACT_ENDPOINT.indexOf('__') !== 0;
