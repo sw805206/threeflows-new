@@ -17,7 +17,7 @@
   /* Deferred endpoint. Replace this ONE string with the live Apps Script /exec
      URL to go live — nothing else changes. While it equals the placeholder (or
      is empty), the success swap runs without a network POST. */
-  var CONTACT_ENDPOINT = '__CONTACT_ENDPOINT__';
+  var CONTACT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwNn7LqZ9zlVmBDaH9FU7NBJIqr3-gt0F-7SYxYNbtu4HlIQM5ecnEa_GXXbXBR8uyM6w/exec';
 
   function endpointReady() {
     return CONTACT_ENDPOINT && CONTACT_ENDPOINT.indexOf('__') !== 0;
@@ -41,6 +41,48 @@
   try {
     var form = document.getElementById('tf-contact-form');
     if (!form) return;   // not the contact page, or markup absent: leave it alone
+
+    /* Hidden metadata fields — created here (not in the markup) so FormData
+       picks them up automatically. All default to "" and are filled
+       best-effort; a blank value is always acceptable. */
+    function addHidden(name) {
+      var el = document.createElement('input');
+      el.type = 'hidden';
+      el.name = name;
+      el.value = '';
+      form.appendChild(el);
+      return el;
+    }
+    var fTz = addHidden('tz');
+    var fCity = addHidden('geo_city');
+    var fRegion = addHidden('geo_region');
+    var fCountry = addHidden('geo_country');
+
+    /* Browser time zone — synchronous, no network. Blank on any failure. */
+    try {
+      fTz.value = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    } catch (tzErr) { /* soft-fail: leave "" */ }
+
+    /* Approx location from IP — fire-and-forget, HARD soft-fail. Any error,
+       block, timeout, or malformed response leaves the fields "" and must never
+       delay, break, or alter submission or validation. Provider is fixed as
+       ipapi.co. Same soft-fail posture as the partials/references/toc fetches. */
+    (function geoLookup() {
+      try {
+        var ctrl = new AbortController();
+        var timer = setTimeout(function () { ctrl.abort(); }, 4000);
+        fetch('https://ipapi.co/json/', { signal: ctrl.signal })
+          .then(function (res) { return res.ok ? res.json() : null; })
+          .then(function (data) {
+            if (!data) return;
+            if (data.city) fCity.value = data.city;
+            if (data.region) fRegion.value = data.region;
+            if (data.country_name) fCountry.value = data.country_name;
+          })
+          .catch(function () { /* soft-fail: leave "" */ })
+          .then(function () { clearTimeout(timer); });
+      } catch (geoErr) { /* soft-fail (e.g. no AbortController): leave "" */ }
+    })();
 
     var success = document.getElementById('tf-contact-success');
     var formError = document.getElementById('cf-form-error');
