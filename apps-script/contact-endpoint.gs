@@ -50,7 +50,7 @@ var NOTIFY_TO = 'contact@threeflows.com';
 /** Tab that stores submissions, and its header row (labels exactly as below —
  *  the first column is just "timestamp", with no timezone annotation). */
 var SHEET_NAME = 'Submissions';
-var HEADER = ['timestamp', 'first', 'last', 'email', 'message',
+var HEADER = ['first', 'last', 'email', 'message', 'timestamp',
               'tz', 'geo_city', 'geo_region', 'geo_country'];
 
 /**
@@ -76,7 +76,7 @@ function saveRow_(ts, first, last, email, message, tz, geoCity, geoRegion, geoCo
     sheet = ss.insertSheet(SHEET_NAME);
     sheet.appendRow(HEADER);
   }
-  sheet.appendRow([ts, first, last, email, message, tz, geoCity, geoRegion, geoCountry]);
+  sheet.appendRow([first, last, email, message, ts, tz, geoCity, geoRegion, geoCountry]);
 }
 
 /**
