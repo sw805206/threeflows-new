@@ -119,5 +119,14 @@
     "imageAlt": "A FedEx delivery truck parked on a snow-covered street during heavy snowfall, framed by bare winter trees.",
     "recap": "The headline FedEx 2026 rate increase is 5.9% \u2014 but a weight-by-zone heat map shows the increase is far from uniform, and residential surcharges push the effective hike higher for common e-commerce shipments. Really a lesson in turning a wall of numbers into a decision.",
     "readMinutes": 5
+  },
+  {
+    "blogID": "blog-012",
+    "filename": "blog-entity-formation.html",
+    "title": "Setting Up a Company: Plan Before You Act",
+    "date": "2026-02-17",
+    "status": "published",
+    "recap": "Filing the paperwork takes an afternoon. The decisions that determine whether you filed the right thing take longer \u2014 and skipping that planning step is the single most common mistake founders make.",
+    "readMinutes": 8
   }
 ]
