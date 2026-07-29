@@ -1,4 +1,4 @@
-v003 | last updated: 2026-07-27
+v004 | last updated: 2026-07-28
 
 # PROCESS.md — Human/Claude working procedures (this project)
 
@@ -6,7 +6,7 @@ Collaborative step-by-step procedures the human and Claude run together for this
 project. Processes done entirely by the human live in the Google Doc SOP, not here;
 universal human/Claude rules live in CLAUDE.md Part C. Registered in SCOPE.md.
 
-Sections: (1) Images · (2) Blog updates [TBD] · (3) Adding clients [TBD] · (4) Stylebook maintenance
+Sections: (1) Images · (2) Blog updates [TBD] · (3) Adding clients [TBD] · (4) Stylebook maintenance · (5) Privacy page stamp
 
 ---
 
@@ -121,3 +121,18 @@ or text) or the tag→tint map, and hand-sync the tint pairings — a raw-litera
 is NOT a token change and will not surface as one. A pure component or layout
 change with no token/scale set change and no tint-literal change needs no stylebook
 update.
+
+---
+
+## 5. Privacy page stamp
+
+`privacy.html` carries a visible **"Last updated: Month D, YYYY"** stamp — the
+`.tf-meta` line under the intro. It is the date shown to users and the one the
+policy's own "Changes to This Policy" section promises to keep current.
+
+**RULE — any commit that modifies `privacy.html` MUST refresh that stamp in the
+SAME commit.** The date is read from machine time at the moment of the edit
+(`date +%F`) and rendered in the page's existing `Month D, YYYY` format — never
+hand-typed, copied from another line, or inferred (Part A → **Dates come from
+machine time**). A commit that touches `privacy.html` without updating the stamp
+is non-compliant; a commit that does not touch `privacy.html` leaves it untouched.
