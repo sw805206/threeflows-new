@@ -1,4 +1,4 @@
-v005 | last updated: 2026-07-29
+v006 | last updated: 2026-07-29
 
 # PROCESS.md — Human/Claude working procedures (this project)
 
@@ -6,7 +6,7 @@ Collaborative step-by-step procedures the human and Claude run together for this
 project. Processes done entirely by the human live in the Google Doc SOP, not here;
 universal human/Claude rules live in CLAUDE.md Part C. Registered in SCOPE.md.
 
-Sections: (1) Images · (2) Blog updates [TBD] · (3) Adding clients [TBD] · (4) Stylebook maintenance · (5) Privacy page stamp
+Sections: (1) Images · (2) Blog updates · (3) Adding clients [TBD] · (4) Stylebook maintenance · (5) Privacy page stamp
 
 ---
 
@@ -86,7 +86,20 @@ logo.
 ---
 
 ## 2. Blog updates
-_TBD — to be specified. Placeholder; do not infer a procedure until worked through._
+
+**Recap and intro must be verbatim-identical.** `bloglist.json`'s `recap` field
+is a byte-for-byte copy of the post's own `.tf-prose-intro` text (BLOG.md §2)
+— not just the same words, but the same punctuation. A straight quote/apostrophe
+standing in for the post's curly one is a mismatch, not a nit. Whenever either
+side is edited — the intro in the post's HTML, or the recap in the manifest —
+re-copy into the other side in the **same commit**; nothing checks this
+automatically (BLOG.md's opening note).
+
+**Audit periodically, or whenever asked:** for each post, extract its
+`.tf-prose-intro` text, decode HTML entities, collapse whitespace, and diff
+against its manifest `recap`. Report every mismatch found — including
+punctuation-only ones — rather than silently picking a side; which text
+becomes canonical is the human's call.
 
 ## 3. Adding clients
 _TBD — to be specified. Placeholder; do not infer a procedure until worked through._
