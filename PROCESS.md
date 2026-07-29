@@ -1,4 +1,4 @@
-v004 | last updated: 2026-07-28
+v005 | last updated: 2026-07-29
 
 # PROCESS.md — Human/Claude working procedures (this project)
 
@@ -41,6 +41,13 @@ files may pass through it but it is never committed and holds nothing on `main`.
    the way in), names per the section's convention, wires the page reference, and deletes
    the preview.
 5. **Result** — the image exists in exactly 2 places: library master + committed repo copy.
+
+**Timing — the image ships with its page.** For a page or post build, complete
+this full cycle (point → preview → approve → promote) before committing — the
+image lands in the **same commit and PR as the content**, never a follow-up.
+A build isn't finished until the image is either promoted or explicitly
+deferred by the human's own decision (e.g. an image-less ship, per SCOPE.md's
+"Pages may ship image-less only by explicit decision").
 
 ### Logos (client marks — a variant of the above)
 Logos are not photographs: no crop-to-aspect, no `.tf-photo` grade. They still follow the

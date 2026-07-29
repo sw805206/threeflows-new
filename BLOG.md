@@ -1,4 +1,4 @@
-v007 | last updated: 2026-07-28
+v008 | last updated: 2026-07-29
 
 # BLOG.md — how to add a blog post
 
@@ -225,20 +225,25 @@ feet).
 
 ## 8. Ship rhythm
 
-1. **Localhost review first** — client-facing changes are shown before they are
+1. **Image first.** Complete the PROCESS.md §1 image cycle (point → preview →
+   approve → promote) before the localhost review below — a post ships with
+   its image already wired, not as a follow-up commit. Image-less is fine only
+   by the human's explicit decision.
+2. **Localhost review** — client-facing changes are shown before they are
    committed (CLAUDE.md Part B).
    **⚠ Stale-JS caching is a known trap:** the preview has repeatedly executed a
    cached `blog.js`/`STYLE.css` and shown *phantom* old behavior. Verify on a
    **fresh origin** (a different port) or a hard refresh before believing a
    result — and before reporting a bug.
-2. **Commit.** Style changes (`STYLE.css` / `STYLE.md`) go in their **own
-   commit, separate from content/JS** (Part B). Keep the two file sets disjoint
-   as you work.
-3. **Push after every ship.** `git push origin main`. Pre-cutover, direct commits
-   to main are permitted (SCOPE.md); the github.io preview builds from main.
-4. **Verify the live preview** on the github.io subpath — it is the only place
-   relative paths (manifest fetch, image srcs, hrefs) are proven end-to-end.
-   Allow a moment for images to download before judging them.
+3. **Commit.** Style changes (`STYLE.css` / `STYLE.md`) go in their **own
+   commit, separate from content/JS** (Part B). The post's content and its
+   image are **one commit** — never split across two.
+4. **Branch, push, PR.** SCOPE.md's branch-per-stream discipline governs: one
+   feature branch per post, in its own worktree; push the branch and open a PR
+   only when asked (CLAUDE.md Part B) — never a direct commit to `main`.
+5. **Verify the live site** after merge — it is the only place relative paths
+   (manifest fetch, image srcs, hrefs) are proven end-to-end. Allow a moment
+   for images to download before judging them.
 
 ## 9. Deferred body patterns
 
