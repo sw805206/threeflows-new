@@ -1,6 +1,20 @@
-/* v036 | last updated: 2026-07-28
+/* v037 | last updated: 2026-07-28
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v37 · 2026-07-28 · contact.html success state reskinned off the ink slab onto
+                     the light .tf-callout idiom (reuse, NOT a new pattern):
+                     .tf-form-success drops .tf-surface-ink for .tf-callout — brick
+                     Lucide check-circle in the svg slot + .tf-callout-title /
+                     .tf-callout-body on a paper ground, at the form-column width.
+                     .tf-form-success now only adds top spacing (margin-block-start)
+                     since .tf-callout supplies the box. No new colour/token/hex.
+                     The "Thank you" h2 is SENTENCE CASE (confirmation UI) — see the
+                     STYLE.md §3 exception added the same commit. ALSO fixes the
+                     swap: .tf-form's display:flex defeated the [hidden] attribute
+                     so the form never hid; a .tf-form[hidden]{display:none} guard
+                     (mirroring .tf-ref-panel[hidden]) makes the form actually
+                     disappear. JS untouched (still toggles [hidden]).
 
    v36 · 2026-07-28 · index.html band-4 + band-6 equal-height fix
                      (fix/band4-band6-equal-height). `.tf-prog-group` moves from
@@ -2445,6 +2459,12 @@ a.tf-icon-brand:focus { color: #004182; }        /* LinkedIn blue, pressed */
   gap: var(--tf-space-3);
   flex: 1 0 auto;                       /* fill the (stretched) column so the foot can pin to its bottom */
 }
+/* Success swap guard — the JS sets [hidden] on the form to replace it with
+   .tf-form-success. .tf-form's own display:flex would otherwise defeat the
+   attribute (the gotcha the .tf-ref-panel[hidden] guard also handles), leaving
+   the form visible with the callout below it; force it hidden so the form
+   actually disappears. */
+.tf-form[hidden] { display: none; }
 .tf-field { display: flex; flex-direction: column; gap: var(--tf-space-1); }
 /* First + last name share one row (two-up), holding at every width — no side-by-
    side/stack breakpoint is added to the sheet's 768/820 vocabulary; the two name
@@ -2554,11 +2574,13 @@ a.tf-icon-brand:focus { color: #004182; }        /* LinkedIn blue, pressed */
   overflow: hidden;
 }
 
-/* Success swap — the ink panel shown in place of the form on a successful
-   submit. The ink ground + paper text come from .tf-surface-ink (reused, in the
-   markup); this only supplies the band's own padding. "Thank you" is a base h2,
-   so it renders in Source Serif and inherits paper from the ink surface. */
-.tf-form-success { padding: var(--tf-space-6) var(--tf-space-4); }
+/* Success swap — shown in place of the form on a successful submit. Reskinned to
+   the light .tf-callout idiom: the border / paper ground / padding / flex + brick
+   svg all come from .tf-callout (reused in the markup). This rule only adds top
+   spacing so the callout is not flush to whatever sits above. "Thank you" is a
+   base h2 (Source Serif) at the .tf-callout-title tier — intentionally SENTENCE
+   CASE (confirmation UI, STYLE.md §3), not a section heading. */
+.tf-form-success { margin-block-start: var(--tf-space-4); }
 
 /* ── City collage (3×3, on-tile labels) ──────────────────────────────────────
    Nine square cells filling the grid exactly: eight photo tiles + one label tile
