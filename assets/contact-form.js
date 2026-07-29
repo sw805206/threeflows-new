@@ -92,11 +92,14 @@
     var firstError = document.getElementById('cf-first-error');
     var email = document.getElementById('cf-email');
     var emailError = document.getElementById('cf-email-error');
+    var message = document.getElementById('cf-message');
+    var messageError = document.getElementById('cf-message-error');
 
     /* Clear a field's error as soon as the user edits it — so the form stops
        nagging while they are fixing it. */
     if (first) first.addEventListener('input', function () { clearFieldError(first, firstError); });
     if (email) email.addEventListener('input', function () { clearFieldError(email, emailError); });
+    if (message) message.addEventListener('input', function () { clearFieldError(message, messageError); });
 
     function validate() {
       var firstInvalid = null;
@@ -108,6 +111,10 @@
       if (email && !EMAIL_RE.test(email.value.trim())) {
         showFieldError(email, emailError);
         firstInvalid = firstInvalid || email;
+      }
+      if (message && message.value.trim() === '') {
+        showFieldError(message, messageError);
+        firstInvalid = firstInvalid || message;
       }
 
       if (firstInvalid) { firstInvalid.focus(); return false; }

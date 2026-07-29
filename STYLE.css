@@ -1,6 +1,15 @@
-/* v037 | last updated: 2026-07-28
+/* v038 | last updated: 2026-07-28
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v38 · 2026-07-28 · contact.html success callout goes BORDERLESS (instance-scoped).
+                     `.tf-form-success` drops `.tf-callout`'s `--tf-rule-light`
+                     border for this one instance (paper-on-paper, icon + spacing
+                     only) via a `border: none` on the existing `.tf-form-success`
+                     override — later source order, equal specificity, so the base
+                     `.tf-callout` frame is UNCHANGED (intake, painpoints/solves keep
+                     their borders). No new token/colour. Paired with the markup/JS
+                     change making Brief description a required field (STYLE.md v034).
 
    v37 · 2026-07-28 · contact.html success state reskinned off the ink slab onto
                      the light .tf-callout idiom (reuse, NOT a new pattern):
@@ -2575,12 +2584,16 @@ a.tf-icon-brand:focus { color: #004182; }        /* LinkedIn blue, pressed */
 }
 
 /* Success swap — shown in place of the form on a successful submit. Reskinned to
-   the light .tf-callout idiom: the border / paper ground / padding / flex + brick
-   svg all come from .tf-callout (reused in the markup). This rule only adds top
-   spacing so the callout is not flush to whatever sits above. "Thank you" is a
-   base h2 (Source Serif) at the .tf-callout-title tier — intentionally SENTENCE
-   CASE (confirmation UI, STYLE.md §3), not a section heading. */
-.tf-form-success { margin-block-start: var(--tf-space-4); }
+   the light .tf-callout idiom: the paper ground / padding / flex + brick svg come
+   from .tf-callout (reused in the markup). This rule adds top spacing so the
+   callout is not flush to whatever sits above, and DROPS .tf-callout's border for
+   THIS instance only — the base .tf-callout keeps its frame (intake, painpoints/
+   solves); here the block is paper-on-paper, defined by the icon + spacing alone.
+   Later source order + equal specificity to .tf-callout, so the border override
+   wins without raising specificity. "Thank you" is a base h2 (Source Serif) at the
+   .tf-callout-title tier — intentionally SENTENCE CASE (confirmation UI, STYLE.md
+   §3), not a section heading. */
+.tf-form-success { margin-block-start: var(--tf-space-4); border: none; }
 
 /* ── City collage (3×3, on-tile labels) ──────────────────────────────────────
    Nine square cells filling the grid exactly: eight photo tiles + one label tile
