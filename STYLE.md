@@ -1,8 +1,8 @@
-v035 | last updated: 2026-07-28
+v036 | last updated: 2026-07-30
 
 # Three Flows Solutions — Brand Style Guide
 
-v035: Contact success block HIDDEN-UNTIL-SUBMIT fix (paired with STYLE.css v039, same commit per SCOPE.md). Since the v033 reskin made `.tf-form-success` a `.tf-callout` (which sets `display:flex`), the block's `[hidden]` attribute was DEFEATED — the "Thank you" success block rendered ON PAGE LOAD, beneath the Send button, before any submit. A regression: v033 added a `.tf-form[hidden]` guard for the form but no matching one for `.tf-form-success`. CSS-only fix: add `.tf-form-success[hidden] { display: none }` — the same guard idiom as `.tf-form[hidden]` / `.tf-ref-panel[hidden]` — so the DEFAULT hidden state holds without JS (and even if JS errors), while the swap JS still clears `[hidden]` to reveal the block on a successful submit. The `hidden` attribute in the markup and the submit handler were already correct; only the CSS guard was missing. Block stays borderless (the v034 instance override) — unchanged. (v034: Contact success callout goes BORDERLESS + Brief description now required (paired with STYLE.css v038, same commit per SCOPE.md). (1) The submit-success block (`.tf-form-success`) drops `.tf-callout`'s `--tf-rule-light` border for THIS instance only — a `border: none` on the existing `.tf-form-success` override (later source order, equal specificity), so the base `.tf-callout` frame is UNCHANGED and every other callout (intake, business-planning painpoints/solves) keeps its border; the success block becomes paper-on-paper, defined by the brick check-circle icon + spacing alone. No new token / colour / pattern. (2) `contact.html` makes the Brief description textarea a REQUIRED field: the label gains the same `.tf-required` brick asterisk as First name / Email, the textarea gains `required` + `aria-describedby`, and `assets/contact-form.js` blocks submit on an empty message using the EXISTING `.tf-field-error` + `aria-invalid` treatment (reused, not new); the "* required" note is unchanged. Markup + JS only for (2); no CSS. (v033: Contact success state reskinned to the `.tf-callout` idiom (paired with STYLE.css v037, same commit per SCOPE.md). The submit-success panel (`.tf-form-success`) moves OFF the full-width `.tf-surface-ink` ink slab onto the existing light `.tf-callout` idiom — REUSE, not a new pattern: a brick Lucide check-circle in the `.tf-callout` svg slot, `.tf-callout-title` / `.tf-callout-body`, `--tf-rule-light` border on a paper ground, at the form-column width. `.tf-form-success` now only supplies top spacing (`margin-block-start`) since `.tf-callout` gives the box. No new colour / token / hex, no arrows; the base `.tf-callout` (brick title + icon) is used, not `-affirm` (which would ink them). This ALSO fixes the swap: `.tf-form`'s `display:flex` was defeating the `[hidden]` attribute, so on submit the form never actually hid (the callout just appeared below it); a scoped `.tf-form[hidden] { display: none }` guard — mirroring the existing `.tf-ref-panel[hidden]` precedent — makes the form genuinely disappear. The JS is UNCHANGED (still toggles `[hidden]`); only the CSS guard is new. §3 gains a one-line EXCEPTION: confirmation / UI feedback headings (this success title, "Thank you") are SENTENCE CASE despite being an h2, so a heading audit does not "correct" them to Title Case. (v032: intake.html forward-reference RETIRED — the page will NOT be built, reversing the earlier plan (recorded in the v026 §6 contact-build entry) to ship it as a hidden page with its own deferred endpoint. Nothing is deleted (the page was never created); the dangling FORWARD REFERENCE is removed: the `.tf-intake-link` anchor on `contact.html` (→ `intake.html`, `target=_blank`), its `.tf-intake-link` STYLE.css rule + comment, and the live prose comments describing it. This RESOLVES the "BACKLOG divergence" the v026 §6 entry flagged — settled in **BACKLOG.md's favour**: BACKLOG §B/§E already map the OLD-site `intake.html → contact.html` (a Cloudflare redirect still required at cutover, since intake.html is live on the old site), so BACKLOG.md and SCOPE.md are already correct and are **NOT edited**. Bottom-alignment: removing the link does NOT break the mechanism — `.tf-field-grow`'s `flex:1` still pins `.tf-form-foot` to the column bottom, so the collage bottom now meets the **send button** at the identical y (measured 0px shift on localhost, no foot change); the live `.tf-form-foot` / `.tf-field-grow` / collage comments are re-anchored on the button accordingly. Paired with STYLE.css v035 (the `.tf-intake-link` rule deleted), same commit per SCOPE.md; the contact.html anchor + its comments are removed on the paired `chore/remove-intake-link` branch (markup-first merge order). The dated v026 §6 "Contact page build" record is left UNCHANGED as history — this reversal lives only in this ratchet entry. (v031: Lightbox zoom + pan (paired with STYLE.css v034, same commit per SCOPE.md). The `.tf-lightbox` overlay gains a scrollable `.tf-lightbox-stage` and a − / + / × control cluster; `assets/lightbox.js` is rewritten so an enlarged image opens fit-to-viewport-READABLE (natural resolution, capped to the viewport width) and zooms — buttons, +/- keys, or wheel — with drag-to-pan once it is larger than the viewport, so a dense heat map (blog-011's rate maps) is actually legible. Closes on ×, a backdrop click, or Escape. This is the CODE half of the in-body zoomable-image feature; the BLOG.md §7 rule and the blog-template `lightbox.js` script are its DOCS half (docs(blog) dcd5653, same branch). Builds on the `.tf-figure-zoom` / `.tf-lightbox` base added in v030. (v030: Blog body figures — `.tf-prose-figure` + `.tf-figure-aside` (paired with STYLE.css v033, same commit per SCOPE.md). The first body-image patterns (BLOG.md §9 — a body pattern lives in the sheet, never page-local), first needed by blog-011. **`.tf-prose-figure`** is a full-width in-flow figure wrapper: its `<img>` reuses **`.tf-img-framed`** for sizing, and screenshots / data-graphics deliberately SKIP the `.tf-photo` grade (that is for photographs). **`.tf-figure-aside`** is an image-alongside-text split for a wide-and-tall figure: the image sits beside the prose that reads it and, on desktop, is sized to that text block's HEIGHT (`assets/lightbox.js` measures the text and caps the image to it), so a very tall figure renders as a small preview strip rather than towering. Because that strip is too small to read, every figure image is **click-to-enlarge** — a vanilla lightbox (`.tf-figure-zoom` button → `.tf-lightbox` overlay, Escape / backdrop / × to close). Below 820px it stacks image-on-top (source order = image first), capped so a tall figure is not a full-screen tower. No stylebook change — layout only, no token / type-scale set change (PROCESS.md §4). (v029: Category (data-viz) palette + wash-token promotion (paired with STYLE.css v032, same commit per SCOPE.md). The six `.tf-pill-tint-*` wash BACKGROUNDS — previously raw hex literals in both the pill rules and (by hand) the stylebook — are promoted to **`--tf-wash-brick/slate/ochre/teal/plum/stone`** tokens; the pill rules and the `.tf-journey-step` hover now reference them, collapsing the tint drift-surface PROCESS.md §4 flagged (only the pills' DEEP TEXT colours stay literals, pill-only). A new **`--tf-cat-*`** category palette (nine tokens) is added for the cashflow / unit-economics stacked visualizations, shared across blog-009 and blog-010: Product Purchase → `--tf-ink-soft`, Shipping & Tariff → `--tf-stone`, Fulfillment → `--tf-sand` (three existing weighted tones), and 3PL Storage / Online Ads / e-Comm Platform / Sales Revenue / Return & Discard / Cumulative P&L aliasing the six category washes. No new hue is introduced — the data-viz palette is the site's existing wash palette re-assigned to commerce categories. stylebook.html re-synced (wash + cat swatch groups added, tint-pairings note updated for the tokenised backgrounds, header stamps bumped). (v028: Heading capitalization amended to PER-LEVEL in §3, SUPERSEDING the v027 "all headings (h1/h2/h3) use Title Case" rule. h1 and h2 keep Chicago Title Case; h3 is now sentence case (first word + proper nouns only); proper nouns/acronyms/brand names keep their own casing at every level; kickers/meta unaffected. Reason: the v027 blanket rule was written from intent, but an audit of all 119 live content headings found h3 is majority sentence-case AUTHORED intent (15 of 24 h3 in sentence case vs Title Case), so a uniform rule would have mis-flagged the h3 house convention as violations. Still PROSE-ONLY, no paired STYLE.css edit (the v023 comment/prose-only precedent). Page-copy reconciliation to this amended rule (h1/h2 up to Title Case, h3 confirmed sentence case) is a SEPARATE commit that follows. (v027: Heading Title Case rule documented in §3. Headings (h1/h2/h3) use conventional (Chicago-style) Title Case — first/last word and all principal words capitalized, articles/coordinating-conjunctions/prepositions lowercased — AUTHORED IN THE MARKUP, never via CSS `text-transform` (which would uppercase function words and cannot lowercase them); kickers/meta keep their own class-driven uppercasing. This DOCUMENTS existing intent (headings were always meant to read as titles), not a new decision; PROSE-ONLY, no paired STYLE.css edit (the v023 comment/prose-only precedent). No page is fixed by this commit — no current heading is known to violate the rule in a way recorded here; any page-copy corrections are a SEPARATE commit that follows. (v026: contact.html build (feat/contact-page, paired with STYLE.css v031, same commit per SCOPE.md). The tier-1 Contact page, first consumer of three new pattern groups: the **FORM KIT** (`.tf-form-col`, `.tf-form`, `.tf-field`, `.tf-field-row` first+last two-up, `.tf-field-grow` for the brief-description textarea, `.tf-label`, `.tf-input`/`.tf-textarea`, `.tf-required`, `.tf-form-note`, a paper-ground field with a 2px stone-light border going brick on focus; error states `.tf-input[aria-invalid]` + `.tf-field-error`; the endpoint-unreachable `.tf-form-error`; `.tf-form-foot`, the bottom-pinned action block whose `.tf-btn` keeps intrinsic width — NO arrows; and `.tf-form-success`, the inline ink swap that reuses `.tf-surface-ink`), the **`.tf-hp`** off-screen honeypot, and the **`.tf-collage`** 3×3 square-tile grid (each photo tile a `<figure>` `.tf-collage-tile` with a cover-cropped `.tf-collage-img` and a `.tf-collage-label` laid OVER the photo on a `--tf-ink`-derived scrim, plus the `.tf-collage-more` `--tf-cream` label tile). The two-column body REUSES `.tf-grid-2up` (collage-first source order → collage-left/form-right ≥820px, stacked collage-first below), equal-height so the collage bottom and the intake link meet; the hero reuses `.tf-page-head`. `--tf-*` tokens only — no raw hex (the scrim uses `color-mix` with `transparent`), no new token/scale, so no stylebook re-sync (PROCESS.md §4). Images quick-populated for staging (not the §1 promotion). Full detail in §6. (v025: Service-list brick marker (paired with STYLE.css v030, same commit per SCOPE.md). A 6px brick square &mdash; the same literal `.tf-callout-list` uses, only the colour differs &mdash; marks each `.tf-service-track` item; folded into the rule, not a standalone class, as its only consumer. v029's item padding is re-based to `0 --tf-space-2`, the 16px rhythm unchanged, so labels sit at the item top for the marker to align to. Band 2's neutral stone pain-point bullets and band 3's brick service squares are ONE mark in two colours, emphasis on the offering. NO numeral or counter: a service list is not a sequence, so a numbered marker would rebuild the numbered engage band just retired. (v024: Service-detail two-content-column re-cut (paired with STYLE.css v029, same commit per SCOPE.md). The v020 two-column engage band (`.tf-flow` left / `.tf-faq` right in a `.tf-grid-2up`, "the reusable service-detail template band") is SUPERSEDED — the engage band is deleted from all four service-detail pages; the v019 symmetric painpoints|solves `.tf-callout` pair is RETIRED (pain points now sit opposite the approach prose, the solves are replaced by the service track). New patterns: **`.tf-content-split`** (the 40ch/62ch two-CONTENT-column row — both columns carry heading + body, so it is NOT a `.tf-section-split` variant, whose left column IS the heading), **`.tf-service-track`** (`.tf-flow`'s label/note shape without the brick counter), **`.tf-cta-inline`** (the closing action following the services list, a `--tf-space-6` break — not bottom-aligned). `.tf-faq` item rhythm tightened to `--tf-space-1`, folding the throwaway spike's tight modifier onto the base rule (the four service pages are its only consumers). `.tf-flow` and `.tf-btn-secondary` are now orphaned; their CSS is retained (not deleted) per the `.tf-stat-grid` precedent in BL-012, flagged for a backlog row. Full detail in §6. (v023: `.tf-lead` stale-size reconcile (paired with STYLE.css v028, same commit per SCOPE.md). §3 "Prose page intro" no longer calls `.tf-lead` 20px / hero-reserved — stale since STYLE.css v13; the two are distinguished by ROLE and by `.tf-lead`'s colour shift inside `.tf-cta`. The v021 ratchet's "Known stale note" is marked reconciled — it flagged only the STYLE.css copy and missed this one. Comment/prose only. (v022: Home page (`index.html`) build — all seven bands, rebased onto main at STYLE.css v027. New shared patterns: **`.tf-hero-home`**, **`.tf-grid-4up`**, **`.tf-prog-group`** + **`.tf-card-ink-soft`**, **`.tf-card-head`**, **`.tf-stat-card`**; **`#trusted`** per-logo trusted-by sizing with **`-trim`** logo variants; **`.tf-stat-grid`** 6-up repair (now unused, retained as a paper-ground pattern). Band-3 scoped overrides: true-italic Source Serif pull-quote (§3's italics ban targets faux-oblique on Space Grotesk only — a true-serif quote is exempt), callout-body emphasis, column bottom-alignment. **`.tf-img-framed`** goes borderless sitewide. **`--tf-footer-ground`** scope widened to the band-4 Runningmate header (no longer footer-only). §2 amended — client logos may appear in ORIGINAL COLOUR in the about carousel and the home trusted-by strip (supersedes "ink wordmarks only"). Full detail in §6 "Home page build". (v021: `.tf-lead` 20px → 16px — resized the lead paragraph (`--tf-text-lg` 20px → `--tf-text-base` 16px), aligning the service-page hook and CTA subline with the site's 16px lead/intro size used by **`.tf-prose-intro`**. No explicit line-height is set: `.tf-lead` inherits the body's unitless `line-height: 1.6`, so at 16px the leading is 25.6px — the identical mechanism `.tf-prose-intro` uses, keeping the two locked to one rhythm. **Colour deliberately unchanged** — `.tf-lead` sets no colour, so it stays ink on paper grounds and `--tf-paper` inside `.tf-cta`. Consumed by exactly 4 elements — the hook + CTA subline on `business-planning.html` and `sourcing-support.html`; no other consumers. NB the `.tf-prose-intro` comment in STYLE.css still describes `.tf-lead` as "(20px), reserved for hero moments" — now stale; left untouched here (that block was out of scope) and flagged for a separate reconciliation. (v020: business-planning.html &mdash; &ldquo;How we engage&rdquo; band + FAQ revert. **`.tf-flow`** (NEW) &mdash; a vertical numbered process flow (brick auto-number, bold label, one explanation line, body size), kin to `.tf-steps` but page-level; it fills the LEFT column of a two-column engage band (a reused `.tf-grid-2up`), with the STATIC FAQ on the RIGHT &mdash; the reusable service-detail template band. **`.tf-faq` REVERTED** from the v018 interactive accordion to a STATIC, all-visible list (`dt` question + `dd` answer, no `<button>`, no fold); **`assets/faq.js` deleted** and its `<script>` removed. The accordion was reverted because the FAQ now sits beside the flow and displays in full. (v019: business-planning.html — Plan detail page (tier-2). Page patterns + reuse, plus a WIDTH + TYPE discipline for tier-2 pages: every section is full-`.tf-container` width and meets ONE shared right edge (the tier-2 intro image), while running text keeps the blog's 62ch measure inside; TYPE inherits the blog scale (base h1/h2/h3 + `.tf-prose`), no page-specific font sizes. Patterns: **`.tf-intro-split`** (tier-2 two-column opener — text column beside a framed inline content image, deliberately NOT the `.tf-page-head` hero; its right edge is the page's alignment reference); **`.tf-section-split`** (labelled prose row — heading LEFT, 62ch prose pinned to the container's right edge; the no-TOC-rail analog of `.tf-prose-layout`, so a running-text section reaches the shared right edge instead of hugging the left — WIDTH only, type unchanged); **`.tf-grid-2up`** (locked 2-up GENERALIZED out of `.tf-profile-grid`, which now consumes it as a thin margin-only modifier — about.html's principals render identically); **`.tf-faq`** (FOLDED `<dl>` accordion — `<button>` triggers toggled by `assets/faq.js`, full-width dividers, answers inherit the body size/colour capped at 62ch). Reuse: `.tf-callout` gains `.tf-callout-warn`/`.tf-callout-affirm` accent modifiers + `.tf-callout-list` for the symmetric painpoints|solves cards, whose bullets take the INHERITED body size AND colour — identical to the "Our approach" copy, not a reduced/muted caption (first LIVE `.tf-callout` use, BL-012); `.tf-cta` gains a secondary-button override for its ink ground + `.tf-btn-row` for the two spaced, arrowless actions (first live `.tf-cta` with a second action beside the brick button) (v018: Ink CTA band secondary button — added a scoped **`.tf-cta .tf-btn-secondary`**, a solid MUTED-fill variant so the ink band carries an EVEN two-button pair (brick primary + muted secondary). First needed by the business-planning CTA's two-button pair on the ink band. Fill = new derived token **`--tf-ink-raised`** = `color-mix(in srgb, var(--tf-ink) 80%, var(--tf-stone))` (the `--tf-cream` idiom, no raw hex; darker than `--tf-footer-ground` so a button on ink stays quieter than the footer band); `--tf-paper` text; a 1px `color-mix(in srgb, var(--tf-ink) 58%, var(--tf-stone))` border a shade lighter than the fill for definition; padding `12px 47px 12px 17px` = the primary's rhythm minus the 1px border, so the two buttons share one outer box and pair evenly; hover lightens the fill to `color-mix(in srgb, var(--tf-ink) 66%, var(--tf-stone))`; square corners, `--tf-*` tokens only, no shadow. This is ADDITIVE and `.tf-cta`-scoped: the base light-ground **`.tf-btn-secondary`** — ink text on a transparent fill with its sanctioned 2px ink border (§4/§97/§389) — is NOT altered; the scoped selector (0,2,0) outranks the base (0,1,0) on the ink band only, so the base outline treatment and its 2px ink frame stand everywhere else (v017: Design reconciliation — the two v016 footer PROVISIONALs ratified as derived `color-mix` tokens (the `--tf-cream` idiom, no hand-picked hexes): `--tf-footer-ground` = `color-mix(in srgb, var(--tf-ink) 75%, var(--tf-stone))` ≈ `#4A4540` (replaces the literal `#4A423C`), footer link = `color-mix(in srgb, var(--tf-brick-on-ink) 45%, var(--tf-paper))` ≈ `#EBA89E` (Design measured ~4.8:1; the provisional `#E68A76` was ~3.7:1, under the 4.5:1 minimum for 14px links); reversed-lockup stone-bar caveat resolved (~4.3:1, acceptable for a graphic element, no footer logo variant); §2 palette line corrected — "exactly the four inks / no additional hues" replaced with "core palette is the four inks; charts & tags draw on the data palette below; `--tf-white` and `--tf-footer-ground` are named scoped exceptions" (justified on a present fact: the `--tf-chart-1…6` data palette already exists in committed STYLE.css, so the old absolute line was self-contradictory); PROVISIONAL flags cleared in STYLE.css v9 (v016: footer ground — **`--tf-footer-ground`** (`#4A423C`, PROVISIONAL pending Claude Design) added, a dark warm stone so the footer reads distinct from an ink `.tf-cta` stacked directly above it, separated on TONE alone with no seam (ink is retired as a divider, §4); the override is scoped `.tf-surface-ink.tf-footer` (0,2,0) so the shared ink rule is untouched and hero bands stay ink; footer link lightened to `#E68A76` (PROVISIONAL — `--tf-brick-on-ink` is tuned for the ink ground and may not clear contrast on the lighter one), footer-scoped so `.tf-surface-ink` links elsewhere are unchanged; the footer's 2px ink top rule is NOT changed and no hairline is added; known caveat recorded — the reversed lockup's stone bar (`#B8ADA5`) loses some contrast on the lighter ground, flagged for Design to resolve WITH the ground; style only, nothing consumes it yet (the CTA template is parked) (v015: Services two-tier dropdown — **`.tf-dropdown-divider`** added, a VISUAL-ONLY separator that groups the two overview links apart from the four detail links inside ONE flat Services panel (light within-a-section rule per §4 — not sand, not ink; `.tf-has-dropdown` and its `.is-open` state machine reused unchanged, so no nesting, no sub-panel and no second trigger enters the nav); §5's nav header comment corrected, having still described the old flat four-link Services (v014: about.html hero migration — `.tf-page-head` adopted (FIRST multi-band hero, first consumer of the multi-band bridge); **`--tf-page-head-pos`** added — per-page cover-crop focal point, default `center` so `references.html` is unchanged (about sets `center 63%`; NB `background-position` X is inert on this band — `cover` scales 3:2 by width, zero horizontal overflow, so panning is vertical-only); **`.tf-container > :first-child { margin-block-start: 0 }`** — about's `.tf-profile-grid` became the container's first child when the header trio moved into the band, and its 32px top margin ADDED to the section's padding (margin never collapses across padding), rendering 80px where the standard is 48px; blast radius measured at exactly one element on one page, same idiom as `.tf-prose > :first-child`; `assets/images/about.jpg` promoted per §7 (byte-identical, decorative hero no alt per BL-019, bare page-name + inline wiring per BL-020) (v013: header-gap standard reconciled by measurement: hero/plain parity confirmed ALREADY CORRECT at 48px (no rule added — Defect A satisfied as v011 wrote it); **multi-band hero bridge added** (`.tf-page-head + main:not(.tf-section)` → `padding-block-start: 0`, measured 96px → 48px on a multi-band harness, `references.html` unaffected) — v011 resolved the single-band case by SPECIFICITY COLLISION on a shared `<main>`, which does not survive `<main>` wrapping several sections; **plain-page gap RE-ANCHORED on the header block** (`main .tf-container > h1:not(:has(+ .tf-prose-intro))` → 48px) so the gap sits below the LAST header element rather than below the intro specifically — an intro-less page was falling to the h1's 16px; measured across all four cases (plain-with-intro 48→48, plain-without-intro **16→48**, hero 48→48, grandfathered 16→16), applies to 9 intro-less shells incl. `index.html`, mutually exclusive with the intro rule so it cannot double; one open item flagged, not fixed (hero-vs-plain differ by 48px when measured from the intro TEXT, which is v011's "additive by design") (v012: about.html client carousel: `.tf-card-sm` kit-level small-card shell (**bordered** — it sits on the wash band, where paper-on-wash is too narrow a step to go borderless like `.tf-ref-card` does on cream); `.tf-carousel` scroll-snap track with vanilla arrow controls (`assets/carousel.js`), 5-up via a single `--tf-carousel-card-w`, swipe-only below 820px; client cards reduced to logo + **≤2** engagement pills (descriptions dropped); `.tf-icon-brand` — third-party brand marks render in their owner's colour, **superseding** the about-page rule that pinned the LinkedIn mark to ink-soft → brick (v011: post-header gap corrected: `--tf-space-6` (48px) of page-background white space between the header block (band edge on hero pages, intro text on plain pages) and the first content element; a hero band's internal padding frames its own text and does not count toward it (`.tf-page-head + main` back to `--tf-space-6`) — supersedes v10, which measured from the subtitle and removed the hero white gap (v10: tier-1 subtitle rhythm: subtitle→first-content gap standardised to `--tf-space-6` (48px) on every tier-1 page, hero or plain (`.tf-container > .tf-prose-intro`; hero supplies it from the band's bottom padding with `.tf-page-head + main` at 0) — supersedes the band-edge-measured `--tf-space-2` rule (v9: references.html restyle: `.tf-page-head` → full-bleed HERO band (background photo + dark scrim, light-on-dark text, stone-light kicker, ink fallback); tabs → underline idiom (`.tf-tabs` light track + brick active underline, supersedes the ink-boxed control); `.tf-ref-card` → borderless (paper-on-cream contrast) (v8: references.html build: shared `.tf-page-head` (text block + optional header image, tier-1 pattern), segmented tab control (`.tf-tabs` / `.tf-tab`), cream group panels (`.tf-ref-group`) + card grid (`.tf-ref-grid` / `.tf-ref-card`); `--tf-cream` role widened to raised/recessed surfaces generally (v7: blog-004 build: prose tables (`.tf-prose-table` + `.tf-prose table`), the first of the BL-012 deferred body patterns (v6: about.html build: `.tf-profile-lg` principals card (natural-aspect headshots, never cropped — square mandate revoked), wash band tint (`--tf-sand-wash` / `.tf-section-wash`), client-logo slot (original colour), tag→tint mapping (v5: sitewide chrome/divider restyle: ink retired as a section divider (sand `--tf-sand` / `--tf-rule-sand`), white dividerless header (`--tf-white`), dropdown cream lightened to a 15% mix; footer keeps its ink top rule (v4: page-header standard — `.tf-kicker` + h1 on every top-level page. v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5)))))))))))))))))))))))))))))). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
+v036: tool-company-setup.html build (feat/tool-company-setup, paired with STYLE.css v040, same commit per SCOPE.md). See §6 "Company setup tool" for full detail. (v035: Contact success block HIDDEN-UNTIL-SUBMIT fix (paired with STYLE.css v039, same commit per SCOPE.md). Since the v033 reskin made `.tf-form-success` a `.tf-callout` (which sets `display:flex`), the block's `[hidden]` attribute was DEFEATED — the "Thank you" success block rendered ON PAGE LOAD, beneath the Send button, before any submit. A regression: v033 added a `.tf-form[hidden]` guard for the form but no matching one for `.tf-form-success`. CSS-only fix: add `.tf-form-success[hidden] { display: none }` — the same guard idiom as `.tf-form[hidden]` / `.tf-ref-panel[hidden]` — so the DEFAULT hidden state holds without JS (and even if JS errors), while the swap JS still clears `[hidden]` to reveal the block on a successful submit. The `hidden` attribute in the markup and the submit handler were already correct; only the CSS guard was missing. Block stays borderless (the v034 instance override) — unchanged. (v034: Contact success callout goes BORDERLESS + Brief description now required (paired with STYLE.css v038, same commit per SCOPE.md). (1) The submit-success block (`.tf-form-success`) drops `.tf-callout`'s `--tf-rule-light` border for THIS instance only — a `border: none` on the existing `.tf-form-success` override (later source order, equal specificity), so the base `.tf-callout` frame is UNCHANGED and every other callout (intake, business-planning painpoints/solves) keeps its border; the success block becomes paper-on-paper, defined by the brick check-circle icon + spacing alone. No new token / colour / pattern. (2) `contact.html` makes the Brief description textarea a REQUIRED field: the label gains the same `.tf-required` brick asterisk as First name / Email, the textarea gains `required` + `aria-describedby`, and `assets/contact-form.js` blocks submit on an empty message using the EXISTING `.tf-field-error` + `aria-invalid` treatment (reused, not new); the "* required" note is unchanged. Markup + JS only for (2); no CSS. (v033: Contact success state reskinned to the `.tf-callout` idiom (paired with STYLE.css v037, same commit per SCOPE.md). The submit-success panel (`.tf-form-success`) moves OFF the full-width `.tf-surface-ink` ink slab onto the existing light `.tf-callout` idiom — REUSE, not a new pattern: a brick Lucide check-circle in the `.tf-callout` svg slot, `.tf-callout-title` / `.tf-callout-body`, `--tf-rule-light` border on a paper ground, at the form-column width. `.tf-form-success` now only supplies top spacing (`margin-block-start`) since `.tf-callout` gives the box. No new colour / token / hex, no arrows; the base `.tf-callout` (brick title + icon) is used, not `-affirm` (which would ink them). This ALSO fixes the swap: `.tf-form`'s `display:flex` was defeating the `[hidden]` attribute, so on submit the form never actually hid (the callout just appeared below it); a scoped `.tf-form[hidden] { display: none }` guard — mirroring the existing `.tf-ref-panel[hidden]` precedent — makes the form genuinely disappear. The JS is UNCHANGED (still toggles `[hidden]`); only the CSS guard is new. §3 gains a one-line EXCEPTION: confirmation / UI feedback headings (this success title, "Thank you") are SENTENCE CASE despite being an h2, so a heading audit does not "correct" them to Title Case. (v032: intake.html forward-reference RETIRED — the page will NOT be built, reversing the earlier plan (recorded in the v026 §6 contact-build entry) to ship it as a hidden page with its own deferred endpoint. Nothing is deleted (the page was never created); the dangling FORWARD REFERENCE is removed: the `.tf-intake-link` anchor on `contact.html` (→ `intake.html`, `target=_blank`), its `.tf-intake-link` STYLE.css rule + comment, and the live prose comments describing it. This RESOLVES the "BACKLOG divergence" the v026 §6 entry flagged — settled in **BACKLOG.md's favour**: BACKLOG §B/§E already map the OLD-site `intake.html → contact.html` (a Cloudflare redirect still required at cutover, since intake.html is live on the old site), so BACKLOG.md and SCOPE.md are already correct and are **NOT edited**. Bottom-alignment: removing the link does NOT break the mechanism — `.tf-field-grow`'s `flex:1` still pins `.tf-form-foot` to the column bottom, so the collage bottom now meets the **send button** at the identical y (measured 0px shift on localhost, no foot change); the live `.tf-form-foot` / `.tf-field-grow` / collage comments are re-anchored on the button accordingly. Paired with STYLE.css v035 (the `.tf-intake-link` rule deleted), same commit per SCOPE.md; the contact.html anchor + its comments are removed on the paired `chore/remove-intake-link` branch (markup-first merge order). The dated v026 §6 "Contact page build" record is left UNCHANGED as history — this reversal lives only in this ratchet entry. (v031: Lightbox zoom + pan (paired with STYLE.css v034, same commit per SCOPE.md). The `.tf-lightbox` overlay gains a scrollable `.tf-lightbox-stage` and a − / + / × control cluster; `assets/lightbox.js` is rewritten so an enlarged image opens fit-to-viewport-READABLE (natural resolution, capped to the viewport width) and zooms — buttons, +/- keys, or wheel — with drag-to-pan once it is larger than the viewport, so a dense heat map (blog-011's rate maps) is actually legible. Closes on ×, a backdrop click, or Escape. This is the CODE half of the in-body zoomable-image feature; the BLOG.md §7 rule and the blog-template `lightbox.js` script are its DOCS half (docs(blog) dcd5653, same branch). Builds on the `.tf-figure-zoom` / `.tf-lightbox` base added in v030. (v030: Blog body figures — `.tf-prose-figure` + `.tf-figure-aside` (paired with STYLE.css v033, same commit per SCOPE.md). The first body-image patterns (BLOG.md §9 — a body pattern lives in the sheet, never page-local), first needed by blog-011. **`.tf-prose-figure`** is a full-width in-flow figure wrapper: its `<img>` reuses **`.tf-img-framed`** for sizing, and screenshots / data-graphics deliberately SKIP the `.tf-photo` grade (that is for photographs). **`.tf-figure-aside`** is an image-alongside-text split for a wide-and-tall figure: the image sits beside the prose that reads it and, on desktop, is sized to that text block's HEIGHT (`assets/lightbox.js` measures the text and caps the image to it), so a very tall figure renders as a small preview strip rather than towering. Because that strip is too small to read, every figure image is **click-to-enlarge** — a vanilla lightbox (`.tf-figure-zoom` button → `.tf-lightbox` overlay, Escape / backdrop / × to close). Below 820px it stacks image-on-top (source order = image first), capped so a tall figure is not a full-screen tower. No stylebook change — layout only, no token / type-scale set change (PROCESS.md §4). (v029: Category (data-viz) palette + wash-token promotion (paired with STYLE.css v032, same commit per SCOPE.md). The six `.tf-pill-tint-*` wash BACKGROUNDS — previously raw hex literals in both the pill rules and (by hand) the stylebook — are promoted to **`--tf-wash-brick/slate/ochre/teal/plum/stone`** tokens; the pill rules and the `.tf-journey-step` hover now reference them, collapsing the tint drift-surface PROCESS.md §4 flagged (only the pills' DEEP TEXT colours stay literals, pill-only). A new **`--tf-cat-*`** category palette (nine tokens) is added for the cashflow / unit-economics stacked visualizations, shared across blog-009 and blog-010: Product Purchase → `--tf-ink-soft`, Shipping & Tariff → `--tf-stone`, Fulfillment → `--tf-sand` (three existing weighted tones), and 3PL Storage / Online Ads / e-Comm Platform / Sales Revenue / Return & Discard / Cumulative P&L aliasing the six category washes. No new hue is introduced — the data-viz palette is the site's existing wash palette re-assigned to commerce categories. stylebook.html re-synced (wash + cat swatch groups added, tint-pairings note updated for the tokenised backgrounds, header stamps bumped). (v028: Heading capitalization amended to PER-LEVEL in §3, SUPERSEDING the v027 "all headings (h1/h2/h3) use Title Case" rule. h1 and h2 keep Chicago Title Case; h3 is now sentence case (first word + proper nouns only); proper nouns/acronyms/brand names keep their own casing at every level; kickers/meta unaffected. Reason: the v027 blanket rule was written from intent, but an audit of all 119 live content headings found h3 is majority sentence-case AUTHORED intent (15 of 24 h3 in sentence case vs Title Case), so a uniform rule would have mis-flagged the h3 house convention as violations. Still PROSE-ONLY, no paired STYLE.css edit (the v023 comment/prose-only precedent). Page-copy reconciliation to this amended rule (h1/h2 up to Title Case, h3 confirmed sentence case) is a SEPARATE commit that follows. (v027: Heading Title Case rule documented in §3. Headings (h1/h2/h3) use conventional (Chicago-style) Title Case — first/last word and all principal words capitalized, articles/coordinating-conjunctions/prepositions lowercased — AUTHORED IN THE MARKUP, never via CSS `text-transform` (which would uppercase function words and cannot lowercase them); kickers/meta keep their own class-driven uppercasing. This DOCUMENTS existing intent (headings were always meant to read as titles), not a new decision; PROSE-ONLY, no paired STYLE.css edit (the v023 comment/prose-only precedent). No page is fixed by this commit — no current heading is known to violate the rule in a way recorded here; any page-copy corrections are a SEPARATE commit that follows. (v026: contact.html build (feat/contact-page, paired with STYLE.css v031, same commit per SCOPE.md). The tier-1 Contact page, first consumer of three new pattern groups: the **FORM KIT** (`.tf-form-col`, `.tf-form`, `.tf-field`, `.tf-field-row` first+last two-up, `.tf-field-grow` for the brief-description textarea, `.tf-label`, `.tf-input`/`.tf-textarea`, `.tf-required`, `.tf-form-note`, a paper-ground field with a 2px stone-light border going brick on focus; error states `.tf-input[aria-invalid]` + `.tf-field-error`; the endpoint-unreachable `.tf-form-error`; `.tf-form-foot`, the bottom-pinned action block whose `.tf-btn` keeps intrinsic width — NO arrows; and `.tf-form-success`, the inline ink swap that reuses `.tf-surface-ink`), the **`.tf-hp`** off-screen honeypot, and the **`.tf-collage`** 3×3 square-tile grid (each photo tile a `<figure>` `.tf-collage-tile` with a cover-cropped `.tf-collage-img` and a `.tf-collage-label` laid OVER the photo on a `--tf-ink`-derived scrim, plus the `.tf-collage-more` `--tf-cream` label tile). The two-column body REUSES `.tf-grid-2up` (collage-first source order → collage-left/form-right ≥820px, stacked collage-first below), equal-height so the collage bottom and the intake link meet; the hero reuses `.tf-page-head`. `--tf-*` tokens only — no raw hex (the scrim uses `color-mix` with `transparent`), no new token/scale, so no stylebook re-sync (PROCESS.md §4). Images quick-populated for staging (not the §1 promotion). Full detail in §6. (v025: Service-list brick marker (paired with STYLE.css v030, same commit per SCOPE.md). A 6px brick square &mdash; the same literal `.tf-callout-list` uses, only the colour differs &mdash; marks each `.tf-service-track` item; folded into the rule, not a standalone class, as its only consumer. v029's item padding is re-based to `0 --tf-space-2`, the 16px rhythm unchanged, so labels sit at the item top for the marker to align to. Band 2's neutral stone pain-point bullets and band 3's brick service squares are ONE mark in two colours, emphasis on the offering. NO numeral or counter: a service list is not a sequence, so a numbered marker would rebuild the numbered engage band just retired. (v024: Service-detail two-content-column re-cut (paired with STYLE.css v029, same commit per SCOPE.md). The v020 two-column engage band (`.tf-flow` left / `.tf-faq` right in a `.tf-grid-2up`, "the reusable service-detail template band") is SUPERSEDED — the engage band is deleted from all four service-detail pages; the v019 symmetric painpoints|solves `.tf-callout` pair is RETIRED (pain points now sit opposite the approach prose, the solves are replaced by the service track). New patterns: **`.tf-content-split`** (the 40ch/62ch two-CONTENT-column row — both columns carry heading + body, so it is NOT a `.tf-section-split` variant, whose left column IS the heading), **`.tf-service-track`** (`.tf-flow`'s label/note shape without the brick counter), **`.tf-cta-inline`** (the closing action following the services list, a `--tf-space-6` break — not bottom-aligned). `.tf-faq` item rhythm tightened to `--tf-space-1`, folding the throwaway spike's tight modifier onto the base rule (the four service pages are its only consumers). `.tf-flow` and `.tf-btn-secondary` are now orphaned; their CSS is retained (not deleted) per the `.tf-stat-grid` precedent in BL-012, flagged for a backlog row. Full detail in §6. (v023: `.tf-lead` stale-size reconcile (paired with STYLE.css v028, same commit per SCOPE.md). §3 "Prose page intro" no longer calls `.tf-lead` 20px / hero-reserved — stale since STYLE.css v13; the two are distinguished by ROLE and by `.tf-lead`'s colour shift inside `.tf-cta`. The v021 ratchet's "Known stale note" is marked reconciled — it flagged only the STYLE.css copy and missed this one. Comment/prose only. (v022: Home page (`index.html`) build — all seven bands, rebased onto main at STYLE.css v027. New shared patterns: **`.tf-hero-home`**, **`.tf-grid-4up`**, **`.tf-prog-group`** + **`.tf-card-ink-soft`**, **`.tf-card-head`**, **`.tf-stat-card`**; **`#trusted`** per-logo trusted-by sizing with **`-trim`** logo variants; **`.tf-stat-grid`** 6-up repair (now unused, retained as a paper-ground pattern). Band-3 scoped overrides: true-italic Source Serif pull-quote (§3's italics ban targets faux-oblique on Space Grotesk only — a true-serif quote is exempt), callout-body emphasis, column bottom-alignment. **`.tf-img-framed`** goes borderless sitewide. **`--tf-footer-ground`** scope widened to the band-4 Runningmate header (no longer footer-only). §2 amended — client logos may appear in ORIGINAL COLOUR in the about carousel and the home trusted-by strip (supersedes "ink wordmarks only"). Full detail in §6 "Home page build". (v021: `.tf-lead` 20px → 16px — resized the lead paragraph (`--tf-text-lg` 20px → `--tf-text-base` 16px), aligning the service-page hook and CTA subline with the site's 16px lead/intro size used by **`.tf-prose-intro`**. No explicit line-height is set: `.tf-lead` inherits the body's unitless `line-height: 1.6`, so at 16px the leading is 25.6px — the identical mechanism `.tf-prose-intro` uses, keeping the two locked to one rhythm. **Colour deliberately unchanged** — `.tf-lead` sets no colour, so it stays ink on paper grounds and `--tf-paper` inside `.tf-cta`. Consumed by exactly 4 elements — the hook + CTA subline on `business-planning.html` and `sourcing-support.html`; no other consumers. NB the `.tf-prose-intro` comment in STYLE.css still describes `.tf-lead` as "(20px), reserved for hero moments" — now stale; left untouched here (that block was out of scope) and flagged for a separate reconciliation. (v020: business-planning.html &mdash; &ldquo;How we engage&rdquo; band + FAQ revert. **`.tf-flow`** (NEW) &mdash; a vertical numbered process flow (brick auto-number, bold label, one explanation line, body size), kin to `.tf-steps` but page-level; it fills the LEFT column of a two-column engage band (a reused `.tf-grid-2up`), with the STATIC FAQ on the RIGHT &mdash; the reusable service-detail template band. **`.tf-faq` REVERTED** from the v018 interactive accordion to a STATIC, all-visible list (`dt` question + `dd` answer, no `<button>`, no fold); **`assets/faq.js` deleted** and its `<script>` removed. The accordion was reverted because the FAQ now sits beside the flow and displays in full. (v019: business-planning.html — Plan detail page (tier-2). Page patterns + reuse, plus a WIDTH + TYPE discipline for tier-2 pages: every section is full-`.tf-container` width and meets ONE shared right edge (the tier-2 intro image), while running text keeps the blog's 62ch measure inside; TYPE inherits the blog scale (base h1/h2/h3 + `.tf-prose`), no page-specific font sizes. Patterns: **`.tf-intro-split`** (tier-2 two-column opener — text column beside a framed inline content image, deliberately NOT the `.tf-page-head` hero; its right edge is the page's alignment reference); **`.tf-section-split`** (labelled prose row — heading LEFT, 62ch prose pinned to the container's right edge; the no-TOC-rail analog of `.tf-prose-layout`, so a running-text section reaches the shared right edge instead of hugging the left — WIDTH only, type unchanged); **`.tf-grid-2up`** (locked 2-up GENERALIZED out of `.tf-profile-grid`, which now consumes it as a thin margin-only modifier — about.html's principals render identically); **`.tf-faq`** (FOLDED `<dl>` accordion — `<button>` triggers toggled by `assets/faq.js`, full-width dividers, answers inherit the body size/colour capped at 62ch). Reuse: `.tf-callout` gains `.tf-callout-warn`/`.tf-callout-affirm` accent modifiers + `.tf-callout-list` for the symmetric painpoints|solves cards, whose bullets take the INHERITED body size AND colour — identical to the "Our approach" copy, not a reduced/muted caption (first LIVE `.tf-callout` use, BL-012); `.tf-cta` gains a secondary-button override for its ink ground + `.tf-btn-row` for the two spaced, arrowless actions (first live `.tf-cta` with a second action beside the brick button) (v018: Ink CTA band secondary button — added a scoped **`.tf-cta .tf-btn-secondary`**, a solid MUTED-fill variant so the ink band carries an EVEN two-button pair (brick primary + muted secondary). First needed by the business-planning CTA's two-button pair on the ink band. Fill = new derived token **`--tf-ink-raised`** = `color-mix(in srgb, var(--tf-ink) 80%, var(--tf-stone))` (the `--tf-cream` idiom, no raw hex; darker than `--tf-footer-ground` so a button on ink stays quieter than the footer band); `--tf-paper` text; a 1px `color-mix(in srgb, var(--tf-ink) 58%, var(--tf-stone))` border a shade lighter than the fill for definition; padding `12px 47px 12px 17px` = the primary's rhythm minus the 1px border, so the two buttons share one outer box and pair evenly; hover lightens the fill to `color-mix(in srgb, var(--tf-ink) 66%, var(--tf-stone))`; square corners, `--tf-*` tokens only, no shadow. This is ADDITIVE and `.tf-cta`-scoped: the base light-ground **`.tf-btn-secondary`** — ink text on a transparent fill with its sanctioned 2px ink border (§4/§97/§389) — is NOT altered; the scoped selector (0,2,0) outranks the base (0,1,0) on the ink band only, so the base outline treatment and its 2px ink frame stand everywhere else (v017: Design reconciliation — the two v016 footer PROVISIONALs ratified as derived `color-mix` tokens (the `--tf-cream` idiom, no hand-picked hexes): `--tf-footer-ground` = `color-mix(in srgb, var(--tf-ink) 75%, var(--tf-stone))` ≈ `#4A4540` (replaces the literal `#4A423C`), footer link = `color-mix(in srgb, var(--tf-brick-on-ink) 45%, var(--tf-paper))` ≈ `#EBA89E` (Design measured ~4.8:1; the provisional `#E68A76` was ~3.7:1, under the 4.5:1 minimum for 14px links); reversed-lockup stone-bar caveat resolved (~4.3:1, acceptable for a graphic element, no footer logo variant); §2 palette line corrected — "exactly the four inks / no additional hues" replaced with "core palette is the four inks; charts & tags draw on the data palette below; `--tf-white` and `--tf-footer-ground` are named scoped exceptions" (justified on a present fact: the `--tf-chart-1…6` data palette already exists in committed STYLE.css, so the old absolute line was self-contradictory); PROVISIONAL flags cleared in STYLE.css v9 (v016: footer ground — **`--tf-footer-ground`** (`#4A423C`, PROVISIONAL pending Claude Design) added, a dark warm stone so the footer reads distinct from an ink `.tf-cta` stacked directly above it, separated on TONE alone with no seam (ink is retired as a divider, §4); the override is scoped `.tf-surface-ink.tf-footer` (0,2,0) so the shared ink rule is untouched and hero bands stay ink; footer link lightened to `#E68A76` (PROVISIONAL — `--tf-brick-on-ink` is tuned for the ink ground and may not clear contrast on the lighter one), footer-scoped so `.tf-surface-ink` links elsewhere are unchanged; the footer's 2px ink top rule is NOT changed and no hairline is added; known caveat recorded — the reversed lockup's stone bar (`#B8ADA5`) loses some contrast on the lighter ground, flagged for Design to resolve WITH the ground; style only, nothing consumes it yet (the CTA template is parked) (v015: Services two-tier dropdown — **`.tf-dropdown-divider`** added, a VISUAL-ONLY separator that groups the two overview links apart from the four detail links inside ONE flat Services panel (light within-a-section rule per §4 — not sand, not ink; `.tf-has-dropdown` and its `.is-open` state machine reused unchanged, so no nesting, no sub-panel and no second trigger enters the nav); §5's nav header comment corrected, having still described the old flat four-link Services (v014: about.html hero migration — `.tf-page-head` adopted (FIRST multi-band hero, first consumer of the multi-band bridge); **`--tf-page-head-pos`** added — per-page cover-crop focal point, default `center` so `references.html` is unchanged (about sets `center 63%`; NB `background-position` X is inert on this band — `cover` scales 3:2 by width, zero horizontal overflow, so panning is vertical-only); **`.tf-container > :first-child { margin-block-start: 0 }`** — about's `.tf-profile-grid` became the container's first child when the header trio moved into the band, and its 32px top margin ADDED to the section's padding (margin never collapses across padding), rendering 80px where the standard is 48px; blast radius measured at exactly one element on one page, same idiom as `.tf-prose > :first-child`; `assets/images/about.jpg` promoted per §7 (byte-identical, decorative hero no alt per BL-019, bare page-name + inline wiring per BL-020) (v013: header-gap standard reconciled by measurement: hero/plain parity confirmed ALREADY CORRECT at 48px (no rule added — Defect A satisfied as v011 wrote it); **multi-band hero bridge added** (`.tf-page-head + main:not(.tf-section)` → `padding-block-start: 0`, measured 96px → 48px on a multi-band harness, `references.html` unaffected) — v011 resolved the single-band case by SPECIFICITY COLLISION on a shared `<main>`, which does not survive `<main>` wrapping several sections; **plain-page gap RE-ANCHORED on the header block** (`main .tf-container > h1:not(:has(+ .tf-prose-intro))` → 48px) so the gap sits below the LAST header element rather than below the intro specifically — an intro-less page was falling to the h1's 16px; measured across all four cases (plain-with-intro 48→48, plain-without-intro **16→48**, hero 48→48, grandfathered 16→16), applies to 9 intro-less shells incl. `index.html`, mutually exclusive with the intro rule so it cannot double; one open item flagged, not fixed (hero-vs-plain differ by 48px when measured from the intro TEXT, which is v011's "additive by design") (v012: about.html client carousel: `.tf-card-sm` kit-level small-card shell (**bordered** — it sits on the wash band, where paper-on-wash is too narrow a step to go borderless like `.tf-ref-card` does on cream); `.tf-carousel` scroll-snap track with vanilla arrow controls (`assets/carousel.js`), 5-up via a single `--tf-carousel-card-w`, swipe-only below 820px; client cards reduced to logo + **≤2** engagement pills (descriptions dropped); `.tf-icon-brand` — third-party brand marks render in their owner's colour, **superseding** the about-page rule that pinned the LinkedIn mark to ink-soft → brick (v011: post-header gap corrected: `--tf-space-6` (48px) of page-background white space between the header block (band edge on hero pages, intro text on plain pages) and the first content element; a hero band's internal padding frames its own text and does not count toward it (`.tf-page-head + main` back to `--tf-space-6`) — supersedes v10, which measured from the subtitle and removed the hero white gap (v10: tier-1 subtitle rhythm: subtitle→first-content gap standardised to `--tf-space-6` (48px) on every tier-1 page, hero or plain (`.tf-container > .tf-prose-intro`; hero supplies it from the band's bottom padding with `.tf-page-head + main` at 0) — supersedes the band-edge-measured `--tf-space-2` rule (v9: references.html restyle: `.tf-page-head` → full-bleed HERO band (background photo + dark scrim, light-on-dark text, stone-light kicker, ink fallback); tabs → underline idiom (`.tf-tabs` light track + brick active underline, supersedes the ink-boxed control); `.tf-ref-card` → borderless (paper-on-cream contrast) (v8: references.html build: shared `.tf-page-head` (text block + optional header image, tier-1 pattern), segmented tab control (`.tf-tabs` / `.tf-tab`), cream group panels (`.tf-ref-group`) + card grid (`.tf-ref-grid` / `.tf-ref-card`); `--tf-cream` role widened to raised/recessed surfaces generally (v7: blog-004 build: prose tables (`.tf-prose-table` + `.tf-prose table`), the first of the BL-012 deferred body patterns (v6: about.html build: `.tf-profile-lg` principals card (natural-aspect headshots, never cropped — square mandate revoked), wash band tint (`--tf-sand-wash` / `.tf-section-wash`), client-logo slot (original colour), tag→tint mapping (v5: sitewide chrome/divider restyle: ink retired as a section divider (sand `--tf-sand` / `--tf-rule-sand`), white dividerless header (`--tf-white`), dropdown cream lightened to a 15% mix; footer keeps its ink top rule (v4: page-header standard — `.tf-kicker` + h1 on every top-level page. v3: paper token lightened to `#FCFBFA`; blog rail image slot + tag removal; no-italics rule. v2: merge of the site build (v1 + ratchet record) and Claude Design v1.5))))))))))))))))))))))))))))))). This package: `style.md` (rules), `style.css` (tokens + components), `logo-mark.svg`, `logo-mark-reversed.svg`.
 
 ---
 
@@ -1413,3 +1413,388 @@ stylebook needs no re-sync (it tracks the token/scale SET, not components).
   redirect, endpoint not carried); contact shows cities without addresses/phone;
   both endpoints are deferred placeholders. BACKLOG.md is **not** edited here — the
   reconciliation is its own governance commit before cutover.
+
+### Company setup tool — tool-company-setup.html — 2026-07-29
+
+The first tool under the hidden `tools.html` (BL-009's manifest/TOOLS.md scheme
+stays open, deferred by explicit human decision — this page is hand-linked from
+`tools.html`, not manifest-driven). A reference implementation supplied the
+copy, content, and interaction logic (a 3-question entity-type Q&A; a Prep &
+filing table; a Post-filing setup table); its inline `<style>` and ad-hoc CSS
+were **not** reused — every visual element maps to an existing `STYLE.css`
+pattern, or a new one defined here. Paired with STYLE.css v040, same commit per
+SCOPE.md. Engine lives in its own file, `assets/tool-company-setup.js`
+(SCOPE.md's build strategy — a tool's computing logic is never page-inline).
+
+**Shape, twice revised after localhost review.** The first pass wore the
+references.html hero+tabs directory shape; the human redirected it: that
+treatment belongs to `tools.html` (a future directory of many tools, deferred
+until more than one exists — see the open item below). The second pass went
+to the opposite extreme — a pure blog-post scroll, all three steps always
+visible, no switching. A hand-sketched wireframe corrected that too: the
+intended shape is a small header image beside the title, a divider, then a
+**vertical step list acting as a switcher** (only the active step's content
+shows) beside that content — closer to the ORIGINAL tabs, just with the nav
+turned into a left rail instead of top tabs. `.tf-tool-step` and the
+`.tf-content-split` reuse from the second pass are removed (unshipped, so
+edited in place rather than superseded in a new entry each time).
+
+- **Header — `.tf-intro-split` reused unchanged.** Small framed image
+  (`.tf-intro-split-img` + `.tf-photo`) beside a text column (h1 +
+  `.tf-prose-intro` + the liability disclaimer, the latter reusing
+  `.tf-card-body` — no new text-style class for one paragraph). This is the
+  tier-2 opener pattern (business-planning.html etc.), reused here for a
+  DIFFERENT job (a tool's lede, not a service page's), which the pattern's
+  shape already supports without changes. A **`.tf-post-topnav`** back-link
+  ("← Tools" → `tools.html`, the blog "← Blogs" idiom) sits above it.
+
+- **`.tf-tool-divider` (NEW) — the sand section rule** between the header and
+  the step rail/panel body (STYLE.md §4: sand divides major sections). Not
+  `.tf-prose hr` — that rule is scoped to `.tf-prose` for dividing sections of
+  running prose, and this divider sits outside prose, between the page's two
+  top-level blocks.
+
+- **`.tf-tool-layout` / `.tf-step-nav` / `.tf-step-nav-item` (NEW) — a
+  VERTICAL step rail beside the active panel.** `.tf-tool-layout` is rail-left
+  (220px, sticky ≥820px) / panel-right (flexible), stacking rail-above-panel
+  below 820px — the same breakpoint and sticky mechanic `.tf-toc` already
+  uses. `.tf-step-nav-item` is a real `<button role=tab>`, styled on
+  `.tf-toc`'s own left-border-rail idiom (contiguous `border-left`s form the
+  rail edge; active = brick text + brick edge segment) — but it SWAPS the
+  active panel on click rather than scroll-spying a static page, so it is a
+  tablist, not a TOC. Each item is two lines — a bold "Step N", a lighter step
+  name beneath — reusing `.tf-flow`'s label/note TYPE only (no brick
+  auto-number: the rail's own "Step N" text already carries the sequence).
+
+- **`.tf-panel-head` / `.tf-panel-actions` (restored) — title + Print/Download
+  actions atop the active panel.** With the rail swapping panels, only one is
+  ever visible, so Print/Download belong per-panel again (not a single
+  page-level Print, which the second pass tried and which this shape makes
+  unnecessary — `window.print()` naturally reflects whichever step is active
+  since the others are `[hidden]`). Buttons are `.tf-pill .tf-pill-outline`,
+  reused as clickable `<button>`s — the one-line `button.tf-pill { cursor:
+  pointer }` addition still applies, since a pill is normally a
+  non-interactive tag `<span>` and sets no cursor.
+
+- **`.tf-tool-panel[hidden]` (restored) — the defensive guard** mirroring the
+  established `[hidden]` idiom (`.tf-ref-panel[hidden]`, `.tf-form[hidden]`,
+  `.tf-form-success[hidden]`). Panel switching itself reuses the
+  `references.js` tablist idiom exactly (`role=tabpanel`, JS toggles
+  `[hidden]`, hash-deep-linkable `#decide`/`#prep`/`#post`) — only the trigger
+  widget (a vertical rail instead of horizontal `.tf-tabs`) differs.
+
+- **Choice kit (NEW) — `.tf-choice-group` / `-question` / `-hint` / `-options`
+  / `.tf-choice`.** Radio-pill question groups for the entity-type Q&A. Each
+  `.tf-choice` is a bordered label (pill-sized, square corners) wrapping a
+  REAL, visually-hidden `<input type=radio>` — not a styled `<button>` standing
+  in for one — so the group keeps native radio semantics (arrow-key navigation
+  between options, "N of M" AT announcement); the global `:focus-visible` brick
+  ring already covers it, no new focus rule needed. Distinct from the `.tf-pill`
+  kit (a solid/outline TAG, not a form control) and from the form kit's
+  `.tf-input` (a text field, not a discrete choice). Selected state reuses
+  `--tf-wash-brick` as the fill (the closest existing tint to a "chosen" look,
+  the same one `.tf-pill-tint-brick` already uses) — no new colour. The
+  recommendation result reuses `.tf-callout` / `.tf-callout-warn` as-is (brick
+  title + icon) — no new callout variant.
+
+- **Data table (NEW) — `.tf-data-table` + `col.tf-col-*` / `.tf-cost-note` /
+  `.tf-cost-badge` / `.tf-rowcheck`.** *(The checkbox column and `.tf-rowcheck`
+  described in this bullet were REMOVED in the Round 2 review below — this
+  bullet records the table as first shipped, not its final shape.)* The Prep
+  & filing and Post-filing setup
+  tables are structured/interactive (a checkbox column, a cost badge, a
+  fit-dot "who's involved" column, `colgroup`-controlled widths) — a different
+  job from **`.tf-prose-table`** (element-scoped, BLOG.md §9, for a bare
+  `<table>` inside running prose with no classes of its own).
+  `.tf-data-table` deliberately mirrors the prose table's FRAME idiom (ink 2px
+  outer border — a table is a component, the edge of a thing, not a section
+  boundary; light 2px internal rules; a `.tf-meta`-style uppercase header) so
+  the two table kinds read as one family, but it is its own standalone
+  pattern, not `.tf-prose`-scoped, and carries furniture the prose table has
+  no reason to: column width control, a checkbox cell, a badge. No zebra
+  striping, no row hover — the table is read, not operated; the only
+  affordance is the checkbox itself. Rendered by `assets/tool-company-setup.js`
+  from two data arrays (ported verbatim from the reference), the same
+  `renderTable()` shape the reference used. Ships at the reference's full
+  **6 columns** (checkbox / # / Step / Est. time / Cost / Who's involved) — a
+  second pass briefly collapsed this to 4 to fit a narrower ~62ch column the
+  step-row layout gave it; with the vertical-rail shape the active panel gets
+  the flexible remainder of the container (roughly 900px, not 62ch), so the
+  width pressure that justified collapsing is gone and the full reference
+  fidelity is restored. **`.tf-cost-note` (NEW)** — "Sign up to see exact cost
+  estimates," moved OUT of the Cost header (where it was a `.tf-th-sub`, now
+  deleted — unused after the move) to its own line directly above
+  `.tf-fit-legend`, after reviewing an actual printed page: the header
+  sub-label crowded a header cell that print then narrows, and a caveat about
+  cost estimates reads better as its own line than nested in a column label.
+  Print-visible on purpose, unlike the legend beneath it (screen-only) — a
+  cost caveat is still relevant on paper.
+
+- **Fit-dot indicator (NEW) — `.tf-fit-dot-solo` / `-together` / `-no` +
+  `.tf-fit-legend`.** The task brief asked whether the reference's bordered
+  "who's involved" dots fit the **existing** `.tf-pill-tint-plum/-teal/-stone`
+  set — checked, and they don't: those are solid TEXT pills (wash background +
+  deep text colour), not standalone bordered dots. Confirmed the reference's
+  own literal hex values (`#DDEDED`/`#175355` solo·teal, `#F2E3EA`/`#632846`
+  together·plum, `#ECE7E1`/`#55504D` no·stone) are an **exact** match for the
+  site's existing `--tf-wash-teal/-plum/-stone` tokens and the deep-text
+  literals `.tf-pill-tint-teal/-plum/-stone` already hardcode — so the dot is a
+  genuinely NEW **shape** (a small `border-radius:50%` marker, the same
+  precedent already sanctioned inside `.tf-pill-dot`) applied as a standalone
+  legend/cell marker, reusing colours the sheet already has. No new hue enters
+  the palette.
+
+- **Print output (NEW, sitewide) — `.no-print` + `@page A4`.** The first print
+  stylesheet on the site. Deliberately GENERAL rather than tool-scoped: chrome
+  (`.tf-nav`, `#tf-header`, `#tf-footer`, `.tf-page-head`, `.tf-tabs`) is hidden
+  on ANY printed page from here on, sized to A4 with a 12mm margin — harmless
+  that `.tf-page-head`/`.tf-tabs` don't appear on THIS page, since other pages
+  (references.html) still carry them. Printing prints only the ACTIVE panel —
+  the `[hidden]` attribute already suppresses the others regardless of media,
+  so no extra print-specific panel rule is needed, and each panel's own Print
+  button correctly reflects the step it's attached to. The row-checkbox
+  column is print-hidden two ways, ported as-is from the reference: `.no-print`
+  on its `th`/`td` (a checkbox input mid-print reads as broken chrome, not
+  content), and its `<col>` width zeroed in the print block so the table
+  reflows without a blank gutter. The liability disclaimer is **not**
+  print-hidden — a printed filing checklist should still carry it.
+  **Refined after reviewing an actual printed page:** the step rail
+  (`.tf-step-nav`) and the "← Tools" back-link (`.tf-post-topnav`) are now also
+  print-hidden — both are page-navigation, meaningless once on paper — and so
+  is the header's lede photo (`.tf-intro-split-img` specifically, NOT the
+  whole `.tf-intro-split`, so the page's h1/intro/disclaimer still print).
+  Table columns get a PRINT-ONLY rebalance: Est. time and Who's involved
+  narrow (14%/16% screen → 10%/10% print), Step and Cost widen to absorb the
+  freed space (46%/16% screen → 48%/26% print) — screen keeps its
+  already-approved wider split; only the print `<col>` widths change.
+
+- **`?subject=` handoff to contact.html.** The closing CTA (`.tf-cta-inline`,
+  reused unchanged) links to `contact.html?subject=Company%20setup%20-%20`.
+  `contact.html`'s form does not yet read a `subject` query param to prefill
+  its Subject line field (the field itself shipped in
+  [feat/contact-subject-line](https://github.com/sw805206/threeflows-new/pull/87),
+  but nothing populates it from the URL) — flagged as a follow-up, not blocking
+  this build.
+
+**Round 2 — print-out + on-screen review, 2026-07-29.** The human printed a
+panel and reviewed the header on-screen; eight findings, all addressed:
+
+- **Header layout.** The "← Tools" back-link moved INSIDE the text column
+  (directly above the h1) — it previously sat above the image, reading as
+  detached from the title it belongs to. The lede photo shrank from the wide
+  `.tf-intro-split` treatment to `.tf-rail-img` (the blog TOC rail's own 3:2
+  image sizing) inside a 220px column, so it now matches the visual weight of
+  a blog rail image rather than dominating the header — and the 220px column
+  lines up with the `.tf-step-nav` rail directly beneath it. `.tf-tool-layout`
+  (previously step-rail-specific) is GENERALIZED to `:first-child`/`:last-child`
+  positional selectors so the SAME rule serves both the header row and the
+  step-rail row — one pattern, two consumers, with `position: sticky` still
+  scoped to `.tf-step-nav` only (a header image has nothing to stick to).
+  **Flexbox gotcha caught on review:** the image's own `width: 100%` combined
+  with a flex item's default `min-width: auto` produced an automatic minimum
+  size near the full container width, overriding `flex-basis: 220px` — fixed
+  with an explicit `min-width: 0` on the fixed-width column.
+- **Divider scope.** `.tf-tool-divider` moved from a full-width `<hr>` spanning
+  BOTH header columns to living inside the text column only, closing under the
+  disclaimer — matching the blog's own header-divider idiom (`.tf-prose >
+  .tf-meta`'s light rule closes the header block under the TEXT, never
+  reaching under the rail beside it). Confirmed against a live blog page
+  screenshot the human supplied.
+- **Checkbox and Who's-involved columns REMOVED entirely** (screen and print,
+  not just print-hidden as a first pass mistakenly assumed) — `.tf-rowcheck`
+  and its "mark step done" affordance are gone. The step **number cell is now
+  colour-coded** instead (`.tf-data-table td.tf-fit-solo/-together/-no`,
+  reusing the retired `.tf-fit-dot`'s exact tokens as a cell background
+  instead of a separate dot column) — reclaims the width both dropped columns
+  held. The legend (`.tf-fit-legend`) is unchanged and still explains the
+  colours.
+- **Hover vs. active state.** `:hover` on the step rail previously turned
+  brick text — the SAME treatment the truly active step uses — so hovering a
+  different step while one was already active read as two "active" steps at
+  once (review finding). Hover on a non-selected item now washes the
+  background (`--tf-wash-brick`) instead of recolouring text; brick text +
+  brick rail edge stays the active item's alone.
+- **Table border → sand, not ink.** `.tf-data-table table`'s outer frame moved
+  from `--tf-rule` to `--tf-rule-sand`. This is a DELIBERATE, `.tf-data-table`-
+  SCOPED deviation from the documented "ink survives on component frames"
+  rule (STYLE.md §4) that `.tf-prose-table` still follows unchanged — flagged
+  below for reconciliation, not applied sitewide in this commit.
+- **Real cost estimates.** The reference's "sign up to see exact estimate"
+  gate doesn't correspond to any actual sign-up flow, so it read as a dead
+  promise — replaced with real cost ranges the human supplied (2026-07-29),
+  shown as the Cost cell's primary text with the cost TYPE ("3rd party
+  charge", "Gov charge", …) as a smaller `.tf-cost-badge` subline beneath
+  (block-level, not inline — a second reason this needed its own line once
+  real estimates made the cell two lines deep). `.tf-cost-note` above the
+  legend changed from "Sign up to see exact cost estimates" to "Estimates
+  only — actual costs vary by state and provider," since the content is no
+  longer gated. Column widths rebalanced for the longer real-dollar text:
+  Cost 26%→40%, Step 50%→42%, Est. time 18%→12%.
+- **Download → Word-compatible `.doc` (RTF), not `.txt`/`.csv`.** All three
+  Download buttons (`data-download-doc`, renamed from `data-download-result`/
+  `data-download-csv`) now produce a single RTF document mirroring the print
+  layout — title/intro/disclaimer, the panel heading, and either the
+  recommendation or a real bordered table with the shaded step-number cells
+  carried through as RTF cell shading (`\clcbpat`). Hand-built vanilla JS, no
+  dependency (SCOPE.md: lean dependencies) — RTF saved with a `.doc`
+  extension opens directly in Word without needing a docx library.
+  *(SUPERSEDED in Round 3 — the .doc/RTF export is removed entirely; see
+  below.)*
+
+**Round 3 — side-by-side blog comparison + content pass, 2026-07-29.** Four
+findings:
+
+- **Rail width 220px → 260px.** The human compared a blog post and the tool
+  side by side: the tool's header image read visibly smaller. Root cause was
+  a made-up 220px rail; `.tf-toc` (the blog's own rail) is **260px**.
+  `.tf-tool-layout`'s fixed column now uses that same literal, so a tool page
+  and a blog post open with the identical left-column rhythm and image size.
+  *(One deliberate remaining difference: the blog pins its prose right at a
+  62ch cap, leaving a wide centre gap; the tool's panel fills the remaining
+  width instead, because its tables need the room. Flagged below.)*
+- **CTA moved INSIDE each panel, directly above the legend** (per the human's
+  sketch) — it was a single page-level block after all three panels, so it
+  read as page furniture rather than as help offered at the point of use.
+  `.tf-cta-inline` is reused unchanged; only its placement moved.
+- **Download (.doc/RTF) REMOVED; Print → "Download PDF".** The RTF export
+  was rejected on review. The remaining single action calls `window.print()`
+  — the print stylesheet already IS the intended PDF layout and every
+  browser's print dialog offers a "Save as PDF" destination, so one code path
+  serves both and the two can never drift. All the RTF-building code
+  (`rtfHeader`/`rtfTable`/`rtfEscape`/`triggerDownload`, the `RTF_COLORS`
+  table) is deleted, not just unwired — ~90 lines and the page's only
+  non-trivial serialization logic.
+- **Table content, ordering, and the responsibility coding re-cut** to the
+  human's supplied table. The first column **stays the step number** — Round
+  2's colour-shaded `#` cell is kept, not replaced (an interim attempt to put
+  spelled-out role labels in that column was corrected: the column is for the
+  step number, and the COLOUR is what carries responsibility). The three
+  responsibilities are **redefined** from the original solo/together/n-a set
+  to **You** (you must own it, brick), **Assist** (we can do it together,
+  ochre), **We** (we can execute it, teal) — named in the legend, and on each
+  cell as a `title` tooltip. Colours are the
+  `.tf-pill-tint-brick/-ochre/-teal` wash + deep-text pairs, exact — no new
+  hue; ochre enters the tool's palette here, replacing the retired
+  stone/plum pair. Row content and ORDER come from the human's table verbatim
+  (including a new "Set up Google/Office Workspace" row) — the JS array is
+  the source of truth and is not re-sorted. The legend drops `.no-print`: it
+  keys the number column's colours, so it must survive to paper, and a
+  `print-color-adjust: exact` rule keeps the wash backgrounds from being
+  stripped by the browser's default print behaviour.
+
+**Round 4 — side-by-side spacing + content pass, 2026-07-30.** Seven findings:
+
+- **Header gap: fixed 48px → the blog's own `space-between` mechanism.**
+  Measured against a live blog post: its rail→prose gap is **240px** (rail
+  260px, prose 62ch pinned to the container's right edge, flexible space
+  between); the tool's fixed `--tf-space-6` left the title crowding the
+  image. `.tf-tool-layout` now uses `justify-content: space-between` with the
+  content column at `flex: 0 1 62ch` — `.tf-prose-layout.is-railed`'s exact
+  rule, so the geometry tracks the blog at any width rather than approximating
+  it with a hand-tuned gap. Measured 240px after the change, identical to the
+  blog.
+- **"Disclaimer:" now bold** at the head of the disclaimer paragraph, so it
+  reads as a labelled notice rather than a third intro paragraph.
+- **CTA position unified across steps.** It previously trailed the Q&A card on
+  step 1 but led the table on steps 2–3, so it moved as you switched steps.
+  Now it sits directly under `.tf-panel-head` in every panel — measured at the
+  same y (551px) on all three — with a scoped `margin-block: --tf-space-4`
+  giving symmetric air above and below (the base `.tf-cta-inline` rule's 48px
+  top / 0 bottom is wrong for a mid-panel placement).
+- **"Estimates only…" note removed** from both table panels; `.tf-cost-note`
+  had no other consumer, so the rule is DELETED rather than left orphaned
+  (this pattern was introduced in Round 2 and never shipped, so no BL-012-style
+  retention applies).
+- **"Cost" → "Est. cost"** in both table headers.
+- **Est. time column widened** 12% → 18% (Step 42→40, Cost 40→36) so "Same
+  day" — the most common value — sits on one line. Verified by measuring line-
+  box counts: all three "Same day" cells render single-line.
+- **Content edits:** "Acquire" prefixed to the business-licenses and
+  business-insurance rows; "Beneficial-ownership disclosure, if your state
+  requires it" → "Disclose beneficial ownership (BOIR), if your state requires
+  it".
+- **"Download PDF" now produces a REAL .pdf file** — it previously opened the
+  print dialog, which the human rejected twice. Implemented with **jsPDF
+  2.5.1 + jspdf-autotable 3.8.4**, loaded from cdnjs with **Subresource
+  Integrity** hashes, `crossorigin`, `referrerpolicy=no-referrer` and `defer`,
+  **on this page only**. This is the site's **first third-party JS
+  dependency** — an explicit SCOPE.md exception ("lean dependencies; per-page
+  CDN loads by exception only"), taken by human decision, recorded below.
+  The generated document carries the page's title, intro and disclaimer, the
+  panel heading, the responsibility legend, and either the Q&A recommendation
+  or the full table with the **number cells shaded in the same brick / ochre /
+  teal pairs as the screen** (`didParseCell` colours column 0 only). If the
+  CDN is blocked or the SRI check fails, `window.jspdf` is undefined and the
+  handler falls back to `window.print()`, so the button is never dead.
+
+**Round 5 — structural alignment to the blog, 2026-07-30.** Round 4 matched
+the blog's horizontal geometry but kept a two-row structure (image+title row,
+then rail+panel row), which left **169px of dead vertical space** between the
+lede image and "Step 1" where a blog post has 24px. Fixed by adopting the
+blog's actual STRUCTURE, not just its measurements:
+
+- **One row, not two** — `.tf-tool-layout` is now a single
+  `.tf-prose-layout.is-railed` analogue. **`.tf-tool-rail`** stacks the lede
+  image directly above the step nav (exactly as `.tf-toc` stacks
+  `.tf-rail-img` above "In this article" + its links), and
+  **`.tf-tool-content`** carries the back-link, h1, intro, disclaimer, the
+  closing divider, and then the panels. The image→nav gap is now just
+  `.tf-rail-img`'s own `margin-bottom: --tf-space-3` — **measured 24px**,
+  identical to a blog post. `.tf-tool-header` is retired.
+- **The whole rail sticks**, not the nav alone — matching `.tf-toc`.
+- **Divider tightened** to `--tf-space-3` / `--tf-space-4` (was `-4`/`-6`),
+  since it now closes a header block inside the content column rather than
+  separating two full-width rows.
+- **CTA moved into the rail, between the lede image and the steps.** This
+  retires Round 4's per-panel CTA: there is now **one** instance outside the
+  panels, so it cannot repeat or shift between steps. The scoped
+  `.tf-tool-panel .tf-cta-inline` spacing rule is replaced by a
+  `.tf-tool-rail`-scoped one — symmetric `--tf-space-3` (24px above and
+  below, matching the image→nav rhythm) at `--tf-text-sm` to suit the 260px
+  column; the base rule's 48px-top/0-bottom is wrong in a narrow rail and
+  gives no bottom air where the steps now follow.
+
+**Flags (recorded, not resolved here):**
+- **SCOPE.md must record the CDN dependency exception.** SCOPE.md's hard
+  constraints say "Lean dependencies; per-page CDN loads by exception only" —
+  jsPDF + autoTable on `tool-company-setup.html` IS that first exception, and
+  SCOPE.md currently lists no exceptions at all. Recording it there is a
+  GOVERNANCE change and needs its own PR per CLAUDE.md Part B, so it is
+  deliberately NOT bundled into this feature branch. Until it lands, the only
+  written record of the decision is this ratchet entry and the commented
+  `<script>` block in the page.
+- **The 62ch content cap narrows the step tables.** Matching the blog's header
+  spacing (above) necessarily consumes 500px of the row (260px rail + 240px
+  gap), leaving ~636px for the panel — so the 4-column table now sits at blog-
+  prose width and its Step/Est. cost columns wrap more than they did at full
+  width. This is the direct trade-off of the blog-matched geometry, accepted
+  deliberately; widening the tables again would mean a smaller gap than a blog
+  post has. Revisit together, not separately.
+- **BLOG.md §9 is stale.** It still lists "prose tables — no `table` rules
+  exist yet" as a deferred pattern; `.tf-prose-table` has existed since
+  blog-004 (STYLE.md's own 2026-07-17 entry above). Noted here, not fixed —
+  BLOG.md is its own governance doc and a separate commit.
+- **`tools.html`'s own look is undecided.** Whether it eventually adopts the
+  references.html hero+tabs/`.tf-ref-group` directory treatment this tool page
+  first tried and dropped is explicitly open — the human's call once more than
+  one tool exists to browse. `tools.html` is UNCHANGED in this build (still the
+  plain kicker/h1/intro + single `.tf-card-grid` card from the first pass).
+- **`.tf-data-table` vs. `.tf-prose-table` border colour now diverges** — sand
+  vs. ink, see above. Whether `.tf-prose-table` (blog tables) should also move
+  to sand for consistency, or whether the divergence is intentional (a data
+  table read as a worksheet vs. a prose table read as reference content), is
+  an open reconciliation item — a STYLE-scoped change needing its own commit
+  per CLAUDE.md Part B, not bundled here.
+- **The tool's content column does NOT match the blog's 62ch right-pinned
+  prose.** Both now share the 260px rail, but the blog caps its prose at 62ch
+  and pins it to the container's right edge (leaving a wide centre gap),
+  whereas `.tf-tool-layout`'s panel fills the remaining width. Deliberate —
+  the step tables need the width, and capping the panel would misalign it
+  against the header text above it — but it means a tool page and a blog post
+  are NOT geometrically identical below the rail. Revisit if a future tool is
+  text-heavy rather than table-heavy.
+- **"Download PDF" depends on the browser's print dialog.** It calls
+  `window.print()`; the user picks "Save as PDF" as the destination. There is
+  no generated-file path and no PDF library. If a true one-click PDF download
+  is ever required, that is a new dependency decision (SCOPE.md: lean
+  dependencies, per-page CDN loads by exception only), not a tweak.

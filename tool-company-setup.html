@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Company Setup Checklist — Three Flows Solutions</title>
+  <meta name="description" content="Decide your entity type, then work through prep &amp; filing and post-filing setup for your new company.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+  <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+</head>
+<body class="tf-app">
+  <!-- Shared header injected from partials.html -->
+  <div id="tf-header"></div>
+
+  <main class="tf-section">
+    <div class="tf-container">
+
+      <!-- ONE rail + ONE content column, mirroring the blog post's own
+           .tf-prose-layout.is-railed structure exactly: the rail stacks the
+           lede image directly above the nav (as .tf-toc stacks .tf-rail-img
+           above "In this article" + its links), and the content column
+           carries the back-link, h1, intro, disclaimer, the closing divider,
+           and then the body. Deliberately NOT two stacked rows — that split
+           the image away from the nav and opened ~169px of dead space
+           between them where a blog post has 24px. -->
+      <div class="tf-tool-layout">
+        <div class="tf-tool-rail">
+          <img class="tf-rail-img tf-photo" src="assets/images/tool-company-setup.jpg" alt="">
+
+          <!-- CTA sits in the RAIL between the image and the steps. Outside
+               the panels, so it stays in one fixed place instead of
+               repeating (and shifting) per step. -->
+          <div class="tf-cta-inline">
+            <p>Questions about your situation?</p>
+            <p>We can help you work through it &mdash; <a href="contact.html?subject=Company%20setup%20-%20">contact us</a>.</p>
+          </div>
+
+          <div class="tf-step-nav" role="tablist" aria-label="Company setup steps" aria-orientation="vertical">
+            <button type="button" class="tf-step-nav-item" role="tab" id="tab-decide" data-tab="decide" aria-selected="true" aria-controls="panel-decide" tabindex="0">
+              <span class="tf-step-nav-num">Step 1</span>
+              <span class="tf-step-nav-desc">Decide Entity Type</span>
+            </button>
+            <button type="button" class="tf-step-nav-item" role="tab" id="tab-prep" data-tab="prep" aria-selected="false" aria-controls="panel-prep" tabindex="-1">
+              <span class="tf-step-nav-num">Step 2</span>
+              <span class="tf-step-nav-desc">Prep &amp; Filing</span>
+            </button>
+            <button type="button" class="tf-step-nav-item" role="tab" id="tab-post" data-tab="post" aria-selected="false" aria-controls="panel-post" tabindex="-1">
+              <span class="tf-step-nav-num">Step 3</span>
+              <span class="tf-step-nav-desc">Post-Filing Setup</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="tf-tool-content">
+          <div class="tf-post-topnav">
+            <a href="tools.html">&larr; Tools</a>
+          </div>
+          <h1>Company Setup Checklist</h1>
+          <p class="tf-prose-intro">Decide your entity, then work prep &amp; filing and post-filing setup in any order &mdash; nothing here is prerequisite for anything else.</p>
+          <p class="tf-card-body"><strong>Disclaimer:</strong> Three Flows Solutions is a business operations consultancy, not a law firm or CPA practice. Entity formation involves state-specific rules and individual tax circumstances that only a licensed attorney or CPA can properly advise on.</p>
+          <hr class="tf-tool-divider">
+
+          <div class="tf-tool-panels">
+
+          <!-- Panel 1: entity-type Q&A -->
+          <section class="tf-tool-panel" id="panel-decide" role="tabpanel" aria-labelledby="tab-decide" data-tool-panel="decide">
+            <div class="tf-panel-head">
+              <h2>Decide Entity Type</h2>
+              <div class="tf-panel-actions no-print">
+                <button type="button" class="tf-pill tf-pill-outline" data-pdf>Download PDF</button>
+              </div>
+            </div>
+
+
+            <div class="tf-card">
+              <form id="qa-form">
+                <div class="tf-choice-group">
+                  <p class="tf-choice-question">Are you a US citizen or green card holder?</p>
+                  <div class="tf-choice-options">
+                    <label class="tf-choice"><input type="radio" name="citizenship" value="Yes"><span>Yes</span></label>
+                    <label class="tf-choice"><input type="radio" name="citizenship" value="No"><span>No</span></label>
+                    <label class="tf-choice"><input type="radio" name="citizenship" value="Prefer not to say"><span>Prefer not to say</span></label>
+                    <label class="tf-choice"><input type="radio" name="citizenship" value="Not sure"><span>Not sure</span></label>
+                  </div>
+                </div>
+                <div class="tf-choice-group">
+                  <p class="tf-choice-question">What&rsquo;s driving formation?</p>
+                  <div class="tf-choice-options">
+                    <label class="tf-choice"><input type="radio" name="driver" value="capital"><span>Raising outside capital</span></label>
+                    <label class="tf-choice"><input type="radio" name="driver" value="self"><span>Self-funding</span></label>
+                    <label class="tf-choice"><input type="radio" name="driver" value="nonprofit"><span>Not for profit</span></label>
+                  </div>
+                </div>
+                <div class="tf-choice-group">
+                  <p class="tf-choice-question">Licensed-professional partnership (law, accounting, etc.), multiple owners, and your state allows LLPs? <span class="tf-choice-hint">only applies if self-funding</span></p>
+                  <div class="tf-choice-options">
+                    <label class="tf-choice"><input type="radio" name="licensed" value="yes"><span>Yes</span></label>
+                    <label class="tf-choice"><input type="radio" name="licensed" value="no"><span>No</span></label>
+                  </div>
+                </div>
+                <button type="button" class="tf-btn tf-btn-primary no-print" id="qa-submit">See recommendation</button>
+              </form>
+              <div id="qa-result"></div>
+            </div>
+          </section>
+
+          <!-- Panel 2: Prep & filing table -->
+          <section class="tf-tool-panel" id="panel-prep" role="tabpanel" aria-labelledby="tab-prep" data-tool-panel="prep" hidden>
+            <div class="tf-panel-head">
+              <h2>Prep &amp; Filing</h2>
+              <div class="tf-panel-actions no-print">
+                <button type="button" class="tf-pill tf-pill-outline" data-pdf>Download PDF</button>
+              </div>
+            </div>
+            <div class="tf-fit-legend">
+              <span><span class="tf-fit-dot tf-fit-you"></span>You &mdash; you must own it</span>
+              <span><span class="tf-fit-dot tf-fit-assist"></span>Assist &mdash; we can do it together</span>
+              <span><span class="tf-fit-dot tf-fit-we"></span>We &mdash; we can execute it</span>
+            </div>
+            <div class="tf-data-table">
+              <table id="table-prep"></table>
+            </div>
+          </section>
+
+          <!-- Panel 3: Post-filing setup table -->
+          <section class="tf-tool-panel" id="panel-post" role="tabpanel" aria-labelledby="tab-post" data-tool-panel="post" hidden>
+            <div class="tf-panel-head">
+              <h2>Post-Filing Setup</h2>
+              <div class="tf-panel-actions no-print">
+                <button type="button" class="tf-pill tf-pill-outline" data-pdf>Download PDF</button>
+              </div>
+            </div>
+            <div class="tf-fit-legend">
+              <span><span class="tf-fit-dot tf-fit-you"></span>You &mdash; you must own it</span>
+              <span><span class="tf-fit-dot tf-fit-assist"></span>Assist &mdash; we can do it together</span>
+              <span><span class="tf-fit-dot tf-fit-we"></span>We &mdash; we can execute it</span>
+            </div>
+            <div class="tf-data-table">
+              <table id="table-post"></table>
+            </div>
+          </section>
+
+          </div><!-- /.tf-tool-panels -->
+        </div><!-- /.tf-tool-content -->
+      </div><!-- /.tf-tool-layout -->
+
+    </div>
+  </main>
+
+  <!-- Shared footer injected from partials.html -->
+  <div id="tf-footer"></div>
+
+  <!-- PDF generation — jsPDF + its autoTable plugin, loaded from CDN with
+       Subresource Integrity. This is the site's FIRST third-party JS
+       dependency and an explicit SCOPE.md exception ("lean dependencies;
+       per-page CDN loads by exception only"), taken by human decision so
+       "Download PDF" produces a real file rather than opening the print
+       dialog. Loaded on THIS page only. `defer` + the SRI/crossorigin pair
+       mean a blocked or tampered CDN simply leaves window.jspdf undefined —
+       the tool's own JS checks for it and falls back to window.print(), so
+       the button always does something. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+          integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk"
+          crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js"
+          integrity="sha384-Xl/CUCfJbzsngMp0CFxkmF0VW/8C160IsGujqeQlIhaGxKz2+JsIGORFqtCPeldF"
+          crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+
+  <!-- Tool engine: step switching, entity-type recommendation logic, the two
+       data tables, and PDF generation. Separate file, vanilla JS. -->
+  <script src="assets/tool-company-setup.js" defer></script>
+
+  <!-- Fetch snippet: load partials.html (relative), inject header/footer,
+       mark the current nav link, and wire dropdowns + the mobile menu.
+       Fails silently (no nav rather than a broken page). -->
+  <script src="assets/partials.js" defer></script>
+</body>
+</html>
