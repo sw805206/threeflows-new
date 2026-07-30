@@ -1,6 +1,53 @@
-/* v039 | last updated: 2026-07-28
+/* v040 | last updated: 2026-07-30
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v40 · 2026-07-29 · tool-company-setup.html build (feat/tool-company-setup,
+                     paired with STYLE.md v036, same commit per SCOPE.md). The
+                     first tool under the hidden tools.html (BL-009's manifest
+                     scheme stays deferred). Three rounds of localhost review
+                     — NOT the references.html hero+tabs directory a first
+                     pass tried (reserved for tools.html itself, once more
+                     than one tool exists), NOT an all-visible blog-post
+                     scroll a second pass tried, and a third round of print +
+                     on-screen findings on top of the shape that stuck. FINAL
+                     shape: a small `.tf-rail-img` (blog-TOC-rail sizing)
+                     beside h1/intro/disclaimer in a 220px/flexible split
+                     (`.tf-tool-layout`, GENERALIZED to serve both this header
+                     row and the step rail below it), a divider scoped to the
+                     text column only (matches the blog's own `.tf-prose >
+                     .tf-meta` idiom), then a VERTICAL step rail
+                     (`.tf-step-nav`, a sideways tablist on `.tf-toc`'s
+                     left-border-rail idiom) beside the active step's panel
+                     (only one visible — `[hidden]` on the rest). Each panel
+                     keeps its own `.tf-panel-head` (title + Print/Download
+                     `.tf-pill` buttons). New components: the CHOICE KIT
+                     (`.tf-choice-*`) — real visually-hidden radio inputs
+                     under a bordered pill, selected fill reuses
+                     `--tf-wash-brick`; the DATA TABLE (`.tf-data-table` +
+                     `col.tf-col-*`, `.tf-cost-badge`) at 4 columns (a
+                     colour-coded # / Step / Est. time / Est. cost with
+                     real $ estimates) — a SAND outer frame, a deliberate
+                     scoped deviation from `.tf-prose-table`'s ink frame
+                     (flagged for reconciliation); the FIT-DOT indicator
+                     (`.tf-fit-dot-*` + `.tf-fit-legend`) — reusing
+                     `--tf-wash-teal/-plum/-stone` and the exact deep-text
+                     hex literals `.tf-pill-tint-teal/-plum/-stone` already
+                     established. Also the site's FIRST print stylesheet:
+                     `.no-print` + `@page A4`, deliberately GENERAL (hides
+                     nav/header/footer/hero/tabs/step-rail on any printed
+                     page). "Download PDF" generates a REAL .pdf via jsPDF +
+                     autoTable (CDN + SRI, this page only) — the site's FIRST
+                     third-party JS, an explicit SCOPE.md exception by human
+                     decision; falls back to window.print() if the CDN is
+                     unavailable. LAYOUT now mirrors the blog's
+                     .tf-prose-layout.is-railed STRUCTURE, not just its
+                     measurements: one row — .tf-tool-rail (lede image stacked
+                     above the step nav, the whole rail sticky) beside
+                     .tf-tool-content (header + panels), space-between with a
+                     62ch cap. Measured 240px column gap and 24px image→nav
+                     gap, both identical to a blog post. Full detail in
+                     STYLE.md §6.
 
    v39 · 2026-07-28 · contact.html success block hidden-until-submit fix. Since the
                      v37 reskin, .tf-form-success is a .tf-callout (display:flex),
@@ -2695,4 +2742,305 @@ a.tf-icon-brand:focus { color: #004182; }        /* LinkedIn blue, pressed */
   color: var(--tf-stone);
   font-size: var(--tf-text-sm);
   line-height: 1.3;
+}
+
+/* ── Company setup tool (tool-company-setup.html) ────────────────────────────
+   The first tool under the hidden tools.html (BL-009's manifest scheme stays
+   deferred; this page is hand-linked). Rendered by
+   assets/tool-company-setup.js. No .tf-page-head hero, no top .tf-tabs — a
+   blog-style header (.tf-intro-split, reused unchanged: small framed image +
+   h1/intro/disclaimer) opens the page, then a sand divider, then the body: a
+   VERTICAL step rail on the left (a role=tablist, the tab-switching idiom
+   from references.js turned sideways) and the active step's panel on the
+   right (only one visible at a time — [hidden] on the rest). Five new pieces
+   below: the divider, the layout + rail, the choice (radio-pill) kit, the
+   data table, the fit-dot indicator, and print output. */
+
+/* Divider closing the header block (back-link / h1 / intro / disclaimer)
+   before the step panels — inside the CONTENT column, never spanning the
+   rail, which is the blog's own header-divider idiom (`.tf-prose > .tf-meta`
+   closes the post header under the text alone). Sand per STYLE.md §4 (sand
+   divides major sections; light divides content within one); not
+   `.tf-prose hr`, which is `.tf-prose`-scoped for running prose. */
+.tf-tool-divider { border: none; border-top: var(--tf-rule-sand); margin: var(--tf-space-3) 0 var(--tf-space-4); }
+
+/* Layout — a fixed LEFT rail beside a flexible content column, mirroring the
+   blog's `.tf-prose-layout.is-railed` (rail + prose). ONE row, not two: the
+   rail holds the lede image AND the step nav stacked (as `.tf-toc` holds
+   `.tf-rail-img` above its links), and the content column holds the page
+   header and then the panels.
+   RAIL WIDTH IS 260px — deliberately the SAME literal `.tf-toc` uses, so a
+   tool page and a blog post open with the same left-column rhythm. Columns
+   are addressed by POSITION (`:first-child` / `:last-child`) rather than by
+   class, so the rule stays legible as one shape. Stacks (rail above content)
+   below 820px (the nav breakpoint, reused). */
+.tf-tool-layout { display: flex; flex-direction: column; gap: var(--tf-space-4); }
+@media (min-width: 820px) {
+  /* `space-between` + a 62ch content cap, NOT a fixed gap — this is
+     `.tf-prose-layout.is-railed`'s exact mechanism (the blog's rail + prose
+     row), adopted verbatim on review: a fixed `--tf-space-6` gap left the
+     title block crowding the image, where a blog post has ~240px of air
+     between the two. The flexible space now sits BETWEEN the columns, so the
+     content column is pinned to the container's right edge and the gap falls
+     out of the measure — identical geometry to a blog post at any width. */
+  .tf-tool-layout { flex-direction: row; justify-content: space-between; gap: var(--tf-space-6); align-items: flex-start; }
+  /* min-width: 0 overrides the flex item's default min-width: auto — without
+     it, a REPLACED element (the header's <img>) with its own width: 100%
+     computes an automatic minimum near the container's full width, which
+     wins over flex-basis and the image renders full-width regardless (a
+     flexbox/replaced-element interaction, caught on review). */
+  .tf-tool-layout > :first-child { flex: 0 0 260px; min-width: 0; }
+  .tf-tool-layout > :last-child { flex: 0 1 62ch; min-width: 0; }
+  /* The WHOLE rail sticks (image + nav together), exactly as `.tf-toc` does
+     on a blog post — not the nav alone. */
+  .tf-tool-rail { position: sticky; top: var(--tf-space-4); }
+}
+/* Rail = lede image stacked directly above the step nav, one column. The
+   image's own `margin-bottom: --tf-space-3` (from `.tf-rail-img`, shared with
+   the blog) is the ONLY gap between them — 24px, matching a blog post's
+   image→"In this article" step. An earlier two-row layout put the image and
+   the nav in separate rows and opened ~169px of dead space here. */
+.tf-tool-rail > :last-child { margin-bottom: 0; }
+
+/* Step rail (`.tf-step-nav` / `.tf-step-nav-item`) — a VERTICAL tablist,
+   styled on the same left-border-rail idiom as the blog's `.tf-toc` (contiguous
+   border-lefts form the rail's edge; active = brick text + brick edge
+   segment), but items are real `<button role=tab>`s that SWAP the active
+   panel rather than anchor links that scroll-spy a static page. Two-part
+   item: a bold "Step N" line, a lighter step name beneath — the `.tf-flow`
+   label/note shape, reused for typography only (no brick auto-number; the
+   rail's own "Step N" text already carries the sequence). */
+.tf-step-nav { display: flex; flex-direction: column; }
+.tf-step-nav-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-family: var(--tf-font-body);
+  background: transparent;
+  border: none;
+  border-left: 2px solid var(--tf-stone-light);
+  padding: var(--tf-space-2) 0 var(--tf-space-2) var(--tf-space-2);
+  cursor: pointer;
+  color: var(--tf-ink-soft);
+}
+/* Hover and active-selected are DELIBERATELY different treatments — both
+   used to read as brick text, which made the truly active step ambiguous
+   against whatever you were merely pointing at (review finding). Hover on a
+   NON-active item now washes the background instead of recolouring text;
+   the active item keeps sole ownership of brick text + a brick rail edge. */
+.tf-step-nav-item:not([aria-selected="true"]):hover { background: var(--tf-wash-brick); }
+.tf-step-nav-item[aria-selected="true"] { color: var(--tf-brick); border-left-color: var(--tf-brick); }
+.tf-step-nav-num { display: block; font-size: var(--tf-text-sm); font-weight: 700; }
+.tf-step-nav-desc { display: block; font-size: var(--tf-text-sm); margin-top: 2px; }
+
+/* Panel head — title left, Print/Download actions right. Restored per-panel
+   (not a single page-level action): with the rail swapping panels, only one
+   is ever visible, so each panel's own Print/Download correctly reflects
+   whichever step is active. */
+.tf-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--tf-space-2);
+  margin: 0 0 var(--tf-space-3);
+}
+.tf-panel-actions { display: flex; gap: var(--tf-space-1); }
+/* The CTA sits in the RAIL between the lede image and the step list. One
+   instance outside the panels, so it neither repeats nor shifts as steps
+   switch (it previously trailed the Q&A card on step 1 but led the table on
+   steps 2–3). Symmetric `--tf-space-3` overrides the base rule's 48px top /
+   0 bottom — 48px would over-detach it inside a 260px column, and it now
+   needs bottom air too since the steps follow it. `--tf-text-sm` suits the
+   narrower measure. */
+.tf-tool-rail .tf-cta-inline { margin-block: var(--tf-space-3); font-size: var(--tf-text-sm); }
+.tf-tool-rail .tf-cta-inline p { margin: 0 0 var(--tf-space-1); }
+.tf-tool-rail .tf-cta-inline p:last-child { margin-bottom: 0; }
+/* A <button> wearing .tf-pill (Print/Download) needs a pointer cursor — the
+   base pill is tag furniture, usually a non-interactive <span>, so it sets
+   none. Scoped to button so a static tag pill is unaffected. */
+button.tf-pill { cursor: pointer; }
+
+/* Panel visibility — one per step; JS sets [hidden] on the rest. Defensive
+   guard mirroring the established [hidden] idiom (.tf-ref-panel[hidden],
+   .tf-form[hidden], .tf-form-success[hidden]). */
+.tf-tool-panel[hidden] { display: none; }
+
+/* Choice kit — radio "pill" question groups, first needed by the entity-type
+   Q&A. A choice is a REAL (visually hidden) radio input under a bordered
+   label, not a button, so the group keeps native form semantics (arrow-key
+   navigation between options, AT group announcement). Reuses the pill's
+   bordered-selected idiom at pill size, but is its own kit — the .tf-pill set
+   is a solid/outline TAG, not a form control. Square corners, --tf-* tokens
+   only; selected fill reuses --tf-wash-brick (the closest existing tint to a
+   "chosen" state) rather than a new hex. */
+.tf-choice-group { margin: 0 0 var(--tf-space-4); }
+.tf-choice-group:last-of-type { margin-bottom: var(--tf-space-3); }
+.tf-choice-question {
+  font-size: var(--tf-text-base);
+  font-weight: 500;
+  margin: 0 0 var(--tf-space-2);
+}
+.tf-choice-hint { font-weight: 400; color: var(--tf-ink-soft); }
+.tf-choice-options { display: flex; flex-wrap: wrap; gap: var(--tf-space-1); }
+.tf-choice {
+  position: relative;
+  font-size: var(--tf-text-sm);
+  padding: 10px 16px;
+  border: var(--tf-rule-light);
+  background: var(--tf-paper);
+  color: var(--tf-ink);
+  cursor: pointer;
+}
+/* The real input sits invisibly over the whole label — clickable everywhere,
+   keyboard-operable, and screen-reader native (unlike a button standing in
+   for a radio). */
+.tf-choice input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.tf-choice:hover { border-color: var(--tf-brick); }
+.tf-choice:has(input:checked) {
+  border-color: var(--tf-brick);
+  background: var(--tf-wash-brick);
+  font-weight: 500;
+}
+
+/* Data table — a structured table (cost badges, a colour-coded step number),
+   distinct from .tf-prose-table (element-scoped, for a bare <table> inside
+   running prose — BLOG.md §9). First needed by the Prep & filing /
+   Post-filing setup tables. Kin to the prose table's frame idiom — light 2px
+   internal rules, a .tf-meta-style header — but .tf-data-table is NOT scoped
+   to .tf-prose and carries its own column/row furniture (colgroup widths, the
+   shaded step-number cell). No zebra striping, no row hover: the table is
+   read, not an interactive control.
+   OUTER FRAME is SAND, not ink (review finding) — a deliberate DEVIATION
+   from .tf-prose-table's documented "ink survives on component frames"
+   rule (STYLE.md §4): scoped to `.tf-data-table` only, `.tf-prose-table`
+   itself is UNCHANGED, so blog-post tables keep their ink frame. Flagged as
+   an open reconciliation item (BACKLOG), not applied sitewide here. */
+.tf-data-table { overflow-x: auto; }
+.tf-data-table table {
+  width: 100%;
+  border-collapse: collapse;
+  border: var(--tf-rule-sand);
+  background: var(--tf-paper);
+  font-size: var(--tf-text-sm);
+  line-height: 1.5;
+  text-align: left;
+}
+.tf-data-table :is(th, td) {
+  padding: var(--tf-space-1) var(--tf-space-2);
+  border-right: var(--tf-rule-light);
+  border-bottom: var(--tf-rule-light);
+  vertical-align: top;
+}
+.tf-data-table tr > :last-child { border-right: none; }
+.tf-data-table tbody tr:last-child > * { border-bottom: none; }
+.tf-data-table th {
+  font-size: var(--tf-text-xs);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tf-ink-soft);
+  line-height: 1.3;
+}
+/* Est. time widened (12% → 18%) so "Same day" — the most common value — sits
+   on ONE line rather than wrapping mid-phrase; Step and Cost give up the
+   difference. */
+.tf-data-table col.tf-col-num  { width: 6%; }
+.tf-data-table col.tf-col-step { width: 40%; }
+.tf-data-table col.tf-col-time { width: 18%; }
+.tf-data-table col.tf-col-cost { width: 36%; }
+/* Block + top margin so the cost TYPE (e.g. "3rd party charge") reads as a
+   subline under the estimate, not run into it — real $ estimates (below)
+   made this a two-line cell where it used to be the cell's only content. */
+.tf-cost-badge { display: block; font-size: var(--tf-text-xs); color: var(--tf-ink-soft); margin-top: 2px; }
+/* Step-number cell, COLOUR-CODED by responsibility. The first column stays
+   the step NUMBER — the colour is what carries "who's involved", replacing
+   the original separate Who's-involved dot column and reclaiming its width.
+   The three responsibilities use the brick / ochre / teal wash + deep-text
+   pairs, matching .tf-pill-tint-brick/-ochre/-teal exactly — no new hue. The
+   legend (`.tf-fit-legend`) names them: You / Assist / We. */
+.tf-data-table td.tf-col-num {
+  width: 32px;
+  text-align: center;
+  font-weight: 700;
+}
+.tf-data-table td.tf-fit-you    { background: var(--tf-wash-brick); color: #8F1E12; }
+.tf-data-table td.tf-fit-assist { background: var(--tf-wash-ochre); color: #7A5410; }
+.tf-data-table td.tf-fit-we     { background: var(--tf-wash-teal);  color: #175355; }
+
+/* Fit-dot indicator — a bordered dot (pale wash fill + deep-colour border of
+   the same hue), used by `.tf-fit-legend` to key the step-number column's
+   colours (the cells themselves are a flat background behind the number; the
+   legend keeps the dot shape as a compact colour key). Reuses the existing
+   --tf-wash-brick/-ochre/-teal tokens and the exact deep-text hex literals
+   already established by .tf-pill-tint-brick/-ochre/-teal (§2 of STYLE.md) —
+   same colours, no new hue. The circular form follows the .tf-pill-dot
+   precedent (a small border-radius:50% marker is already sanctioned inside a
+   pill), applied here as a standalone legend marker rather than UI-surface
+   chrome, so it does not read against the brand's square-corner rule for
+   surfaces. */
+.tf-fit-dot {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1.5px solid;
+  box-sizing: border-box;
+}
+.tf-fit-you    { background: var(--tf-wash-brick); border-color: #8F1E12; }
+.tf-fit-assist { background: var(--tf-wash-ochre); border-color: #7A5410; }
+.tf-fit-we     { background: var(--tf-wash-teal);  border-color: #175355; }
+.tf-fit-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tf-space-2);
+  font-size: var(--tf-text-xs);
+  color: var(--tf-ink-soft);
+  margin: 0 0 var(--tf-space-2);
+}
+.tf-fit-legend span { display: inline-flex; align-items: center; gap: var(--tf-space-1); }
+
+/* Print utility — hide an element in print output only. Minimal, reusable
+   sitewide (not tool-scoped): a Print/Download control or a screen-only
+   legend makes sense on any future page, not just this one. */
+@media print {
+  .no-print { display: none !important; }
+}
+
+/* @page A4 — the site's first print target. Chrome (nav, hero band, footer,
+   tab bar) never belongs on a printed page, so this is deliberately GENERAL
+   rather than scoped to one tool: any page printed from here on gets the same
+   treatment. Only the active tab panel prints, matching the screen behaviour
+   ([hidden] already suppresses the others regardless of media). */
+@page { size: A4; margin: 12mm; }
+@media print {
+  .tf-nav, #tf-header, #tf-footer, .tf-page-head, .tf-tabs { display: none !important; }
+  body { background: var(--tf-paper); }
+  .tf-data-table table { font-size: 11px; }
+  .tf-data-table :is(th, td) { padding: 6px 8px; }
+
+  /* tool-company-setup.html print pass — reviewed on an actual printed page.
+     The step rail and back-link are on-page navigation, meaningless on paper;
+     the lede photo is decorative and costs ink/space a printed checklist
+     doesn't need — the page's h1/intro/disclaimer (its text identity) still
+     print, only the image half of the header row is dropped. No print-only
+     column-width override is needed here (a prior pass had one): the
+     checkbox/Who's-involved columns are gone from the table ENTIRELY now
+     (screen and print alike), so the on-screen 4-column widths already carry
+     over cleanly at the smaller print font size. */
+  .tf-step-nav, .tf-post-topnav, .tf-rail-img { display: none !important; }
+
+  /* The WHO column's wash backgrounds carry the row's meaning, so they must
+     survive to paper/PDF — browsers strip background colours from print by
+     default. Same for the legend dots that key them. */
+  .tf-data-table td, .tf-fit-dot {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }
