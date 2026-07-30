@@ -1,4 +1,4 @@
-v021 | last updated: 2026-07-27
+v022 | last updated: 2026-07-29
 
 # BACKLOG.md — threeflows-new
 
@@ -49,6 +49,7 @@ backlog bookkeeping goes direct to main**; they are not repeated here.
 | BL-024 | close | refactor | 22 shell pages carry the partials-injection script inline in 3 near-identical variants (13/8/1) — copy-pasted duplication. Centralize into a single `assets/partials.js` loaded via `<script src>`, so injection logic (and future needs like footer auto-year) live in one place. Surfaced by the © line task. **Review:** centralized in `assets/partials.js`; all 22 inline copies removed and replaced with `<script src="assets/partials.js" defer></script>`. The 3 variants were verified byte-identical after normalizing comments/whitespace, so V1 (fully commented) was adopted verbatim — behavior unchanged. All 22 pages verified on localhost (inject, aria-current, dropdowns incl. Esc/outside-click/resize-crossing, hamburger). Branch `refactor/partials-js` | 2026-07-20 | User ratified; shipped in PR #38 (0d91e2d) |
 | BL-025 | open | feature | `.tf-flow` orphaned sitewide by the service-detail redesign — the numbered engage band is deleted from all four service pages, its only HTML consumers (verified by grep). CSS retained per the `.tf-stat-grid` precedent in BL-012. `.tf-flow-label` / `.tf-flow-note` survive; `.tf-service-track` reuses them. Disposition open: keep as a paper-ground pattern awaiting first reuse, or remove. | 2026-07-26 | |
 | BL-026 | open | feature | `.tf-btn-secondary` and the scoped `.tf-cta .tf-btn-secondary` override orphaned by the CTA band's removal from the four service pages, its only HTML consumers (verified by grep). `--tf-ink-raised` exists solely for that override. `.tf-cta` itself survives on index.html band 7. Disposition open. | 2026-07-26 | |
+| BL-027 | review | page | `tool-company-setup.html` built — the first tool under the hidden `tools.html` (a single hand-linked card added there; BL-009's manifest/TOOLS.md scheme stays open, deferred by explicit human decision). New STYLE.css/STYLE.md patterns: the choice (radio-pill) kit, the data table, the fit-dot indicator, `.tf-panel-head`, and the site's first print stylesheet (STYLE.md v036, STYLE.css v040, §6 "Company setup tool"). Branch `feat/tool-company-setup` | 2026-07-29 | |
 
 ## Inventory / page checklist
 
