@@ -1,195 +1,136 @@
-v014 | last updated: 2026-07-28
+v015 | 2026-07-31 | 136 lines
 
-# SCOPE.md — threeflows.com Relaunch (new repo)
+# SCOPE.md — threeflows.com
 
-## Project
+## 1. Project
 
-Greenfield rebuild of www.threeflows.com: a full redesign of the existing
-multi-page static HTML site (company, services, about, blogs, free tools),
-built clean in this repo and cut over by domain flip when complete. The
-relaunch includes a new calculator MVP as one of its pages; MVP and site
-launch together.
+Threeflows Solutions LLC is a boutique business consultancy specializing in
+business modeling and e-commerce. This repo holds threeflows.com, its
+multi-page static marketing website.
 
-Content is provided by the user. Style direction comes from Claude Design,
-captured in STYLE.css (tokens, shared patterns) with decisions recorded in
+Content is supplied by the human. Style direction comes from Claude Design,
+captured in STYLE.css (tokens, shared patterns) with the decisions recorded in
 STYLE.md.
 
-This repo and this file are the only sources of truth for the relaunch.
-The old repo (threeflows-website) and its governance docs are NOT
-referenced; the old repo serves solely as raw material for the carry-over
-inventory and is archived at cutover.
+**Where it lives**
 
-**Project type:** website, will deploy from main via GitHub Pages.
-Until the domain flips, merging to main publishes only to the repo's
-default github.io preview URL.
+- Git repo: `https://github.com/sw805206/threeflows-new`
+- Local repo: `/Users/swai/sw805206/threeflows-new`
+- Hosting: GitHub Pages, deployed from `main`
+- Domain: `threeflows.com` (apex), DNS managed on Cloudflare under
+  `sw805206@icloud.com`
 
-**Branch-per-stream discipline (from 2026-07-17).** The pre-cutover
-permission for direct commits to main is retired. Each work stream lives
-on its own feature branch (`feat/<stream>`) in its own git worktree under
-`../threeflows-worktrees/<stream>`; main receives finished work via PR
-only, so main always holds finished work alone and concurrent streams
-never collide in the working tree. Governance-doc edits are no exception:
-they follow CLAUDE.md Part B → **Governance changes get their own PR,
-merged promptly, then cascade**. From the moment the custom domain is attached,
-full Part B discipline applies unchanged.
+The site is live. Cutover from the previous site completed 2026-07-28
+(commit `1c0021c`); the old repo, `threeflows-website`, is archived and is not
+referenced by anything here.
 
-## Hard constraints
+**Ongoing streams:** blog posts, references, tools, and backlog upkeep.
 
-- Static site, vanilla JS, no frameworks (no React/Vue/jQuery, no
-  Tailwind). STYLE.css is plain CSS with variables.
-- Lean dependencies; per-page CDN loads by exception only.
-- All internal links are RELATIVE paths — required for the github.io
-  subpath preview to work, and good practice for portability.
+## 2. Governance docs
 
-## Governance docs
+Product docs, all in this repo:
 
-- CLAUDE.md — universal working rules (synced from MOTHERSHIP)
-- SCOPE.md — this file
-- STYLE.md — design-system decisions in words; ratchet-rule record
-  (which page defined which pattern)
-- STYLE.css — design tokens and shared patterns; single source of truth
-  for all styling
-- BLOG.md — blog add-a-post procedure and manifest schema
-- BACKLOG.md — Part C backlog process is ACTIVE; also holds the page
-  checklist and carry-over inventory status
-- PROCESS.md — project-specific human/Claude procedures; Images section
-  active, Blog updates and Adding clients are TBD stubs
+- **SCOPE.md** — this file
+- **STYLE.md** — design-system decisions in words; the ratchet record of which
+  page defined which pattern
+- **STYLE.css** — design tokens and shared patterns; single source of truth for
+  all styling
+- **BLOG.md** — add-a-post procedure and manifest schema
+- **BACKLOG.md** — the backlog table and page inventory; the CLAUDE.md Part C
+  backlog process is ACTIVE for this project
+- **PROCESS.md** — project-specific human/Claude procedures
 
-All are written fresh for this repo. No doc from the old repo is copied
-or cross-referenced.
+CLAUDE.md is deliberately not on that list: it holds universal working rules,
+not product ones, and is synced from the disk master at
+`/Users/swai/sw805206/CLAUDE.md`.
 
-## Carry-over inventory (first task of work)
+Open items are tracked in BACKLOG.md, which is authoritative for them; this
+file does not duplicate them.
 
-Before page work begins, extract from the old repo's FILES (not its docs)
-everything the new site must preserve:
+## 3. Architecture and conventions
 
-- [x] Full list of live filenames/URLs — superseded by the user's page
-      reorg (see Site structure); old URL → new URL redirect map still
-      required at inventory time (Cloudflare Redirect Rules at cutover)
-- [ ] Form endpoint URLs (Google Apps Script) from contact, intake, and
-      gated-tool pages — the endpoints are owner-managed and reused as-is
-- [ ] Blog posts: content, filenames, dates, tags
-- [ ] Hidden pages (surveys, materials) reachable by direct link — list
-      them all with a keep/kill decision each (BL-008)
-- [ ] Existing free tools and their calculator/checklist logic
-- [ ] CNAME value and any deploy-config files
-- [ ] External dependencies actually in use (fonts, chart libraries,
-      email-screening service)
+There is no separate ARCHITECTURE.md — the site is small enough that this
+section covers it. Stage 3 is the trigger to create one.
 
-The completed inventory lives in BACKLOG.md as the page checklist; each
-row is tracked to done before cutover.
+### Stack and constraints
 
-## Site structure (per user reorg, 2026-07-15; Services restructured 2026-07-20)
+- Static multi-page HTML with vanilla JS. No frameworks (no React/Vue/jQuery,
+  no Tailwind). STYLE.css is plain CSS with variables.
+- Lean dependencies; per-page CDN loads by exception only. Charting libraries
+  for tool pages are an accepted exception.
+- All internal links are RELATIVE paths, for portability.
+- Shared header and footer are served from `partials.html`, fetched per page.
+- Tools may compute and display entirely in the browser — front-end only, no
+  backend and no database. Each tool's calculation logic lives in its own JS
+  file, never inline in the page, so the math stays testable and reusable.
 
-index.html (Home); pathfinder.html, runningmate.html (service overviews);
-business-planning.html, sourcing-support.html, launch-hypercare.html,
-ongoing-management.html (service details); blogs.html (index; posts
-blog-###.html later); references.html; seminars.html, tools.html
-(built but HIDDEN UNTIL READY — the files exist and are noindexed, and
-their nav links are removed; reachable by URL only until relinked);
-about.html; contact.html; privacy.html (hidden — no nav; linked in the
-shared footer); surveys.html (hidden cover; svy###.html later);
-stylebook.html (hidden internal reference — the colour + type stylebook;
-no nav, URL only; regenerated per PROCESS.md when STYLE changes).
-Nav = Home, Services (dropdown ×6, two tiers — see below), Resources
-(dropdown: Blogs, References; Seminars and Free tools are hidden until
-ready — see above), About, Contact.
-Shared header/footer served from partials.html, fetched per page.
+### Pages
 
-Services is a two-tier dropdown in a SINGLE panel: two overview pages on
-top, a purely visual divider, then the four detail pages. The divider is
-visual only — there are no nested or expanding sub-panels, and the flat
-`.tf-has-dropdown` mechanism is reused unchanged, so the panel keeps one
-tier of behavior. Link text and targets, in panel order:
+`index.html` (Home); `business-planning.html`, `sourcing-support.html`,
+`launch-hypercare.html`, `ongoing-management.html` (services); `blogs.html`
+(index — individual posts are `blog-<slug>.html`, per BLOG.md §1);
+`references.html`; `seminars.html`; `tools.html` and its individual tool pages;
+`about.html`; `contact.html`; `privacy.html`; `surveys.html` (cover for
+individual survey pages).
 
-- Pathfinder → pathfinder.html (overview; built fresh, no old-repo source)
-- Runningmate → runningmate.html (overview; built fresh, no old-repo source)
-- *(visual divider)*
-- Plan → business-planning.html (ex-svc1)
-- Source → sourcing-support.html (ex-svc2)
-- Launch → launch-hypercare.html (ex-svc3)
-- Grow → ongoing-management.html (ex-svc4)
+`partials.html` is the source of truth for the nav, and therefore for which
+pages are publicly reachable — a page not linked there is live but unlisted. No
+doc restates it, and no doc tracks visibility separately. Its current shape is
+Home, Services (dropdown: Plan → `business-planning.html`,
+Source → `sourcing-support.html`, Launch → `launch-hypercare.html`, Grow →
+`ongoing-management.html`), Resources (dropdown: Blogs, References), About,
+Contact. Dropdowns are flat and single-tier, using the `.tf-has-dropdown`
+mechanism.
 
-The four detail pages replace the service-*.html placeholder shells by
-delete-and-build: the shells held only the shared boilerplate, so nothing
-is preserved from them. The two overview pages are new, growing the site
-by two pages. Resources, Home, About and Contact are unchanged.
+### Internal pages
 
-## Build strategy
+Internal reference pages are published to the live site so they stay
+bookmarkable from any device. They carry
+`<meta name="robots" content="noindex,nofollow">`, are linked from nowhere, and
+get NO `robots.txt` entry — a disallow would stop crawlers fetching the page
+and therefore stop them ever reading the noindex, which is the opposite of what
+is wanted.
 
-- Foundations first: colors, fonts, type scale, spacing scale, shared
-  header/footer — captured in STYLE.css before page work begins.
-- Components settled on first need: the first page needing a pattern
-  (hero, card, etc.) defines it, and it goes into STYLE.css immediately —
-  never into page-local styles. The decision is recorded in STYLE.md.
-- Later pages reuse, not reinvent. If new patterns are still appearing
-  after the first 2–3 pages, flag it — the design is drifting.
-- Reuse check before any new pattern. Before defining a new shared
-  pattern, grep the ratchet-rule record in origin/main's STYLE.md for one
-  that already does the job, and reuse it if it exists. Only a genuinely
-  new need gets a new pattern.
-- Every tier-1 page build includes a .tf-page-head header: kicker, h1,
-  intro written with the page's content, plus a header image (sourced and
-  approved via the PROCESS.md §1 image process; CSS cover-crops it in the hero
-  band) at build time. Pages may ship image-less only by explicit decision.
-- Style-system changes identified but not immediately implemented are
-  logged to BACKLOG.md — never left untracked.
-- Style changes always get their own commits, never mixed with other
-  changes (Part B).
-- The calculator MVP's computing engine lives in its own JS file from
-  day one, so a future paid app can share the same math.
-- Preview: localhost for daily work; the repo's github.io URL for
-  shareable/on-phone preview.
-- When a style change modifies a value that is quoted verbatim in another
-  governance doc (e.g. a measured y in BLOG.md's post-add check, a token value
-  referenced in a build procedure), that doc must be updated in the same commit
-  as the style change. A ratchet note in STYLE.md alone is not sufficient —
-  quoted values elsewhere go stale silently.
+This is obscurity, not privacy. Static hosting has no auth layer, so these
+pages remain publicly fetchable by anyone who knows the URL; nothing
+client-sensitive belongs on them.
 
-## Cutover — domain flip
+### Build approach
 
-Cutover happens once, when every page-checklist row is done:
+- Foundations first: colors, fonts, type scale, spacing scale, and the shared
+  header/footer live in STYLE.css.
+- Later pages reuse rather than reinvent. The reuse check and the ratchet
+  record live in STYLE.md.
+- A pattern used on two or more pages belongs in STYLE.css. A genuine one-off
+  may stay in a page-local style block, but must be built from existing tokens
+  — `var(--tf-*)`, the spacing and type scales — never raw hex or px, and it
+  gets a one-line note in STYLE.md's ratchet record so the next page that wants
+  it promotes it instead of rebuilding it. STYLE.md holds the full rule.
+- The procedure for building or adding a page lives in PROCESS.md.
 
-1. Verify the new repo renders completely on its github.io preview URL.
-2. Old repo: remove the custom domain from Pages settings.
-3. New repo: add CNAME file (www.threeflows.com) and set the custom
-   domain in Pages settings.
-4. Cloudflare DNS: verify records still point at GitHub Pages
-   (expected: no change needed); add Redirect Rules per the old→new
-   URL redirect map from the inventory.
-5. Confirm the live domain serves the new site; spot-check forms,
-   tools, and a sample of blog posts and hidden pages.
-6. Archive the old repo (read-only) as the historical record.
+### Automated checks
 
-Rollback: reverse steps 2–3 — reattach the domain to the old repo.
+A scheduled GitHub Action scans the live site for broken internal links, dead
+external links, missing images, and orphaned pages. On failure GitHub emails
+the repo owner — that email is the reminder. Findings are logged to BACKLOG.md
+by hand, through the normal Part C flush; the scan never writes backlog rows
+itself. Spelling and grammar stay manual, since automated grammar checking on
+marketing copy is mostly false positives.
 
-## Freeze policy (old site, during the build)
+Known limitation: GitHub silently disables scheduled workflows after 60 days
+without repo activity.
 
-The old site is frozen to emergency-only fixes (broken links, unusable
-pages). Every such fix is logged in this repo's BACKLOG.md as
-"re-apply in new tree" — there is no automatic sync across repos.
+### Code discipline
 
-## Open decisions
+Per CLAUDE.md Part B, which governs. Two project facts it cannot know: this
+site deploys from `main`, so Part B's protect-main rules apply in full; and the
+`feat/<stream>` worktree setup under `../threeflows-worktrees/` is retired —
+feature branches are worked in the main tree. Reinstate worktrees only if
+concurrent streams return.
 
-Tracked in BACKLOG.md (BL-004 footer buildout, BL-005 tagline, BL-007
-blog restyling depth, BL-008 hidden pages triage). BACKLOG.md is the
-authoritative tracker for open items; this section no longer duplicates
-them.
+## 4. Stage 3 (future, out of scope)
 
-## Closed decisions
-
-- Repo: `threeflows-new` (github.com/sw805206/threeflows-new); local
-  tree at /Users/swai/sw805206/threeflows-new.
-- Cutover: domain flip to this repo; old repo archived. Single big-bang
-  launch, MVP included.
-- Hosting: GitHub Pages + Cloudflare DNS, unchanged as platforms.
-- Governance: written fresh; no cross-reference to old repo docs.
-- Site structure: reorged per user (see Site structure); URL changes
-  handled via redirect map at cutover.
-- "Useful websites" renamed to "References" (references.html).
-
-## Stage 3 (future, out of scope)
-
-Paid application on its own subdomain with its own stack. Marketing site
-connects via CTA links only. Brand shared by re-declaring the same design
-tokens in the app. Triggers creation of an ARCHITECTURE.md in this repo.
+A paid application on its own subdomain with its own stack. The marketing site
+connects to it via CTA links only. Brand is shared by re-declaring the same
+design tokens in the app. This triggers the creation of an ARCHITECTURE.md in
+this repo.
