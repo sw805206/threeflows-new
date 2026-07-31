@@ -1,55 +1,55 @@
-v022 | last updated: 2026-07-29
+v023 | 2026-07-31 | 235 lines
 
 # BACKLOG.md — threeflows-new
 
 Part C backlog process (CLAUDE.md) applies. This file is the source of
 truth; items are raised in chat, held in the running block, and flushed
-here on the user's request. Also holds the page checklist and carry-over
-inventory status (per SCOPE.md).
+here on the user's request. Also holds the backlog table and the page
+inventory.
 
-**Categories:** process, feature, page, bug, governance, others
+**Categories:** process, feature, page, bug, governance, refactor, style, others
 **Status flow:** open → review → close; or park / discard.
 Code never self-closes: done items move to review; only the user closes,
 with evidence in Closed-by (PR## for code, or the user's stated reason).
 
-**Direct-to-main:** routine bookkeeping on this file — recording state on
-existing rows, and flushing the running block — is committed directly to
-main and pushed immediately, no branch or PR. Structural changes to the
-table's rules or shape need a PR like any governance change. Definitions
-of routine vs structural live in CLAUDE.md Part B → **Exception — routine
-backlog bookkeeping goes direct to main**; they are not repeated here.
+**Escaping:** a literal pipe inside an Item or Closed-by cell must be written
+as `\|`. An unescaped `|` breaks the row for int-backlog.html's parser.
+
+**Direct-to-main:** this file is a governance doc, so per CLAUDE.md Part B
+all edits are committed directly to main and pushed immediately — no
+branch, no PR.
 
 ## Backlog
 
 | ID | Status | Category | Item | Raised | Closed-by |
 |---|---|---|---|---|---|
-| BL-001 | open | process | Cutover: domain flip to this repo per SCOPE.md (verify preview → detach domain from old repo → attach CNAME + custom domain here → verify Cloudflare DNS → spot-check live → archive old repo) | 2026-07-15 | |
+| BL-001 | close | process | Cutover: domain flip to this repo per SCOPE.md (verify preview → detach domain from old repo → attach CNAME + custom domain here → verify Cloudflare DNS → spot-check live → archive old repo) | 2026-07-15 | Cutover completed 2026-07-28 (1c0021c), apex CNAME, old repo archived. Redirect layer dropped by user decision — old URLs 404 by design. |
 | BL-002 | close | governance | SCOPE.md v002: add rule "Style-system changes identified but not immediately implemented are logged to BACKLOG.md — never left untracked."; trim Open decisions now tracked here (BL-007, BL-008) | 2026-07-15 | User ratified; verified in SCOPE.md v003 (style-tracking rule + trimmed Open decisions present) |
 | BL-003 | discard | feature | Current-page nav underline affordance (ink text + 2px brick underline) — implemented in PR#1, then removed by user design decision | 2026-07-15 | User: underline removed by design decision |
-| BL-004 | open | feature | Footer buildout: decide what the minimal footer grows into (nav links, contact info, tagline) | 2026-07-15 | |
+| BL-004 | close | feature | Footer buildout: decide what the minimal footer grows into (nav links, contact info, tagline) | 2026-07-15 | User: current footer is good as an MVP; further buildout added when needed. |
 | BL-005 | open | feature | Tagline: placeholder "Beside you, start to scale" is TBD in STYLE.md — confirm or replace; placement decision held (nav ruled out; hero/footer candidates) | 2026-07-15 | |
 | BL-006 | close | process | STYLE.css foundations review: check brand package against hard constraints and foundation coverage before page builds | 2026-07-15 | OBSOLETE — precondition no longer applicable: 12+ pages are built and STYLE.css advanced v1→v013 through the ratchet process, which now serves as the ongoing audit this row described |
-| BL-007 | open | page | Blog restyling depth: full restyle vs minimal carry-over styling for old post bodies (SCOPE.md open decision) — rescoped 2026-07-16: launch trio was rewritten (moot for them); question now covers the 17 remaining carry-over posts (8 of 25 built as of 2026-07-23) | 2026-07-15 | |
+| BL-007 | close | page | Blog restyling depth: full restyle vs minimal carry-over styling for old post bodies (SCOPE.md open decision) — rescoped 2026-07-16: launch trio was rewritten (moot for them); question now covers the 17 remaining carry-over posts (8 of 25 built as of 2026-07-23) | 2026-07-15 | Answered by practice — 12 posts built under the established carry-over styling. Remaining posts are an ongoing stream, not an open decision. |
 | BL-008 | close | page | Hidden pages triage: carry all vs keep/kill per page, decided during carry-over inventory (SCOPE.md open decision) — dispositions now applied in the inventory close-out below (keeps: surveys/svy001/svy002; kills: tool-ref001/mtl001/stylebook) | 2026-07-15 | User ratified; dispositions applied in inventory close-out (BACKLOG §B/§E) |
-| BL-009 | open | page | Tool URL scheme + tool page rebuild phase; logic moves to separate JS files per SCOPE | 2026-07-15 | |
-| BL-010 | open | page | Placeholder mentions currently plain text — blog-001: "our seminars page"/"our home page"/"our about page"; blog-002 & blog-003: "Contact us"; disposition per post is a user content decision (linkify, leave, or drop) once target pages have content | 2026-07-16 | |
+| BL-009 | open | page | QUESTION: how should tool pages be named and listed once there is more than one tool? With a single tool a manifest is premature. — Tool URL scheme + tool page rebuild phase; logic moves to separate JS files per SCOPE | 2026-07-15 | |
+| BL-010 | close | page | Placeholder mentions currently plain text — blog-001: "our seminars page"/"our home page"/"our about page"; blog-002 & blog-003: "Contact us"; disposition per post is a user content decision (linkify, leave, or drop) once target pages have content | 2026-07-16 | User: leave placeholder mentions as plain text. Row also predates the slug filename scheme. |
 | BL-011 | close | governance | No-italics rule: STYLE.md rule + 4 em/i converted + defensive .tf-prose normalization — user-ratified, closes with style commit as evidence | 2026-07-16 | User ratified; no-italics rule shipped in style commit ec340df |
-| BL-012 | open | feature | Deferred blog body patterns — define on first post needing each, per ratchet. **2 of 4 SHIPPED (2026-07-23):** `.tf-prose-table` shipped (STYLE.css v7, in use on 3 pages) and `.tf-callout` shipped (first live use on business-planning, in use on 4 pages). **REMAINING 2:** `.tf-stat-grid` — CSS exists in STYLE.css but has 0 consumers, still awaiting first use; `.tf-disclaimer` — never defined, no CSS and no consumers | 2026-07-16 | |
+| BL-012 | close | feature | Deferred blog body patterns — define on first post needing each, per ratchet. **2 of 4 SHIPPED (2026-07-23):** `.tf-prose-table` shipped (STYLE.css v7, in use on 3 pages) and `.tf-callout` shipped (first live use on business-planning, in use on 4 pages). **REMAINING 2:** `.tf-stat-grid` — CSS exists in STYLE.css but has 0 consumers, still awaiting first use; `.tf-disclaimer` — never defined, no CSS and no consumers | 2026-07-16 | Remaining two patterns are governed by STYLE.md's ratchet — defined on first need. Row duplicates that process. |
 | BL-013 | close | process | Sitewide image process: repo-local assets, slots as CSS patterns on first use, Code processes/wires, optional manifest image field; rail slot (3:2) built — remainder pending first real images; document with add-a-post process | 2026-07-16 | User ratified 2026-07-18; process documented in BLOG.md §7 (af77d54) — external master /Users/swai/Images, disposable src/preview, post-merge purge |
 | BL-014 | close | governance | Inventory reconciliation in BACKLOG.md: §B redirect map rewritten for slug scheme (all 25 posts need old→new redirects, identity rows void); §D header note (table = old repo as-found; new-site truth is bloglist.json) + note blog-002 retitle and blog-003 re-date divergences. **PROGRESS 2026-07-23:** both halves actioned — §B's void identity row replaced with 25 enumerated old blog URLs, and the §D header note added (old-repo-as-found vs `bloglist.json` as new truth, incl. the blogID RENUMBERING discovered during the rewrite, plus the blog-002 retitle and blog-003 re-date). Mapping was derived by title+date, not blogID, since the manifest renumbers IDs. **RESOLVED 2026-07-23:** 8 of 25 posts are carried and mapped to their real slug page; the other 17 have no slug page and each took an interim redirect (assumed) → `blogs.html` per the §B idiom, retargeting to the real slug when that post is carried over under BL-007. No old blog URL is left unmapped | 2026-07-16 | User ratified; §B slug map + §D header note in 5762360, interim redirects for the 17 uncarried in aae850a |
 | BL-015 | close | process | Add-a-post process doc: manifest schema (5 fields + optional image/related), slug convention, MD→HTML conversion rules (no-italics → strong, placeholders plain), title ≤2-line / recap ≤3-line budgets + line-count check at post-add, image workflow, title-suffix rule | 2026-07-16 | Shipped as BLOG.md (17997bf); refined 58d59df, af77d54 |
 | BL-016 | close | page | blogs.html index build: consume manifest, card kit first use, published-only, date-descending, thumbnails from image field | 2026-07-16 | e337c40 (matches §A latest-substantive) |
-| BL-017 | open | feature | Related-articles: optional `related` field (blogID array) in bloglist.json, rendered block at post end | 2026-07-16 | |
+| BL-017 | open | feature | QUESTION: should a blog post end with links to related posts? — Related-articles: optional `related` field (blogID array) in bloglist.json, rendered block at post end | 2026-07-16 | |
 | BL-018 | close | bug | Reading-time scope (BLOG.md §6 / blog.js) counts non-prose text: any inline `<style>`/`<script>` inside `.tf-prose`, plus in-figure UI labels, are tallied as words. Surfaced on blog-007, where the placement-map component inflated the count 1415->1908 (+35%, 7 min shown as 9). Worked around there by moving the component's style/script outside `.tf-prose`; the durable fix is to exclude `style, script` from the clone in blog.js and record it in §6. **REVIEW 2026-07-23:** blog.js half done — `style, script` added to the skip list (branch `fix/reading-time-exclusions`, e073d41); measured with the shipped selector against blog-007's component inside `.tf-prose`: 1913 words / 9 min → 1516 / 7 min, and all 8 published posts verified unchanged (none currently has style/script inside `.tf-prose`). **§6 half shipped 2026-07-23:** BLOG.md §6 (v005) now states the shipped selector verbatim — "EXCLUDING h1, .tf-meta, .tf-post-topnav, style, script" — with the reason recorded (textContent returns their source). Documented scope verified character-identical to the shipped selector. Both halves complete | 2026-07-18 | User ratified (backlog sweep); code fix PR #40 (e073d41), §6 doc PR #41 (ff9ef9c) |
 | BL-019 | close | governance | BLOG.md §7 hero alt-text exception undocumented: §7 mandates descriptive, user-approved alt for post images, but a page HERO renders through a CSS `background-image` (`--tf-page-head-img`) and structurally CANNOT carry alt at all. references.html's hero has none — the hero is decorative and the h1 is the accessible heading. As written, every hero reads as non-compliant with §7. Record it in §7 as an explicit, sanctioned exception (decorative hero → no alt, h1 carries the heading), so the rule's silence isn't mistaken for an oversight. **REVIEW 2026-07-23:** documented in BLOG.md §7's new "Page heroes" subsection (v004, PR #39 / a45fd05) — behavior unchanged, this records existing shipped practice | 2026-07-19 | User ratified; shipped in PR #39 (a45fd05) |
 | BL-020 | close | governance | BLOG.md §7 step 4 naming + wiring are post-only: it directs promotion to `assets/images/<slug>.jpg` "matching the post slug" and to "wire the manifest (`image` + `imageAlt`)" — a page hero has neither a post slug nor a manifest. Shipped precedent (references.jpg → `assets/images/references.jpg`, wired inline as `style="--tf-page-head-img: url(...)"`) is unwritten, so the hero path gets improvised each time. Specify it in §7: bare page-name.jpg + inline custom property. Dimensions need no hero-specific target — references.jpg measures 1200x800 3:2, identical to §7's existing preview spec. **REVIEW 2026-07-23:** documented in BLOG.md §7's new "Page heroes" subsection (v004, PR #39 / a45fd05) — behavior unchanged, this records existing shipped practice | 2026-07-19 | User ratified; shipped in PR #39 (a45fd05) |
 | BL-021 | close | style | Footer color reconciliation with Claude Design: ground and link ratified as color-mix derived tokens (ground = ink 75% + stone; link = brick-on-ink 45% + paper), provisional flags cleared, stone-bar contrast resolved (~4.3:1), §2 palette rule corrected to reflect the four inks + scoped exceptions + existing data palette. Recorded in STYLE.md §6 | 2026-07-20 | User ratified; shipped in PR #26 (16f0598) |
-| BL-022 | open | feature | Review `--tf-footer-ground` against a real CTA band. **BLOCKER CLEARED 2026-07-23:** `.tf-cta` now ships LIVE on all four service pages (business-planning, sourcing-support, launch-hypercare, ongoing-management), so the CTA-above-footer stacking the token was designed for is real and on-screen — the row is actionable now. Verify the ink CTA band and the warm-stone footer ground read as two distinct bands (separated on TONE alone, no seam or hairline) on a live page | 2026-07-20 | |
-| BL-023 | open | page | Ship the Services two-tier nav rewrite in partials.html. SCOPE.md describes the six-link structure (Pathfinder, Runningmate, divider, then business-planning / sourcing-support / launch-hypercare / ongoing-management) and `.tf-dropdown-divider` exists in STYLE.css. **PARTIALLY DONE:** the nav now points at the four DETAIL pages with SCOPE's short labels (Plan / Source / Launch / Grow), which un-orphans them, and the four superseded `service-*.html` shells were deleted with §B redirects added. **STILL PENDING (why this stays open):** the TWO-TIER structure — the Pathfinder + Runningmate overview tier and the `.tf-dropdown-divider` between the tiers — is deferred because `pathfinder.html` and `runningmate.html` do not exist yet; the panel remains ONE flat tier until they are built | 2026-07-20 | |
+| BL-022 | open | feature | QUESTION: on the home page, do the dark CTA band and the warm-stone footer beneath it read as two distinct bands, or do they blur together? — Review `--tf-footer-ground` against a real CTA band. **PREMISE CORRECTED 2026-07-31:** the 2026-07-23 "blocker cleared" claim — that `.tf-cta` ships live on all four service pages — was **superseded by BL-026**, which records the CTA band's removal from those pages. `.tf-cta` now survives only on **index.html band 7**; the four service pages carry `.tf-cta-inline`, a different pattern (verified by grep 2026-07-31). Verify the ink CTA band and the warm-stone footer ground read as two distinct bands (separated on TONE alone, no seam or hairline) on index.html | 2026-07-20 | |
+| BL-023 | close | page | Ship the Services two-tier nav rewrite in partials.html. SCOPE.md describes the six-link structure (Pathfinder, Runningmate, divider, then business-planning / sourcing-support / launch-hypercare / ongoing-management) and `.tf-dropdown-divider` exists in STYLE.css. **PARTIALLY DONE:** the nav now points at the four DETAIL pages with SCOPE's short labels (Plan / Source / Launch / Grow), which un-orphans them, and the four superseded `service-*.html` shells were deleted with §B redirects added. **STILL PENDING (why this stays open):** the TWO-TIER structure — the Pathfinder + Runningmate overview tier and the `.tf-dropdown-divider` between the tiers — is deferred because `pathfinder.html` and `runningmate.html` do not exist yet; the panel remains ONE flat tier until they are built | 2026-07-20 | Dropped by decision, not deferred: the two overview pages are not being built. Pathfinder and Runningmate remain as program brand names. |
 | BL-024 | close | refactor | 22 shell pages carry the partials-injection script inline in 3 near-identical variants (13/8/1) — copy-pasted duplication. Centralize into a single `assets/partials.js` loaded via `<script src>`, so injection logic (and future needs like footer auto-year) live in one place. Surfaced by the © line task. **Review:** centralized in `assets/partials.js`; all 22 inline copies removed and replaced with `<script src="assets/partials.js" defer></script>`. The 3 variants were verified byte-identical after normalizing comments/whitespace, so V1 (fully commented) was adopted verbatim — behavior unchanged. All 22 pages verified on localhost (inject, aria-current, dropdowns incl. Esc/outside-click/resize-crossing, hamburger). Branch `refactor/partials-js` | 2026-07-20 | User ratified; shipped in PR #38 (0d91e2d) |
 | BL-025 | open | feature | `.tf-flow` orphaned sitewide by the service-detail redesign — the numbered engage band is deleted from all four service pages, its only HTML consumers (verified by grep). CSS retained per the `.tf-stat-grid` precedent in BL-012. `.tf-flow-label` / `.tf-flow-note` survive; `.tf-service-track` reuses them. Disposition open: keep as a paper-ground pattern awaiting first reuse, or remove. | 2026-07-26 | |
 | BL-026 | open | feature | `.tf-btn-secondary` and the scoped `.tf-cta .tf-btn-secondary` override orphaned by the CTA band's removal from the four service pages, its only HTML consumers (verified by grep). `--tf-ink-raised` exists solely for that override. `.tf-cta` itself survives on index.html band 7. Disposition open. | 2026-07-26 | |
-| BL-027 | review | page | `tool-company-setup.html` built — the first tool under the hidden `tools.html` (a single hand-linked card added there; BL-009's manifest/TOOLS.md scheme stays open, deferred by explicit human decision). New STYLE.css/STYLE.md patterns: the choice (radio-pill) kit, the data table, the fit-dot indicator, `.tf-panel-head`, and the site's first print stylesheet (STYLE.md v036, STYLE.css v040, §6 "Company setup tool"). Branch `feat/tool-company-setup` | 2026-07-29 | |
+| BL-027 | close | page | `tool-company-setup.html` built — the first tool under the hidden `tools.html` (a single hand-linked card added there; BL-009's manifest/TOOLS.md scheme stays open, deferred by explicit human decision). New STYLE.css/STYLE.md patterns: the choice (radio-pill) kit, the data table, the fit-dot indicator, `.tf-panel-head`, and the site's first print stylesheet (STYLE.md v036, STYLE.css v040, §6 "Company setup tool"). Branch `feat/tool-company-setup` | 2026-07-29 | User ratified — tool-company-setup.html shipped. |
 
 ## Inventory / page checklist
 
@@ -59,6 +59,13 @@ governance docs were not read. Mappings follow SCOPE.md → Site structure.
 The user's close-out decisions have now been applied throughout (redirect map
 finalized, keep/kill assigned); items still needing confirmation are listed in
 section I.
+
+**Removed 2026-07-31 (v023):** §B (URL redirect map) and §D (Blog posts — old
+repo as-found) were deleted in full. Both described old-site pages only: no
+redirects are being implemented (old URLs 404 by design, see BL-001), and
+`bloglist.json` is the source of truth for this site's posts. Git history
+retains both. Rows that cite §B or §D — notably **BL-014** — are left unchanged
+as historical record; this note is where those citations now lead.
 
 ### A. Page checklist (new pages to build)
 
@@ -100,87 +107,6 @@ exception), not a structural change.
 | blog-&lt;slug&gt;.html (posts) | blog-001…024 incl. 010a/010b (25 posts) — the new repo ships **slug filenames** per BLOG.md §1 (e.g. `blog-welcome-to-three-flows.html`); `blog-###` survives only as the manifest key (`blogID`). Slug scheme for the §B redirect map tracked in BL-014. **8 of 25 built** (verified on disk 2026-07-23) | open | |
 | Calculator MVP page (filename TBD) | no old-repo source — the SCOPE MVP page, built fresh; deferred/placeholder until built. Added so the cutover gate counts it | open | |
 
-### B. URL redirect map (old → new — Cloudflare Redirect Rules input at cutover)
-
-Finalized per the user's close-out decisions for the non-blog URLs. Rows marked
-**interim redirect (assumed)** are the assumed "nothing 404s" redirects the user
-will confirm at review.
-
-**Blog rows corrected 2026-07-23 (BL-014).** The former single row mapped
-`blog-001…024 → blog-###.html` as "identity — no redirect needed". That was
-VOID: the new repo ships **slug filenames**, so every one of those old URLs would
-have 404'd at cutover. The 25 old blog URLs are now enumerated individually.
-Mapping was derived from `bloglist.json` + disk by matching **title and date** —
-NOT by `blogID`, because the new manifest **renumbers** blogIDs (e.g. old
-`blog-011` is manifest `blog-005`), so blogID is not a carry-over key.
-**8 of 25 are carried** and mapped to their real slug page. The other **17 are NOT
-CARRIED** (no slug page exists yet); per the user's decision of 2026-07-23 each takes
-an **interim redirect (assumed) → `blogs.html`**, following this section's existing
-idiom, so nothing 404s at cutover. Each is INTERIM, not final: when its post is
-carried over under BL-007, that row retargets from `blogs.html` to the post's real
-slug page. No old blog URL is left unmapped.
-
-| Old URL | Destination | Note |
-|---|---|---|
-| index.html | index.html | identity |
-| about.html | about.html | identity |
-| contact.html | contact.html | identity (contact built fresh — new form + new endpoint) |
-| privacy.html | privacy.html | identity (hidden; footer link) |
-| surveys.html | surveys.html | identity (hidden cover; kept, redesigned later) |
-| blog.html | blogs.html | redirect |
-| blog-001.html | blog-welcome-to-three-flows.html | redirect — CARRIED (matched on title + date 2025-03-05) |
-| blog-002.html | blog-cut-import-costs.html | redirect — CARRIED (date 2025-04-29 matches; RETITLED, the §D-flagged blog-002 divergence) |
-| blog-003.html | blog-factory-data.html | redirect — CARRIED (title matches; RE-DATED 2025-06-09 → 2025-05-21, the §D-flagged blog-003 divergence) |
-| blog-004.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Navigating the US-China Tariff War" has no slug page; retargets to its real slug page when that post is carried over (BL-007) |
-| blog-005.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Why Data Integrity Is the Foundation…"; retargets to its real slug page when that post is carried over (BL-007) |
-| blog-006.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Is FedEx's 2026 Rate Increase Really Just 5.9%?"; retargets to its real slug page when that post is carried over (BL-007) |
-| blog-007.html | blog-warehouse-placement-case-study.html | redirect — CARRIED (distinctive title match; re-dated 2025-11-17 → 2025-09-22) |
-| blog-008.html | blog-unit-economics-2-vs-20.html | rewrite of old blog-008 (reframed as "Is a $2 or a $20 Product Better for Your Business?" = blog-009); shipped 2025-11-15 |
-| blog-009.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Why Your Whatnot Livestream Needs a Sell-Through Model…"; retargets to its real slug page when that post is carried over (BL-007) |
-| blog-010a.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Dedicated 3PL Service Can Cost $23.33 Per Order…"; retargets to its real slug page when that post is carried over (BL-007) |
-| blog-010b.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "The Fifth M: Why Measurement…"; retargets to its real slug page when that post is carried over (BL-007) |
-| blog-011.html | blog-obbba-business-provisions.html | redirect — CARRIED (exact title + exact date 2025-07-06); NB new manifest renumbers this as blogID blog-005 |
-| blog-012.html | blog-amazon-two-new-policies.html | redirect — CARRIED (exact title + exact date 2025-08-04); NB new manifest renumbers this as blogID blog-006 |
-| blog-013.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Which Marketplace Actually Costs Less?…"; retargets to its real slug page when that post is carried over (BL-007) |
-| blog-014.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Inside Amazon's Supply Chain…"; retargets to its real slug page when that post is carried over (BL-007) |
-| blog-015.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "How Amazon Built a Global Logistics Network…"; retargets to its real slug page when that post is carried over (BL-007) |
-| blog-016.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "The Little Red Button…"; retargets to its real slug page when that post is carried over (BL-007) |
-| blog-017.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Amazon's US Warehouse Network…"; retargets to its real slug page when that post is carried over (BL-007) |
-| blog-018.html | blog-amazon-inbound.html | redirect — CARRIED (Amazon-inbound topic match, title reworded); NB new manifest renumbers this as blogID blog-004 |
-| blog-019.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "From Shelf to Doorstep…"; retargets to its real slug page when that post is carried over (BL-007) |
-| blog-020.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "The Culture That Built Amazon…"; retargets to its real slug page when that post is carried over (BL-007) |
-| blog-021.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Test Before You List…"; retargets to its real slug page when that post is carried over (BL-007) |
-| blog-022.html | blog-cashflow-vs-unit-economics.html | rewrite of old blog-022 (reframed as "Cashflow: What Unit Economics Doesn't Tell You" = blog-010); shipped 2025-12-28 |
-| blog-023.html | blog-sourcing-strategy-2x2.html | redirect — CARRIED (near-identical title); NB new manifest renumbers this as blogID blog-008 |
-| blog-024.html | blogs.html | interim redirect (assumed) — NOT CARRIED: "Last-Mile Shipping Rates Explained…"; retargets to its real slug page when that post is carried over (BL-007) |
-| svc1.html | business-planning.html | redirect (retargeted from the `service-planning.html` shell, deleted at the nav rewrite) |
-| svc2.html | sourcing-support.html | redirect (retargeted from the `service-sourcing.html` shell, deleted at the nav rewrite) |
-| svc3.html | launch-hypercare.html | redirect (retargeted from the `service-launch.html` shell, deleted at the nav rewrite) |
-| svc4.html | ongoing-management.html | redirect (retargeted from the `service-management.html` shell, deleted at the nav rewrite) |
-| service-planning.html | business-planning.html | redirect — interim PR#1 shell filename, DELETED at the nav rewrite; mapped so any bookmarked preview URL still resolves |
-| service-sourcing.html | sourcing-support.html | redirect — interim PR#1 shell filename, DELETED at the nav rewrite; mapped so any bookmarked preview URL still resolves |
-| service-launch.html | launch-hypercare.html | redirect — interim PR#1 shell filename, DELETED at the nav rewrite; mapped so any bookmarked preview URL still resolves |
-| service-management.html | ongoing-management.html | redirect — interim PR#1 shell filename, DELETED at the nav rewrite; mapped so any bookmarked preview URL still resolves |
-| useful-websites.html | references.html | redirect |
-| webinars.html | seminars.html | redirect |
-| livestream.html | seminars.html | redirect (folded into seminars) |
-| free-tools.html | tools.html | redirect |
-| inquiry.html | contact.html | redirect (old inquiry endpoint not carried) |
-| intake.html | contact.html | redirect (old intake endpoint not carried) |
-| svy001.html | svy001.html | identity (KEPT, hidden; redesigned later; endpoint carried) |
-| svy002.html | svy002.html | identity (KEPT, hidden; redesigned later; endpoint carried) |
-| tool-ca001, ca002, ck001–004 (6 pages) | tools.html | interim redirect (assumed) — pages deferred to tool-redesign phase (BL-009) |
-| tool-ref001.html | tools.html | **KILLED** (conscious drop) + interim redirect (assumed) |
-| mtl001.html | index.html | **KILLED** (conscious drop) + interim redirect (assumed) |
-| stylebook.html | index.html | **KILLED** (conscious drop) + interim redirect (assumed) |
-| blog-000-template.html | — | dev scaffold — not carried; not linked, no redirect |
-| tool-ca000-template.html | — | dev scaffold — not carried; not linked, no redirect |
-| tool-ck000-template.html | — | dev scaffold — not carried; not linked, no redirect |
-| partials.html | (infrastructure) | shared chrome fragment, not a page; new repo has its own partials.html |
-
-Conscious drops (recorded): **tool-ref001, mtl001.html, stylebook.html** — killed,
-each with an interim redirect so nothing 404s at cutover.
-
 ### C. Form endpoints (Google Apps Script — owner-managed, reused as-is)
 
 | Endpoint `…/macros/s/<id>/exec` | Posts from | Carried? |
@@ -193,68 +119,6 @@ each with an interim redirect so nothing 404s at cutover.
 
 **contact.html** is built fresh with a **new form + new endpoint** (to be created);
 the old inquiry/intake endpoints (D/E above) are not carried.
-
-### D. Blog posts (bloglist.json + files)
-
-**HEADER NOTE (BL-014, 2026-07-23) — this table is the OLD REPO AS-FOUND, not the
-new site.** It is a historical inventory captured read-only on 2026-07-15 and is
-NOT updated as the new site is built. **The new site's source of truth is
-`bloglist.json`**, which currently holds **8 published posts** (verified against
-disk: 8/8, no manifest entry without a file and no file without an entry). Do not
-read the 25 rows below as the new site's contents.
-
-Known divergences between this old table and the new manifest:
-- **blogIDs are RENUMBERED.** The new manifest assigns `blog-001…008` in new
-  publication order; they do NOT correspond to the old IDs below. Old `blog-011` is
-  manifest `blog-005`, old `blog-012` is `blog-006`, old `blog-018` is `blog-004`,
-  old `blog-023` is `blog-008`. Old→new mapping therefore matches on **title/date**,
-  never on blogID — see the §B blog rows.
-- **blog-002 RETITLED** — "How to Legally Cut Import Costs by Up to 48%…" →
-  "Four Ways to Cut Your Import Cost in a Tariff War" (date unchanged).
-- **blog-003 RE-DATED** — 2025-06-09 → 2025-05-21 (title reworded).
-- Several carried posts were re-dated on the new site (007, 018, 023).
-
-The 25-row table below is retained as-found for redirect derivation and audit.
-
-25 posts in the OLD repo, all `status: published`. One template on disk
-(`blog-000-template.html`) was not in the old manifest (expected).
-
-| ID | file | date | status | primary | secondary | title |
-|---|---|---|---|---|---|---|
-| blog-001 | blog-001.html | 2025-03-05 | published | Others | — | Welcome to Three Flows Solutions: Where Education Meets Execution |
-| blog-002 | blog-002.html | 2025-04-29 | published | Source | Compliance | How to Legally Cut Import Costs by Up to 48%: Export Rebates and First Sale Explained |
-| blog-003 | blog-003.html | 2025-06-09 | published | Source | Data | Factory Data Problems Are Costing You More Than You Think |
-| blog-004 | blog-004.html | 2025-05-12 | published | Source | Compliance | Navigating the US-China Tariff War: Supply Chain Strategies That Actually Work |
-| blog-005 | blog-005.html | 2025-07-07 | published | Data | Source | Why Data Integrity Is the Foundation of a Scalable Supply Chain |
-| blog-006 | blog-006.html | 2025-07-21 | published | Scale | Data | Is FedEx's 2026 Rate Increase Really Just 5.9%? |
-| blog-007 | blog-007.html | 2025-11-17 | published | Scale | Plan, Data | Where Should Your Third US Warehouse Be? |
-| blog-008 | blog-008.html | 2026-02-09 | published | Plan | Source | Is a $1.40 Product Worth Selling in the US? → carried as blog-009 |
-| blog-009 | blog-009.html | 2026-02-02 | published | Launch | Data | Why Your Whatnot Livestream Needs a Sell-Through Model Before You Go Live |
-| blog-010a | blog-010a.html | 2025-06-05 | published | Launch | Data, Setup, Scale | Dedicated 3PL Service Can Cost $23.33 Per Order — or $5.71. The Difference Is How You Set It Up. |
-| blog-010b | blog-010b.html | 2025-06-08 | published | Scale | Data | The Fifth M: Why Measurement Is the One That Makes All the Others Work |
-| blog-011 | blog-011.html | 2025-07-06 | published | Others | Plan | What the One Big Beautiful Bill Means for Your Business |
-| blog-012 | blog-012.html | 2025-08-04 | published | Scale | Launch | Amazon's Two New Policies: What They Mean for Sellers |
-| blog-013 | blog-013.html | 2026-02-25 | published | Plan | Launch, Setup | Which Marketplace Actually Costs Less? A 2026 Fee Breakdown |
-| blog-014 | blog-014.html | 2025-12-05 | published | Others | — | Inside Amazon's Supply Chain: A View from the Inside |
-| blog-015 | blog-015.html | 2025-12-22 | published | Others | — | How Amazon Built a Global Logistics Network from Scratch |
-| blog-016 | blog-016.html | 2026-01-12 | published | Others | — | The Little Red Button: What Happens to Amazon When a Blizzard Hits |
-| blog-017 | blog-017.html | 2026-01-28 | published | Others | — | Amazon's US Warehouse Network: How 200+ Fulfillment Centers Actually Work |
-| blog-018 | blog-018.html | 2026-02-16 | published | Others | Scale | Getting Into Amazon's Warehouse: The Inbound Process Every FBA Seller Should Know |
-| blog-019 | blog-019.html | 2026-04-11 | published | Others | — | From Shelf to Doorstep: Inside Amazon's Fulfillment Center Operations |
-| blog-020 | blog-020.html | 2026-04-25 | published | Others | — | The Culture That Built Amazon: Leadership Principles, Bar Raisers, and What It Really Takes |
-| blog-021 | blog-021.html | 2026-05-03 | published | Plan | Source, Launch | Test Before You List: The Case for Pre-Launch Market Research |
-| blog-022 | blog-022.html | 2026-05-20 | published | Plan | Data | Cashflow: Your Unit Economics Over a Time Horizon → carried as blog-010 |
-| blog-023 | blog-023.html | 2026-03-25 | published | Plan | Source | Make or Buy? Local or Overseas? How to Think Through Your Sourcing Strategy |
-| blog-024 | blog-024.html | 2026-06-03 | published | Source, Data | Launch, Scale, Setup | Last-Mile Shipping Rates Explained: UPS vs FedEx vs USPS (2026) |
-
-**Flags:**
-- **blog-010a / blog-010b** — the "010" slot is a *pair* of distinct published
-  posts; there is no bare `blog-010.html`. Both are in the manifest and on disk.
-- **blogIDs are not chronological** — dates for 004, 009, 010a, 014, 023 fall
-  earlier than the preceding ID. The index presumably sorts by the `date` field,
-  not by ID. Not a defect; flagged for awareness.
-- Primary/secondary tag vocabulary in use: Plan, Source, Launch, Scale, Setup,
-  Data, Compliance, Others (carry into the new blog's tag system).
 
 ### E. Hidden pages (not in the old nav)
 
@@ -281,6 +145,12 @@ Note: blog posts and individual tool pages are reachable via their in-nav
 indexes (blog.html / free-tools.html), so they are not "hidden" — but their
 carry-over and URLs still need decisions (see B, D, F).
 
+**Note (2026-07-31):** the `stylebook.html` listed above is the **OLD repo's**
+page, killed at carry-over. It is a different artifact from this repo's live
+`int-stylebook.html` (renamed from `stylebook.html` in PR #90), which is
+published, `noindex`, and maintained per PROCESS.md §4. The dispositions above
+are left as the historical record of the old site.
+
 ### F. Free tools
 
 **Decision:** `tools.html` shell stands. The 6 live tool pages are **deferred to a
@@ -303,9 +173,10 @@ calculators use no chart library (pure inline JS).
 
 ### G. Deploy config
 
-- **CNAME** = `threeflows.com` (apex). Old file is apex; SCOPE cutover step 3 says
-  `www.threeflows.com`. **Status: pending Cloudflare verification (apex vs www)** —
-  blocks the cutover step only; nothing to do now.
+- **CNAME** = `threeflows.com` (apex). **RESOLVED at cutover 2026-07-28 in favour
+  of the APEX** — the committed CNAME file reads `threeflows.com` and is correct
+  as-is. SCOPE cutover step 3's `www.threeflows.com` was the stale side. No CNAME
+  edit is needed and nothing here is pending.
 - **No `.nojekyll`** file (GitHub Pages runs Jekyll; the site is plain `.html` so
   it likely renders fine, but the new repo may want `.nojekyll` to be safe).
 - `.gitattributes` (eol=lf normalization) and `.gitignore` (.DS_Store, .claude/,
@@ -344,6 +215,9 @@ blog-008/009 (charts) pull JS libs; the calculators use none. Repo-local assets
   logic moves to separate JS files per SCOPE; interim redirects → tools.html.
 - **tool-ref001, mtl001.html, stylebook.html** → **KILLED** (conscious drops),
   each with an interim redirect (ref001/tools.html; mtl001 & stylebook → index.html).
+  (**Note 2026-07-31:** these are **OLD repo** pages. The `stylebook.html` here is
+  not this repo's live `int-stylebook.html` — see the note under §E. The interim
+  redirects were never implemented; old URLs 404 by design, see BL-001.)
 - **surveys.html, svy001, svy002** → **KEPT** (redesigned later; existing Apps
   Script endpoints carried as-is).
 - **Dev templates** (blog-000, tool-ca000, tool-ck000) → not carried; unlinked, no
