@@ -1,4 +1,4 @@
-v024 | 2026-07-31 | 237 lines
+v025 | 2026-07-31 | 235 lines
 
 # BACKLOG.md — threeflows-new
 
@@ -84,9 +84,7 @@ git carries the full history and the row does not duplicate it. **Substantive** 
 a change to what the page PRESENTS or how it is BUILT (a new section, a
 layout/pattern change, a migration); typo, copy and whitespace fixes are not, and
 leave the SHA alone. The page **stays `close`** — a material change did not
-un-build it — so only the evidence moves, never the status. Updating a Closed-by
-SHA under this rule is ROUTINE bookkeeping (direct-to-main per the PR#10
-exception), not a structural change.
+un-build it — so only the evidence moves, never the status.
 
 | New page | Source old page(s) / notes | Status | Closed-by |
 |---|---|---|---|
@@ -225,13 +223,13 @@ blog-008/009 (charts) pull JS libs; the calculators use none. Repo-local assets
   redirect.
 
 **Remaining / to confirm:**
-1. **Interim redirects marked "(assumed)"** — the "nothing 404s" redirects for the
-   old tool pages, tool-ref001, mtl001, and stylebook are assumptions the user is
-   to confirm at this review.
+1. **Interim redirects** — **DROPPED, not pending.** No redirect layer is being
+   implemented: old URLs 404 by decision (see BL-001), so the "(assumed)" targets
+   never needed confirming. The §B map that carried them was deleted in v023.
 2. **contact.html new endpoint** — the fresh form needs a new endpoint created
    (owner-managed), replacing the dropped inquiry/intake endpoints.
-3. **CNAME apex vs www** — pending Cloudflare verification; blocks the cutover step
-   only.
+3. **CNAME apex vs www** — **RESOLVED at cutover 2026-07-28 in favour of the
+   apex.** Nothing pending; see §G for the detail.
 4. **Awareness (no decision needed):** blog-010a/010b pair and non-chronological
    blog IDs (old-repo numbering; §D removed in v023 — `bloglist.json` is now the
    source of truth for this site's posts).
