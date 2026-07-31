@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Internal page: published so it stays bookmarkable, linked from nowhere.
+       noindex,nofollow and NO robots.txt entry — a disallow would stop crawlers
+       fetching the page and therefore stop them ever reading this tag
+       (SCOPE.md → Internal pages). -->
+  <meta name="robots" content="noindex,nofollow">
+  <title>Backlog viewer — Three Flows Solutions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+  <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+
+  <!-- Backlog-viewer LAYOUT only. Standalone by design: no partials.html fetch,
+       no site header/footer. Every colour is derived from a live --tf-* token —
+       no raw hex, and no raw px where a token exists.
+
+       STATUS COLOURS ARE DELIBERATELY NOT .tf-pill-tint-*. Those six tints are
+       mapped to content tags (Plan · Source · Launch · Scale · Collab); reusing
+       them for status would give one visual vocabulary two meanings. These are
+       derived mixes off the core inks instead — the same color-mix idiom
+       STYLE.css uses for --tf-cream and --tf-footer-ground — so status reads as
+       its own scale: brick = needs action, fading to stone = settled. -->
+  <style>
+    .bk-wrap { max-width: 1280px; margin: 0 auto; padding: var(--tf-space-6) var(--tf-space-4) var(--tf-space-8); }
+
+    .bk-kicker { font-family: var(--tf-font-body); font-size: var(--tf-text-xs); font-weight: 700;
+                 letter-spacing: 0.12em; text-transform: uppercase; color: var(--tf-brick); margin-bottom: var(--tf-space-1); }
+    .bk-title { margin: 0 0 var(--tf-space-1); }
+    .bk-stamp { font-family: var(--tf-font-body); font-size: var(--tf-text-sm); color: var(--tf-ink-soft); margin: 0 0 var(--tf-space-4); }
+    .bk-stamp code { font-size: var(--tf-text-sm); }
+
+    /* Controls */
+    .bk-controls { border: var(--tf-rule-light); border-radius: 4px; padding: var(--tf-space-3);
+                   margin-bottom: var(--tf-space-4); background: var(--tf-sand-wash); }
+    .bk-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--tf-space-2); margin-bottom: var(--tf-space-2); }
+    .bk-row:last-child { margin-bottom: 0; }
+    .bk-label { font-family: var(--tf-font-body); font-size: var(--tf-text-xs); font-weight: 700;
+                letter-spacing: 0.08em; text-transform: uppercase; color: var(--tf-ink-soft); min-width: 74px; }
+
+    .bk-chip { font-family: var(--tf-font-body); font-size: var(--tf-text-sm); line-height: 1;
+               padding: var(--tf-space-1) var(--tf-space-2); border: var(--tf-rule-light); border-radius: 999px;
+               background: var(--tf-paper); color: var(--tf-ink); cursor: pointer; }
+    .bk-chip:hover { background: var(--tf-cream); }
+    .bk-chip[aria-pressed="true"] { background: var(--tf-ink); color: var(--tf-paper); border-color: var(--tf-ink); }
+    .bk-chip-count { opacity: 0.65; margin-left: 6px; }
+
+    .bk-search { font-family: var(--tf-font-body); font-size: var(--tf-text-sm); color: var(--tf-ink);
+                 padding: var(--tf-space-1) var(--tf-space-2); border: var(--tf-rule-light); border-radius: 4px;
+                 background: var(--tf-paper); min-width: 260px; flex: 1 1 260px; }
+    .bk-reset { font-family: var(--tf-font-body); font-size: var(--tf-text-sm); background: none;
+                border: none; color: var(--tf-brick); cursor: pointer; padding: var(--tf-space-1); }
+
+    .bk-tally { font-family: var(--tf-font-body); font-size: var(--tf-text-sm); color: var(--tf-ink-soft);
+                margin: 0 0 var(--tf-space-2); }
+    .bk-tally strong { color: var(--tf-ink); }
+
+    /* Table */
+    .bk-scroll { overflow-x: auto; border: var(--tf-rule-light); border-radius: 4px; }
+    .bk-table { width: 100%; border-collapse: collapse; font-family: var(--tf-font-body);
+                font-size: var(--tf-text-sm); min-width: 900px; }
+    .bk-table th { text-align: left; font-size: var(--tf-text-xs); letter-spacing: 0.08em;
+                   text-transform: uppercase; color: var(--tf-ink-soft); font-weight: 700;
+                   padding: var(--tf-space-2); border-bottom: var(--tf-rule); background: var(--tf-paper);
+                   position: sticky; top: 0; z-index: 1; }
+    .bk-table td { padding: var(--tf-space-2); border-bottom: var(--tf-rule-light); vertical-align: top;
+                   line-height: 1.5; color: var(--tf-ink); }
+    .bk-table tr:last-child td { border-bottom: none; }
+    .bk-table tbody tr:hover td { background: var(--tf-sand-wash); }
+
+    .bk-c-id      { width: 74px;  white-space: nowrap; font-weight: 500; }
+    .bk-c-status  { width: 92px;  white-space: nowrap; }
+    .bk-c-cat     { width: 106px; white-space: nowrap; }
+    .bk-c-item    { min-width: 420px; }   /* long text WRAPS — never truncated */
+    .bk-c-raised  { width: 100px; white-space: nowrap; color: var(--tf-ink-soft); }
+    .bk-c-closed  { width: 200px; }
+
+    .bk-c-item code, .bk-c-closed code { font-size: var(--tf-text-xs); }
+
+    /* Status scale — derived mixes, NOT the content-tag pill tints. */
+    .bk-status { display: inline-block; font-size: var(--tf-text-xs); font-weight: 700;
+                 letter-spacing: 0.06em; text-transform: uppercase; line-height: 1;
+                 padding: var(--tf-space-1) var(--tf-space-2); border-radius: 999px; white-space: nowrap; }
+    .bk-s-open    { background: color-mix(in srgb, var(--tf-brick) 14%, var(--tf-paper));
+                    color: var(--tf-brick-dark);
+                    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tf-brick) 34%, var(--tf-paper)); }
+    .bk-s-review  { background: color-mix(in srgb, var(--tf-ink) 12%, var(--tf-paper));
+                    color: var(--tf-ink);
+                    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tf-ink) 30%, var(--tf-paper)); }
+    .bk-s-park    { background: color-mix(in srgb, var(--tf-stone) 26%, var(--tf-paper));
+                    color: var(--tf-ink-soft);
+                    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tf-stone) 52%, var(--tf-paper)); }
+    .bk-s-discard { background: var(--tf-paper); color: var(--tf-ink-soft);
+                    box-shadow: inset 0 0 0 1px var(--tf-stone-light); }
+    .bk-s-close   { background: color-mix(in srgb, var(--tf-sand) 40%, var(--tf-paper));
+                    color: var(--tf-ink-soft);
+                    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tf-sand) 70%, var(--tf-paper)); }
+    .bk-s-unknown { background: var(--tf-paper); color: var(--tf-brick);
+                    box-shadow: inset 0 0 0 1px var(--tf-brick); }
+
+    /* Settled rows recede so the actionable ones carry the page. */
+    tr[data-rank="4"] td, tr[data-rank="5"] td { color: var(--tf-ink-soft); }
+
+    .bk-cat { font-size: var(--tf-text-xs); color: var(--tf-ink-soft); letter-spacing: 0.04em; text-transform: uppercase; }
+    .bk-empty { padding: var(--tf-space-6); text-align: center; color: var(--tf-ink-soft); }
+
+    .bk-error { border: var(--tf-rule); border-left: 4px solid var(--tf-brick); border-radius: 4px;
+                padding: var(--tf-space-3); background: var(--tf-paper); font-family: var(--tf-font-body);
+                font-size: var(--tf-text-sm); color: var(--tf-ink); }
+    .bk-error h2 { font-size: var(--tf-text-lg); margin: 0 0 var(--tf-space-1); color: var(--tf-brick); }
+    .bk-error p { margin: 0 0 var(--tf-space-1); }
+    .bk-error code { word-break: break-all; }
+
+    @media (max-width: 700px) {
+      .bk-wrap { padding: var(--tf-space-4) var(--tf-space-2) var(--tf-space-6); }
+      .bk-label { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="bk-wrap">
+    <div class="bk-kicker">Internal</div>
+    <h1 class="bk-title">Backlog</h1>
+    <p class="bk-stamp" id="bk-stamp">Loading <code>BACKLOG.md</code>…</p>
+
+    <div id="bk-error-slot"></div>
+
+    <div class="bk-controls" id="bk-controls" hidden>
+      <div class="bk-row">
+        <span class="bk-label">Status</span>
+        <span id="bk-status-chips"></span>
+      </div>
+      <div class="bk-row">
+        <span class="bk-label">Category</span>
+        <span id="bk-cat-chips"></span>
+      </div>
+      <div class="bk-row">
+        <span class="bk-label">Search</span>
+        <input type="search" id="bk-search" class="bk-search"
+               placeholder="Search ID, Item, Closed-by…" autocomplete="off">
+        <button type="button" class="bk-reset" id="bk-reset">Reset filters</button>
+      </div>
+    </div>
+
+    <p class="bk-tally" id="bk-tally"></p>
+
+    <div class="bk-scroll" id="bk-scroll" hidden>
+      <table class="bk-table">
+        <thead>
+          <tr>
+            <th class="bk-c-id">ID</th>
+            <th class="bk-c-status">Status</th>
+            <th class="bk-c-cat">Category</th>
+            <th class="bk-c-item">Item</th>
+            <th class="bk-c-raised">Raised</th>
+            <th class="bk-c-closed">Closed-by</th>
+          </tr>
+        </thead>
+        <tbody id="bk-body"></tbody>
+      </table>
+    </div>
+  </main>
+
+<script>
+(function () {
+  'use strict';
+
+  var SRC = 'BACKLOG.md';
+  var SCHEMA = ['id', 'status', 'category', 'item', 'raised', 'closed-by'];
+
+  /* Status rank drives the sort. Closed rows are shown, never hidden, always last. */
+  var RANK = { open: 1, review: 2, park: 3, discard: 4, close: 5 };
+  var RANK_UNKNOWN = 99;
+
+  /* A literal pipe inside a cell is written \| in the source. Swap it for a
+     sentinel BEFORE splitting the row, restore it after — a naive split on |
+     would corrupt those rows into extra columns. U+0000 cannot occur in the
+     markdown, so it is safe as a sentinel. */
+  var PIPE = '\u0000';
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  /* Escape FIRST, then apply markdown — that ordering is what stops stray
+     markup in a row from injecting into the page. `code` then **bold**, and
+     nothing else: no links, and no italics (STYLE.md bans italics sitewide). */
+  function renderCell(s) {
+    return escapeHtml(s)
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  }
+
+  function splitRow(line) {
+    var cells = line.replace(/\\\|/g, PIPE).split('|');
+    if (cells.length && cells[0].trim() === '') { cells.shift(); }
+    if (cells.length && cells[cells.length - 1].trim() === '') { cells.pop(); }
+    return cells.map(function (c) {
+      return c.split(PIPE).join('|').trim();
+    });
+  }
+
+  function isSeparator(cells) {
+    return cells.length > 0 && cells.every(function (c) { return /^:?-{2,}:?$/.test(c); });
+  }
+
+  function showError(title, detail) {
+    document.getElementById('bk-error-slot').innerHTML =
+      '<div class="bk-error"><h2>' + escapeHtml(title) + '</h2>' + detail + '</div>';
+    document.getElementById('bk-stamp').textContent = '';
+  }
+
+  function attemptedUrl() {
+    try { return new URL(SRC, window.location.href).href; } catch (e) { return SRC; }
+  }
+
+  /* ---- parse ---------------------------------------------------------- */
+
+  function parse(text) {
+    var lines = text.split(/\r?\n/);
+    var stamp = (lines[0] || '').trim();
+
+    /* Take ONLY the table under "## Backlog", stopping at the next "## ".
+       §A–§I use different schemas and are ignored entirely. */
+    var start = -1;
+    for (var i = 0; i < lines.length; i++) {
+      if (/^##\s+Backlog\s*$/.test(lines[i])) { start = i + 1; break; }
+    }
+    if (start === -1) {
+      return { stamp: stamp, error: 'No "## Backlog" heading found in ' + SRC + '.' };
+    }
+
+    var end = lines.length;
+    for (var j = start; j < lines.length; j++) {
+      if (/^##\s/.test(lines[j])) { end = j; break; }
+    }
+
+    var section = lines.slice(start, end);
+    var rows = [];
+    var seenHeader = false;
+
+    for (var k = 0; k < section.length; k++) {
+      var line = section[k].trim();
+      if (line.indexOf('|') === -1) { continue; }
+
+      var cells = splitRow(line);
+
+      if (!seenHeader) {
+        var norm = cells.map(function (c) { return c.toLowerCase(); });
+        if (norm.length === SCHEMA.length && SCHEMA.every(function (h, n) { return norm[n] === h; })) {
+          seenHeader = true;
+        }
+        continue;                       /* skip the header row itself */
+      }
+      if (isSeparator(cells)) { continue; }   /* skip |---|---| */
+      if (cells.length < SCHEMA.length) { continue; }
+
+      rows.push({
+        id: cells[0],
+        status: cells[1].toLowerCase(),
+        statusRaw: cells[1],
+        category: cells[2],
+        item: cells[3],
+        raised: cells[4],
+        closedBy: cells[5]
+      });
+    }
+
+    if (!seenHeader) {
+      return { stamp: stamp, error: 'The "## Backlog" section was found, but no table with the header ' +
+        '| ID | Status | Category | Item | Raised | Closed-by | was present.' };
+    }
+    return { stamp: stamp, rows: rows };
+  }
+
+  /* ---- sort ----------------------------------------------------------- */
+
+  function rankOf(status) {
+    return Object.prototype.hasOwnProperty.call(RANK, status) ? RANK[status] : RANK_UNKNOWN;
+  }
+
+  /* Sorted ONCE, up front. Filters only narrow this order, never re-order it. */
+  function sortRows(rows) {
+    return rows.slice().sort(function (a, b) {
+      var r = rankOf(a.status) - rankOf(b.status);
+      if (r !== 0) { return r; }
+      if (a.raised !== b.raised) { return a.raised < b.raised ? -1 : 1; }   /* oldest first */
+      return a.id < b.id ? -1 : (a.id > b.id ? 1 : 0);
+    });
+  }
+
+  /* ---- render --------------------------------------------------------- */
+
+  var ALL = [];
+  var activeStatus = new Set();
+  var activeCat = new Set();
+  var query = '';
+
+  function statusClass(status) {
+    return Object.prototype.hasOwnProperty.call(RANK, status) ? 'bk-s-' + status : 'bk-s-unknown';
+  }
+
+  function matches(row) {
+    if (activeStatus.size && !activeStatus.has(row.status)) { return false; }
+    if (activeCat.size && !activeCat.has(row.category)) { return false; }
+    if (query) {
+      var hay = (row.id + ' ' + row.item + ' ' + row.closedBy).toLowerCase();
+      if (hay.indexOf(query) === -1) { return false; }
+    }
+    return true;
+  }
+
+  function draw() {
+    var shown = ALL.filter(matches);
+    var body = document.getElementById('bk-body');
+
+    if (!shown.length) {
+      body.innerHTML = '<tr><td class="bk-empty" colspan="6">No rows match these filters.</td></tr>';
+    } else {
+      body.innerHTML = shown.map(function (r) {
+        return '<tr data-rank="' + rankOf(r.status) + '">' +
+          '<td class="bk-c-id">' + escapeHtml(r.id) + '</td>' +
+          '<td class="bk-c-status"><span class="bk-status ' + statusClass(r.status) + '">' +
+            escapeHtml(r.statusRaw) + '</span></td>' +
+          '<td class="bk-c-cat"><span class="bk-cat">' + escapeHtml(r.category) + '</span></td>' +
+          '<td class="bk-c-item">' + renderCell(r.item) + '</td>' +
+          '<td class="bk-c-raised">' + escapeHtml(r.raised) + '</td>' +
+          '<td class="bk-c-closed">' + renderCell(r.closedBy) + '</td>' +
+        '</tr>';
+      }).join('');
+    }
+
+    /* Per-status counts are of the WHOLE table and stay visible regardless of
+       filtering; "showing" reports the filtered view separately. */
+    var order = Object.keys(RANK).sort(function (a, b) { return RANK[a] - RANK[b]; });
+    var present = order.filter(function (s) { return counts[s]; });
+    Object.keys(counts).forEach(function (s) {
+      if (present.indexOf(s) === -1) { present.push(s); }
+    });
+    var tally = present.map(function (s) {
+      return escapeHtml(s) + ' <strong>' + counts[s] + '</strong>';
+    }).join(' · ');
+
+    document.getElementById('bk-tally').innerHTML =
+      tally + ' &nbsp;—&nbsp; showing <strong>' + shown.length + '</strong> of <strong>' + ALL.length + '</strong>';
+  }
+
+  var counts = {};
+
+  function chip(label, count, on, handler) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'bk-chip';
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    b.innerHTML = escapeHtml(label) + (count === null ? '' : '<span class="bk-chip-count">' + count + '</span>');
+    b.addEventListener('click', function () {
+      handler();
+      b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+      draw();
+    });
+    return b;
+  }
+
+  function buildControls() {
+    var statusHost = document.getElementById('bk-status-chips');
+    var catHost = document.getElementById('bk-cat-chips');
+
+    var order = Object.keys(RANK).sort(function (a, b) { return RANK[a] - RANK[b]; });
+    var statuses = order.filter(function (s) { return counts[s]; });
+    Object.keys(counts).forEach(function (s) {
+      if (statuses.indexOf(s) === -1) { statuses.push(s); }
+    });
+
+    statuses.forEach(function (s) {
+      statusHost.appendChild(chip(s, counts[s], false, function () {
+        if (activeStatus.has(s)) { activeStatus.delete(s); } else { activeStatus.add(s); }
+      }));
+    });
+
+    var catCounts = {};
+    ALL.forEach(function (r) { catCounts[r.category] = (catCounts[r.category] || 0) + 1; });
+    Object.keys(catCounts).sort().forEach(function (c) {
+      catHost.appendChild(chip(c, catCounts[c], false, function () {
+        if (activeCat.has(c)) { activeCat.delete(c); } else { activeCat.add(c); }
+      }));
+    });
+
+    document.getElementById('bk-search').addEventListener('input', function (e) {
+      query = e.target.value.trim().toLowerCase();
+      draw();
+    });
+
+    document.getElementById('bk-reset').addEventListener('click', function () {
+      activeStatus.clear();
+      activeCat.clear();
+      query = '';
+      document.getElementById('bk-search').value = '';
+      Array.prototype.forEach.call(document.querySelectorAll('.bk-chip'), function (b) {
+        b.setAttribute('aria-pressed', 'false');
+      });
+      draw();
+    });
+
+    document.getElementById('bk-controls').hidden = false;
+    document.getElementById('bk-scroll').hidden = false;
+  }
+
+  /* ---- boot ----------------------------------------------------------- */
+
+  fetch(SRC, { cache: 'no-store' })
+    .then(function (res) {
+      if (!res.ok) { throw new Error('HTTP ' + res.status + ' ' + res.statusText); }
+      return res.text();
+    })
+    .then(function (text) {
+      var parsed = parse(text);
+
+      if (parsed.error) {
+        showError('Could not read the backlog table',
+          '<p>' + escapeHtml(parsed.error) + '</p>' +
+          '<p>Attempted: <code>' + escapeHtml(attemptedUrl()) + '</code></p>');
+        return;
+      }
+
+      document.getElementById('bk-stamp').innerHTML =
+        'Live from <code>' + escapeHtml(SRC) + '</code> — <code>' + escapeHtml(parsed.stamp) + '</code>';
+
+      if (!parsed.rows.length) {
+        showError('The backlog table parsed, but held no rows',
+          '<p>The <code>## Backlog</code> section and its header row were found, but no data rows followed.</p>' +
+          '<p>Attempted: <code>' + escapeHtml(attemptedUrl()) + '</code></p>');
+        return;
+      }
+
+      ALL = sortRows(parsed.rows);
+      counts = {};
+      ALL.forEach(function (r) { counts[r.status] = (counts[r.status] || 0) + 1; });
+
+      buildControls();
+      draw();
+    })
+    .catch(function (err) {
+      showError('Could not load ' + SRC,
+        '<p>' + escapeHtml(err && err.message ? err.message : String(err)) + '</p>' +
+        '<p>Attempted: <code>' + escapeHtml(attemptedUrl()) + '</code></p>' +
+        '<p>If this page was opened straight from disk, <code>fetch()</code> is blocked on ' +
+        '<code>file://</code> — serve the repo root over HTTP instead.</p>');
+    });
+})();
+</script>
+</body>
+</html>
