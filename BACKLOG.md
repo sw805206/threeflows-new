@@ -1,4 +1,4 @@
-v023 | 2026-07-31 | 235 lines
+v024 | 2026-07-31 | 237 lines
 
 # BACKLOG.md — threeflows-new
 
@@ -90,7 +90,7 @@ exception), not a structural change.
 
 | New page | Source old page(s) / notes | Status | Closed-by |
 |---|---|---|---|
-| index.html | index.html | open | |
+| index.html | index.html | close | User ratified 2026-07-31 — full content build shipped and live. |
 | business-planning.html | svc1.html — renamed from the `service-planning.html` shell per SCOPE.md v010 Services restructure (ex-svc1, &ldquo;Plan&rdquo;). Built as the tier-2 Plan detail page (intro-split opener, painpoints/solves 2-up, flow+FAQ band, CTA) — the pattern-setter the other three repeat. Nav-linked as &ldquo;Plan&rdquo;, §B redirect retargeted to this filename, and the superseded shell deleted, all in PR #37 | close | a9de501 |
 | sourcing-support.html | svc2.html — renamed from the `service-sourcing.html` shell per SCOPE.md v010 Services restructure (ex-svc2, &ldquo;Source&rdquo;). Built as the tier-2 Source detail page — a TEMPLATE REPEAT of business-planning.html (same intro-split / 2-up / flow+FAQ band / CTA; no new STYLE patterns). Nav-linked as &ldquo;Source&rdquo;, §B redirect retargeted, and the superseded shell deleted, all in PR #37 | close | 1c32acc |
 | launch-hypercare.html | svc3.html — renamed from the `service-launch.html` shell per SCOPE.md v010 Services restructure (ex-svc3, &ldquo;Launch&rdquo;, Runningmate). Built as the tier-2 Launch detail page — a TEMPLATE REPEAT of sourcing-support.html (same intro-split / 2-up / flow+FAQ band / CTA; no new STYLE patterns). Nav-linked as &ldquo;Launch&rdquo;, §B redirect retargeted, and the superseded shell deleted, all in PR #37 | close | 228aa43 |
@@ -100,12 +100,12 @@ exception), not a structural change.
 | seminars.html | webinars.html (+ livestream.html folded in via redirect) | open | |
 | tools.html | free-tools.html (shell only; individual tool pages deferred — BL-009) | open | |
 | about.html | about.html | close | 086e26b |
-| contact.html | built fresh — new form + new endpoint (inquiry.html / intake.html redirect in; their old endpoints not carried) | open | |
+| contact.html | built fresh — new form + new endpoint (inquiry.html / intake.html redirect in; their old endpoints not carried) | close | User ratified 2026-07-31 — full content build shipped and live. |
 | privacy.html | privacy.html | close | a4c843d |
 | surveys.html | surveys.html | open | |
 | svy###.html (survey pages) | svy001.html, svy002.html — kept; redesigned later; existing Apps Script endpoints carried | open | |
-| blog-&lt;slug&gt;.html (posts) | blog-001…024 incl. 010a/010b (25 posts) — the new repo ships **slug filenames** per BLOG.md §1 (e.g. `blog-welcome-to-three-flows.html`); `blog-###` survives only as the manifest key (`blogID`). Slug scheme for the §B redirect map tracked in BL-014. **8 of 25 built** (verified on disk 2026-07-23) | open | |
-| Calculator MVP page (filename TBD) | no old-repo source — the SCOPE MVP page, built fresh; deferred/placeholder until built. Added so the cutover gate counts it | open | |
+| blog-&lt;slug&gt;.html (posts) | blog-001…024 incl. 010a/010b (25 posts) — the new repo ships **slug filenames** per BLOG.md §1 (e.g. `blog-welcome-to-three-flows.html`); `blog-###` survives only as the manifest key (`blogID`). Slug scheme for the §B redirect map tracked in BL-014. **12 of 25 built** (verified on disk 2026-07-31: 12 `blog-<slug>.html` files, 12 matching `bloglist.json` entries, 1:1) | open | |
+| Calculator MVP page (filename TBD) | no old-repo source — the SCOPE MVP page, built fresh; deferred/placeholder until built. | open | |
 
 ### C. Form endpoints (Google Apps Script — owner-managed, reused as-is)
 
@@ -143,7 +143,7 @@ in that nav. Keep/kill now assigned per the user's close-out (BL-008).
 
 Note: blog posts and individual tool pages are reachable via their in-nav
 indexes (blog.html / free-tools.html), so they are not "hidden" — but their
-carry-over and URLs still need decisions (see B, D, F).
+carry-over and URLs still need decisions (see F).
 
 **Note (2026-07-31):** the `stylebook.html` listed above is the **OLD repo's**
 page, killed at carry-over. It is a different artifact from this repo's live
@@ -177,8 +177,9 @@ calculators use no chart library (pure inline JS).
   of the APEX** — the committed CNAME file reads `threeflows.com` and is correct
   as-is. SCOPE cutover step 3's `www.threeflows.com` was the stale side. No CNAME
   edit is needed and nothing here is pending.
-- **No `.nojekyll`** file (GitHub Pages runs Jekyll; the site is plain `.html` so
-  it likely renders fine, but the new repo may want `.nojekyll` to be safe).
+- **`.nojekyll` — SHIPPED** (PR #91, live at repo root, empty file). It stops
+  GitHub Pages running Jekyll over the repo, which matters because
+  `int-backlog.html` fetches this file raw at runtime. Nothing pending.
 - `.gitattributes` (eol=lf normalization) and `.gitignore` (.DS_Store, .claude/,
   blog draft archives) are dev hygiene — the new repo has its own; nothing to
   carry.
@@ -232,4 +233,5 @@ blog-008/009 (charts) pull JS libs; the calculators use none. Repo-local assets
 3. **CNAME apex vs www** — pending Cloudflare verification; blocks the cutover step
    only.
 4. **Awareness (no decision needed):** blog-010a/010b pair and non-chronological
-   blog IDs (see D).
+   blog IDs (old-repo numbering; §D removed in v023 — `bloglist.json` is now the
+   source of truth for this site's posts).
