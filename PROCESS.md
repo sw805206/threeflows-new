@@ -1,4 +1,4 @@
-v006 | last updated: 2026-07-29
+v007 | 2026-07-31 | 159 lines
 
 # PROCESS.md — Human/Claude working procedures (this project)
 
@@ -106,8 +106,9 @@ _TBD — to be specified. Placeholder; do not infer a procedure until worked thr
 
 ## 4. Stylebook maintenance
 
-`stylebook.html` (repo root, hidden — no nav, reachable by URL only) is the
-internal reference for the colour + type system. It **links the live `STYLE.css`**,
+`int-stylebook.html` (repo root, internal — no nav, reachable by URL only, and
+carrying `noindex,nofollow` per SCOPE.md) is the internal reference for the
+colour + type system. It **links the live `STYLE.css`**,
 so the rendered examples track it automatically — a swatch's colour comes from
 `var(--tf-*)`, and its printed **hex is read at runtime** from that computed
 colour (a small script resolves each swatch, including the `color-mix()` tokens,

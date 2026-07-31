@@ -3,6 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Internal page: published so it stays bookmarkable, linked from nowhere.
+       noindex,nofollow and NO robots.txt entry — a disallow would stop crawlers
+       fetching the page and therefore stop them ever reading this tag
+       (SCOPE.md → Internal pages). -->
+  <meta name="robots" content="noindex,nofollow">
   <title>Stylebook — Three Flows Solutions</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
