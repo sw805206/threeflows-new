@@ -1,247 +1,203 @@
-v004 | last updated: 2026-07-22
-
+v005 | 2026-07-31 | 203 lines
 
 # Working Rules
-These are the universal working rules.
-
 
 Process lives in three tiers, by ownership:
 
+- **CLAUDE.md** — universal human/Claude working rules that apply to every
+  project. Contains Part A (behavioral), Part B (code discipline), and Part C
+  (shared processes).
+- **SCOPE.md** — describes the project and lists the other governance files it
+  requires. Each project declares its own type, required governance docs, and
+  branch/PR discipline here. Read it first to know where the project sits.
+- **XYZ.md** — project-specific files that apply only to that project, if
+  applicable. Live in the repo.
+- **Google Doc SOP** — processes done entirely by the human. A user reference,
+  not a source of truth.
 
-- **CLAUDE.md** — universal human/Claude working rules that apply to every project. Lives in MOTHERSHIP and is synced down to each repo. Contains Part A (behavioral), Part B (code discipline), and Part C (shared processes).
-
-
-- **XYZ.md** — project-specific files that apply only to that project. Live in the repo. SCOPE.md describes the project and lists the other relevant files.
-
-
-- **Google Doc SOP** — processes done entirely by the human. A user reference, not a source of truth.
-
-
-Every governance file is version controlled and carries a version/date stamp.
-The stamp is a rule, not a convention: every `.md` governance doc opens on
-LINE 1 with exactly `v### | last updated: yyyy-mm-dd` — nothing above it, no
-title, no blank line. The single exception is a file whose format forbids bare
-text at the top (e.g. STYLE.css, which must open with a comment): those carry
-the identical stamp on the FIRST LINE of their opening header comment block,
-which is the closest faithful equivalent. The date in the stamp is always read
-from machine time (Part A → **Dates come from machine time**).
-
-
-Per-file counters are independent: each governance doc's `v###` tracks that
-file's own history and is never shared across files. When one commit changes
-several docs, each bumps its own counter separately, so a constant offset
-between two files' numbers is expected and is not a defect to reconcile.
-
-
-This file (CLAUDE.md) is structured as:
-
-
-- **Part A** — Global Chat Behavioral — pasted into Claude's global settings
-- **Part B** — Global Chat/Code Discipline for projects with a git repo
-- **Part C** — Global Human/Claude Processes
-
-
-The master copy lives in the user's MOTHERSHIP folder. After the master changes: re-sync the repo copy, then re-paste Part A into Claude settings.
-
-
-Each project declares its own type, required governance docs, and branch/PR discipline in its SCOPE.md (guided by the human SOP). Read SCOPE.md first to know where the project sits.
-
+**Precedence.** SCOPE.md governs project-specific matters. Where SCOPE.md and
+CLAUDE.md conflict, CLAUDE.md Part A and Part B govern.
 
 ## Part A — Behavioral (applies to all work)
 
+**Read the governance files first.** Read SCOPE.md at the start of every task —
+in a Claude chat, the project-folder copy; in Code, the version on
+`origin/main`. Read CLAUDE.md as well when the task touches the repo,
+governance, or the backlog: Part A is already pasted into my global settings, so
+Parts B and C are what opening the file adds. Before any repo-touching work,
+read the full set SCOPE.md lists. Read once per chat at the first task, not per
+exchange. If a required governance file is missing, stop and ask before doing
+any work.
 
-**Read the governance files first.** At the start of a task, read the project's governance docs — CLAUDE.md and SCOPE.md — then read the remaining governance documents (.md) that SCOPE.md lists. If a required governance file is missing, stop and ask before doing any work.
+**Don't guess.** If something is missing, ambiguous, or uncertain, stop and ask
+— never guess at a file's contents, a convention, or my intent. When you agree
+with a proposal of mine, restate it more concisely without drifting back toward
+your own phrasing; if you still see a genuine problem with it, say so explicitly
+rather than quietly changing the wording.
 
+**Ask for content first.** If I say I'm sending content but nothing is attached,
+assume I hit send before attaching it. Stop and ask for the content — do not
+fill the gap with a speculative or elaborated response before I've provided it.
 
-**The repo is the source of truth.** The committed, merged repo (git main) is authoritative — not another conversation, not memory, not an attached or synced copy. If attached or synced project files, or claims about what was decided in another chat, conflict with the repo, flag the conflict, stop, and ask before proceeding.
+**Match the mode.** Not every chat is about coding. Do not default to
+coding-oriented output unless the chat is actually about building or modifying
+code. If unsure which mode we're in, ask before proceeding.
 
+**Be concise and direct.** Keep responses focused. Push back when you disagree —
+don't just agree to be agreeable. Do not over-explain your reasoning; I will ask
+if I want more.
 
-**Discussion mode by default.** Do not write prompts, code, or files until I explicitly say so (e.g. "write it now"). Until then, stay in discussion mode: ask questions, surface tradeoffs, and refine the thinking with me. Writing before I'm ready breaks my thought process.
+**The repo is the source of truth.** In any project with a git repo, the
+committed, merged repo (git main) is authoritative — not another conversation,
+not memory, not an attached or synced copy. If attached or synced project files,
+or claims about what was decided in another chat, conflict with the repo, flag
+the conflict, stop, and ask before proceeding.
 
+**Prompts are for Claude Code.** When I ask for a prompt to run, write it for
+Code to execute — clear, scoped, and based on what we discussed. I will review
+it before running. Always put it in a code block so I can copy-paste it
+directly. If you amend a prompt already written, regenerate it in full.
 
-**Match the mode.** Not every chat is about coding. Do not default to coding-oriented output unless the chat is actually about building or modifying code. If unsure which mode we're in, ask before proceeding.
-
-
-**Don't guess.** If something is missing, ambiguous, or uncertain, stop and ask. Never guess at a file's contents, a convention, or my intent. When you agree with one of my proposals, rewrite it to be more concise and accurate — never drift back toward your original phrasing in a way that contradicts my intention. If you agree, your write-up must carry my meaning; if you still see a genuine problem with my version, say so explicitly instead of quietly changing the wording.
-
-
-**Dates come from machine time.** Any date written into a doc, a version stamp,
-or a commit is read from the machine (`date +%F`) at the moment of writing —
-never hand-typed, never copied forward from another line, never inferred from
-context or from what today "should" be. A hand-typed date is the only way a doc
-ends up stamped with a date ahead of the actual day, and that is exactly the
-defect this prevents. If machine time returns something implausible, stop and
-ask rather than stamp it.
-
-
-**Ask for content first.** If I say I'm sending content but nothing is attached, assume I hit send before attaching it. Stop and ask for the content — do not fill the gap with a speculative or elaborated response before I've provided it.
-
-
-**Be concise and direct.** Keep responses focused. Push back when you disagree — don't just agree to be agreeable.
-
-
-**Prompts are for Claude Code.** When I ask for a prompt to run, write it for Code to execute — clear, scoped, and based on what we discussed. I will review it before running. Always put it in a code block so I can copy-paste it directly.
-
-
-**Wait for the go before drafting.** When a decision is pending my input, stop at your recommendation and wait. Do not draft the runnable prompt (or code, or file) until I explicitly say go — even if the discussion feels complete. Surfacing options and recommending one is always fine; producing the deliverable waits for my word.
-
+**Discussion mode by default — wait for the go.** Do not write prompts, code, or
+files until I explicitly say so (e.g. "write it now"). Until then, ask
+questions, surface tradeoffs, and refine the thinking with me. Surfacing options
+and recommending one is always fine; producing the deliverable waits for my
+word, even if the discussion feels complete. Do not draft until all your own
+questions are answered.
 
 ## Part B — Code discipline (projects with a git repo)
 
+These rules apply to any project with a git repo, coding or not, per its
+SCOPE.md. Clauses referencing `origin/main`, pushing, or PRs apply only where
+the repo has a remote; the rest apply to local-only repos too.
 
-These rules apply to any project with a git repo — coding or not, per its SCOPE.md. If the project has no repo, ignore Part B.
+**Read governance docs from `origin/main`.** Always `git fetch origin` first,
+then read the committed version (`git show origin/main:<file>`) — never the
+working tree, never the synced project folder.
 
+**Sync audit.** At the start of every repo-touching task (pure discussion turns
+don't need it), compare line 1 — version, date, line count — between
+`origin/main` and the project-folder copy. Audit whatever governance docs
+SCOPE.md lists, plus CLAUDE.md and SCOPE.md themselves, plus any stamped
+non-`.md` governance file the project keeps (e.g. STYLE.css); never assume a
+fixed list. The audit is two-part, because neither side can see both: the chat
+reports the project-folder half, Code reports the `origin/main` half, and the
+human joins them. Where the two differ, the higher version is current — flag it
+and sync to that version.
 
-**Read governance docs from `origin/main`, and check for divergence.** This is
-the git-mechanical form of Part A → **The repo is the source of truth**. Always
-`git fetch origin` first, then read the committed version (`git show
-origin/main:<file>`) — never the working tree, never the synced project folder.
-At the start of any task, compare `origin/main` against the project-folder
-copies. If they diverge, STOP and ask which way to reconcile; never auto-resolve.
-Divergence has two opposite causes and they need opposite fixes: the folder copy
-may be STALE (an update landed on main and the folder needs re-syncing), or it
-may be AHEAD (another stream edited it locally and must commit and push first).
-Guessing wrong destroys work.
+**Governance docs go direct to main.** Every `.md` governance doc listed in
+SCOPE.md — CLAUDE.md, SCOPE.md, BLOG.md, BACKLOG.md, PROCESS.md and the like —
+is committed straight to main and pushed immediately. No branch, no PR. They do
+not deploy, so committing them cannot touch the live site. Push is the finish
+line: an edit left uncommitted or unpushed is the failure this rule exists to
+prevent.
 
+**STYLE.css is the exception.** It is both a governance doc and a served asset,
+so committing it to main changes the live site with no review. It keeps branch
+and PR discipline.
 
-The check is a **sync audit**, run at the start of every repo-touching task (pure
-discussion turns don't need it). The doc set is not fixed: audit whatever
-governance docs SCOPE.md lists, plus CLAUDE.md and SCOPE.md themselves, plus any
-stamped non-`.md` governance file the project keeps (e.g. STYLE.css). Projects
-differ — never assume a fixed list, and never skip a doc because it wasn't in
-another project. The audit is necessarily **two-part**, because neither side can
-see both: the chat reports each doc's stamp (line 1) and content hash from the
-project folder; Code reports the same from `origin/main`; the human joins the two
-halves. Compare BOTH stamp and hash — matching stamps do not prove matching
-content. Then act on the direction of drift, which determines severity:
-- **Folder BEHIND main** (lower stamp, benign): re-add the doc to the project
-  folder, note it, and proceed. No stop required.
-- **Folder AHEAD of main**, or **stamps match but hashes differ**: STOP and ask.
-  Both mean unmerged or silently diverged content, and either can destroy work.
+**Governance docs carry a version stamp.** Line 1 of every `.md` governance doc
+is exactly `v### | yyyy-mm-dd | #### lines` — nothing above it, no title, no
+blank line. A file whose format forbids bare text at the top (e.g. STYLE.css,
+which must open with a comment) carries the identical stamp on the first line of
+its opening comment block. Bump `v###` on every substantive change. The date and
+the line count are read from the machine at the moment of writing (`date +%F`,
+`wc -l`) — never hand-typed, never copied forward from another line. A
+hand-typed date is how a doc ends up stamped ahead of the actual day, and a
+hand-typed line count is worse than none. If machine time returns something
+implausible, stop and ask rather than stamp it. Version counters are per-file
+and independent: each doc's `v###` tracks its own history, so a constant offset
+between two files is expected and is not a defect to reconcile.
 
+**Protect main when it deploys from main.** If the project deploys from main (a
+live website or app), never commit code directly to main: one feature branch per
+task, branched from an up-to-date main → commit locally as you work → push the
+branch → open a PR only when I ask → merge → clean up. If the project does not
+deploy from main, committing code directly to main is fine; branch only when you
+want isolation for risky work.
 
-**Protect main when it deploys from main.** If the project deploys from main (a live website or app), never commit directly to main: one feature branch per task, branched from an up-to-date main → commit locally as you work → push the branch to remote → open a PR only when I ask → merge → delete the branch (see Post-merge cleanup below). If the project does not deploy from main (research, content/data), committing directly to main is fine; branch only when you want isolation for risky work.
+**No PR unless I explicitly ask.** When I do ask, name it
+`type/short-description`, where type is one of: feat, fix, docs, refactor,
+chore, style, test, perf, build, ci, uat.
 
+**Post-merge cleanup — Claude reminds, so I don't have to.** After any PR
+merges, Claude surfaces the cleanup automatically, but only once the merge is
+confirmed on main (a merge commit in `git log`, or my confirmation). The
+sequence is push → PR → merge → cleanup, and cleanup is gated on the merge being
+confirmed. Once it is, provide: `git checkout main`, `git pull origin main`,
+`git branch -d <branch>`, `git remote prune origin`.
 
-**Post-merge cleanup — Claude reminds, so the user doesn't have to.** After any PR merges, Claude tracks that a cleanup is due and surfaces it automatically — the user never has to remember it. But Claude never provides cleanup on the assumption that a merge happened: it first confirms the merge actually landed on main (via `git log` showing the merge commit, or the user confirming GitHub shows it merged). The sequence is always four distinct steps — push → open PR → merge PR → cleanup — and cleanup is gated on the third being confirmed. Once confirmed, Claude provides the standard cleanup block with the merged branch name filled in: run `git checkout main`, then `git pull origin main`, then `git branch -d <branch>`, then `git remote prune origin`. This syncs main, deletes the merged local branch (the safe `-d` refuses if the branch is unmerged), and prunes the stale remote ref. If a merge isn't yet confirmed, Claude says so and holds the cleanup rather than running it early.
+**Style changes get their own commit.** When a UI/UX decision is finalized and
+applies project-wide (not a one-off), ask whether STYLE.md and/or STYLE.css
+should be created or updated. Any change to either gets its own commit, never
+mixed into other changes.
 
-
-**No PR unless I explicitly ask.** When I do ask, name it `type/short-description`, where type is one of: feat, fix, docs, refactor, chore, style, test, perf, build, ci, uat.
-
-
-**Governance changes get their own PR, merged promptly, then cascade.** A change
-to any governance doc — CLAUDE.md, SCOPE.md, STYLE.md, STYLE.css, BLOG.md,
-BACKLOG.md — goes on a PR of its own: one governance change per PR, never mixed
-into feature work, and never parked open while the stream carries on around it.
-The PR is what makes the change visible to in-flight streams, and merging it
-promptly is what lets them pick it up; a long-lived governance PR means every
-stream is working to a rule that isn't yet real. After merge, cascade the change:
-merge to main → `git pull` locally → the user re-adds the local copy to the
-project folder. This rule holds for every project, including ones where SCOPE.md
-otherwise permits direct commits to main.
-
-
-**Exception — routine backlog bookkeeping goes direct to main.** The one carve-out
-from the rule above: ROUTINE edits to BACKLOG.md may be committed straight to main,
-no branch and no PR — but **committed and pushed immediately**. The exception is on
-the branch/PR ceremony ONLY; it is not an exception to *push is the finish line*. A
-routine edit left sitting uncommitted or unpushed in a working tree is exactly the
-failure this whole rule set exists to prevent.
-
-
-- **ROUTINE = recording state on existing rows.** Status transitions (open→review,
-  review→close with its evidence SHA), Closed-by entries, progress annotations
-  (e.g. "5 of 25 built"), and flushing running-block P-rows into new BL-### rows at
-  the user's request. These record state; they do not change rules or structure.
-- **STRUCTURAL = anything that changes the table's rules or shape.** The §A/BL
-  header or legend, the status VOCABULARY or its definitions, columns
-  (add/remove/rename), the cutover-gate semantics, or the backlog PROCESS itself.
-  Structural changes STILL REQUIRE A PR, like any other governance change.
-- **Every other governance doc is unaffected** — CLAUDE.md, SCOPE.md, STYLE.md,
-  STYLE.css, BLOG.md always go via PR. This exception is BACKLOG.md row-bookkeeping
-  and nothing else.
-- **When in doubt, an edit is structural → PR.** The default on ambiguity is the
-  safe, visible one.
-
-
-**Style changes are committed separately.** When a UI/UX decision is finalized and applies project-wide (not a one-off), ask whether STYLE.md and/or STYLE.css should be created or updated. Any change to STYLE.md or STYLE.css gets its own commit — never mixed into other code changes. STYLE.md and STYLE.css are governance docs, so this is the commit-level half of the rule above: style docs get their own commit AND their own PR.
-
-
-**Governance docs carry a version/date stamp.** Every `.md` governance doc's
-first line is exactly `v### | last updated: yyyy-mm-dd`; comment-headed files
-such as STYLE.css carry the same stamp on the first line of their header comment
-(see the preamble). Bump `v###` on every substantive change, and take the date
-from machine time per Part A → **Dates come from machine time**. Counters are
-per-file and independent (see the preamble): never renumber one governance doc
-to match another's, and never treat a constant offset between two files' numbers
-as drift to fix.
-
-
-**Show client-facing changes on localhost.** When edits are client-facing UI or UX changes (style, content, layout, flow), launch localhost first so I can see them before they're committed.
-
+**Show client-facing changes on localhost.** When edits are client-facing UI or
+UX changes (style, content, layout, flow), launch localhost first so I can see
+them before they're committed.
 
 ## Part C — Global Human/Claude Processes
 
+Processes here are either **universal** — they apply to every project, always —
+or **opt-in**, applying only where SCOPE.md declares them.
 
-### how-to: maintain the backlog | last update: 2026-07-05
+### how-to: keep CLAUDE.md in sync (universal)
 
+The master copy of CLAUDE.md lives on local disk at
+`/Users/swai/sw805206/CLAUDE.md`. Every project repo holds a copy, and the disk
+master is what they reconcile against.
 
-Apply this process when SCOPE.md declares it; otherwise ignore it.
+**Publishing a change (project A).** Edit the copy in project A's repo, commit
+to main, then copy the file back to the disk master. The change is not finished
+until both have happened: an uncommitted edit is invisible to other projects,
+and a stale disk master is a file every other project will sync backwards from.
 
+**Picking up a change (project B).** At the start of a task, compare project B's
+copy against the disk master by line 1. If the disk master is the higher
+version, copy it into project B's working tree, commit, and push. Files move
+disk → working tree → commit → push, in that order — a file cannot enter git any
+other way.
 
-The backlog is a universal, standard practice — it tracks both short-term items (bugs, UI improvements) and long-term ones (big features, new apps). This how-to is the operational procedure; the governing rule is Part A → Backlog, and the definition (categories, status semantics) lives in the BACKLOG.md header.
+**Human steps after any change.** Re-paste Part A into Claude's global settings,
+and upload the current file to each Claude project folder.
 
+### how-to: maintain the backlog (opt-in — when SCOPE.md declares it)
 
-**Process vs. artifact.** A process defined here is global — the same procedure applies to every project. The *artifact* it operates on is per-project and lives in that project's repo. The backlog is the canonical example: the how-to (Part C) is global and identical everywhere, but each project keeps its own `BACKLOG.md`. One shared process, one backlog file per project — they never merge across projects.
+The backlog tracks both short-term items (bugs, UI improvements) and long-term
+ones (big features, new apps). The definitions — categories, status semantics —
+live in the BACKLOG.md header.
 
+**Process vs. artifact.** The process here is global and identical everywhere.
+The artifact is per-project: each project keeps its own `BACKLOG.md` in its own
+repo. One shared process, one backlog file per project; they never merge across
+projects.
 
-#### The two states
+**Two states.** The distinction is the whole system:
 
+- **The running block** — a live tally *in chat*. Temporary, uncommitted, holds
+  items as they are raised during a session.
+- **BACKLOG.md** — the source of truth *in the repo*.
 
-The backlog lives in two places, and the distinction is the whole system:
+Items flow one direction: raised in chat → held in the running block → flushed
+to BACKLOG.md.
 
+**The running block.** The trigger is my saying "log to backlog." The block
+reprints in full every time it changes — never the new row alone — so the latest
+printing is always the complete, authoritative list. Temp IDs are `P01`, `P02`,
+… scoped to the current unflushed batch only; after a flush the block empties
+and they recycle from P01.
 
-- **The running block** — a live tally *in chat*. Temporary, uncommitted, holds items as they're raised during a session.
-- **BACKLOG.md** — the source of truth *in the repo*. Permanent, committed (when the user says so).
+**Flushing.** I request the flush; nothing flushes automatically. It is a
+word-for-word copy verified by count — N pending rows in the block = N new rows
+out — which guards against dropped or duplicated rows. P## become permanent
+`BL-###`, assigned in cumulative sequence from the last BL number in the file
+and never reused. Category and status are assigned at flush. BACKLOG.md is a
+governance doc, so the flush is committed and pushed per Part B.
 
+**Status rules.** Code never self-closes: done items move to `review`, not
+`close`. Close is mine alone and needs evidence in **Closed-by** — the `PR##`
+for code, or my stated reason otherwise. Closed-by stays empty on any non-closed
+row.
 
-Items flow one direction: raised in chat → held in the running block → flushed to BACKLOG.md.
-
-
-#### Maintaining the running block (in chat)
-
-
-- **The trigger is the user saying "log to backlog."** Chat then adds the item to the running block.
-- **The block reprints in full every time it changes.** Never the new row alone — the entire block, every time. The latest printing is always the complete, authoritative list. This is deliberate: the user never has to reassemble rows scattered up the conversation.
-- **Temp IDs are `P01`, `P02`, …** — scoped to the current unflushed batch only, never permanent. After a flush, the block empties and P## recycle from P01.
-
-
-So during a session, the running block simply accumulates P-rows until the user decides to flush.
-
-
-#### Flushing to BACKLOG.md
-
-
-- **The user requests the flush.** Nothing flushes automatically.
-- **The flush is a word-for-word copy, verified by count** — N pending rows in the block = N new rows out to BACKLOG.md. The count check guards against dropped or duplicated rows.
-- **P## become permanent `BL-###`** — assigned in cumulative sequence, continuing from the last BL number in the file. BL numbers are never reused or recycled.
-- **Tags and status are assigned at flush** (or edited later via Code): a **Category** (process, feature, page, bug, governance, or others) and a **Status** (`open → review → close`, or `park`/`discard`).
-- **The flush writes to the working tree only — never committed until the user says so.** A flush and a commit are two separate steps.
-
-
-#### The status rules that bite
-
-
-- **Code never self-closes.** When Code thinks an item is done, it moves it to `review`, not `close`.
-- **Close is human-only, and needs evidence.** The user ratifies, and the closed row must carry proof in **Closed-by**: the `PR##` for code, or the user's stated reason otherwise. Closed-by stays empty for any non-closed row.
-
-
-#### The schema
-
-
-```
-| ID | Status | Category | Item | Raised | Closed-by |
-```
-
-
-The running block uses the same columns, with a `P##` in the ID slot (Closed-by empty until flush/close).
+**Schema.** `| ID | Status | Category | Item | Raised | Closed-by |` — the
+running block uses the same columns, with a `P##` in the ID slot.
