@@ -1,4 +1,4 @@
-v029 | 2026-07-31 | 243 lines
+v030 | 2026-07-31 | 247 lines
 
 # BACKLOG.md — threeflows-new
 
@@ -80,9 +80,13 @@ Shells for the 13 top-level pages already exist (PR#1) as placeholders, so a row
 at `open` means the content build has not happened — not that the file is absent.
 Blog posts and the calculator MVP page come later.
 
-**Status vocabulary — §A uses the BL table's flow: open → review → close.**
-`open` = not built; `review` = built, awaiting human ratification; `close` =
-ratified, with evidence (the shipping SHA) in Closed-by. Code never self-closes.
+**Status vocabulary — §A uses the BL table's flow: open → review → close, or
+discard.** `open` = not built; `review` = built, awaiting human ratification;
+`close` = ratified, with evidence (the shipping SHA) in Closed-by. Code never
+self-closes. `discard` = **no longer tracked by §A** — which is a statement about
+this checklist, not about the thing itself; the reason says which. §A tracks
+one-off page builds, so anything without a single concrete file to finish
+belongs here rather than sitting open forever.
 
 **Closed-by tracks the LATEST SUBSTANTIVE commit, not the first.** When a page
 already at `close` is materially changed, its Closed-by SHA moves to the most
@@ -108,9 +112,9 @@ un-build it — so only the evidence moves, never the status.
 | contact.html | built fresh — new form + new endpoint (inquiry.html / intake.html redirect in; their old endpoints not carried) | close | User ratified 2026-07-31 — full content build shipped and live. |
 | privacy.html | privacy.html | close | a4c843d |
 | surveys.html | surveys.html | open | |
-| svy###.html (survey pages) | svy001.html, svy002.html — kept; redesigned later; existing Apps Script endpoints carried | open | |
-| blog-&lt;slug&gt;.html (posts) | **Ongoing stream, no target count** — the blog is added to as posts are written. The old site's 25-post carry-over target is VOID: that repo is archived and the redirect layer was dropped (BL-001), so there is no fixed set left to work through. Posts ship as `blog-<slug>.html` per BLOG.md §1; `blog-###` survives only as the manifest key (`blogID`). **12 posts live** (verified on disk 2026-07-31: 12 `blog-<slug>.html` files, 12 matching `bloglist.json` entries, 1:1). Stays open as a stream, never completed | open | |
-| Calculator MVP page (filename TBD) | no old-repo source — the SCOPE MVP page, built fresh; deferred/placeholder until built. | open | |
+| svy###.html (survey pages) | svy001.html, svy002.html — kept; redesigned later; existing Apps Script endpoints carried | discard | Dropped from §A tracking, NOT from the project. SCOPE.md still scopes `surveys.html` as the cover for individual survey pages, but none are built, none are commissioned, and there is no single file to finish. Add a concrete row when a specific survey page is actually commissioned. |
+| blog-&lt;slug&gt;.html (posts) | **Ongoing stream, no target count** — the blog is added to as posts are written. The old site's 25-post carry-over target is VOID: that repo is archived and the redirect layer was dropped (BL-001), so there is no fixed set left to work through. Posts ship as `blog-<slug>.html` per BLOG.md §1; `blog-###` survives only as the manifest key (`blogID`). **12 posts live** (verified on disk 2026-07-31: 12 `blog-<slug>.html` files, 12 matching `bloglist.json` entries, 1:1). Stays open as a stream, never completed | discard | Dropped from §A tracking ONLY — **the blog is live and ongoing, not abandoned.** 12 posts ship today; `bloglist.json` is the source of truth for the set and BLOG.md is the add-a-post process. A stream that never completes does not belong in a build checklist, which is why it sat open indefinitely. |
+| Calculator MVP page (filename TBD) | no old-repo source — the SCOPE MVP page, built fresh; deferred/placeholder until built. | discard | Dropped from §A tracking. SCOPE.md v015 removed the calculator from the site's scope and no successor row exists, so this row was its last trace — recorded as discarded rather than deleted so the decision stays visible. Re-scope it in SCOPE.md first if it ever returns. |
 
 ### C. Form endpoints (Google Apps Script — owner-managed, reused as-is)
 
