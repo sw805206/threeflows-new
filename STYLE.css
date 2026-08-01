@@ -1,6 +1,32 @@
-/* v043 | 2026-08-01 | 3117 lines
+/* v044 | 2026-08-01 | 3333 lines
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v44 · 2026-08-01 · Consultancy cashflow tool (feat/tool-consultancy-cashflow,
+                     paired with STYLE.md v043, same commit per SCOPE.md). The
+                     SECOND tool page, which reuses the first tool's entire
+                     shell unchanged — .tf-tool-layout / -rail / -content,
+                     .tf-step-nav, .tf-tool-panel, .tf-panel-head,
+                     .tf-tool-divider, .tf-data-table, the form kit, the pill
+                     buttons, .tf-callout, .tf-cta-inline. Nothing existing was
+                     touched; this version is PURELY ADDITIVE (190 lines at the
+                     foot of the sheet), so no shipped page can regress.
+                     Five new patterns: .tf-tip (hover-only "?" carrying its
+                     text in `title`), .tf-view-toggle/-btn (the
+                     Monthly/Quarterly segmented control), the chart furniture
+                     (.tf-chart-scroll — monthly scrolls at a readable bar
+                     width, quarterly fits — plus .tf-chart-legend and the
+                     bar/dashed-line swatches), the repeatable cost-row editor
+                     (.tf-repeat/-row/-del/-empty + .tf-cost-group, month column
+                     at 180px so a native month picker's icon stops clipping the
+                     year), and .tf-print-only + the three-page pagination
+                     block. NB the projection chart is a hand-built SVG whose
+                     COLOURS are applied by the engine, not by this sheet: it is
+                     rasterized through an <img> for the PDF, where an external
+                     stylesheet does not apply, so the JS reads the same --tf-*
+                     tokens off :root and writes them as presentation
+                     attributes. One source of truth; the exception is specific
+                     to rasterization and is not a precedent.
 
    v42 · 2026-08-01 · .tf-fit-* now consumes the tint ink tokens
                      (refactor/fit-tokens, paired with STYLE.md v041, same
@@ -3114,4 +3140,194 @@ button.tf-pill { cursor: pointer; }
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+}
+
+/* ── Consultancy cashflow tool (tool-consultancy-cashflow.html) ──────────────
+   The SECOND tool. Reuses the first tool's whole shell unchanged —
+   .tf-tool-layout / -rail / -content, .tf-step-nav, .tf-tool-panel,
+   .tf-panel-head, .tf-tool-divider, .tf-data-table, the form kit, .tf-pill
+   .tf-pill-outline, .tf-callout, .tf-cta-inline. The geometry settled over
+   tool-company-setup's five review rounds is NOT re-derived here.
+   Five genuinely new pieces, all built from existing tokens:
+   the hover tip, the view toggle, the chart wrapper + scroll container, the
+   repeatable cost-row editor, and the print-only recap + pagination.
+
+   WHY THE CHART'S OWN COLOURS ARE NOT IN THIS SHEET. The projection chart is a
+   hand-built SVG (no charting library — the blog's waterfalls set that
+   precedent). It has to survive TWO renderings: the live DOM, and a raster
+   snapshot for the generated PDF. The PDF path serializes the SVG into an
+   <img>, where an external stylesheet does not apply — so a CSS-classed fill
+   would silently vanish from the PDF. The JS therefore reads the SAME tokens
+   defined at the top of this sheet (getComputedStyle on :root) and writes them
+   as presentation attributes. One source of truth, still --tf-*, no hex in the
+   JS. What lives HERE is the chart's furniture: wrapper, scroll, legend. */
+
+/* Hover tip — a small ringed "?" carrying its text in `title`, so the tip is
+   HOVER-ONLY (the brief's requirement) rather than always-visible helper copy
+   under every field. `title` is also what .tf-data-table's step-number cells
+   already use for the You/Assist/We meanings, so the idiom is established.
+   Sized off --tf-text-xs; the marker is decorative, the text is the title. */
+.tf-tip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  margin-left: 6px;
+  border: 1.5px solid var(--tf-stone);
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--tf-ink-soft);
+  cursor: help;
+  vertical-align: middle;
+}
+.tf-tip:hover { border-color: var(--tf-brick); color: var(--tf-brick); }
+
+/* View toggle (Monthly / Quarterly) — a two-button segmented control driving
+   BOTH the chart and the table beneath it. Deliberately NOT .tf-pill: a pill is
+   tag furniture and the .tf-choice kit is a radio for a form answer, whereas
+   this switches a VIEW and must read as one control, so the two buttons share a
+   single frame with a divider between them. Pressed state reuses the choice
+   kit's own selected treatment (--tf-wash-brick fill + brick edge) so a
+   "currently chosen" thing looks the same across the page. */
+.tf-view-toggle {
+  display: inline-flex;
+  border: var(--tf-rule-light);
+  margin: 0 0 var(--tf-space-2);
+}
+.tf-view-toggle-btn {
+  font-family: var(--tf-font-body);
+  font-size: var(--tf-text-sm);
+  padding: 8px 16px;
+  border: none;
+  border-right: var(--tf-rule-light);
+  background: transparent;
+  color: var(--tf-ink-soft);
+  cursor: pointer;
+}
+.tf-view-toggle-btn:last-child { border-right: none; }
+.tf-view-toggle-btn[aria-pressed="true"] {
+  background: var(--tf-wash-brick);
+  color: var(--tf-brick);
+  font-weight: 500;
+}
+
+/* Chart — the SVG is generated; this is its container. MONTHLY renders at a
+   fixed readable bar width and SCROLLS sideways rather than compressing 36+
+   months into the panel; QUARTERLY is given width:100% by the JS and fits.
+   Same .tf-data-table overflow-x mechanic, so a wide chart and a wide table
+   behave identically. */
+.tf-chart-scroll { overflow-x: auto; }
+.tf-chart-scroll svg { display: block; }
+/* Legend — the chart's own key. Shares .tf-fit-legend's shape (inline-flex
+   rows, xs meta type) but carries line/bar swatches instead of dots, so it is
+   its own class rather than a reuse that would need overriding. */
+.tf-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tf-space-2);
+  font-size: var(--tf-text-xs);
+  color: var(--tf-ink-soft);
+  margin: var(--tf-space-1) 0 var(--tf-space-3);
+}
+.tf-chart-legend span { display: inline-flex; align-items: center; gap: var(--tf-space-1); }
+.tf-chart-swatch { display: inline-block; width: 14px; height: 10px; border: 2px solid; box-sizing: border-box; }
+/* The cumulative series is a DASHED line, and the dash is the required
+   non-colour cue — so its swatch is a dashed rule, not a filled block. */
+.tf-chart-swatch-line { width: 18px; height: 0; border: none; border-top: 2px dashed var(--tf-ink); }
+
+/* Repeatable cost-row editor — the add/edit/delete list behind One-time,
+   Annual and Monthly costs. A row is a grid of the form kit's own .tf-input
+   fields plus a delete control; rows are appended by the JS from a <template>.
+   Collapses to one column below 640px (a narrower breakpoint than the sheet's
+   768/820 nav pair, and deliberately so: this is a control's internal reflow,
+   not a page-layout change). */
+.tf-repeat { display: flex; flex-direction: column; gap: var(--tf-space-2); }
+.tf-repeat-row {
+  display: grid;
+  /* The month column is 180px because a native <input type="month"> renders
+     its own calendar affordance INSIDE the field, beside "September 2026" —
+     the widest value. At 150px the year clipped behind the icon. */
+  grid-template-columns: 1fr 110px 180px auto;
+  gap: var(--tf-space-2);
+  align-items: start;
+}
+@media (max-width: 640px) {
+  .tf-repeat-row { grid-template-columns: 1fr; }
+}
+/* Delete — a text control, not a button-shaped one: a row of three fields with
+   a solid button on the end reads as if the button submits the row. Brick on
+   hover is the destructive cue. */
+.tf-repeat-del {
+  font-family: var(--tf-font-body);
+  font-size: var(--tf-text-sm);
+  align-self: center;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  color: var(--tf-ink-soft);
+  cursor: pointer;
+}
+.tf-repeat-del:hover { color: var(--tf-brick); }
+.tf-repeat-empty { font-size: var(--tf-text-sm); color: var(--tf-stone); margin: 0; }
+/* Group of repeatable rows — heading, tip, the rows, then Add. */
+.tf-cost-group { margin: 0 0 var(--tf-space-4); }
+.tf-cost-group h3 { font-size: var(--tf-text-base); margin: 0 0 var(--tf-space-1); }
+.tf-cost-group .tf-repeat { margin-bottom: var(--tf-space-2); }
+
+/* Horizon totals by cost type — a small definition block beside the table.
+   Deliberately NOT a hover tooltip and NOT four more table columns: the brief
+   needs the breakdown to survive to print and PDF, and a 7-column table has no
+   room for four more. */
+.tf-cost-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tf-space-3);
+  padding: var(--tf-space-2);
+  border: var(--tf-rule-light);
+  margin: 0 0 var(--tf-space-2);
+  font-size: var(--tf-text-sm);
+}
+.tf-cost-summary div { display: flex; flex-direction: column; }
+.tf-cost-summary dt, .tf-cost-summary .tf-cost-summary-label {
+  font-size: var(--tf-text-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tf-ink-soft);
+}
+.tf-cost-summary .tf-cost-summary-value { font-weight: 700; }
+
+/* Footnotes — numbered notes under the chart, every figure in them rendered
+   from the user's own inputs. --tf-text-sm so they read as apparatus, not body
+   copy; the ol supplies the numbering the brief refers to by number. */
+.tf-footnotes { font-size: var(--tf-text-sm); color: var(--tf-ink-soft); margin: 0 0 var(--tf-space-4); padding-left: var(--tf-space-3); }
+.tf-footnotes li { margin-bottom: var(--tf-space-1); line-height: 1.5; }
+
+/* Assumptions recap — PRINT/PDF ONLY. It is page 2 of the output (between the
+   chart and the table) so a reader can see the assumptions behind the numbers,
+   but on screen it would only restate the two input steps sitting one click
+   away. `.tf-print-only` is the exact mirror of the existing `.no-print`
+   utility and is likewise general, not tool-scoped. */
+.tf-print-only { display: none; }
+.tf-recap-list { font-size: var(--tf-text-sm); }
+.tf-recap-list dt { font-weight: 700; margin-top: var(--tf-space-1); }
+.tf-recap-list dd { margin: 0 0 0 var(--tf-space-2); color: var(--tf-ink-soft); }
+
+@media print {
+  .tf-print-only { display: block; }
+  /* Pagination — page 1 chart + footnotes, page 2 the recap, page 3+ the
+     table. These three breaks are the SAME pagination the generated PDF
+     builds with addPage(), stated once per medium; if one changes the other
+     must change with it, which is why they are commented as a pair here and
+     in assets/tool-consultancy-cashflow.js. */
+  .tf-recap { break-before: page; }
+  .tf-projection-table { break-before: page; }
+  .tf-view-toggle { display: none !important; }
+  /* The chart's bar fills carry the series, so they must survive to paper —
+     browsers strip backgrounds from print by default. Same reasoning as the
+     step-number cells on tool-company-setup.html. */
+  .tf-chart-scroll svg { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .tf-chart-scroll { overflow-x: visible; }
 }
