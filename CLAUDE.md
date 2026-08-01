@@ -1,4 +1,4 @@
-v006 | 2026-08-01 | 204 lines
+v007 | 2026-08-01 | 205 lines
 
 # Working Rules
 
@@ -197,8 +197,9 @@ governance doc, so the flush is committed and pushed per Part B.
 
 **Status rules.** Code never self-closes: done items move to `review`, not
 `close`. Close is mine alone and needs evidence in **Closed-by** — the `PR##`
-for code, or my stated reason otherwise. Closed-by stays empty on any non-closed
-row.
+for code, or my stated reason otherwise. A `discard` row carries its reason
+there too: a discard without a recorded reason is a vanished row. Closed-by
+stays empty on every other status.
 
 **Schema.** `| ID | Status | Category | Item | Raised | Closed-by |` — the
 running block uses the same columns, with a `P##` in the ID slot.
