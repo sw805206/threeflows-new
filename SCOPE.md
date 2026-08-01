@@ -1,4 +1,4 @@
-v015 | 2026-07-31 | 136 lines
+v016 | 2026-07-31 | 137 lines
 
 # SCOPE.md — threeflows.com
 
@@ -110,8 +110,9 @@ client-sensitive belongs on them.
 
 ### Automated checks
 
-A scheduled GitHub Action scans the live site for broken internal links, dead
-external links, missing images, and orphaned pages. On failure GitHub emails
+A scheduled GitHub Action runs checks against the live site. The specific
+checks are defined in the workflow itself, not listed here — the workflow is
+the source of truth for what it does (PROCESS.md §7). On failure GitHub emails
 the repo owner — that email is the reminder. Findings are logged to BACKLOG.md
 by hand, through the normal Part C flush; the scan never writes backlog rows
 itself. Spelling and grammar stay manual, since automated grammar checking on
