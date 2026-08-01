@@ -130,5 +130,16 @@
     "imageAlt": "A stencil reading 'Live, Work, Create' spray-painted in white on a red brick wall.",
     "recap": "Filing the paperwork takes an afternoon. The decisions that determine whether you filed the right thing take longer — and skipping that planning step is the single most common mistake founders make.",
     "readMinutes": 8
+  },
+  {
+    "blogID": "blog-013",
+    "filename": "blog-google-workspace.html",
+    "title": "Why Google Workspace Is Enough to Start",
+    "date": "2026-03-09",
+    "status": "published",
+    "image": "assets/images/blog-google-workspace.jpg",
+    "imageAlt": "Five illustrated people stand and sit on isometric tiles, each bearing a coloured Google app icon including Gmail, Calendar, Drive, and Play.",
+    "recap": "Cash is tightest when the temptation to spend is strongest. One monthly subscription — seven to ten dollars — buys a professional foundation, and leaves the rest for the only job that matters this early: finding customers.",
+    "readMinutes": 5
   }
 ]
