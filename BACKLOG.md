@@ -1,4 +1,4 @@
-v028 | 2026-07-31 | 243 lines
+v029 | 2026-07-31 | 243 lines
 
 # BACKLOG.md — threeflows-new
 
@@ -55,7 +55,7 @@ branch, no PR.
 | BL-030 | open | refactor | `.tf-data-table td.tf-fit-assist` and `td.tf-fit-we`, plus the standalone `.tf-fit-assist` / `.tf-fit-we` rules, hardcode `#7A5410`, `#175355` and `#8F1E12` — the same three values tokenized as `--tf-wash-*-ink` in PR #93. Point them at the tokens. Deliberately excluded from #93 to keep that refactor's verification intact. Currently recorded only in the STYLE.css v41 changelog and the STYLE.md ratchet | 2026-07-31 |  |
 | BL-031 | close | governance | Add a unique-published-date rule to BLOG.md. Two posts sharing a date render fine on `blogs.html` but trip the post-page pager's collision check, which mutes Previous and Next sitewide. No duplicates exist today, so this is latent | 2026-07-31 | Already documented in BLOG.md §2 (date field) and §5 (same-date collision). Row raised in error 2026-07-31; no change needed. |
 | BL-032 | park | refactor | Card unification. `.tf-card`, `.tf-card-sm` and `.tf-ref-card` are independently declared base rules that converge on near-identical values without shared inheritance, and `index.html`'s `#trusted` is a fourth unrelated pattern. A padding, ground or hover change must be made in three or four places. Parked deliberately — churn against a problem not yet felt | 2026-07-31 |  |
-| BL-033 | open | others | Delete the `staging.threeflows.com` DNS record at Cloudflare. It has zero repo footprint — no CNAME file, no workflow, no branch, no Pages reference — and is a leftover from the github.io preview phase | 2026-07-31 |  |
+| BL-033 | close | others | Delete the `staging.threeflows.com` DNS record at Cloudflare. It has zero repo footprint — no CNAME file, no workflow, no branch, no Pages reference — and is a leftover from the github.io preview phase | 2026-07-31 | DNS record deleted at Cloudflare by user 2026-08-01. Record had zero repo footprint — leftover from the pre-cutover github.io preview phase. |
 | BL-034 | close | page | `contact.html` needs a new form endpoint, owner-managed. Promoted from §I item 2 so it is trackable as a row rather than buried in the inventory | 2026-07-31 | Endpoint deployed and verified by test submission 2026-08-01 — header row written, 10-column row with subject, notification email carries the Subject line. Code change merged in PR #95. |
 
 ## Inventory / page checklist
@@ -109,7 +109,7 @@ un-build it — so only the evidence moves, never the status.
 | privacy.html | privacy.html | close | a4c843d |
 | surveys.html | surveys.html | open | |
 | svy###.html (survey pages) | svy001.html, svy002.html — kept; redesigned later; existing Apps Script endpoints carried | open | |
-| blog-&lt;slug&gt;.html (posts) | blog-001…024 incl. 010a/010b (25 posts) — the new repo ships **slug filenames** per BLOG.md §1 (e.g. `blog-welcome-to-three-flows.html`); `blog-###` survives only as the manifest key (`blogID`). Slug scheme for the §B redirect map tracked in BL-014. **12 of 25 built** (verified on disk 2026-07-31: 12 `blog-<slug>.html` files, 12 matching `bloglist.json` entries, 1:1) | open | |
+| blog-&lt;slug&gt;.html (posts) | **Ongoing stream, no target count** — the blog is added to as posts are written. The old site's 25-post carry-over target is VOID: that repo is archived and the redirect layer was dropped (BL-001), so there is no fixed set left to work through. Posts ship as `blog-<slug>.html` per BLOG.md §1; `blog-###` survives only as the manifest key (`blogID`). **12 posts live** (verified on disk 2026-07-31: 12 `blog-<slug>.html` files, 12 matching `bloglist.json` entries, 1:1). Stays open as a stream, never completed | open | |
 | Calculator MVP page (filename TBD) | no old-repo source — the SCOPE MVP page, built fresh; deferred/placeholder until built. | open | |
 
 ### C. Form endpoints (Google Apps Script — owner-managed, reused as-is)
