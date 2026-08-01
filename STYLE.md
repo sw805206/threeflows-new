@@ -1,4 +1,4 @@
-v038 | 2026-07-31 | 1923 lines
+v039 | 2026-07-31 | 1929 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -106,9 +106,9 @@ Three rules, by job. All are 2px — the weight is constant; the **tone** assign
 
 ---
 
-## 5. Using style.css
+## 5. Using STYLE.css
 
-1. Load the Google Fonts `<link>` (top of style.css), then `<link rel="stylesheet" href="style.css">`.
+1. Load the Google Fonts `<link>` (top of style.css), then `<link rel="stylesheet" href="STYLE.css">`.
 2. Build with the provided classes:
    - `.tf-nav` + `.tf-lockup` — header
    - `.tf-kicker` + `h1/h2` + `.tf-lead` — section openers
@@ -232,6 +232,12 @@ Governance-only pass; no CSS changed and no page was touched.
   header at all — they carry `#tf-header` / `#tf-footer` placeholders filled by
   `assets/partials.js` — and `/services` is not a page. Absolute paths also
   violate SCOPE.md's relative-links constraint.
+- **v039 follow-up — §5's `<link>` path corrected to `STYLE.css`.** Item 1 told
+  the reader to write `href="style.css"`. GitHub Pages serves from a
+  case-sensitive filesystem, so that exact instruction 404s the entire
+  stylesheet; the §5 heading was corrected with it. The remaining lowercase
+  mentions elsewhere in this file are prose, not instructions, and are left
+  alone.
 
 ### Shared header/footer (partials.html + site shell) — 2026-07-15
 
