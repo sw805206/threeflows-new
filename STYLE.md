@@ -1,4 +1,4 @@
-v041 | 2026-08-01 | 1963 lines
+v042 | 2026-08-01 | 2014 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -206,6 +206,35 @@ requests it in the font `<link>`; every other page uses the stack above.
 Each row: which build first needed a pattern, and what was added to
 `STYLE.css`. Patterns live in `STYLE.css` by default; a genuine one-off may stay
 page-local under the rule in §5, and is recorded here so the next page finds it.
+
+### Fit-dot names corrected in the v40 records — 2026-08-01
+
+Documentation only. No CSS rule, selector, value or declaration changed, and no
+HTML or JS changed — verified by stripping every comment from `STYLE.css` and
+diffing the remainder, which is byte-identical.
+
+- **Three v40 passages named classes and hues that never shipped.** The
+  STYLE.css v40 changelog wrote the modifiers with a `-dot-` infix on
+  teal/plum/stone; this record's "Fit-dot indicator (NEW)" entry named
+  `.tf-fit-dot-solo` / `-together` / `-no` with three wrong hex pairs; and the
+  step-number bullet named `td.tf-fit-solo/-together/-no`. **Shipped is
+  `.tf-fit-you` / `-assist` / `-we` on brick / ochre / teal.** All three are
+  corrected, with the old names kept as superseded rather than erased.
+- **Why it mattered enough to fix.** §5 tells the next author to search this
+  record before defining a new pattern. An entry naming classes that do not
+  exist does not merely fail that check — it sends the reader looking for
+  `.tf-fit-dot-solo`, finding nothing, and concluding the pattern is absent when
+  it is present under another name. A wrong ratchet entry is worse than none.
+- **`.tf-fit-dot` was wrongly called retired.** It ships, six times, in the two
+  legends. v40 retired the dot *column*, not the class.
+- **A trap worth recording: the fit cells are JS-generated.** `.tf-col-num` and
+  the three `td.tf-fit-*` rules have zero consumers in the static HTML because
+  `assets/tool-company-setup.js` writes those cells at runtime. Grepping only
+  `*.html` makes them look like dead CSS — they are not. Any future audit of
+  unused selectors must read the JS too.
+- **v42 tokenized the literals.** The v40 entry's `.tf-pill-tint-*` deep-text
+  hexes became `--tf-wash-*-ink` tokens, noted in the STYLE.css entry so a
+  reader is not sent looking for literals the rules no longer contain.
 
 ### Reuse and one-off rule, quoted values, skeleton refresh — 2026-07-31
 
@@ -1623,19 +1652,27 @@ edited in place rather than superseded in a new entry each time).
   Print-visible on purpose, unlike the legend beneath it (screen-only) — a
   cost caveat is still relevant on paper.
 
-- **Fit-dot indicator (NEW) — `.tf-fit-dot-solo` / `-together` / `-no` +
-  `.tf-fit-legend`.** The task brief asked whether the reference's bordered
-  "who's involved" dots fit the **existing** `.tf-pill-tint-plum/-teal/-stone`
-  set — checked, and they don't: those are solid TEXT pills (wash background +
-  deep text colour), not standalone bordered dots. Confirmed the reference's
-  own literal hex values (`#DDEDED`/`#175355` solo·teal, `#F2E3EA`/`#632846`
-  together·plum, `#ECE7E1`/`#55504D` no·stone) are an **exact** match for the
-  site's existing `--tf-wash-teal/-plum/-stone` tokens and the deep-text
-  literals `.tf-pill-tint-teal/-plum/-stone` already hardcode — so the dot is a
-  genuinely NEW **shape** (a small `border-radius:50%` marker, the same
-  precedent already sanctioned inside `.tf-pill-dot`) applied as a standalone
-  legend/cell marker, reusing colours the sheet already has. No new hue enters
-  the palette.
+- **Fit-dot indicator (NEW) — `.tf-fit-dot` + `.tf-fit-you` / `.tf-fit-assist`
+  / `.tf-fit-we` + `.tf-fit-legend`.** The task brief asked whether the
+  reference's bordered "who's involved" dots fit the **existing**
+  `.tf-pill-tint-*` set — checked, and they don't: those are solid TEXT pills
+  (wash background + deep text colour), not standalone bordered dots. Confirmed
+  the reference's own literal hex values (`#F7E4E1`/`#8F1E12` you·brick,
+  `#F4EAD4`/`#7A5410` assist·ochre, `#DDEDED`/`#175355` we·teal) are an
+  **exact** match for the site's existing `--tf-wash-brick/-ochre/-teal` tokens
+  and the deep-text literals `.tf-pill-tint-brick/-ochre/-teal` already hardcode
+  — so the dot is a genuinely NEW **shape** (a small `border-radius:50%` marker,
+  the same precedent already sanctioned inside `.tf-pill-dot`) applied as a
+  standalone legend/cell marker, reusing colours the sheet already has. No new
+  hue enters the palette.
+
+  **CORRECTED 2026-08-01 (v042).** As written, this entry named the modifiers
+  `.tf-fit-dot-solo` / `-together` / `-no` and quoted `#DDEDED`/`#175355`
+  solo·teal, `#F2E3EA`/`#632846` together·plum, `#ECE7E1`/`#55504D` no·stone.
+  **None of those six names or hexes ever shipped** — the classes are
+  `-you` / `-assist` / `-we` and the hues are brick / ochre / teal. The old
+  names are kept here as superseded so anyone who meets them can follow the
+  trail; the body above now states what v40 actually built.
 
 - **Print output (NEW, sitewide) — `.no-print` + `@page A4`.** The first print
   stylesheet on the site. Deliberately GENERAL rather than tool-scoped: chrome
@@ -1696,11 +1733,25 @@ panel and reviewed the header on-screen; eight findings, all addressed:
 - **Checkbox and Who's-involved columns REMOVED entirely** (screen and print,
   not just print-hidden as a first pass mistakenly assumed) — `.tf-rowcheck`
   and its "mark step done" affordance are gone. The step **number cell is now
-  colour-coded** instead (`.tf-data-table td.tf-fit-solo/-together/-no`,
-  reusing the retired `.tf-fit-dot`'s exact tokens as a cell background
-  instead of a separate dot column) — reclaims the width both dropped columns
-  held. The legend (`.tf-fit-legend`) is unchanged and still explains the
-  colours.
+  colour-coded** instead (`.tf-data-table td.tf-fit-you/-assist/-we`, reusing
+  the dot's exact tokens as a cell background instead of a separate dot column)
+  — reclaims the width both dropped columns held. The legend
+  (`.tf-fit-legend`) is unchanged and still explains the colours.
+
+  **CORRECTED 2026-08-01 (v042), two errors.** First, this entry named the cell
+  classes `td.tf-fit-solo/-together/-no`; the shipped classes are
+  `td.tf-fit-you/-assist/-we` (old names kept as superseded, not erased).
+  Second, it called `.tf-fit-dot` **retired**. It is not: `.tf-fit-dot` is
+  defined in `STYLE.css` and used **six times** in `tool-company-setup.html` —
+  two legends of three dots each. What v40 retired was the separate dot
+  *column*, not the class; the dot survives as the legend's colour key.
+
+  The colour-coded cells themselves **do ship**, but the markup is generated at
+  runtime: `assets/tool-company-setup.js` writes
+  `<td class="tf-col-num tf-fit-<who>">` per row, so `.tf-col-num` and the three
+  `td.tf-fit-*` rules have no consumer in the static `.html` and are easy to
+  mistake for dead CSS on a grep of the markup alone. They are live — 25 and 21
+  consumers respectively in the rendered DOM.
 - **Hover vs. active state.** `:hover` on the step rail previously turned
   brick text — the SAME treatment the truly active step uses — so hovering a
   different step while one was already active read as two "active" steps at
