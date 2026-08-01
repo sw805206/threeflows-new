@@ -1,4 +1,4 @@
-v039 | 2026-07-31 | 1929 lines
+v040 | 2026-07-31 | 1929 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -108,7 +108,7 @@ Three rules, by job. All are 2px — the weight is constant; the **tone** assign
 
 ## 5. Using STYLE.css
 
-1. Load the Google Fonts `<link>` (top of style.css), then `<link rel="stylesheet" href="STYLE.css">`.
+1. Load the Google Fonts `<link>` (top of STYLE.css), then `<link rel="stylesheet" href="STYLE.css">`.
 2. Build with the provided classes:
    - `.tf-nav` + `.tf-lockup` — header
    - `.tf-kicker` + `h1/h2` + `.tf-lead` — section openers
