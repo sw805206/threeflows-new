@@ -1,4 +1,4 @@
-v027 | 2026-07-31 | 243 lines
+v028 | 2026-07-31 | 243 lines
 
 # BACKLOG.md — threeflows-new
 
@@ -56,7 +56,7 @@ branch, no PR.
 | BL-031 | close | governance | Add a unique-published-date rule to BLOG.md. Two posts sharing a date render fine on `blogs.html` but trip the post-page pager's collision check, which mutes Previous and Next sitewide. No duplicates exist today, so this is latent | 2026-07-31 | Already documented in BLOG.md §2 (date field) and §5 (same-date collision). Row raised in error 2026-07-31; no change needed. |
 | BL-032 | park | refactor | Card unification. `.tf-card`, `.tf-card-sm` and `.tf-ref-card` are independently declared base rules that converge on near-identical values without shared inheritance, and `index.html`'s `#trusted` is a fourth unrelated pattern. A padding, ground or hover change must be made in three or four places. Parked deliberately — churn against a problem not yet felt | 2026-07-31 |  |
 | BL-033 | open | others | Delete the `staging.threeflows.com` DNS record at Cloudflare. It has zero repo footprint — no CNAME file, no workflow, no branch, no Pages reference — and is a leftover from the github.io preview phase | 2026-07-31 |  |
-| BL-034 | open | page | `contact.html` needs a new form endpoint, owner-managed. Promoted from §I item 2 so it is trackable as a row rather than buried in the inventory | 2026-07-31 |  |
+| BL-034 | close | page | `contact.html` needs a new form endpoint, owner-managed. Promoted from §I item 2 so it is trackable as a row rather than buried in the inventory | 2026-07-31 | Endpoint deployed and verified by test submission 2026-08-01 — header row written, 10-column row with subject, notification email carries the Subject line. Code change merged in PR #95. |
 
 ## Inventory / page checklist
 
@@ -233,9 +233,9 @@ blog-008/009 (charts) pull JS libs; the calculators use none. Repo-local assets
 1. **Interim redirects** — **DROPPED, not pending.** No redirect layer is being
    implemented: old URLs 404 by decision (see BL-001), so the "(assumed)" targets
    never needed confirming. The §B map that carried them was deleted in v023.
-2. **contact.html new endpoint** — the fresh form needs a new endpoint created
-   (owner-managed), replacing the dropped inquiry/intake endpoints. Now tracked
-   as **BL-034**.
+2. **contact.html new endpoint** — **RESOLVED.** The endpoint is deployed and
+   verified (2026-08-01), replacing the dropped inquiry/intake endpoints. Closed
+   as **BL-034**; nothing outstanding.
 3. **CNAME apex vs www** — **RESOLVED at cutover 2026-07-28 in favour of the
    apex.** Nothing pending; see §G for the detail.
 4. **Awareness (no decision needed):** blog-010a/010b pair and non-chronological
