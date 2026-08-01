@@ -35,7 +35,7 @@
  * ── FRONTEND CONTRACT ─────────────────────────────────────────────────────
  * assets/contact-form.js POSTs `new FormData(form)` (multipart/form-data) and
  * checks ONLY `res.ok`. Fields on e.parameter:
- *   first, last, email, message, website (honeypot),
+ *   first, last, email, subject, message, website (honeypot),
  *   tz (browser IANA zone), geo_city, geo_region, geo_country (best-effort,
  *   may be empty when the client-side IP lookup is blocked/times out).
  *   - A 200 (any ContentService text output) reads as success.
@@ -48,9 +48,11 @@
 var NOTIFY_TO = 'contact@threeflows.com';
 
 /** Tab that stores submissions, and its header row (labels exactly as below —
- *  the first column is just "timestamp", with no timezone annotation). */
+ *  lowercase, and the timestamp column is just "timestamp", with no timezone
+ *  annotation). Column order matches the form: subject sits between email and
+ *  message, and timestamp immediately follows message. */
 var SHEET_NAME = 'Submissions';
-var HEADER = ['first', 'last', 'email', 'message', 'timestamp',
+var HEADER = ['first', 'last', 'email', 'subject', 'message', 'timestamp',
               'tz', 'geo_city', 'geo_region', 'geo_country'];
 
 /**
@@ -64,19 +66,27 @@ function ok_() {
 }
 
 /**
- * Append the submission to the Submissions tab, creating the tab (with a header
- * row) on first use. Throws if the write fails — the caller uses that to decide
- * whether the submission was actually saved. `ts` is the pre-formatted
+ * Append the submission to the Submissions tab, creating the tab if it is
+ * missing. Throws if the write fails — the caller uses that to decide whether
+ * the submission was actually saved. `ts` is the pre-formatted
  * (America/New_York, minute precision) timestamp string.
+ *
+ * The header row is written whenever the tab is EMPTY, not only when the tab is
+ * created. Keying it to creation alone meant a tab that already existed — or one
+ * cleared by hand — never got a header, which is how the live Sheet ended up
+ * headerless. Empty is the honest test: it covers a fresh tab and a cleared one,
+ * and never touches a tab that already holds rows. No backfill of old rows.
  */
-function saveRow_(ts, first, last, email, message, tz, geoCity, geoRegion, geoCountry) {
+function saveRow_(ts, first, last, email, subject, message, tz, geoCity, geoRegion, geoCountry) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
+  }
+  if (sheet.getLastRow() === 0) {
     sheet.appendRow(HEADER);
   }
-  sheet.appendRow([first, last, email, message, ts, tz, geoCity, geoRegion, geoCountry]);
+  sheet.appendRow([first, last, email, subject, message, ts, tz, geoCity, geoRegion, geoCountry]);
 }
 
 /**
@@ -85,13 +95,14 @@ function saveRow_(ts, first, last, email, message, tz, geoCity, geoRegion, geoCo
  * not fail the whole request (the submission is already safe in the Sheet).
  * The timestamp line carries the value only — no timezone text.
  */
-function notify_(ts, first, last, email, message, tz, geoCity, geoRegion, geoCountry) {
+function notify_(ts, first, last, email, subject, message, tz, geoCity, geoRegion, geoCountry) {
   var body =
     'New contact form submission:\n\n' +
     'Timestamp:   ' + ts + '\n' +
     'First:       ' + first + '\n' +
     'Last:        ' + last + '\n' +
     'Email:       ' + email + '\n' +
+    'Subject:     ' + subject + '\n' +
     'Message:     ' + message + '\n\n' +
     'Browser tz:  ' + tz + '\n' +
     'Geo city:    ' + geoCity + '\n' +
@@ -121,6 +132,7 @@ function doPost(e) {
   var first      = (p.first       || '').trim();
   var last       = (p.last        || '').trim();
   var email      = (p.email       || '').trim();
+  var subject    = (p.subject     || '').trim();
   var message    = (p.message     || '').trim();
   var website    = (p.website     || '').trim();   // honeypot
   var tz         = (p.tz          || '').trim();
@@ -139,7 +151,7 @@ function doPost(e) {
   // 2. Save. A failure here means nothing was stored → signal failure.
   var saved = false;
   try {
-    saveRow_(ts, first, last, email, message, tz, geoCity, geoRegion, geoCountry);
+    saveRow_(ts, first, last, email, subject, message, tz, geoCity, geoRegion, geoCountry);
     saved = true;
   } catch (err) {
     // Not saved: rethrow so the platform returns 500 (res.ok === false) and the
@@ -149,7 +161,7 @@ function doPost(e) {
 
   // 3. Notify. The row is safe; a mail failure must not fail the request.
   try {
-    notify_(ts, first, last, email, message, tz, geoCity, geoRegion, geoCountry);
+    notify_(ts, first, last, email, subject, message, tz, geoCity, geoRegion, geoCountry);
   } catch (mailErr) {
     // Intentionally swallowed — logged for the owner, invisible to the user.
     console.error('Notification email failed (row was saved): ' + mailErr);
