@@ -1,4 +1,4 @@
-v037 | 2026-07-31 | 1836 lines
+v038 | 2026-07-31 | 1923 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -117,34 +117,121 @@ Three rules, by job. All are 2px — the weight is constant; the **tone** assign
    - `.tf-stat-value` / `.tf-stat-label` — stats
 3. Take every color/size from the `--tf-*` tokens; don't hard-code hexes.
 
+### Reuse, one-offs, and quoted values
+
+**Before defining any new pattern, search the ratchet record in §6.** If an
+existing pattern already does the job, reuse it. A new pattern is for a
+genuinely new need, not a slightly different instance of an old one.
+
+**A pattern used on two or more pages belongs in `STYLE.css`.** That is the
+default and covers almost everything.
+
+**A genuine one-off may stay in a page-local `<style>` block**, under three
+conditions:
+
+1. It is built entirely from existing tokens — `var(--tf-*)`, the spacing and
+   type scales. Never a raw hex, never a raw px where a token exists.
+2. It gets a one-line note in the §6 ratchet record naming the page and the
+   pattern, so the next page that wants it promotes it instead of rebuilding it.
+3. On its **second** use it is promoted into `STYLE.css` rather than copied.
+   Two page-local copies of one pattern is the failure this rule prevents.
+
+Internal-only pages (`int-*.html`) are outside the ratchet: their styles are
+never shared with visitor pages, so there is nothing to promote or rebuild.
+
+**Quoted values cross documents.** When a `STYLE.css` change alters a value
+quoted verbatim elsewhere — a hex in `int-stylebook.html`, a measurement in
+`PROCESS.md`, a token name in `SCOPE.md` — both files change in the **same
+commit**. A value quoted in two places drifts silently. The `.tf-pill-tint-*`
+literals tokenized in v041 are the worked example.
+
 ### Minimal page skeleton
 
-```html
-<header class="tf-nav">
-  <a class="tf-lockup" href="/">
-    <img src="logo-mark.svg" alt="" class="tf-lockup-mark">
-    <span class="tf-lockup-name">Three Flows Solutions</span>
-  </a>
-  <nav class="tf-nav-links">
-    <a href="/services">Services</a>
-    <a href="/about">About</a>
-    <a href="/contact" aria-current="page">Contact</a>
-  </nav>
-</header>
+A page does **not** hardcode the header or nav. The shared chrome lives once in
+`partials.html` and is fetched and injected into the two placeholder divs by
+`assets/partials.js`; every internal link is a relative `.html` filename, per
+SCOPE.md's relative-links constraint. Derived from `index.html`:
 
-<section class="tf-section">
-  <div class="tf-kicker">E-commerce launch &amp; retail growth</div>
-  <h1>Launch your retail business with confidence</h1>
-  <p class="tf-lead tf-secondary">Plan, source, launch, and grow — with enterprise-level rigor at every stage.</p>
-  <a class="tf-btn tf-btn-primary" href="/contact">See how we work →</a>
-</section>
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page name — Three Flows Solutions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+  <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+</head>
+<body class="tf-app">
+  <!-- Shared header injected from partials.html -->
+  <div id="tf-header"></div>
+
+  <main>
+    <section class="tf-section">
+      <div class="tf-container">
+        <div class="tf-kicker">Section kicker</div>
+        <h1>Page heading</h1>
+        <p class="tf-prose-intro">One-paragraph intro.</p>
+        <div class="tf-btn-row">
+          <a class="tf-btn tf-btn-primary" href="contact.html">Contact us</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Shared footer injected from partials.html -->
+  <div id="tf-footer"></div>
+
+  <script src="assets/partials.js" defer></script>
+</body>
+</html>
 ```
+
+Nav targets are the real relative filenames: `index.html`, `business-planning.html`,
+`sourcing-support.html`, `launch-hypercare.html`, `ongoing-management.html`,
+`blogs.html`, `references.html`, `about.html`, `contact.html`, `privacy.html`.
+A page carrying the ital font axis (only `index.html`, for the band-3 quote)
+requests it in the font `<link>`; every other page uses the stack above.
 
 ---
 
 ## 6. Ratchet-rule record
 
-Each row: which build first needed a pattern, and what was added to `style.css`. Patterns always live in `style.css`, never page-local.
+Each row: which build first needed a pattern, and what was added to
+`STYLE.css`. Patterns live in `STYLE.css` by default; a genuine one-off may stay
+page-local under the rule in §5, and is recorded here so the next page finds it.
+
+### Reuse and one-off rule, quoted values, skeleton refresh — 2026-07-31
+
+Governance-only pass; no CSS changed and no page was touched.
+
+- **The one-off rule now exists in §5.** §6's preamble previously said patterns
+  "always live in `style.css`, never page-local", which contradicted SCOPE.md
+  v015 §3 and PROCESS.md v008 §6 step 5 — both of which permit a page-local
+  one-off built from tokens. The preamble is corrected and §5 carries the full
+  rule: token-built only, a one-line note here, and **promotion into `STYLE.css`
+  on second use** rather than a second copy.
+- **A reuse check comes first.** Search this record before defining anything
+  new; a new pattern is for a genuinely new need, not a variant of an old one.
+- **Internal-only pages (`int-*.html`) are outside the ratchet** — their styles
+  are never shared with visitor pages, so there is nothing to promote.
+- **Quoted values cross documents.** A `STYLE.css` change that alters a value
+  quoted verbatim in another file changes both in the same commit. The
+  `.tf-pill-tint-*` tokenization (v041) is the worked example: the hexes were
+  typed into `int-stylebook.html` a second time and could drift.
+- **§5's page skeleton was refreshed from `index.html` and `partials.html`.**
+  The old one was untouched Claude Design v1: it hardcoded a `<header class=
+  "tf-nav">` with absolute links (`/services`, `/about`, `/contact`), referenced
+  lowercase `style.css` and a root-level `logo-mark.svg`. Real pages hardcode no
+  header at all — they carry `#tf-header` / `#tf-footer` placeholders filled by
+  `assets/partials.js` — and `/services` is not a page. Absolute paths also
+  violate SCOPE.md's relative-links constraint.
 
 ### Shared header/footer (partials.html + site shell) — 2026-07-15
 
