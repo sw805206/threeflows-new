@@ -75,7 +75,13 @@
 
     .bk-c-id      { width: 74px;  white-space: nowrap; font-weight: 500; }
     .bk-c-status  { width: 92px;  white-space: nowrap; }
-    .bk-c-cat     { width: 106px; white-space: nowrap; }
+    /* CONTAINED, deliberately. This cell held 862 characters once (see the
+       validation note in the script) and, with white-space:nowrap, rendered
+       5828px wide — pushing Item, Raised and Closed-by outside the scroller
+       with no error shown. A max-width plus wrapping means a bad value can
+       never widen the table again: it grows DOWN, inside its own column. */
+    .bk-c-cat     { width: 106px; max-width: 106px; white-space: normal;
+                    overflow-wrap: anywhere; }
     .bk-c-item    { min-width: 420px; }   /* long text WRAPS — never truncated */
     .bk-c-raised  { width: 100px; white-space: nowrap; color: var(--tf-ink-soft); }
     .bk-c-closed  { width: 200px; }
@@ -107,6 +113,16 @@
     tr[data-rank="4"] td, tr[data-rank="5"] td { color: var(--tf-ink-soft); }
 
     .bk-cat { font-size: var(--tf-text-xs); color: var(--tf-ink-soft); letter-spacing: 0.04em; text-transform: uppercase; }
+    /* Unknown category — same visual grammar as .bk-s-unknown for status:
+       brick text in a brick hairline, so a bad value reads as an error rather
+       than as data. No text-transform: the raw value is shown as-is so it is
+       obvious what landed in the field. */
+    .bk-cat-unknown { display: inline-block; font-size: var(--tf-text-xs); font-weight: 700;
+                      color: var(--tf-brick); background: var(--tf-paper);
+                      box-shadow: inset 0 0 0 1px var(--tf-brick);
+                      border-radius: 4px; padding: 2px var(--tf-space-1);
+                      text-transform: none; letter-spacing: 0; }
+    .bk-row-bad td { background: color-mix(in srgb, var(--tf-brick) 5%, var(--tf-paper)); }
     .bk-empty { padding: var(--tf-space-6); text-align: center; color: var(--tf-ink-soft); }
 
     .bk-error { border: var(--tf-rule); border-left: 4px solid var(--tf-brick); border-radius: 4px;
@@ -177,6 +193,49 @@
   var RANK = { open: 1, review: 2, park: 3, discard: 4, close: 5 };
   var RANK_UNKNOWN = 99;
 
+  /* ── CATEGORY VALIDATION — why this exists ────────────────────────────────
+     On 2026-08-01 three rows reached main with 571-862 characters of Item
+     prose sitting in the CATEGORY field. The v032/v033 edit scripts split each
+     row on '|' and wrote the new Item text to index [3]; splitting
+     "| a | b | c | d | e | f |" yields 8 elements with empties at [0] and [7],
+     so [3] is Category and [4] is Item. An off-by-one.
+
+     Every check of the day passed:
+       - field count stayed at SIX, because a field was REPLACED not added, so
+         a structural guard could not have caught it;
+       - row.textContent.includes(...) matched, because textContent spans the
+         whole <tr> and the text WAS present — in the wrong column.
+     This viewer then rendered the prose as a filter chip and, via
+     .bk-c-cat's white-space:nowrap, blew the column to 5828px and pushed three
+     columns off-screen. Silent, and it hid half the table.
+
+     Hence: validate the value, never the shape. A post-edit check must assert
+     on the SPECIFIC CELL and on the CATEGORY TALLY — not on row text.
+
+     The set is read from BACKLOG.md's own "**Categories:**" header when that
+     line can be parsed, so the doc stays the single source of truth; the
+     literal below is only a fallback for when it cannot. */
+  var CATEGORIES_FALLBACK =
+    ['process', 'feature', 'page', 'bug', 'governance', 'refactor', 'style', 'others'];
+  var CATEGORIES = null;          /* Set once parsed; null until then */
+  var CATEGORY_SOURCE = 'fallback';
+
+  /* Read "**Categories:** a, b, c" from the file header. Returns null if the
+     line is absent or unparseable, so the caller can fall back rather than
+     silently validating against nothing. */
+  function readCategories(text) {
+    var m = /^\*\*Categories:\*\*\s*(.+)$/m.exec(text);
+    if (!m) { return null; }
+    var list = m[1].split(',').map(function (s) {
+      return s.replace(/`/g, '').trim().toLowerCase();
+    }).filter(Boolean);
+    return list.length ? list : null;
+  }
+
+  function isKnownCategory(c) {
+    return (CATEGORIES || CATEGORIES_FALLBACK).indexOf(c) !== -1;
+  }
+
   /* A literal pipe inside a cell is written \| in the source. Swap it for a
      sentinel BEFORE splitting the row, restore it after — a naive split on |
      would corrupt those rows into extra columns. U+0000 cannot occur in the
@@ -224,6 +283,11 @@
   function parse(text) {
     var lines = text.split(/\r?\n/);
     var stamp = (lines[0] || '').trim();
+
+    /* Category vocabulary comes from the doc itself where possible. */
+    var declared = readCategories(text);
+    CATEGORIES = declared || CATEGORIES_FALLBACK;
+    CATEGORY_SOURCE = declared ? 'BACKLOG.md header' : 'built-in fallback';
 
     /* Take ONLY the table under "## Backlog", stopping at the next "## ".
        §A–§I use different schemas and are ignored entirely. */
@@ -305,6 +369,17 @@
     return Object.prototype.hasOwnProperty.call(RANK, status) ? 'bk-s-' + status : 'bk-s-unknown';
   }
 
+  /* Same shape as statusClass: a value outside the vocabulary gets the error
+     treatment rather than being rendered as ordinary data. */
+  function categoryCell(cat) {
+    if (isKnownCategory(cat)) {
+      return '<span class="bk-cat">' + escapeHtml(cat) + '</span>';
+    }
+    var shown = cat.length > 80 ? cat.slice(0, 80) + '…' : cat;
+    return '<span class="bk-cat-unknown" title="' + escapeHtml(cat) +
+           '">! unknown category: ' + escapeHtml(shown) + '</span>';
+  }
+
   function matches(row) {
     if (activeStatus.size && !activeStatus.has(row.status)) { return false; }
     if (activeCat.size && !activeCat.has(row.category)) { return false; }
@@ -323,11 +398,12 @@
       body.innerHTML = '<tr><td class="bk-empty" colspan="6">No rows match these filters.</td></tr>';
     } else {
       body.innerHTML = shown.map(function (r) {
-        return '<tr data-rank="' + rankOf(r.status) + '">' +
+        return '<tr data-rank="' + rankOf(r.status) + '"' +
+          (isKnownCategory(r.category) ? '' : ' class="bk-row-bad"') + '>' +
           '<td class="bk-c-id">' + escapeHtml(r.id) + '</td>' +
           '<td class="bk-c-status"><span class="bk-status ' + statusClass(r.status) + '">' +
             escapeHtml(r.statusRaw) + '</span></td>' +
-          '<td class="bk-c-cat"><span class="bk-cat">' + escapeHtml(r.category) + '</span></td>' +
+          '<td class="bk-c-cat">' + categoryCell(r.category) + '</td>' +
           '<td class="bk-c-item">' + renderCell(r.item) + '</td>' +
           '<td class="bk-c-raised">' + escapeHtml(r.raised) + '</td>' +
           '<td class="bk-c-closed">' + renderCell(r.closedBy) + '</td>' +
@@ -346,8 +422,17 @@
       return escapeHtml(s) + ' <strong>' + counts[s] + '</strong>';
     }).join(' · ');
 
+    /* A bad row must be findable even when it is scrolled out of view, so the
+       count sits in the always-visible tally line, not only on the row. */
+    var badCount = ALL.filter(function (r) { return !isKnownCategory(r.category); }).length;
+    var badNote = badCount
+      ? ' &nbsp;—&nbsp; <span style="color: var(--tf-brick); font-weight: 700;">' + badCount +
+        ' row' + (badCount === 1 ? '' : 's') + ' with an unknown category</span>'
+      : '';
+
     document.getElementById('bk-tally').innerHTML =
-      tally + ' &nbsp;—&nbsp; showing <strong>' + shown.length + '</strong> of <strong>' + ALL.length + '</strong>';
+      tally + ' &nbsp;—&nbsp; showing <strong>' + shown.length + '</strong> of <strong>' + ALL.length +
+      '</strong>' + badNote;
   }
 
   var counts = {};
@@ -382,8 +467,13 @@
       }));
     });
 
+    /* Only sanctioned values become chips. An unknown value is a defect, not a
+       filter: turning it into a chip is exactly how 862 characters of prose
+       ended up in the filter bar. It stays visible on its own row instead. */
     var catCounts = {};
-    ALL.forEach(function (r) { catCounts[r.category] = (catCounts[r.category] || 0) + 1; });
+    ALL.forEach(function (r) {
+      if (isKnownCategory(r.category)) { catCounts[r.category] = (catCounts[r.category] || 0) + 1; }
+    });
     Object.keys(catCounts).sort().forEach(function (c) {
       catHost.appendChild(chip(c, catCounts[c], false, function () {
         if (activeCat.has(c)) { activeCat.delete(c); } else { activeCat.add(c); }
