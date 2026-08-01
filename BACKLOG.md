@@ -1,4 +1,4 @@
-v025 | 2026-07-31 | 235 lines
+v026 | 2026-07-31 | 243 lines
 
 # BACKLOG.md — threeflows-new
 
@@ -50,6 +50,13 @@ branch, no PR.
 | BL-025 | open | feature | `.tf-flow` orphaned sitewide by the service-detail redesign — the numbered engage band is deleted from all four service pages, its only HTML consumers (verified by grep). CSS retained per the `.tf-stat-grid` precedent in BL-012. `.tf-flow-label` / `.tf-flow-note` survive; `.tf-service-track` reuses them. Disposition open: keep as a paper-ground pattern awaiting first reuse, or remove. | 2026-07-26 | |
 | BL-026 | open | feature | `.tf-btn-secondary` and the scoped `.tf-cta .tf-btn-secondary` override orphaned by the CTA band's removal from the four service pages, its only HTML consumers (verified by grep). `--tf-ink-raised` exists solely for that override. `.tf-cta` itself survives on index.html band 7. Disposition open. | 2026-07-26 | |
 | BL-027 | close | page | `tool-company-setup.html` built — the first tool under the hidden `tools.html` (a single hand-linked card added there; BL-009's manifest/TOOLS.md scheme stays open, deferred by explicit human decision). New STYLE.css/STYLE.md patterns: the choice (radio-pill) kit, the data table, the fit-dot indicator, `.tf-panel-head`, and the site's first print stylesheet (STYLE.md v036, STYLE.css v040, §6 "Company setup tool"). Branch `feat/tool-company-setup` | 2026-07-29 | User ratified — tool-company-setup.html shipped. |
+| BL-028 | open | refactor | Re-normalize the 15 committed client logos to PROCESS.md §1's sizing rule: trim empty margin, read the rendered slot height from `STYLE.css`, scale to 2x. Current set spans 51x14 to 725x287; `client-wayfair.png` is 725x287 and 72 KB against a 2-14 KB norm, and it and `client-concentrix.png` exceed the old documented cap. Also produce `-trim` variants where a client appears in `index.html`'s `#trusted` row. Referenced by PROCESS.md §1 "Known state" | 2026-07-31 |  |
+| BL-029 | open | feature | Build the scheduled scan GitHub Action (PROCESS.md §7, which currently documents the process for a workflow that does not exist). Scope: internal link integrity, external link HTTP status, missing image references, orphaned pages; the recap-vs-intro diff currently done by hand in PROCESS.md §2, which moves here on completion; `bloglist.json` date-format validation, since ISO YYYY-MM-DD is load-bearing for sort order and a malformed date sorts wrong silently; and two style-drift checks — raw hex or px inside page-local `<style>` blocks, and near-duplicate page-local style blocks across pages. Failure emails the owner; no Issues, no bot-written backlog rows | 2026-07-31 |  |
+| BL-030 | open | refactor | `.tf-data-table td.tf-fit-assist` and `td.tf-fit-we`, plus the standalone `.tf-fit-assist` / `.tf-fit-we` rules, hardcode `#7A5410`, `#175355` and `#8F1E12` — the same three values tokenized as `--tf-wash-*-ink` in PR #93. Point them at the tokens. Deliberately excluded from #93 to keep that refactor's verification intact. Currently recorded only in the STYLE.css v41 changelog and the STYLE.md ratchet | 2026-07-31 |  |
+| BL-031 | open | governance | Add a unique-published-date rule to BLOG.md. Two posts sharing a date render fine on `blogs.html` but trip the post-page pager's collision check, which mutes Previous and Next sitewide. No duplicates exist today, so this is latent | 2026-07-31 |  |
+| BL-032 | park | refactor | Card unification. `.tf-card`, `.tf-card-sm` and `.tf-ref-card` are independently declared base rules that converge on near-identical values without shared inheritance, and `index.html`'s `#trusted` is a fourth unrelated pattern. A padding, ground or hover change must be made in three or four places. Parked deliberately — churn against a problem not yet felt | 2026-07-31 |  |
+| BL-033 | open | others | Delete the `staging.threeflows.com` DNS record at Cloudflare. It has zero repo footprint — no CNAME file, no workflow, no branch, no Pages reference — and is a leftover from the github.io preview phase | 2026-07-31 |  |
+| BL-034 | open | page | `contact.html` needs a new form endpoint, owner-managed. Promoted from §I item 2 so it is trackable as a row rather than buried in the inventory | 2026-07-31 |  |
 
 ## Inventory / page checklist
 
@@ -227,7 +234,8 @@ blog-008/009 (charts) pull JS libs; the calculators use none. Repo-local assets
    implemented: old URLs 404 by decision (see BL-001), so the "(assumed)" targets
    never needed confirming. The §B map that carried them was deleted in v023.
 2. **contact.html new endpoint** — the fresh form needs a new endpoint created
-   (owner-managed), replacing the dropped inquiry/intake endpoints.
+   (owner-managed), replacing the dropped inquiry/intake endpoints. Now tracked
+   as **BL-034**.
 3. **CNAME apex vs www** — **RESOLVED at cutover 2026-07-28 in favour of the
    apex.** Nothing pending; see §G for the detail.
 4. **Awareness (no decision needed):** blog-010a/010b pair and non-chronological
