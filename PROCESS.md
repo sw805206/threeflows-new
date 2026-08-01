@@ -1,4 +1,4 @@
-v008 | 2026-07-31 | 270 lines
+v009 | 2026-08-01 | 273 lines
 
 # PROCESS.md — Human/Claude working procedures (this project)
 
@@ -63,8 +63,10 @@ point → preview → approve → promote + clean flow, with these differences.
   PNG, with the mark's own colours preserved — Claude never recolours a mark.
   Source formats vary (SVG/PNG/WEBP/AVIF/JPEG); all normalize to this.
 - **Size is derived from the stylesheet, never hardcoded.** A fixed bounding box
-  is what produced the current inconsistency: it lets a square mark render tiny
-  beside a wide wordmark, and the committed set now spans 51×14 to 725×287.
+  is the wrong instrument: it sizes the canvas rather than the mark, so a square
+  mark can render at a very different optical weight from a wide wordmark.
+  STYLE.css caps rendered size in both placements, which is what actually keeps
+  the set even.
   Instead:
   1. **Trim the surrounding empty margin first** — autocrop the alpha, or
      flood-fill from the edges on an opaque source. Untrimmed padding is the
@@ -95,11 +97,12 @@ point → preview → approve → promote + clean flow, with these differences.
   change — governance-scoped, handled as its own commit, not folded into the image promotion.
 
 ### Known state (not a standard to preserve)
-The committed client-logo set is inconsistent on both background (some transparent,
-some white-boxed) and size (51×14 to 725×287, with two files exceeding the old
-documented cap and one at 72 KB against a 2–14 KB norm). New promotions need not
-match that inconsistency; follow the rules above. Re-normalizing the existing set
-is tracked separately in BACKLOG.md.
+The committed set is in good shape as of 2026-08-01: zero trapped margin (trimmed
+in STYLE.css v16), rendered spread of 1.7x in the carousel and 1.27x in `#trusted`,
+and no upscaled logos after PR #96. Of the eight opaque files, seven sit on
+`#FCFBFA` = `--tf-paper`, correctly recolored-to-ground; only gevi (`#A5C7CD`) is
+genuinely mismatched. gevi and kanu are low-resolution and accepted as-is — no
+higher-resolution source exists.
 
 ---
 
