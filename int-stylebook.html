@@ -42,7 +42,13 @@
        NOT the pill's radius/padding), so it shows the colour pairing, not the
        component shape. Hexes are hardcoded literals (tints are not tokens), so
        these are NOT read by the .sb-swatch script. */
-    .sb-tint { height: 88px; border-radius: 4px; border: var(--tf-rule-light); display: flex; align-items: center; justify-content: center; font-family: var(--tf-font-body); font-weight: 600; font-size: 13px; letter-spacing: 0.02em; }
+    /* Tint samples ARE .sb-swatch cards — same height/border/flex — so the
+       runtime resolver fills their .sb-hex and flips its label exactly as it
+       does for every other swatch. .sb-tint only stacks the tag word above the
+       hex; the word renders in the sample's own text colour, which IS the
+       --tf-wash-*-ink token being demonstrated. */
+    .sb-swatch.sb-tint { flex-direction: column; gap: 6px; }
+    .sb-tint-word { font-family: var(--tf-font-body); font-weight: 600; font-size: 13px; letter-spacing: 0.02em; }
   </style>
 </head>
 <body class="tf-app">
@@ -54,7 +60,7 @@
     <div class="tf-container">
       <div class="tf-kicker">Internal</div>
       <h1>Stylebook</h1>
-      <p class="tf-prose-intro">Generated from <strong>STYLE.md v036</strong> / <strong>STYLE.css v040</strong>. Hidden page, not in nav — reachable by URL only. Every example links the live <code>STYLE.css</code>, and each swatch's hex is read at runtime from its own computed colour, so neither the colours nor the printed values can drift from the tokens. Regenerate per PROCESS.md when a STYLE version adds, removes, or renames a token — the swatch/specimen <em>set</em> is manual; the values self-update.</p>
+      <p class="tf-prose-intro">Generated from <strong>STYLE.md v037</strong> / <strong>STYLE.css v041</strong>. Hidden page, not in nav — reachable by URL only. Every example links the live <code>STYLE.css</code>, and each swatch's hex is read at runtime from its own computed colour, so neither the colours nor the printed values can drift from the tokens. Regenerate per PROCESS.md when a STYLE version adds, removes, or renames a token — the swatch/specimen <em>set</em> is manual; the values self-update.</p>
 
       <!-- ══════════════ COLOUR ══════════════ -->
       <h2>Colour</h2>
@@ -127,14 +133,14 @@
       </div>
 
       <h3>Category tint pairings</h3>
-      <p class="sb-group-note">The six <code>.tf-pill-tint-*</code> engagement-tag pairings — a wash background + a deep text of the same hue. As of v032 the backgrounds are the <code>--tf-wash-*</code> tokens above (self-reading via their swatch cards); only the DEEP TEXT colours remain hardcoded literals here — if a text hex changes in STYLE.css, update the matching sample below by hand. Tag → tint vocabulary is fixed by STYLE.md §2 ("Tag → tint mapping"); a new phase takes the next unused hue, never re-pointing an existing one.</p>
+      <p class="sb-group-note">The six <code>.tf-pill-tint-*</code> engagement-tag pairings — a wash background + a deep text of the same hue. <strong>Both halves are now tokens and both self-read:</strong> backgrounds are <code>--tf-wash-*</code> (promoted v032), text is <code>--tf-wash-*-ink</code> (promoted v041). The hex ON each sample is its resolved background; the hex in the note is its resolved text colour — neither is typed here, so a value change in STYLE.css needs no edit to this page. Tag → tint vocabulary is fixed by STYLE.md §2 ("Tag → tint mapping"); a new phase takes the next unused hue, never re-pointing an existing one.</p>
       <div class="sb-grid">
-        <div class="sb-card"><div class="sb-tint" style="background: var(--tf-wash-brick); color: #8F1E12;">Plan</div><div class="sb-token">tint-brick</div><p class="sb-note">bg <code>--tf-wash-brick</code> · text <code>#8F1E12</code><br>Tag: <strong>Plan</strong></p></div>
-        <div class="sb-card"><div class="sb-tint" style="background: var(--tf-wash-slate); color: #24466B;">Scale</div><div class="sb-token">tint-slate</div><p class="sb-note">bg <code>--tf-wash-slate</code> · text <code>#24466B</code><br>Tag: <strong>Scale</strong></p></div>
-        <div class="sb-card"><div class="sb-tint" style="background: var(--tf-wash-ochre); color: #7A5410;">Source</div><div class="sb-token">tint-ochre</div><p class="sb-note">bg <code>--tf-wash-ochre</code> · text <code>#7A5410</code><br>Tag: <strong>Source</strong></p></div>
-        <div class="sb-card"><div class="sb-tint" style="background: var(--tf-wash-teal); color: #175355;">Launch</div><div class="sb-token">tint-teal</div><p class="sb-note">bg <code>--tf-wash-teal</code> · text <code>#175355</code><br>Tag: <strong>Launch</strong></p></div>
-        <div class="sb-card"><div class="sb-tint" style="background: var(--tf-wash-plum); color: #632846;">Collab</div><div class="sb-token">tint-plum</div><p class="sb-note">bg <code>--tf-wash-plum</code> · text <code>#632846</code><br>Tag: <strong>Collab</strong></p></div>
-        <div class="sb-card"><div class="sb-tint" style="background: var(--tf-wash-stone); color: #55504D;">reserved</div><div class="sb-token">tint-stone</div><p class="sb-note">bg <code>--tf-wash-stone</code> · text <code>#55504D</code><br>Tag: <strong>— (reserved / unmapped)</strong></p></div>
+        <div class="sb-card"><div class="sb-swatch sb-tint" style="background: var(--tf-wash-brick); color: var(--tf-wash-brick-ink);"><span class="sb-tint-word">Plan</span><span class="sb-hex"></span></div><div class="sb-token">tint-brick</div><p class="sb-note">bg <code>--tf-wash-brick</code><br>text <code>--tf-wash-brick-ink</code> <code data-tint-ink></code><br>Tag: <strong>Plan</strong></p></div>
+        <div class="sb-card"><div class="sb-swatch sb-tint" style="background: var(--tf-wash-slate); color: var(--tf-wash-slate-ink);"><span class="sb-tint-word">Scale</span><span class="sb-hex"></span></div><div class="sb-token">tint-slate</div><p class="sb-note">bg <code>--tf-wash-slate</code><br>text <code>--tf-wash-slate-ink</code> <code data-tint-ink></code><br>Tag: <strong>Scale</strong></p></div>
+        <div class="sb-card"><div class="sb-swatch sb-tint" style="background: var(--tf-wash-ochre); color: var(--tf-wash-ochre-ink);"><span class="sb-tint-word">Source</span><span class="sb-hex"></span></div><div class="sb-token">tint-ochre</div><p class="sb-note">bg <code>--tf-wash-ochre</code><br>text <code>--tf-wash-ochre-ink</code> <code data-tint-ink></code><br>Tag: <strong>Source</strong></p></div>
+        <div class="sb-card"><div class="sb-swatch sb-tint" style="background: var(--tf-wash-teal); color: var(--tf-wash-teal-ink);"><span class="sb-tint-word">Launch</span><span class="sb-hex"></span></div><div class="sb-token">tint-teal</div><p class="sb-note">bg <code>--tf-wash-teal</code><br>text <code>--tf-wash-teal-ink</code> <code data-tint-ink></code><br>Tag: <strong>Launch</strong></p></div>
+        <div class="sb-card"><div class="sb-swatch sb-tint" style="background: var(--tf-wash-plum); color: var(--tf-wash-plum-ink);"><span class="sb-tint-word">Collab</span><span class="sb-hex"></span></div><div class="sb-token">tint-plum</div><p class="sb-note">bg <code>--tf-wash-plum</code><br>text <code>--tf-wash-plum-ink</code> <code data-tint-ink></code><br>Tag: <strong>Collab</strong></p></div>
+        <div class="sb-card"><div class="sb-swatch sb-tint" style="background: var(--tf-wash-stone); color: var(--tf-wash-stone-ink);"><span class="sb-tint-word">reserved</span><span class="sb-hex"></span></div><div class="sb-token">tint-stone</div><p class="sb-note">bg <code>--tf-wash-stone</code><br>text <code>--tf-wash-stone-ink</code> <code data-tint-ink></code><br>Tag: <strong>— (reserved / unmapped)</strong></p></div>
       </div>
 
       <!-- ══════════════ TYPOGRAPHY ══════════════ -->
@@ -224,6 +230,19 @@
         var label = sw.querySelector('.sb-hex');
         label.textContent = hex;
         label.style.color = brightness > 145 ? 'var(--tf-ink)' : 'var(--tf-paper)';
+      }
+
+      // Tint pairings carry a SECOND resolved value: the sample's text colour
+      // (--tf-wash-*-ink). Read it off the same computed style so the note's hex
+      // is never typed by hand — the pair is fully self-reading.
+      var inkSlots = document.querySelectorAll('[data-tint-ink]');
+      for (var j = 0; j < inkSlots.length; j++) {
+        var slot = inkSlots[j];
+        var card = slot.closest('.sb-card');
+        var sample = card && card.querySelector('.sb-tint');
+        if (!sample) continue;
+        var irgb = toRGB(getComputedStyle(sample).color);
+        slot.textContent = '#' + irgb.map(function (x) { return x.toString(16).padStart(2, '0'); }).join('').toUpperCase();
       }
     })();
   </script>

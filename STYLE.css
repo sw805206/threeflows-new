@@ -1,6 +1,27 @@
-/* v040 | last updated: 2026-07-30
+/* v041 | 2026-07-31 | 3083 lines
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v41 · 2026-07-31 · Category tint TEXT tokenized (refactor/tint-tokens, paired
+                     with STYLE.md v037, same commit per SCOPE.md). PURE
+                     REFACTOR — every rendered colour is byte-identical; no
+                     value changed. v32 promoted the .tf-pill-tint-*
+                     BACKGROUNDS to --tf-wash-*; the six deep-text hexes stayed
+                     raw literals, and a literal cannot be read back through
+                     var(), so int-stylebook.html had to hardcode them a second
+                     time — a permanent manual-drift surface where a tint edit
+                     here made the stylebook silently lie. Six new tokens
+                     (--tf-wash-{brick|slate|ochre|teal|plum|stone}-ink) close
+                     it; the stylebook now self-reads both halves of every
+                     pairing. brick-ink and stone-ink ALIAS --tf-brick-dark and
+                     --tf-ink-soft (their hexes were exact duplicates) per the
+                     --tf-cat-* idiom; the other four have no base ink token to
+                     alias and carry the value. NOT converted, deliberately
+                     out of scope: .tf-fit-assist / .tf-fit-we and their
+                     .tf-data-table td variants still hardcode #7A5410 /
+                     #175355 / #8F1E12 — the same three values, one component
+                     further out (see the v40 note, which records that reuse as
+                     intentional). Flagged for a follow-up pass.
 
    v40 · 2026-07-29 · tool-company-setup.html build (feat/tool-company-setup,
                      paired with STYLE.md v036, same commit per SCOPE.md). The
@@ -498,6 +519,22 @@
   --tf-wash-plum:  #F2E3EA;
   --tf-wash-stone: #ECE7E1;
 
+  /* Category tint TEXT — the deep same-hue ink that pairs with each --tf-wash-*
+     above. Completes the tokenization begun in v032, which promoted only the
+     backgrounds: these were the last raw literals in the .tf-pill-tint-* rules,
+     and because a literal cannot be read back through var() the stylebook had to
+     hardcode them a second time. Tokenizing removes that manual-drift surface —
+     int-stylebook.html now self-reads these like every other swatch.
+     brick and stone ALIAS existing inks rather than repeat their hex (the
+     --tf-cat-* idiom); slate/ochre/teal/plum have no base ink token to alias, so
+     they carry the value. Values are unchanged from the literals they replace. */
+  --tf-wash-brick-ink: var(--tf-brick-dark);  /* #8F1E12 */
+  --tf-wash-slate-ink: #24466B;
+  --tf-wash-ochre-ink: #7A5410;
+  --tf-wash-teal-ink:  #175355;
+  --tf-wash-plum-ink:  #632846;
+  --tf-wash-stone-ink: var(--tf-ink-soft);    /* #55504D */
+
   /* Category (data-viz) tints — per-category fills for the cashflow /
      unit-economics stacked visualizations (blog-009, blog-010). Product,
      Shipping & Fulfillment take existing weighted tones; the other six
@@ -906,12 +943,12 @@ main .tf-container > h1:not(:has(+ .tf-prose-intro)) { margin-bottom: var(--tf-s
 /* Outline — filters & interactive states */
 .tf-pill-outline { border-color: var(--tf-stone); background: transparent; }
 /* Tints — category tags, one per data-palette hue (wash bg + deep text) */
-.tf-pill-tint-brick { background: var(--tf-wash-brick); color: #8F1E12; }
-.tf-pill-tint-slate { background: var(--tf-wash-slate); color: #24466B; }
-.tf-pill-tint-ochre { background: var(--tf-wash-ochre); color: #7A5410; }
-.tf-pill-tint-teal  { background: var(--tf-wash-teal);  color: #175355; }
-.tf-pill-tint-plum  { background: var(--tf-wash-plum);  color: #632846; }
-.tf-pill-tint-stone { background: var(--tf-wash-stone); color: #55504D; }
+.tf-pill-tint-brick { background: var(--tf-wash-brick); color: var(--tf-wash-brick-ink); }
+.tf-pill-tint-slate { background: var(--tf-wash-slate); color: var(--tf-wash-slate-ink); }
+.tf-pill-tint-ochre { background: var(--tf-wash-ochre); color: var(--tf-wash-ochre-ink); }
+.tf-pill-tint-teal  { background: var(--tf-wash-teal);  color: var(--tf-wash-teal-ink); }
+.tf-pill-tint-plum  { background: var(--tf-wash-plum);  color: var(--tf-wash-plum-ink); }
+.tf-pill-tint-stone { background: var(--tf-wash-stone); color: var(--tf-wash-stone-ink); }
 /* Small uppercase modifier — journey phases, compact labels */
 .tf-pill-sm { padding: 4px 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
 /* State aliases: primary = solid brick, secondary = brick outline, muted =
