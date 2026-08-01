@@ -1,4 +1,4 @@
-v009 | 2026-07-31 | 260 lines
+v010 | 2026-08-01 | 292 lines
 
 # BLOG.md — how to add a blog post
 
@@ -36,10 +36,10 @@ One object per post. Field order below is the house order.
 | `title` | ✔ | Must match the page's `<h1>` exactly. |
 | `date` | ✔ | `YYYY-MM-DD`. **Drives index order and pager neighbours.** Two published posts must not share a date (see §5). |
 | `status` | ✔ | `"published"` — see the caveat below. |
-| `recap` | ✔ | **Verbatim copy of the post's `.tf-prose-intro` text.** Card body on the index. |
-| `readMinutes` | ✔ | Integer, per §6. Feeds the index card only. |
 | `image` | — | Relative path, per §7. Absent → no image renders, no placeholder. |
 | `imageAlt` | — | Per §7. Absent → `alt=""`. |
+| `recap` | ✔ | **Verbatim copy of the post's `.tf-prose-intro` text.** Card body on the index. |
+| `readMinutes` | ✔ | Integer, per §6. Feeds the index card only. |
 
 **`status` caveat — it unlists, it does not hide.** `status` is only read by the
 index filter and the pager filter. A post whose status is not `"published"` is
@@ -92,8 +92,21 @@ Copy `blog-template.html` to the slug, set `data-blog-id` on `<main>`, fill the
 Render the new post at **1280px** and confirm:
 
 - [ ] Title renders **≤2 lines**, recap **≤3 lines**.
-- [ ] **Body top lands at the shared y — currently `454.73`** at desktop
-      (≥820px). A different value means a budget was blown (§4).
+- [ ] **Body top lands at the shared y** at desktop (≥820px). The value depends
+      on what the body OPENS with, because the first element's own top margin is
+      part of the measurement:
+      - opens with a `<p>` (a lede paragraph) → **`454.73`** — 11 of 13 posts
+      - opens with an `<h2>` (straight into the first section) → **`486.73`** —
+        blog-012 and blog-013
+
+      The 32px gap between them is an `h2`'s larger top margin, not a defect.
+      **Measure the first body element after the `.tf-meta` divider, not the
+      first `<h2>`** — on a post that opens with a paragraph those are different
+      elements, and measuring the `h2` returns a number that varies with the
+      opening paragraph's length rather than a shared y at all. A value that
+      matches neither figure means a budget was blown (§4) — confirm by checking
+      the title and recap against their `min-height` reservations before
+      concluding anything.
 - [ ] Rail: image (if any) → "In this article" → H2 list. Rail top `120`.
 - [ ] Reading time on the date line matches the manifest's `readMinutes` (§6).
 - [ ] Pager: neighbours re-wire **automatically by date** — no manual linking.
@@ -238,9 +251,13 @@ feet).
 3. **Commit.** Style changes (`STYLE.css` / `STYLE.md`) go in their **own
    commit, separate from content/JS** (Part B). The post's content and its
    image are **one commit** — never split across two.
-4. **Branch, push, PR.** SCOPE.md's branch-per-stream discipline governs: one
-   feature branch per post, in its own worktree; push the branch and open a PR
-   only when asked (CLAUDE.md Part B) — never a direct commit to `main`.
+4. **Branch, push, PR.** One feature branch per post, **worked in the main
+   tree** — the `feat/<stream>` worktree setup under `../threeflows-worktrees/`
+   is retired (SCOPE.md §3); reinstate worktrees only if concurrent streams
+   return. Name the branch `type/short-description` with `type` from CLAUDE.md
+   Part B's closed list — a post is `feat` (precedent: `feat/blog-011`,
+   `feat/blog-013-google-workspace`). Push the branch and open a PR only when
+   asked (Part B) — never a direct commit to `main`.
 5. **Verify the live site** after merge — it is the only place relative paths
    (manifest fetch, image srcs, hrefs) are proven end-to-end. Allow a moment
    for images to download before judging them.
@@ -248,13 +265,28 @@ feet).
 ## 9. Deferred body patterns
 
 The first post that needs one of these **defines the pattern** (in `STYLE.css`,
-never page-local) and **records a ratchet note** in STYLE.md — see BL-012:
+never page-local) and **records a ratchet note** in STYLE.md. This list started
+as four deferred patterns under BL-012; **two of the four shipped on
+2026-07-23**, and BL-012 is now closed.
 
-- **prose tables** — no `table` rules exist yet; tables currently render browser-
-  default and cramped
-- **`.tf-callout`** — the replacement for the old repo's emoji note blocks
-- **`.tf-stat-grid`** — for stat trios (the old blog-002 stat boxes)
-- **disclaimer line** — no pattern yet
+**Shipped — reuse these, do not rebuild them:**
+
+- **`.tf-prose-table`** — prose tables. Defined in STYLE.css v7; in use on
+  `blog-amazon-inbound`, `blog-obbba-business-provisions`, and
+  `blog-warehouse-placement-case-study`. Apply the class; never restyle a table
+  inside a post.
+- **`.tf-callout`** — the replacement for the old repo's emoji note blocks.
+  First live use on `business-planning`; since extended with the
+  `-warn` / `-affirm` accent modifiers and `.tf-callout-list`.
+
+**Still deferred — the first post that needs one defines it:**
+
+- **`.tf-stat-grid`** — for stat trios (the old blog-002 stat boxes). **The CSS
+  already exists** in STYLE.css but has zero consumers, so the first use applies
+  the existing class and records the ratchet note; it does not redefine the
+  pattern.
+- **`.tf-disclaimer`** — a disclaimer line. Never defined: no CSS, no consumers.
+  This one is a genuine from-scratch definition.
 
 Same rule for any other unbuilt pattern: **define it once in the sheet, record
 it, then reuse.** Never style inside a post.
