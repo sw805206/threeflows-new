@@ -1,4 +1,4 @@
-v005 | 2026-07-31 | 203 lines
+v006 | 2026-08-01 | 204 lines
 
 # Working Rules
 
@@ -102,7 +102,8 @@ blank line. A file whose format forbids bare text at the top (e.g. STYLE.css,
 which must open with a comment) carries the identical stamp on the first line of
 its opening comment block. Bump `v###` on every substantive change. The date and
 the line count are read from the machine at the moment of writing (`date +%F`,
-`wc -l`) — never hand-typed, never copied forward from another line. A
+`wc -l`), the date in the machine's LOCAL timezone — the stamps are for the
+human reading them, so a doc edited late at night carries that night's date — never hand-typed, never copied forward from another line. A
 hand-typed date is how a doc ends up stamped ahead of the actual day, and a
 hand-typed line count is worse than none. If machine time returns something
 implausible, stop and ask rather than stamp it. Version counters are per-file
