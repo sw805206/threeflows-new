@@ -1,4 +1,4 @@
-v008 | last updated: 2026-07-29
+v009 | 2026-07-31 | 260 lines
 
 # BLOG.md — how to add a blog post
 
