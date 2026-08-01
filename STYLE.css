@@ -1,4 +1,4 @@
-/* v042 | 2026-08-01 | 3109 lines
+/* v043 | 2026-08-01 | 3117 lines
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
@@ -77,10 +77,18 @@
                      real $ estimates) — a SAND outer frame, a deliberate
                      scoped deviation from `.tf-prose-table`'s ink frame
                      (flagged for reconciliation); the FIT-DOT indicator
-                     (`.tf-fit-dot-*` + `.tf-fit-legend`) — reusing
-                     `--tf-wash-teal/-plum/-stone` and the exact deep-text
-                     hex literals `.tf-pill-tint-teal/-plum/-stone` already
-                     established. Also the site's FIRST print stylesheet:
+                     (`.tf-fit-dot` + the modifiers `.tf-fit-you` /
+                     `.tf-fit-assist` / `.tf-fit-we`, plus `.tf-fit-legend`)
+                     — reusing `--tf-wash-brick/-ochre/-teal` and the exact
+                     deep-text hex literals `.tf-pill-tint-brick/-ochre/-teal`
+                     already established. [CORRECTED v043: this entry as
+                     written said `.tf-fit-dot-*` on teal/plum/stone; neither
+                     the `-dot-` infix nor those three hues ever shipped. The
+                     old wording is superseded, recorded here so anyone who
+                     met it can follow the trail. NB the deep-text literals
+                     named above were themselves replaced by the
+                     `--tf-wash-*-ink` tokens in v42, so a reader of this v40
+                     entry should not go looking for literals in the rules.] Also the site's FIRST print stylesheet:
                      `.no-print` + `@page A4`, deliberately GENERAL (hides
                      nav/header/footer/hero/tabs/step-rail on any printed
                      page). "Download PDF" generates a REAL .pdf via jsPDF +
