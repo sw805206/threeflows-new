@@ -1,4 +1,4 @@
-v016 | 2026-07-31 | 137 lines
+v017 | 2026-08-01 | 144 lines
 
 # SCOPE.md — threeflows.com
 
@@ -58,6 +58,13 @@ section covers it. Stage 3 is the trigger to create one.
   no Tailwind). STYLE.css is plain CSS with variables.
 - Lean dependencies; per-page CDN loads by exception only. Charting libraries
   for tool pages are an accepted exception.
+  - **Exception taken: jsPDF + jspdf-autotable.** Loaded from cdnjs with
+    Subresource Integrity hashes, `crossorigin`, `referrerpolicy="no-referrer"`
+    and `defer`, on tool pages that offer a PDF download — and on those pages
+    only. A blocked or tampered CDN therefore leaves `window.jspdf` undefined
+    and the tool falls back to `window.print()`. Current consumers:
+    `tool-company-setup.html`, and `tool-consultancy-cashflow.html` when it
+    ships.
 - All internal links are RELATIVE paths, for portability.
 - Shared header and footer are served from `partials.html`, fetched per page.
 - Tools may compute and display entirely in the browser — front-end only, no
