@@ -1,4 +1,4 @@
-v017 | 2026-08-01 | 144 lines
+v018 | 2026-08-01 | 145 lines
 
 # SCOPE.md — threeflows.com
 
@@ -36,6 +36,7 @@ Product docs, all in this repo:
 - **STYLE.css** — design tokens and shared patterns; single source of truth for
   all styling
 - **BLOG.md** — add-a-post procedure and manifest schema
+- **TOOLS.md** — tool page naming and internal ID scheme
 - **BACKLOG.md** — the backlog table and page inventory; the CLAUDE.md Part C
   backlog process is ACTIVE for this project
 - **PROCESS.md** — project-specific human/Claude procedures
@@ -76,9 +77,9 @@ section covers it. Stage 3 is the trigger to create one.
 `index.html` (Home); `business-planning.html`, `sourcing-support.html`,
 `launch-hypercare.html`, `ongoing-management.html` (services); `blogs.html`
 (index — individual posts are `blog-<slug>.html`, per BLOG.md §1);
-`references.html`; `seminars.html`; `tools.html` and its individual tool pages;
-`about.html`; `contact.html`; `privacy.html`; `surveys.html` (cover for
-individual survey pages).
+`references.html`; `seminars.html`; `tools.html` (index — individual tools are
+`tool-<slug>.html`, per TOOLS.md §1); `about.html`; `contact.html`;
+`privacy.html`; `surveys.html` (cover for individual survey pages).
 
 `partials.html` is the source of truth for the nav, and therefore for which
 pages are publicly reachable — a page not linked there is live but unlisted. No
