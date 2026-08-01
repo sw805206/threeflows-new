@@ -1,6 +1,30 @@
-/* v041 | 2026-07-31 | 3083 lines
+/* v042 | 2026-08-01 | 3109 lines
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v42 · 2026-08-01 · .tf-fit-* now consumes the tint ink tokens
+                     (refactor/fit-tokens, paired with STYLE.md v041, same
+                     commit per SCOPE.md). PURE REFACTOR — every rendered
+                     colour is byte-identical; no value changed. Completes the
+                     follow-up v41 deliberately left out of scope to keep its
+                     own verification clean: the six .tf-fit-you/-assist/-we
+                     declarations (three .tf-data-table td `color`, three
+                     fit-dot `border-color`) drop #8F1E12 / #7A5410 / #175355
+                     for --tf-wash-{brick|ochre|teal}-ink. NB the v41 note and
+                     BL-030 both name only -assist / -we; -you carried #8F1E12
+                     and is converted here too, since otherwise one of the
+                     three values would survive. --tf-wash-brick-ink stays an
+                     ALIAS of --tf-brick-dark — the indirection is deliberate
+                     (v41), and .tf-fit-you points at the wash-ink token, not
+                     through it. This closes the LAST known duplicate of the
+                     three values: each now appears exactly once, at its token
+                     definition. Verified on a fresh origin (the parsed in-use
+                     stylesheet was read back to prove the browser held the new
+                     CSS, not a cached copy — a pure refactor's before/after
+                     are identical by design, so a cache hit would have passed
+                     for the wrong reason): all 21 live table cells + 6 legend
+                     dots + a synthetic probe of all three classes in both rule
+                     families matched exactly, before and after.
 
    v41 · 2026-07-31 · Category tint TEXT tokenized (refactor/tint-tokens, paired
                      with STYLE.md v037, same commit per SCOPE.md). PURE
@@ -16,12 +40,14 @@
                      pairing. brick-ink and stone-ink ALIAS --tf-brick-dark and
                      --tf-ink-soft (their hexes were exact duplicates) per the
                      --tf-cat-* idiom; the other four have no base ink token to
-                     alias and carry the value. NOT converted, deliberately
-                     out of scope: .tf-fit-assist / .tf-fit-we and their
-                     .tf-data-table td variants still hardcode #7A5410 /
+                     alias and carry the value. NOT converted at the time,
+                     deliberately out of scope: .tf-fit-assist / .tf-fit-we and
+                     their .tf-data-table td variants still hardcoded #7A5410 /
                      #175355 / #8F1E12 — the same three values, one component
                      further out (see the v40 note, which records that reuse as
-                     intentional). Flagged for a follow-up pass.
+                     intentional). Flagged for a follow-up pass, which LANDED
+                     in v42 (and also caught .tf-fit-you, which this note
+                     missed); the exception recorded here no longer stands.
 
    v40 · 2026-07-29 · tool-company-setup.html build (feat/tool-company-setup,
                      paired with STYLE.md v036, same commit per SCOPE.md). The
@@ -3007,9 +3033,9 @@ button.tf-pill { cursor: pointer; }
   text-align: center;
   font-weight: 700;
 }
-.tf-data-table td.tf-fit-you    { background: var(--tf-wash-brick); color: #8F1E12; }
-.tf-data-table td.tf-fit-assist { background: var(--tf-wash-ochre); color: #7A5410; }
-.tf-data-table td.tf-fit-we     { background: var(--tf-wash-teal);  color: #175355; }
+.tf-data-table td.tf-fit-you    { background: var(--tf-wash-brick); color: var(--tf-wash-brick-ink); }
+.tf-data-table td.tf-fit-assist { background: var(--tf-wash-ochre); color: var(--tf-wash-ochre-ink); }
+.tf-data-table td.tf-fit-we     { background: var(--tf-wash-teal);  color: var(--tf-wash-teal-ink); }
 
 /* Fit-dot indicator — a bordered dot (pale wash fill + deep-colour border of
    the same hue), used by `.tf-fit-legend` to key the step-number column's
@@ -3030,9 +3056,9 @@ button.tf-pill { cursor: pointer; }
   border: 1.5px solid;
   box-sizing: border-box;
 }
-.tf-fit-you    { background: var(--tf-wash-brick); border-color: #8F1E12; }
-.tf-fit-assist { background: var(--tf-wash-ochre); border-color: #7A5410; }
-.tf-fit-we     { background: var(--tf-wash-teal);  border-color: #175355; }
+.tf-fit-you    { background: var(--tf-wash-brick); border-color: var(--tf-wash-brick-ink); }
+.tf-fit-assist { background: var(--tf-wash-ochre); border-color: var(--tf-wash-ochre-ink); }
+.tf-fit-we     { background: var(--tf-wash-teal);  border-color: var(--tf-wash-teal-ink); }
 .tf-fit-legend {
   display: flex;
   flex-wrap: wrap;
