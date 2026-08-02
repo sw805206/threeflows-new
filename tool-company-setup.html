@@ -38,8 +38,7 @@
                the panels, so it stays in one fixed place instead of
                repeating (and shifting) per step. -->
           <div class="tf-cta-inline">
-            <p>Questions about your situation?</p>
-            <p>We can help you work through it &mdash; <a href="contact.html?subject=Company%20setup%20-%20">contact us</a>.</p>
+            <p>Want something customized to your business? <a href="contact.html" target="_blank" rel="noopener">Contact us</a>.</p>
           </div>
 
           <div class="tf-step-nav" role="tablist" aria-label="Company setup steps" aria-orientation="vertical">
@@ -63,9 +62,16 @@
             <a href="tools.html">&larr; Tools</a>
           </div>
           <h1>Company Setup Checklist</h1>
-          <p class="tf-prose-intro">Decide your entity, then work prep &amp; filing and post-filing setup in any order &mdash; nothing here is prerequisite for anything else.</p>
-          <p class="tf-card-body"><strong>Disclaimer:</strong> Three Flows Solutions is a business operations consultancy, not a law firm or CPA practice. Entity formation involves state-specific rules and individual tax circumstances that only a licensed attorney or CPA can properly advise on.</p>
+          <p class="tf-prose-intro">Setting up an entity starts with a decision that depends on your situation, then a sequence of steps worth getting in the right order.</p>
           <hr class="tf-tool-divider">
+
+          <!-- Actions sit ABOVE the panel and outside it, so they hold one fixed
+               position instead of moving with each panel's own heading. Only one
+               panel is ever visible, so a single row serves whichever is active;
+               the PDF handler reads the active step from the tablist. -->
+          <div class="tf-panel-actions no-print">
+            <button type="button" class="tf-pill tf-pill-outline" data-pdf>Download PDF</button>
+          </div>
 
           <div class="tf-tool-panels">
 
@@ -73,9 +79,6 @@
           <section class="tf-tool-panel" id="panel-decide" role="tabpanel" aria-labelledby="tab-decide" data-tool-panel="decide">
             <div class="tf-panel-head">
               <h2>Decide Entity Type</h2>
-              <div class="tf-panel-actions no-print">
-                <button type="button" class="tf-pill tf-pill-outline" data-pdf>Download PDF</button>
-              </div>
             </div>
 
 
@@ -115,9 +118,6 @@
           <section class="tf-tool-panel" id="panel-prep" role="tabpanel" aria-labelledby="tab-prep" data-tool-panel="prep" hidden>
             <div class="tf-panel-head">
               <h2>Prep &amp; Filing</h2>
-              <div class="tf-panel-actions no-print">
-                <button type="button" class="tf-pill tf-pill-outline" data-pdf>Download PDF</button>
-              </div>
             </div>
             <div class="tf-fit-legend">
               <span><span class="tf-fit-dot tf-fit-you"></span>You &mdash; you must own it</span>
@@ -133,9 +133,6 @@
           <section class="tf-tool-panel" id="panel-post" role="tabpanel" aria-labelledby="tab-post" data-tool-panel="post" hidden>
             <div class="tf-panel-head">
               <h2>Post-Filing Setup</h2>
-              <div class="tf-panel-actions no-print">
-                <button type="button" class="tf-pill tf-pill-outline" data-pdf>Download PDF</button>
-              </div>
             </div>
             <div class="tf-fit-legend">
               <span><span class="tf-fit-dot tf-fit-you"></span>You &mdash; you must own it</span>
@@ -148,6 +145,23 @@
           </section>
 
           </div><!-- /.tf-tool-panels -->
+
+          <!-- Disclaimer + privacy, at the FOOT of the content column. Moved out
+               of the header block (where it used to sit under the intro) so the
+               page opens on the tool rather than on a notice. The engine reads
+               all three paragraphs from here for the PDF, so this markup is the
+               single source — never restated in JS. Deliberately NOT print-hidden:
+               a printed or downloaded checklist must carry the whole block.
+               Paragraph 1 is character-identical on both tool pages and on
+               tools.html; paragraph 2 is tool-pages-only; paragraph 3 is this
+               tool's own. -->
+          <hr class="tf-tool-divider">
+          <div class="tf-tool-legal" data-tool-legal>
+            <p class="tf-meta">Disclaimer and privacy</p>
+            <p>Three Flows Solutions is a business consultancy. These free tools are provided to introduce business logic. Do not use the output as the basis for a final business decision or for execution without discussing it with qualified professional service providers, and check the federal, state, and institutional regulations, laws, and standards that apply to your situation.</p>
+            <p>Nothing you enter in these free tools is sent to us or stored anywhere &mdash; we have no record of it and cannot retrieve it for you. Your entries exist only while the page is open; refreshing or leaving the page clears them. Download the PDF if you want to keep your work.</p>
+            <p>Three Flows Solutions is a business operations consultancy, not a law firm or CPA practice. Entity formation involves state-specific rules and individual tax circumstances that only a licensed attorney or CPA can properly advise on.</p>
+          </div>
         </div><!-- /.tf-tool-content -->
       </div><!-- /.tf-tool-layout -->
 

@@ -33,8 +33,7 @@
           <img class="tf-rail-img tf-photo" src="assets/images/tool-general-cashflow.jpg" alt="">
 
           <div class="tf-cta-inline">
-            <p>Want help pressure-testing your numbers?</p>
-            <p>We build these models with clients &mdash; <a href="contact.html?subject=Cashflow%20projection%20-%20">contact us</a>.</p>
+            <p>Want something customized to your business? <a href="contact.html" target="_blank" rel="noopener">Contact us</a>.</p>
           </div>
 
           <div class="tf-step-nav" role="tablist" aria-label="Cashflow projection steps" aria-orientation="vertical">
@@ -58,9 +57,17 @@
             <a href="tools.html">&larr; Tools</a>
           </div>
           <h1>General Cashflow Projection</h1>
-          <p class="tf-prose-intro">Enter how you win work and what it costs to run, and see the month-by-month cash position across your planning horizon. Steps 1 and 2 stay editable &mdash; come back to Step 3 and it recalculates.</p>
-          <p class="tf-card-body"><strong>Disclaimer:</strong> This is a planning model, not a forecast. It projects the assumptions you enter and nothing else &mdash; it applies no capacity limit, no collection lag, and no allowance for the work you do not win. Treat the output as a starting point for a conversation with your CPA or advisor, not as a financial projection to rely on.</p>
+          <p class="tf-prose-intro">A back-of-the-envelope cash flow projection &mdash; what cash you need, when you break even, and what you stand to make.</p>
           <hr class="tf-tool-divider">
+
+          <!-- Actions sit ABOVE the panel and outside it, so they hold one fixed
+               position instead of moving with each panel's own heading. Both
+               handlers are page-level (Start over clears every step; the PDF
+               builds from the stored projection), so one row serves all three. -->
+          <div class="tf-panel-actions no-print">
+            <button type="button" class="tf-pill tf-pill-outline" data-reset>Start over</button>
+            <button type="button" class="tf-pill tf-pill-outline" data-pdf>Download PDF</button>
+          </div>
 
           <div class="tf-tool-panels">
 
@@ -68,9 +75,6 @@
           <section class="tf-tool-panel" id="panel-revenue" role="tabpanel" aria-labelledby="tab-revenue" data-tool-panel="revenue">
             <div class="tf-panel-head">
               <h2>Revenue Assumptions</h2>
-              <div class="tf-panel-actions no-print">
-                <button type="button" class="tf-pill tf-pill-outline" data-reset>Start over</button>
-              </div>
             </div>
 
             <div class="tf-card">
@@ -212,9 +216,6 @@
           <section class="tf-tool-panel" id="panel-costs" role="tabpanel" aria-labelledby="tab-costs" data-tool-panel="costs" hidden>
             <div class="tf-panel-head">
               <h2>Cost Assumptions</h2>
-              <div class="tf-panel-actions no-print">
-                <button type="button" class="tf-pill tf-pill-outline" data-reset>Start over</button>
-              </div>
             </div>
 
             <div class="tf-card">
@@ -278,10 +279,6 @@
           <section class="tf-tool-panel" id="panel-projection" role="tabpanel" aria-labelledby="tab-projection" data-tool-panel="projection" hidden>
             <div class="tf-panel-head">
               <h2>Cashflow Projection</h2>
-              <div class="tf-panel-actions no-print">
-                <button type="button" class="tf-pill tf-pill-outline" data-reset>Start over</button>
-                <button type="button" class="tf-pill tf-pill-outline" data-pdf>Download PDF</button>
-              </div>
             </div>
 
             <!-- Blocking-input notice: shown instead of the projection when an
@@ -316,6 +313,23 @@
           </section>
 
           </div><!-- /.tf-tool-panels -->
+
+          <!-- Disclaimer + privacy, at the FOOT of the content column. Moved out
+               of the header block (where it used to sit under the intro) so the
+               page opens on the tool rather than on a notice. The engine reads
+               all three paragraphs from here for the PDF, so this markup is the
+               single source — never restated in JS. Deliberately NOT print-hidden:
+               a printed or downloaded projection must carry the whole block.
+               Paragraph 1 is character-identical on both tool pages and on
+               tools.html; paragraph 2 is tool-pages-only; paragraph 3 is this
+               tool's own. -->
+          <hr class="tf-tool-divider">
+          <div class="tf-tool-legal" data-tool-legal>
+            <p class="tf-meta">Disclaimer and privacy</p>
+            <p>Three Flows Solutions is a business consultancy. These free tools are provided to introduce business logic. Do not use the output as the basis for a final business decision or for execution without discussing it with qualified professional service providers, and check the federal, state, and institutional regulations, laws, and standards that apply to your situation.</p>
+            <p>Nothing you enter in these free tools is sent to us or stored anywhere &mdash; we have no record of it and cannot retrieve it for you. Your entries exist only while the page is open; refreshing or leaving the page clears them. Download the PDF if you want to keep your work.</p>
+            <p>This is a planning model, not a forecast. It projects the assumptions you enter and nothing else &mdash; it applies no capacity limit, no collection lag, and no allowance for the work you do not win. Treat the output as a starting point for a conversation with your CPA or advisor, not as a financial projection to rely on.</p>
+          </div>
         </div><!-- /.tf-tool-content -->
       </div><!-- /.tf-tool-layout -->
 
