@@ -1,4 +1,4 @@
-v021 | 2026-08-02 | 145 lines
+v022 | 2026-08-02 | 144 lines
 
 # SCOPE.md — threeflows.com
 
@@ -64,8 +64,7 @@ section covers it. Stage 3 is the trigger to create one.
     and `defer`, on tool pages that offer a PDF download — and on those pages
     only. A blocked or tampered CDN therefore leaves `window.jspdf` undefined
     and the tool falls back to `window.print()`. Current consumers:
-    `tool-company-setup.html`, and `tool-general-cashflow.html` when it
-    ships.
+    `tool-company-setup.html` and `tool-general-cashflow.html`.
 - All internal links are RELATIVE paths, for portability.
 - Shared header and footer are served from `partials.html`, fetched per page.
 - Tools may compute and display entirely in the browser — front-end only, no
