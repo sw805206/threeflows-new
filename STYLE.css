@@ -1,6 +1,22 @@
-/* v045 | 2026-08-01 | 3417 lines
+/* v046 | 2026-08-01 | 3496 lines
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v46 · 2026-08-01 · Cashflow tool, second review (feat/tool-consultancy-
+                     cashflow, paired with STYLE.md v045). Forms: every entry
+                     box is one width (--tf-entry-w, 180px, set by the month
+                     picker) and a currency prefix moved INSIDE the box's left
+                     padding via .tf-uom-pre + :has(), so the boxes share a left
+                     EDGE and not merely a width. .tf-explain-note drops to
+                     --tf-text-xs with a 2px nudge onto the label's line.
+                     .tf-repeat-del / .tf-repeat-add became "×" / "+" icons —
+                     the worded buttons were the reason .tf-repeat-row
+                     overflowed its card, fixed by a fixed 28px last track plus
+                     min-width:0 on the row's children. Chart: ONE column per
+                     period (revenue stacked up, costs stacked down from the
+                     same x), bar width 14.5 -> 22. .tf-cost-summary renamed
+                     .tf-summary and re-scoped to five headline figures
+                     including a computed breakeven month.
 
    v45 · 2026-08-01 · Cashflow tool, first-build review (feat/tool-consultancy-
                      cashflow, paired with STYLE.md v044). Step 1/2: .tf-tip is
@@ -3205,9 +3221,16 @@ button.tf-pill { cursor: pointer; }
    note down past the label's height. */
 .tf-explain-note {
   margin: 0;
-  font-size: var(--tf-text-sm);
+  /* One step DOWN from the label (12px vs 14px) so the pair reads as
+     question-then-gloss rather than two competing headers. */
+  font-size: var(--tf-text-xs);
   line-height: 1.5;
   color: var(--tf-ink-soft);
+  /* 2px nudge so the note's first line sits level with the label's, which is
+     the larger type and therefore has the taller line box. Top-aligning the
+     BOXES leaves the smaller text visibly high; this aligns what the eye
+     actually reads. Same 2px nudge idiom as .tf-cost-badge / .tf-step-nav-desc. */
+  padding-top: 2px;
 }
 
 /* Unit of measure beside the box — `[50] %`, `[10] months`, `$ [25000]`.
@@ -3216,13 +3239,32 @@ button.tf-pill { cursor: pointer; }
    takes the space the unit leaves, so the box looks like the size of the
    answer it wants. */
 .tf-input-uom { display: flex; align-items: center; gap: var(--tf-space-1); }
-.tf-input-uom .tf-input { flex: 1 1 auto; min-width: 0; }
+/* EVERY entry box is the same width, whether or not it carries a unit and
+   whatever the unit says — a form whose boxes step in and out with the length
+   of the word beside them reads as broken alignment. 180px is set by the
+   widest control in the set, a native <input type="month"> showing
+   "September 2026" plus its own calendar affordance; the others match it
+   rather than the other way round. The unit sits outside that width. */
+.tf-input-uom .tf-input { flex: 0 0 var(--tf-entry-w); min-width: 0; }
 .tf-uom {
   flex: 0 0 auto;
   font-size: var(--tf-text-sm);
   color: var(--tf-ink-soft);
   white-space: nowrap;
 }
+/* A currency prefix sits INSIDE the box's own left padding rather than before
+   it. Placed outside, "$" pushed that one field's left edge right of every
+   other field's, so boxes that are the same WIDTH stopped sharing a left edge —
+   which reads as worse alignment than the inconsistent widths it replaced. The
+   `:has()` selector is the same mechanism `.tf-choice:has(input:checked)`
+   already uses. `left` matches .tf-input's own 14px horizontal padding. */
+.tf-input-uom { position: relative; }
+.tf-uom-pre {
+  position: absolute;
+  left: 14px;
+  pointer-events: none;
+}
+.tf-input-uom:has(.tf-uom-pre) .tf-input { padding-left: 28px; }
 
 /* Number fields carry no spinner. The stepper arrows invite clicking a value
    up one at a time, which is the wrong affordance for "$25,000" or "12.5%" —
@@ -3237,6 +3279,13 @@ button.tf-pill { cursor: pointer; }
    assumptions" in step 1. Sits above a run of .tf-explained rows and is
    quieter than the panel's own h2. */
 .tf-assume-group { margin: 0 0 var(--tf-space-4); }
+/* The shared entry width, declared once so the month pickers and the numeric
+   boxes cannot drift apart. */
+.tf-assume-group, .tf-cost-group { --tf-entry-w: 180px; }
+/* A field with no unit beside it (the two month pickers) still takes the same
+   width — otherwise it would stretch to the whole column and tower over the
+   boxes above and below it. */
+.tf-assume-group .tf-field > .tf-input { width: var(--tf-entry-w); }
 .tf-assume-group + .tf-assume-group { margin-top: var(--tf-space-6); }
 .tf-assume-group > h3 {
   font-size: var(--tf-text-base);
@@ -3325,28 +3374,56 @@ button.tf-pill { cursor: pointer; }
   /* The month column is 180px because a native <input type="month"> renders
      its own calendar affordance INSIDE the field, beside "September 2026" —
      the widest value. At 150px the year clipped behind the icon. */
-  /* Amount is 140px, not 110px: it carries a "$" prefix beside the box now. */
-  grid-template-columns: 1fr 140px 180px auto;
+  /* Amount is 140px, not 110px: it carries a "$" prefix beside the box now.
+     The last column is the remove icon at a fixed 28px — `auto` let a worded
+     button set its own width and push the row past the card's edge. */
+  grid-template-columns: minmax(0, 1fr) 140px 180px 28px;
   gap: var(--tf-space-2);
   align-items: start;
 }
+/* Without this the description <input>'s intrinsic min-content width (from its
+   default `size`) becomes the 1fr column's floor, the track refuses to shrink,
+   and the whole row overflows its container — the actual cause of the remove
+   control sitting outside the card border. */
+.tf-repeat-row > * { min-width: 0; }
+.tf-repeat-row .tf-input { width: 100%; }
 @media (max-width: 640px) {
   .tf-repeat-row { grid-template-columns: 1fr; }
 }
-/* Delete — a text control, not a button-shaped one: a row of three fields with
-   a solid button on the end reads as if the button submits the row. Brick on
-   hover is the destructive cue. */
-.tf-repeat-del {
+/* Add and remove are ICONS — "+" and "×" — not worded buttons. The words cost
+   more width than the row has: with "Remove" on the end, the grid's last
+   column could not shrink and the row overflowed the card's right border
+   (review finding). Each carries an aria-label AND a title, so the meaning is
+   available to assistive tech and on hover; a bare glyph on its own would not
+   be.
+   Remove is borderless and brick-on-hover (destructive cue); add is a light
+   square that matches the input frame it sits under. */
+.tf-repeat-del,
+.tf-repeat-add {
   font-family: var(--tf-font-body);
-  font-size: var(--tf-text-sm);
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+.tf-repeat-del {
+  font-size: 20px;
   align-self: center;
-  padding: 8px;
+  width: 28px;
+  height: 28px;
   border: none;
   background: transparent;
   color: var(--tf-ink-soft);
-  cursor: pointer;
 }
 .tf-repeat-del:hover { color: var(--tf-brick); }
+.tf-repeat-add {
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  border: var(--tf-rule-light);
+  background: var(--tf-paper);
+  color: var(--tf-ink-soft);
+}
+.tf-repeat-add:hover { border-color: var(--tf-brick); color: var(--tf-brick); }
 .tf-repeat-empty { font-size: var(--tf-text-sm); color: var(--tf-stone); margin: 0; }
 /* Group of repeatable rows — heading + its explanation (an `.tf-explained`
    row, the same left-control/right-note shape step 1's fields use), then the
@@ -3361,11 +3438,13 @@ button.tf-pill { cursor: pointer; }
 .tf-cost-group > .tf-explained { margin-bottom: var(--tf-space-3); }
 .tf-cost-group .tf-repeat { margin-bottom: var(--tf-space-2); }
 
-/* Horizon totals by cost type — a small definition block beside the table.
-   Deliberately NOT a hover tooltip and NOT four more table columns: the brief
-   needs the breakdown to survive to print and PDF, and a 7-column table has no
-   room for four more. */
-.tf-cost-summary {
+/* Horizon summary — a small definition block above the table. Deliberately
+   NOT a hover tooltip and NOT more table columns: the figures must survive to
+   print and PDF, and a 7-column table has no room. Carries the five headline
+   numbers (revenue, cost, commission, breakeven month, end cash) rather than
+   the cost-type breakdown it held first — the breakdown was detail, these are
+   the answers a reader opens the page for. */
+.tf-summary {
   display: flex;
   flex-wrap: wrap;
   gap: var(--tf-space-3);
@@ -3374,14 +3453,14 @@ button.tf-pill { cursor: pointer; }
   margin: 0 0 var(--tf-space-2);
   font-size: var(--tf-text-sm);
 }
-.tf-cost-summary div { display: flex; flex-direction: column; }
-.tf-cost-summary dt, .tf-cost-summary .tf-cost-summary-label {
+.tf-summary div { display: flex; flex-direction: column; }
+.tf-summary dt, .tf-summary .tf-summary-label {
   font-size: var(--tf-text-xs);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--tf-ink-soft);
 }
-.tf-cost-summary .tf-cost-summary-value { font-weight: 700; }
+.tf-summary .tf-summary-value { font-weight: 700; }
 
 /* Footnotes — numbered notes under the chart, every figure in them rendered
    from the user's own inputs. --tf-text-sm so they read as apparatus, not body

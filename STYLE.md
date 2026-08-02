@@ -1,4 +1,4 @@
-v044 | 2026-08-01 | 2225 lines
+v045 | 2026-08-01 | 2301 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -2223,3 +2223,79 @@ steps. Paired with STYLE.css v045.
   exact` rule already covers it) and it is what the review asked for, but if
   the bars ever read as too faint the fix is a deeper fill token, not the
   return of the border.
+
+**Round 3 — second review, 2026-08-01.** Seventeen findings. Paired with
+STYLE.css v046.
+
+*Step 1 and 2 — the forms*
+
+- **Every entry box is now the SAME width** (`--tf-entry-w`, 180px), whether or
+  not it carries a unit and whatever the unit says. The width is set by the
+  widest control in the set — a native `<input type="month">` showing
+  "September 2026" plus its own calendar affordance — and the others match it
+  rather than the other way round. A field with no unit gets the width
+  explicitly, otherwise it stretched to the whole column and towered over its
+  neighbours. Verified by measurement: all eight step-1 boxes at 180px.
+- **A currency prefix moved INSIDE the box's own left padding**, via
+  `.tf-uom-pre` and the `:has()` mechanism `.tf-choice:has(input:checked)`
+  already uses. Sitting outside, "$" pushed that one field's left edge right of
+  every other field's — boxes that were the same WIDTH stopped sharing a left
+  EDGE, which reads as worse alignment than the inconsistent widths it had just
+  replaced. All eight boxes now measure the same left and the same width.
+- **`.tf-explain-note` drops to `--tf-text-xs`** (12px against the label's
+  14px), so the pair reads as question-then-gloss rather than two competing
+  headers, with a 2px nudge so the smaller text's first line sits level with the
+  label's — top-aligning the BOXES leaves smaller type visibly high. Same 2px
+  idiom as `.tf-cost-badge` / `.tf-step-nav-desc`.
+- **`.tf-repeat-del` / `.tf-repeat-add` became ICONS** — "×" and "+", each with
+  both an `aria-label` and a `title`, since a bare glyph carries no name on its
+  own. The words were the actual bug: with "Remove" on the end the grid's last
+  track could not shrink and **the row overflowed the card's right border**. Two
+  fixes, both needed — the last column is now a fixed 28px rather than `auto`,
+  and `.tf-repeat-row > * { min-width: 0 }` stops the description input's
+  intrinsic min-content width from becoming the `1fr` track's floor. Measured
+  after: row right edge 1175 inside the card's 1201.
+- **`Start over` (NEW behaviour, no new pattern)** — a `.tf-pill
+  .tf-pill-outline` in each panel head that clears every entry and every cost
+  row and re-seeds the months from the machine clock. It **asks before it
+  wipes**, by relabelling itself to "Clear everything?" rather than opening a
+  dialog: the sheet has no modal pattern, and inventing one for a single
+  control would be the larger change. It disarms on blur or on any other click.
+- Copy: tips reworded throughout and shortened; "Approach to signing" became
+  **"Sales cycle time"**; the leads unit shortened to "leads"; the payment-terms
+  note lost its "the two must total 100%, type one and the other fills in"
+  sentence, which the control demonstrates by doing it.
+
+*Step 3 — the chart*
+
+- **One column per period, not two side by side.** Revenue stacks upward from
+  zero and total costs stack downward from the SAME x, so a period's money in
+  and money out are read on a single vertical instead of compared across a gap.
+  Bar width 14.5 → 22 with the grouping gap gone.
+- **The legend stops explaining the geometry** — "Revenue (above $0)" is back to
+  "Revenue". The chart shows which side each sits on; the legend saying so as
+  well was labelling the obvious.
+- **Panel title → "Cash Flow Projection"**, in the step rail as well as the h2.
+
+*Step 3 — the summary block, `.tf-cost-summary` renamed `.tf-summary`*
+
+- It now carries **total revenue, total cost, total commission, breakeven month
+  and end cash** instead of the cost-type breakdown (one-time / annual /
+  monthly / commission) it held first. **This supersedes the original brief's
+  requirement** for a by-cost-type block "so the breakdown survives to print and
+  PDF" — the breakdown was detail; these five are the answers a reader opens the
+  page for. Total revenue was missing entirely from the first build, which is
+  what surfaced it. **Breakeven** is new arithmetic, not a re-display: the first
+  period whose CUMULATIVE cash is non-negative, i.e. the month the business has
+  earned back everything it has spent to date, or "Not within the horizon". The
+  generated PDF's summary line was changed in the same commit — it restated the
+  old four cost totals and would otherwise have disagreed with the page.
+
+**Open question, recorded not resolved — client counts.** The review's reword
+for the conversion tip read "% of leads that are converted to a paying customer,
+**round to a full person**". Rounding client counts to whole people would
+reverse the original brief's explicit "FRACTIONAL, never rounded", and it is not
+a display change: rounding 0.7 clients to 1 in every month compounds into a
+materially different revenue line over 36 months. The tip is reworded as asked;
+**the math is deliberately left fractional** pending a decision, since guessing
+either way silently changes every number on the page.
