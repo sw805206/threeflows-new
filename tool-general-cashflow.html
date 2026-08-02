@@ -64,6 +64,15 @@
                handlers are page-level (Start over clears every step; the PDF
                builds from the stored projection), so one row serves all three. -->
           <div class="tf-panel-actions no-print">
+            <!-- Step pager. Labels and hrefs are written by the engine from the
+                 rail's own step numbers, so the number is authored ONCE (in the
+                 rail) and cannot drift. Drives the same tablist the rail drives.
+                 Ends are disabled, not hidden, so the row does not jump. -->
+            <nav class="tf-post-pager" aria-label="Step navigation" data-step-pager>
+              <a data-pager-prev></a>
+              <span class="tf-pager-sep">|</span>
+              <a data-pager-next></a>
+            </nav>
             <button type="button" class="tf-pill tf-pill-outline" data-reset>Start over</button>
             <button type="button" class="tf-pill tf-pill-outline" data-pdf>Download PDF</button>
           </div>
@@ -73,7 +82,10 @@
           <!-- Panel 1: revenue assumptions -->
           <section class="tf-tool-panel" id="panel-revenue" role="tabpanel" aria-labelledby="tab-revenue" data-tool-panel="revenue">
             <div class="tf-panel-head">
-              <h2>Revenue Assumptions</h2>
+              <div>
+                <div class="tf-kicker" data-step-eyebrow></div>
+                <h2>Revenue Assumptions</h2>
+              </div>
             </div>
 
             <div class="tf-card">
@@ -214,7 +226,10 @@
           <!-- Panel 2: cost assumptions -->
           <section class="tf-tool-panel" id="panel-costs" role="tabpanel" aria-labelledby="tab-costs" data-tool-panel="costs" hidden>
             <div class="tf-panel-head">
-              <h2>Cost Assumptions</h2>
+              <div>
+                <div class="tf-kicker" data-step-eyebrow></div>
+                <h2>Cost Assumptions</h2>
+              </div>
             </div>
 
             <div class="tf-card">
@@ -277,7 +292,10 @@
                print/PDF-only (page 2 of the output). -->
           <section class="tf-tool-panel" id="panel-projection" role="tabpanel" aria-labelledby="tab-projection" data-tool-panel="projection" hidden>
             <div class="tf-panel-head">
-              <h2>Cashflow Projection</h2>
+              <div>
+                <div class="tf-kicker" data-step-eyebrow></div>
+                <h2>Cashflow Projection</h2>
+              </div>
             </div>
 
             <!-- Blocking-input notice: shown instead of the projection when an
@@ -323,6 +341,18 @@
                tools.html; paragraph 2 is tool-pages-only; paragraph 3 is this
                tool's own. -->
           <hr class="tf-tool-divider">
+          <!-- Presented-by byline. Screen, print and PDF; only the "printed on"
+               stamp is print/PDF-only (.tf-byline-date). The generated PDF draws
+               this SAME line with jsPDF primitives from the logo's real geometry
+               — commented as a pair here, in STYLE.css and in the engine. -->
+          <div class="tf-byline">
+            <svg viewBox="0 8.5 100 100" role="img" aria-label="Three Flows Solutions">
+              <rect x="21" y="42" width="16" height="43" rx="4" ry="4" fill="var(--tf-ink)"></rect>
+              <rect x="42" y="32" width="16" height="53" rx="4" ry="4" fill="var(--tf-brick)"></rect>
+              <rect x="63" y="52" width="16" height="33" rx="4" ry="4" fill="var(--tf-stone)"></rect>
+            </svg>
+            <span>Presented by Three Flows Solutions<span class="tf-byline-date" data-byline-date></span></span>
+          </div>
           <div class="tf-tool-legal" data-tool-legal>
             <p class="tf-meta">Disclaimer and privacy</p>
             <p>Three Flows Solutions is a business consultancy. These free tools are provided to introduce business logic. Do not use the output as the basis for a final business decision or for execution without discussing it with qualified professional service providers, and check the federal, state, and institutional regulations, laws, and standards that apply to your situation.</p>
