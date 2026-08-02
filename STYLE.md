@@ -1,4 +1,4 @@
-v047 | 2026-08-01 | 2372 lines
+v048 | 2026-08-01 | 2422 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -2370,3 +2370,53 @@ its own direct-to-main commit.
 - **`.tf-summary` splits into two `.tf-summary-row`s** — the three horizon
   totals, then breakeven month and end cash. Five equal-looking numbers on one
   row read as an undifferentiated strip.
+
+**Round 5 — fourth review, 2026-08-01.** Six findings, three of which turned
+out to be one thing. Paired with STYLE.css v048.
+
+- **`.tf-monthpick` (NEW) — our own month control, replacing
+  `<input type="month">`.** Three separate findings — boxes still not one width,
+  "February 2026" instead of "Feb-26", and a dropdown calendar rendering in
+  Arial — all have the same cause: **the native control cannot be made to do
+  any of them.** The browser formats the value in its own locale with no hook to
+  change it; its calendar lives in shadow DOM the page cannot reach, so it
+  draws in the UA font; and "September 2026" plus the picker indicator sets the
+  measured 183px floor that forced the two-width compromise of Round 4. There is
+  no styling fix — only replacement.
+  The control is a `<button>` showing MMM-YY over a hidden input carrying
+  `YYYY-MM`, with a popover holding a year stepper and a 12-month grid. Every
+  part inherits `--tf-font-body`, which is the point. Selected state reuses the
+  `--tf-wash-brick` + brick treatment the choice kit and view toggle already
+  use. Months before the start month are **disabled in the grid**, so the floor
+  is visible in the control instead of only reported after the fact. The hidden
+  input dispatches a bubbling `change`, so every existing rule in the engine
+  treats the widget exactly like a typed field.
+  **Consequence: ONE entry width again.** With "Feb-26" shorter than "25000",
+  `--tf-entry-month-w` is deleted and every box on both input steps is 120px on
+  a shared left edge — what Round 3 asked for and Round 4 could not deliver.
+  **The one shadow in the sheet** is here: a popover must read as floating above
+  the form rather than as another panel in it. Derived from `--tf-ink` via
+  `color-mix`, the `--tf-cream` idiom, so it introduces no colour.
+  The widget's internals are built by the JS rather than authored in the page,
+  unlike the cost-row `<template>`s. Deliberate: a hidden input keeps the value
+  where the rest of the engine already looks for it, and a popover's guts are
+  chrome, not content.
+
+- **Placeholders removed.** A greyed "3" sitting in the box still reads as
+  prefilled data — the complaint was right, and `placeholder=` was my own
+  addition, not part of the brief. Numeric fields are now genuinely empty. The
+  month control keeps "MMM-YY", which states a FORMAT rather than a value, and
+  is stone for the same reason.
+
+- **Cost amounts were never validated — a real hole.** Step 1's numbers were
+  range-checked from Round 2, but the repeatable rows' Amount fields were read
+  straight through `parseFloat(..., 0)`. An `<input type=number>` accepts
+  exponent notation, so **"e45" sat in the box looking like an entry while
+  `.value` read empty and the model silently used 0.** Every row's amount is now
+  checked for unparseable, negative and missing, and named in the blocking list.
+  Step 1's fields additionally consult `validity.badInput`, which is the only
+  way to tell "the box contains something unparseable" from "the box is empty" —
+  `.value` reports both as `""`.
+
+- Copy: "The share of leads that convert to a paying client" → "Of the leads you
+  approach, the percentage that become paying clients."

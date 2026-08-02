@@ -1,6 +1,20 @@
-/* v047 | 2026-08-01 | 3538 lines
+/* v048 | 2026-08-01 | 3635 lines
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v48 · 2026-08-01 · Cash flow tool, fourth review (paired with STYLE.md v048).
+                     .tf-monthpick (NEW) replaces <input type="month">, which
+                     could not render MMM-YY (browser formats in its own
+                     locale), could not take the site's typeface (its calendar
+                     is shadow DOM), and could not fit a narrow box (a measured
+                     183px floor). A button showing MMM-YY over a hidden input,
+                     with a year stepper and a 12-month grid, all inheriting
+                     --tf-font-body; months before the start month are disabled
+                     in the grid. Consequence: --tf-entry-month-w is DELETED and
+                     every entry box on both input steps is one 120px width on a
+                     shared left edge. Carries the sheet's only box-shadow — a
+                     popover must float above the form — derived from --tf-ink
+                     via color-mix, so no new colour enters.
 
    v47 · 2026-08-01 · Cash flow tool, third review + RENAME (paired with
                      STYLE.md v047). The tool is now "Simple Cash Flow
@@ -3300,24 +3314,107 @@ button.tf-pill { cursor: pointer; }
    assumptions" in step 1. Sits above a run of .tf-explained rows and is
    quieter than the panel's own h2. */
 .tf-assume-group { margin: 0 0 var(--tf-space-4); }
-/* TWO widths, each internally uniform, both left-aligned on the same edge.
-   A single shared width is not achievable: a native <input type="month"> has
-   to hold "September 2026" (129px of text at the field's own 16px) plus its
-   padding, border and the picker indicator the browser reserves — 183px,
-   measured, not guessed. Forcing every box to that floor is what made a
-   two-character answer like "3" sit in an absurd box; forcing the month picker
-   down to the numeric width clips the year behind the icon.
-   So numeric entries take the narrow width and month entries take the width
-   their control actually needs. Within each kind every box matches, which is
-   what the raggedness complaint was really about — boxes that stepped in and
-   out with the length of the unit word beside them. */
-.tf-assume-group, .tf-cost-group {
-  --tf-entry-w: 120px;
-  --tf-entry-month-w: 190px;
-}
+/* ONE width for every entry box, at last. The two-width compromise of the
+   previous round existed only because a native <input type="month"> had to
+   hold "September 2026" plus its own picker indicator — a measured 183px
+   floor. Replacing it with `.tf-monthpick`, which renders MMM-YY in the site's
+   own type, removes the floor: "Feb-26" is shorter than "25000". Every box on
+   both input steps is now the same width and shares a left edge. */
+.tf-assume-group, .tf-cost-group { --tf-entry-w: 120px; }
 .tf-assume-group .tf-field > .tf-input { width: 100%; max-width: var(--tf-entry-w); }
-.tf-assume-group .tf-field > .tf-input[type="month"],
-.tf-repeat-row .tf-input[type="month"] { max-width: var(--tf-entry-month-w); }
+.tf-monthpick { position: relative; max-width: var(--tf-entry-w); }
+
+/* Month picker — our own control, because the native one cannot do any of the
+   three things asked of it: render MMM-YY (the browser formats the value in
+   its own locale and offers no hook), use the site's typeface (its calendar
+   lives in shadow DOM the page cannot reach, so it draws in the UA font), or
+   fit a narrow box. Everything below inherits --tf-font-body, which is the
+   whole point. */
+.tf-monthpick-value {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tf-space-1);
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+/* Empty reads as a FORMAT hint, not a value — stone, like a placeholder, so an
+   unanswered control is never mistaken for an answered one. */
+.tf-monthpick-value.is-empty { color: var(--tf-stone); }
+.tf-monthpick-caret { font-size: 10px; color: var(--tf-ink-soft); }
+.tf-monthpick-value[aria-expanded="true"] { border-color: var(--tf-brick); }
+.tf-monthpick-value[aria-invalid="true"] { border-color: var(--tf-brick); }
+.tf-monthpick-pop {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 232px;
+  padding: var(--tf-space-2);
+  background: var(--tf-paper);
+  border: var(--tf-rule-light);
+  /* The one shadow in the sheet, and deliberately: a popover has to read as
+     floating ABOVE the form rather than as another panel in it. Derived from
+     --tf-ink via color-mix, the --tf-cream idiom, so it carries no new colour. */
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--tf-ink) 18%, transparent);
+}
+.tf-monthpick-year {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--tf-space-1);
+}
+.tf-monthpick-yearlabel { font-size: var(--tf-text-sm); font-weight: 700; }
+.tf-monthpick-year button {
+  font-family: var(--tf-font-body);
+  font-size: var(--tf-text-base);
+  line-height: 1;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--tf-ink-soft);
+  cursor: pointer;
+}
+.tf-monthpick-year button:hover { color: var(--tf-brick); }
+.tf-monthpick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.tf-monthpick-grid button {
+  font-family: var(--tf-font-body);
+  font-size: var(--tf-text-sm);
+  padding: 6px 0;
+  border: var(--tf-rule-light);
+  background: var(--tf-paper);
+  color: var(--tf-ink);
+  cursor: pointer;
+}
+.tf-monthpick-grid button:hover:not(:disabled) { border-color: var(--tf-brick); }
+/* Chosen reuses the selected treatment the choice kit and the view toggle
+   already use, so "currently chosen" looks the same everywhere on the page. */
+.tf-monthpick-grid button.is-chosen {
+  background: var(--tf-wash-brick);
+  border-color: var(--tf-brick);
+  color: var(--tf-brick);
+  font-weight: 500;
+}
+/* Months before the start month are DISABLED here rather than merely reported
+   afterwards — the block is visible in the control itself. */
+.tf-monthpick-grid button:disabled { color: var(--tf-stone); border-color: var(--tf-sand); cursor: not-allowed; }
+.tf-monthpick-foot {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--tf-space-1);
+}
+.tf-monthpick-foot button {
+  font-family: var(--tf-font-body);
+  font-size: var(--tf-text-sm);
+  padding: 4px 0;
+  border: none;
+  background: transparent;
+  color: var(--tf-ink-soft);
+  cursor: pointer;
+}
+.tf-monthpick-foot button:hover { color: var(--tf-brick); }
 .tf-assume-group + .tf-assume-group { margin-top: var(--tf-space-6); }
 .tf-assume-group > h3 {
   font-size: var(--tf-text-base);
@@ -3409,7 +3506,7 @@ button.tf-pill { cursor: pointer; }
   /* Amount is 140px, not 110px: it carries a "$" prefix beside the box now.
      The last column is the remove icon at a fixed 28px — `auto` let a worded
      button set its own width and push the row past the card's edge. */
-  grid-template-columns: minmax(0, 1fr) 130px 190px 28px;
+  grid-template-columns: minmax(0, 1fr) 130px 130px 28px;
   gap: var(--tf-space-2);
   align-items: start;
 }
