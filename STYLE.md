@@ -1,4 +1,4 @@
-v043 | 2026-08-01 | 2137 lines
+v044 | 2026-08-01 | 2225 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -2039,6 +2039,9 @@ Five new patterns, all built from existing tokens:
   reader. It is the right trade here — every tip is an example ("asset,
   equipment"), never information needed to answer the question — but a tool
   whose tips carry load-bearing content should build a real popover instead.
+  *(SUPERSEDED in Round 2 — `.tf-tip` is DELETED and replaced by
+  `.tf-explained`, an always-visible explanation in a second column. The
+  limitation recorded above is exactly what the review rejected; see below.)*
 
 - **`.tf-view-toggle` / `-btn` (NEW) — the Monthly/Quarterly segmented
   control.** Drives the chart and the table from one switch. Deliberately
@@ -2135,3 +2138,88 @@ alternatives for a reason worth recording — four more columns will not fit a
 - **`title` on `.tf-tip` is not a touch or AT affordance** — see the pattern
   note above. If tips ever carry load-bearing content, this needs a real
   popover.
+
+**Round 2 — first-build review, 2026-08-01.** Ten findings across all three
+steps. Paired with STYLE.css v045.
+
+*Step 1 — the assumptions form*
+
+- **`.tf-explained` (NEW) replaces `.tf-tip`, which is DELETED.** Control on
+  the left, explanation on the right. Two problems fell to one change: a
+  full-width `.tf-input` was an absurd box for a two-character answer like "3",
+  and the hover "?" hid the explanation behind an interaction — the exact
+  limitation the original entry above recorded and accepted. Putting the
+  explanation in the width the narrower box frees costs nothing and reads
+  without hovering. `.tf-tip` is removed from the sheet rather than left
+  orphaned, per the `.tf-cost-note` precedent (Round 4 of the company-setup
+  entry). **This reverses the original brief's "all tips are hover, not
+  always-visible" instruction** — recorded here because the reversal was
+  deliberate and requested, not drift.
+  ONE pattern, two consumers: step 1's labelled fields and step 2's cost-group
+  headings. Stacks below 640px, matching `.tf-repeat-row`'s own reflow
+  breakpoint rather than the sheet's 768/820 page-layout pair.
+- **`.tf-input-uom` / `.tf-uom` (NEW) — the unit beside the box.** `[50] %`,
+  `[10] months`, `$ [25000]`. Currency takes the prefix slot and everything
+  else the suffix slot, which is the reading order for each. The input now
+  takes the space the unit leaves instead of stretching to the column, so the
+  box looks the size of the answer it wants.
+- **Number fields lose their spinners.** `appearance: textfield` plus the two
+  `::-webkit-*-spin-button` pseudo-elements. Stepper arrows invite nudging a
+  value one at a time, which is the wrong affordance for "$25,000" or "12.5%" —
+  these are typed. Removing them also reclaims width inside an already narrow
+  box. Money and percent fields now accept **two decimal places**
+  (`step="0.01"`); months and years stay whole numbers.
+- **`.tf-assume-group` (NEW) — sub-groups within a step.** Step 1 now opens
+  with **General assumptions** (horizon, business start month) before **Revenue
+  assumptions**, because those two answers frame every other one — everything
+  below is measured from them. Quieter than the panel's own h2, with a light
+  rule under the heading.
+- **`.tf-label-sub` (NEW) and a scoped `.tf-field-row` fix.** The payment-terms
+  pair reads "Upfront [50] %" / "On completion [50] %", the sub-labels quieter
+  than the group label so the pair is one question, not two. `.tf-field-row`'s
+  shared `1fr 1fr` resolves as `minmax(AUTO, 1fr)`, so the column holding the
+  longer sub-label won more width and the two boxes rendered visibly different
+  sizes (109px vs 152px, caught by measurement). `minmax(0, 1fr)` equalizes
+  them, **scoped to `.tf-assume-group`** rather than changed in the shared rule,
+  which `contact.html` also uses.
+- **Validation moved from arrival-time to live.** Every numeric field now
+  carries its own range and its own error line, checked as you type rather than
+  only on reaching step 3. Out-of-range values are REPORTED, not clamped — a
+  conversion rate typed as 150 used to silently become 150% and produce 1.5
+  clients per lead. `readAssumptions()` stays the single place every rule
+  lives; validating live is just calling it and discarding the result, so there
+  is one definition of "valid" and two moments of use.
+
+*Step 2 — costs*
+
+- **Group explanations became visible** in the same `.tf-explained` shape, to
+  the right of each group heading.
+- **`$` prefix on every amount**, and the amount column widened 110px → 140px
+  to hold it. Same no-spinner, two-decimal treatment as step 1.
+
+*Step 3 — the chart, substantially rebuilt*
+
+- **One shared `$0` line, drawn in ink.** Revenue rises above it; **total costs
+  now hang BELOW it** rather than sitting beside revenue on a shared positive
+  baseline; and cumulative net cash crosses it whenever the running position is
+  negative. The line is drawn LAST so it reads as the chart's spine rather than
+  something the bars sit on.
+- **The two axes are pinned so zero falls at the same height on both.** This is
+  the part with teeth. The bars and the cumulative line are on different scales,
+  and without pinning the ink line would be truthful for the bars and a lie for
+  the dashed line — the one thing a two-axis chart must not do. `zeroScale()`
+  always spans zero and always puts a TICK on zero; `alignZero()` then extends
+  whichever axis has less room on its short side, only ever growing a range so
+  no data point can be pushed out of the plot. Ticks are generated OUTWARD from
+  zero so the spacing stays even after that stretching. Verified by measurement:
+  both `$0` labels render at the same y.
+- **Bars lose their 2px strokes.** `--tf-chart-4` and `--tf-chart-1` are no
+  longer read at all. The series are told apart by SIDE of the zero line as
+  well as by hue, so the stroke was carrying nothing; `.tf-chart-swatch` drops
+  its border to match, since a legend must not key a mark the chart no longer
+  draws. Plot height 210 → 230 to absorb the space the below-zero half needs.
+- **Watch item:** with no stroke, the bars are `--tf-wash-*` fills alone, which
+  is a pale mark on `--tf-paper`. It survives print (the `print-color-adjust:
+  exact` rule already covers it) and it is what the review asked for, but if
+  the bars ever read as too faint the fix is a deeper fill token, not the
+  return of the border.

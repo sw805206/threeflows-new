@@ -1,6 +1,24 @@
-/* v044 | 2026-08-01 | 3333 lines
+/* v045 | 2026-08-01 | 3417 lines
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v45 · 2026-08-01 · Cashflow tool, first-build review (feat/tool-consultancy-
+                     cashflow, paired with STYLE.md v044). Step 1/2: .tf-tip is
+                     DELETED and replaced by .tf-explained (control left,
+                     explanation right) — the hover-only tip was rejected on
+                     review, which is the same limitation the v44 note recorded
+                     and accepted. New: .tf-input-uom/.tf-uom (unit beside the
+                     box), .tf-assume-group (General vs Revenue sub-groups),
+                     .tf-label-sub, no-spinner number fields, and a
+                     .tf-assume-group-scoped minmax(0,1fr) fix for
+                     .tf-field-row, whose shared 1fr 1fr was rendering the
+                     payment-terms pair at 109px vs 152px (contact.html's copy
+                     of the rule is deliberately untouched). Step 3: the chart
+                     gains ONE ink $0 line with costs hanging below it, the two
+                     axes pinned so zero sits at the same height on both, and
+                     bars with NO stroke — so --tf-chart-4 / --tf-chart-1 are no
+                     longer read and .tf-chart-swatch drops its border to match.
+                     Plot height 210 → 230.
 
    v44 · 2026-08-01 · Consultancy cashflow tool (feat/tool-consultancy-cashflow,
                      paired with STYLE.md v043, same commit per SCOPE.md). The
@@ -3162,28 +3180,80 @@ button.tf-pill { cursor: pointer; }
    as presentation attributes. One source of truth, still --tf-*, no hex in the
    JS. What lives HERE is the chart's furniture: wrapper, scroll, legend. */
 
-/* Hover tip — a small ringed "?" carrying its text in `title`, so the tip is
-   HOVER-ONLY (the brief's requirement) rather than always-visible helper copy
-   under every field. `title` is also what .tf-data-table's step-number cells
-   already use for the You/Assist/We meanings, so the idiom is established.
-   Sized off --tf-text-xs; the marker is decorative, the text is the title. */
-.tf-tip {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 15px;
-  height: 15px;
-  margin-left: 6px;
-  border: 1.5px solid var(--tf-stone);
-  border-radius: 50%;
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 1;
-  color: var(--tf-ink-soft);
-  cursor: help;
-  vertical-align: middle;
+/* Explained row — the control on the LEFT, its explanation on the RIGHT. This
+   replaces the hover "?" tip a first pass used (`.tf-tip`, now deleted rather
+   than left orphaned, per the sheet's own rule and the `.tf-cost-note`
+   precedent). Two reasons it is better here, both from review: a full-width
+   `.tf-input` for "3 years" is an absurdly large box for a two-character
+   answer, and putting the explanation in the freed column makes it readable
+   without hovering — which `title` never was on touch or to most screen
+   readers.
+   ONE pattern, two consumers: a labelled field (step 1) and a cost-group
+   heading (step 2). Stacks below 640px — the control's own reflow breakpoint,
+   matching `.tf-repeat-row`, not the sheet's 768/820 page-layout pair. */
+.tf-explained {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--tf-space-3);
+  align-items: start;
 }
-.tf-tip:hover { border-color: var(--tf-brick); color: var(--tf-brick); }
+@media (max-width: 640px) {
+  .tf-explained { grid-template-columns: 1fr; gap: var(--tf-space-1); }
+}
+/* The note sits level with the LABEL, not the input — so label and note read
+   as one line of question-and-gloss, and no magic offset is needed to push the
+   note down past the label's height. */
+.tf-explain-note {
+  margin: 0;
+  font-size: var(--tf-text-sm);
+  line-height: 1.5;
+  color: var(--tf-ink-soft);
+}
+
+/* Unit of measure beside the box — `[50] %`, `[10] months`, `$ [25000]`.
+   Currency takes the PREFIX slot and everything else the suffix slot, which is
+   the reading order for each. The input no longer stretches to the column: it
+   takes the space the unit leaves, so the box looks like the size of the
+   answer it wants. */
+.tf-input-uom { display: flex; align-items: center; gap: var(--tf-space-1); }
+.tf-input-uom .tf-input { flex: 1 1 auto; min-width: 0; }
+.tf-uom {
+  flex: 0 0 auto;
+  font-size: var(--tf-text-sm);
+  color: var(--tf-ink-soft);
+  white-space: nowrap;
+}
+
+/* Number fields carry no spinner. The stepper arrows invite clicking a value
+   up one at a time, which is the wrong affordance for "$25,000" or "12.5%" —
+   these are typed, not nudged. Removing them also reclaims the width the
+   arrows occupied inside an already narrow box. `appearance: textfield` is the
+   Firefox half; the ::-webkit- pseudo-elements are the Chrome/Safari half. */
+.tf-input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+.tf-input[type="number"]::-webkit-outer-spin-button,
+.tf-input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* Sub-group heading inside a step panel — "General assumptions" / "Revenue
+   assumptions" in step 1. Sits above a run of .tf-explained rows and is
+   quieter than the panel's own h2. */
+.tf-assume-group { margin: 0 0 var(--tf-space-4); }
+.tf-assume-group + .tf-assume-group { margin-top: var(--tf-space-6); }
+.tf-assume-group > h3 {
+  font-size: var(--tf-text-base);
+  margin: 0 0 var(--tf-space-1);
+  padding-bottom: var(--tf-space-1);
+  border-bottom: var(--tf-rule-light);
+}
+.tf-assume-group .tf-explained { margin-top: var(--tf-space-3); }
+/* The payment-terms pair. `.tf-field-row`'s shared `1fr 1fr` resolves as
+   minmax(AUTO, 1fr), so the column holding the longer sub-label ("On
+   completion") won more width than its twin and the two boxes rendered
+   visibly different sizes. minmax(0, 1fr) makes them equal. Scoped here rather
+   than changed in the shared rule, which contact.html also uses. */
+.tf-assume-group .tf-field-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+/* Sub-label under a group label ("Upfront" beneath "Payment terms") — the
+   quieter of two stacked labels, so the pair does not read as two questions. */
+.tf-label-sub { font-weight: 400; color: var(--tf-ink-soft); }
 
 /* View toggle (Monthly / Quarterly) — a two-button segmented control driving
    BOTH the chart and the table beneath it. Deliberately NOT .tf-pill: a pill is
@@ -3233,7 +3303,12 @@ button.tf-pill { cursor: pointer; }
   margin: var(--tf-space-1) 0 var(--tf-space-3);
 }
 .tf-chart-legend span { display: inline-flex; align-items: center; gap: var(--tf-space-1); }
-.tf-chart-swatch { display: inline-block; width: 14px; height: 10px; border: 2px solid; box-sizing: border-box; }
+/* Flat fills, no outline — the bars themselves lost their 2px strokes on
+   review, and a legend swatch that still wore one would key a mark the chart
+   no longer draws. The series are told apart by SIDE of the zero line
+   (revenue above, costs below) as well as by hue, so the border was carrying
+   nothing. */
+.tf-chart-swatch { display: inline-block; width: 14px; height: 10px; }
 /* The cumulative series is a DASHED line, and the dash is the required
    non-colour cue — so its swatch is a dashed rule, not a filled block. */
 .tf-chart-swatch-line { width: 18px; height: 0; border: none; border-top: 2px dashed var(--tf-ink); }
@@ -3250,7 +3325,8 @@ button.tf-pill { cursor: pointer; }
   /* The month column is 180px because a native <input type="month"> renders
      its own calendar affordance INSIDE the field, beside "September 2026" —
      the widest value. At 150px the year clipped behind the icon. */
-  grid-template-columns: 1fr 110px 180px auto;
+  /* Amount is 140px, not 110px: it carries a "$" prefix beside the box now. */
+  grid-template-columns: 1fr 140px 180px auto;
   gap: var(--tf-space-2);
   align-items: start;
 }
@@ -3272,9 +3348,17 @@ button.tf-pill { cursor: pointer; }
 }
 .tf-repeat-del:hover { color: var(--tf-brick); }
 .tf-repeat-empty { font-size: var(--tf-text-sm); color: var(--tf-stone); margin: 0; }
-/* Group of repeatable rows — heading, tip, the rows, then Add. */
-.tf-cost-group { margin: 0 0 var(--tf-space-4); }
-.tf-cost-group h3 { font-size: var(--tf-text-base); margin: 0 0 var(--tf-space-1); }
+/* Group of repeatable rows — heading + its explanation (an `.tf-explained`
+   row, the same left-control/right-note shape step 1's fields use), then the
+   rows, then Add. */
+.tf-cost-group { margin: 0 0 var(--tf-space-6); }
+.tf-cost-group h3 {
+  font-size: var(--tf-text-base);
+  margin: 0;
+  padding-bottom: var(--tf-space-1);
+  border-bottom: var(--tf-rule-light);
+}
+.tf-cost-group > .tf-explained { margin-bottom: var(--tf-space-3); }
 .tf-cost-group .tf-repeat { margin-bottom: var(--tf-space-2); }
 
 /* Horizon totals by cost type — a small definition block beside the table.
