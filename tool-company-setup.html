@@ -69,6 +69,15 @@
                panel is ever visible, so a single row serves whichever is active;
                the PDF handler reads the active step from the tablist. -->
           <div class="tf-panel-actions no-print">
+            <!-- Step pager. Labels and hrefs are written by the engine from the
+                 rail's own step numbers, so the number is authored ONCE (in the
+                 rail) and cannot drift. Drives the same tablist the rail drives.
+                 Ends are disabled, not hidden, so the row does not jump. -->
+            <nav class="tf-post-pager" aria-label="Step navigation" data-step-pager>
+              <a data-pager-prev></a>
+              <span class="tf-pager-sep">|</span>
+              <a data-pager-next></a>
+            </nav>
             <button type="button" class="tf-pill tf-pill-outline" data-pdf>Download PDF</button>
           </div>
 
@@ -77,7 +86,10 @@
           <!-- Panel 1: entity-type Q&A -->
           <section class="tf-tool-panel" id="panel-decide" role="tabpanel" aria-labelledby="tab-decide" data-tool-panel="decide">
             <div class="tf-panel-head">
-              <h2>Decide Entity Type</h2>
+              <div>
+                <div class="tf-kicker" data-step-eyebrow></div>
+                <h2>Decide Entity Type</h2>
+              </div>
             </div>
 
 
@@ -116,7 +128,10 @@
           <!-- Panel 2: Prep & filing table -->
           <section class="tf-tool-panel" id="panel-prep" role="tabpanel" aria-labelledby="tab-prep" data-tool-panel="prep" hidden>
             <div class="tf-panel-head">
-              <h2>Prep &amp; Filing</h2>
+              <div>
+                <div class="tf-kicker" data-step-eyebrow></div>
+                <h2>Prep &amp; Filing</h2>
+              </div>
             </div>
             <div class="tf-fit-legend">
               <span><span class="tf-fit-dot tf-fit-you"></span>You &mdash; you must own it</span>
@@ -131,7 +146,10 @@
           <!-- Panel 3: Post-filing setup table -->
           <section class="tf-tool-panel" id="panel-post" role="tabpanel" aria-labelledby="tab-post" data-tool-panel="post" hidden>
             <div class="tf-panel-head">
-              <h2>Post-Filing Setup</h2>
+              <div>
+                <div class="tf-kicker" data-step-eyebrow></div>
+                <h2>Post-Filing Setup</h2>
+              </div>
             </div>
             <div class="tf-fit-legend">
               <span><span class="tf-fit-dot tf-fit-you"></span>You &mdash; you must own it</span>
@@ -155,6 +173,18 @@
                tools.html; paragraph 2 is tool-pages-only; paragraph 3 is this
                tool's own. -->
           <hr class="tf-tool-divider">
+          <!-- Presented-by byline. Screen, print and PDF; only the "printed on"
+               stamp is print/PDF-only (.tf-byline-date). The generated PDF draws
+               this SAME line with jsPDF primitives from the logo's real geometry
+               — commented as a pair here, in STYLE.css and in the engine. -->
+          <div class="tf-byline">
+            <svg viewBox="0 8.5 100 100" role="img" aria-label="Three Flows Solutions">
+              <rect x="21" y="42" width="16" height="43" rx="4" ry="4" fill="var(--tf-ink)"></rect>
+              <rect x="42" y="32" width="16" height="53" rx="4" ry="4" fill="var(--tf-brick)"></rect>
+              <rect x="63" y="52" width="16" height="33" rx="4" ry="4" fill="var(--tf-stone)"></rect>
+            </svg>
+            <span>Presented by Three Flows Solutions<span class="tf-byline-date" data-byline-date></span></span>
+          </div>
           <div class="tf-tool-legal" data-tool-legal>
             <p class="tf-meta">Disclaimer and privacy</p>
             <p>Three Flows Solutions is a business consultancy. These free tools are provided to introduce business logic. Do not use the output as the basis for a final business decision or for execution without discussing it with qualified professional service providers, and check the federal, state, and institutional regulations, laws, and standards that apply to your situation.</p>

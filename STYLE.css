@@ -1,7 +1,32 @@
-/* v051 | 2026-08-02 | 3757 lines
+/* v052 | 2026-08-02 | 3819 lines
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v52 · 2026-08-02 · Tool step pager + presented-by byline. Two additive rules,
+                     no new token, hue or scale value.
+                     (1) .tf-panel-actions .tf-post-pager — the step pager shares
+                     the action row but sits at the opposite end, via
+                     margin-inline-end: auto rather than switching the row to
+                     space-between (which would left-align a lone control on any
+                     future single-control row). Capped at --tf-text-xs, the
+                     panel eyebrow's size, so navigation never out-shouts the
+                     "Step N" above it. The blog's .tf-post-pager, .is-disabled
+                     and .tf-pager-sep are REUSED untouched — the pager is text,
+                     deliberately unlike the panel's pill controls.
+                     (2) .tf-byline — logo mark + "Presented by Three Flows
+                     Solutions", light rule beneath, at the head of the legal
+                     block. Shown on SCREEN, print and PDF; only the
+                     .tf-byline-date "printed on" stamp is print/PDF-only,
+                     display:inline inside the flex line rather than the
+                     .tf-print-only block idiom. A timestamp that changes on
+                     every load would read as a moving publication date on
+                     screen, which is why the stamp and the byline part company.
+                     NB the generated PDF draws this same line with jsPDF
+                     primitives from the logo's real geometry, so the two are
+                     commented as a PAIR here and in both tool engines — the
+                     pagination-block precedent (v44).
+                     The panel eyebrow needed NO rule: .tf-kicker is the site's
+                     eyebrow and was reused as-is.
    v51 · 2026-08-02 · Tool rail CTA gets a raised cream ground. ONE rule, scoped
                      .tf-tool-rail .tf-cta-inline, so the service pages' and the
                      blog's .tf-cta-inline are untouched: --tf-cream background
@@ -3084,6 +3109,38 @@ a.tf-icon-brand:focus { color: #004182; }        /* LinkedIn blue, pressed */
   gap: var(--tf-space-1);
   margin: 0 0 var(--tf-space-2);
 }
+/* Step pager — shares the action row but sits at the OPPOSITE end. The row
+   keeps `flex-end` for the controls and the pager pushes itself left, so a row
+   with no pager is unchanged (additive, not a switch to space-between, which
+   would left-align a lone control). Size is capped at the panel eyebrow's
+   `--tf-text-xs`: the pager is navigation, and must never out-shout the "Step N"
+   it sits above. Everything else is the blog's own `.tf-post-pager` —
+   `.is-disabled` and `.tf-pager-sep` are reused untouched. */
+.tf-panel-actions .tf-post-pager {
+  margin-inline-end: auto;
+  font-size: var(--tf-text-xs);
+}
+
+/* Presented-by byline — the logo mark, the line, and a light rule beneath, at
+   the head of the legal block. Shown on SCREEN, in PRINT and in the generated
+   PDF; only the "printed on" stamp is print/PDF-only, since a timestamp that
+   changes on every page load reads as a moving publication date on screen.
+   THE PDF DRAWS THIS SAME LINE with jsPDF primitives from the logo's real
+   geometry — if one changes the other must change with it, which is why they
+   are commented as a pair here and in assets/tool-company-setup.js and
+   assets/tool-general-cashflow.js. Same posture as the pagination block. */
+.tf-byline {
+  display: flex;
+  align-items: center;
+  gap: var(--tf-space-2);
+  padding-bottom: var(--tf-space-2);
+  margin-bottom: var(--tf-space-3);
+  border-bottom: var(--tf-rule-light);
+  font-size: var(--tf-text-sm);
+  color: var(--tf-ink-soft);
+}
+.tf-byline svg { width: 24px; height: auto; flex-shrink: 0; }
+.tf-byline-date { display: none; }
 /* The CTA sits in the RAIL between the lede image and the step list. One
    instance outside the panels, so it neither repeats nor shifts as steps
    switch (it previously trailed the Q&A card on step 1 but led the table on
@@ -3299,6 +3356,11 @@ button.tf-pill { cursor: pointer; }
      (screen and print alike), so the on-screen 4-column widths already carry
      over cleanly at the smaller print font size. */
   .tf-step-nav, .tf-post-topnav, .tf-rail-img { display: none !important; }
+
+  /* The byline's "printed on" stamp — print and PDF only. `inline`, not the
+     `.tf-print-only` block idiom, because it sits inside the byline's own flex
+     line rather than being a block of its own. */
+  .tf-byline-date { display: inline; }
 
   /* The WHO column's wash backgrounds carry the row's meaning, so they must
      survive to paper/PDF — browsers strip background colours from print by

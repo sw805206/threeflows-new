@@ -50,11 +50,94 @@
         tabs[k].tabIndex = on ? 0 : -1;
       }
     });
+    syncPager(key);
   }
   function currentTab() {
     var h = (location.hash || '').replace(/^#/, '');
     return panels[h] ? h : TAB_KEYS[0];
   }
+
+  /* --- Step pager, panel eyebrow, byline stamp ---------------------------
+     The step NUMBER is authored ONCE, in the rail's .tf-step-nav-num. The
+     eyebrow above each panel h2 and both pager labels are derived from it, so
+     renumbering or reordering steps in the rail cannot leave them disagreeing.
+     NB this means the eyebrow does NOT appear in a grep of the static HTML: the
+     markup carries an empty [data-step-eyebrow] slot and the number lands at
+     runtime. */
+  function stepLabel(key) {
+    var n = tabs[key] && tabs[key].querySelector('.tf-step-nav-num');
+    return n ? n.textContent.trim() : '';
+  }
+
+  TAB_KEYS.forEach(function (k) {
+    var slot = panels[k] && panels[k].querySelector('[data-step-eyebrow]');
+    if (slot) slot.textContent = stepLabel(k);
+  });
+
+  /* Pager ends are DISABLED, not hidden, so the row does not jump between
+     steps. An <a> with no href is not focusable, which meets the non-focusable
+     requirement without swapping the element for a <span>. */
+  function setPagerEnd(el, key, text) {
+    if (!el) return;
+    el.textContent = text;
+    if (key) {
+      el.setAttribute('href', '#' + key);
+      el.classList.remove('is-disabled');
+      el.removeAttribute('aria-disabled');
+    } else {
+      el.removeAttribute('href');
+      el.classList.add('is-disabled');
+      el.setAttribute('aria-disabled', 'true');
+    }
+  }
+
+  function syncPager(key) {
+    var i = TAB_KEYS.indexOf(key);
+    var prev = i > 0 ? TAB_KEYS[i - 1] : null;
+    var next = (i > -1 && i < TAB_KEYS.length - 1) ? TAB_KEYS[i + 1] : null;
+    setPagerEnd(document.querySelector('[data-pager-prev]'), prev,
+      '\u2190 ' + stepLabel(prev || TAB_KEYS[0]));
+    setPagerEnd(document.querySelector('[data-pager-next]'), next,
+      stepLabel(next || TAB_KEYS[TAB_KEYS.length - 1]) + ' \u2192');
+  }
+
+  /* "printed on" stamp — local time, stamped at the moment of print/download
+     rather than at page load, so a page left open overnight does not print
+     yesterday's time. */
+  function stamp() {
+    var d = new Date(), p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) +
+           ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+  window.addEventListener('beforeprint', function () {
+    var el = document.querySelector('[data-byline-date]');
+    if (el) el.textContent = ' | printed on ' + stamp();
+  });
+
+  /* Presented-by byline at the HEAD of the generated document. The mark is
+     drawn from assets/logo-mark.svg's REAL geometry — three rounded rects in a
+     100-unit viewBox starting at y=8.5 — scaled to an 18pt mark, in the same
+     --tf-* colours the SVG uses. No rasterization and no second asset.
+     THIS IS THE SAME LINE the screen/print byline renders; if one changes the
+     other must change with it, which is why they are commented as a PAIR here
+     and in STYLE.css (.tf-byline). */
+  function drawByline(doc, margin, y, right) {
+    var S = 18 / 100, oy = y;
+    function bar(x, yy, w, h, c) {
+      doc.setFillColor(c[0], c[1], c[2]);
+      doc.roundedRect(margin + x * S, oy + (yy - 8.5) * S, w * S, h * S, 4 * S, 4 * S, 'F');
+    }
+    bar(21, 42, 16, 43, [38, 34, 31]);     // --tf-ink
+    bar(42, 32, 16, 53, [194, 41, 27]);    // --tf-brick
+    bar(63, 52, 16, 33, [184, 173, 165]);  // --tf-stone
+    doc.setFont('helvetica', 'normal').setFontSize(9).setTextColor(85, 80, 77);
+    doc.text('Presented by Three Flows Solutions | printed on ' + stamp(), margin + 26, oy + 13);
+    var ry = oy + 22;
+    doc.setDrawColor(221, 214, 207).setLineWidth(1);   // --tf-stone-light
+    doc.line(margin, ry, right, ry);
+    return ry + 14;
+  }
+
   window.addEventListener('hashchange', function () { activate(currentTab()); });
   activate(currentTab());
 
@@ -206,6 +289,9 @@
     var width = doc.internal.pageSize.getWidth();
     var y = margin;
 
+    // Byline first — the head of the document, above everything else.
+    y = drawByline(doc, margin, y, width - margin);
+
     // Title + intro + disclaimer — READ FROM THE DOM, never restated here. The
     // page's header is the single source: editing the markup changes the PDF in
     // the same edit, so the two cannot drift apart. Each falls back to '' rather
@@ -229,6 +315,11 @@
     });
     y += 9;
 
+    // Step eyebrow + heading — the same two-line relationship the rail uses, so
+    // the panel identifies itself on paper where no rail sits beside it.
+    doc.setFont('helvetica', 'bold').setFontSize(8).setTextColor.apply(doc, PDF_INK_SOFT);
+    doc.text(stepLabel(which).toUpperCase(), margin, y);
+    y += 11;
     doc.setFont('times', 'bold').setFontSize(14).setTextColor.apply(doc, PDF_INK);
     doc.text(PANEL_TITLE[which], margin, y);
     y += 16;
