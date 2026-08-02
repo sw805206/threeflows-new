@@ -1,6 +1,23 @@
-/* v046 | 2026-08-01 | 3496 lines
+/* v047 | 2026-08-01 | 3538 lines
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v47 · 2026-08-01 · Cash flow tool, third review + RENAME (paired with
+                     STYLE.md v047). The tool is now "Simple Cash Flow
+                     Projection" at tool-cashflow-projection.html; the section
+                     comment below follows it. TWO entry widths replace Round
+                     3's single one, because a single one is not achievable: a
+                     native month input needs 183px (measured — 129px of text,
+                     28 padding, 4 border, ~22 picker indicator), so
+                     --tf-entry-w is 120px for numeric entries and
+                     --tf-entry-month-w 190px for month entries. The box is
+                     capped with max-width rather than pinned with flex-basis:
+                     a 180px basis cannot shrink, so in the payment-terms pair
+                     and the cost row's Amount column it overflowed and butted
+                     into its neighbour with no gap. .tf-summary splits into
+                     two .tf-summary-rows; .tf-projection-table takes
+                     --tf-text-xs (36 rows, 7 columns) while
+                     tool-company-setup's tables keep the shared 14px.
 
    v46 · 2026-08-01 · Cashflow tool, second review (feat/tool-consultancy-
                      cashflow, paired with STYLE.md v045). Forms: every entry
@@ -36,7 +53,7 @@
                      longer read and .tf-chart-swatch drops its border to match.
                      Plot height 210 → 230.
 
-   v44 · 2026-08-01 · Consultancy cashflow tool (feat/tool-consultancy-cashflow,
+   v44 · 2026-08-01 · Simple cash flow tool (feat/tool-consultancy-cashflow,
                      paired with STYLE.md v043, same commit per SCOPE.md). The
                      SECOND tool page, which reuses the first tool's entire
                      shell unchanged — .tf-tool-layout / -rail / -content,
@@ -3176,7 +3193,7 @@ button.tf-pill { cursor: pointer; }
   }
 }
 
-/* ── Consultancy cashflow tool (tool-consultancy-cashflow.html) ──────────────
+/* ── Simple cash flow tool (tool-cashflow-projection.html) ──────────────
    The SECOND tool. Reuses the first tool's whole shell unchanged —
    .tf-tool-layout / -rail / -content, .tf-step-nav, .tf-tool-panel,
    .tf-panel-head, .tf-tool-divider, .tf-data-table, the form kit, .tf-pill
@@ -3241,11 +3258,15 @@ button.tf-pill { cursor: pointer; }
 .tf-input-uom { display: flex; align-items: center; gap: var(--tf-space-1); }
 /* EVERY entry box is the same width, whether or not it carries a unit and
    whatever the unit says — a form whose boxes step in and out with the length
-   of the word beside them reads as broken alignment. 180px is set by the
-   widest control in the set, a native <input type="month"> showing
-   "September 2026" plus its own calendar affordance; the others match it
-   rather than the other way round. The unit sits outside that width. */
-.tf-input-uom .tf-input { flex: 0 0 var(--tf-entry-w); min-width: 0; }
+   of the word beside them reads as broken alignment. The unit sits outside
+   that width.
+   `max-width`, NOT a fixed `flex-basis`: a hard 180px basis does not shrink,
+   so in any track narrower than itself (the payment-terms pair, and the cost
+   row's 140px Amount column) the box overflowed and butted straight into its
+   neighbour with no gap — two boxes reading as one control. Capping instead of
+   pinning gives the same even width wherever there is room and lets the box
+   yield where there is not. */
+.tf-input-uom .tf-input { flex: 1 1 auto; min-width: 0; max-width: var(--tf-entry-w); }
 .tf-uom {
   flex: 0 0 auto;
   font-size: var(--tf-text-sm);
@@ -3279,13 +3300,24 @@ button.tf-pill { cursor: pointer; }
    assumptions" in step 1. Sits above a run of .tf-explained rows and is
    quieter than the panel's own h2. */
 .tf-assume-group { margin: 0 0 var(--tf-space-4); }
-/* The shared entry width, declared once so the month pickers and the numeric
-   boxes cannot drift apart. */
-.tf-assume-group, .tf-cost-group { --tf-entry-w: 180px; }
-/* A field with no unit beside it (the two month pickers) still takes the same
-   width — otherwise it would stretch to the whole column and tower over the
-   boxes above and below it. */
-.tf-assume-group .tf-field > .tf-input { width: var(--tf-entry-w); }
+/* TWO widths, each internally uniform, both left-aligned on the same edge.
+   A single shared width is not achievable: a native <input type="month"> has
+   to hold "September 2026" (129px of text at the field's own 16px) plus its
+   padding, border and the picker indicator the browser reserves — 183px,
+   measured, not guessed. Forcing every box to that floor is what made a
+   two-character answer like "3" sit in an absurd box; forcing the month picker
+   down to the numeric width clips the year behind the icon.
+   So numeric entries take the narrow width and month entries take the width
+   their control actually needs. Within each kind every box matches, which is
+   what the raggedness complaint was really about — boxes that stepped in and
+   out with the length of the unit word beside them. */
+.tf-assume-group, .tf-cost-group {
+  --tf-entry-w: 120px;
+  --tf-entry-month-w: 190px;
+}
+.tf-assume-group .tf-field > .tf-input { width: 100%; max-width: var(--tf-entry-w); }
+.tf-assume-group .tf-field > .tf-input[type="month"],
+.tf-repeat-row .tf-input[type="month"] { max-width: var(--tf-entry-month-w); }
 .tf-assume-group + .tf-assume-group { margin-top: var(--tf-space-6); }
 .tf-assume-group > h3 {
   font-size: var(--tf-text-base);
@@ -3377,7 +3409,7 @@ button.tf-pill { cursor: pointer; }
   /* Amount is 140px, not 110px: it carries a "$" prefix beside the box now.
      The last column is the remove icon at a fixed 28px — `auto` let a worded
      button set its own width and push the row past the card's edge. */
-  grid-template-columns: minmax(0, 1fr) 140px 180px 28px;
+  grid-template-columns: minmax(0, 1fr) 130px 190px 28px;
   gap: var(--tf-space-2);
   align-items: start;
 }
@@ -3446,14 +3478,18 @@ button.tf-pill { cursor: pointer; }
    the answers a reader opens the page for. */
 .tf-summary {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--tf-space-3);
+  flex-direction: column;
+  gap: var(--tf-space-2);
   padding: var(--tf-space-2);
   border: var(--tf-rule-light);
   margin: 0 0 var(--tf-space-2);
   font-size: var(--tf-text-sm);
 }
-.tf-summary div { display: flex; flex-direction: column; }
+/* Two deliberate lines: the three horizon TOTALS, then the two figures that
+   answer "when does this turn, and where does it end". Five equal-looking
+   numbers on one row read as an undifferentiated strip. */
+.tf-summary-row { display: flex; flex-wrap: wrap; gap: var(--tf-space-3); }
+.tf-summary-row > div { display: flex; flex-direction: column; }
 .tf-summary dt, .tf-summary .tf-summary-label {
   font-size: var(--tf-text-xs);
   letter-spacing: 0.14em;
@@ -3465,6 +3501,12 @@ button.tf-pill { cursor: pointer; }
 /* Footnotes — numbered notes under the chart, every figure in them rendered
    from the user's own inputs. --tf-text-sm so they read as apparatus, not body
    copy; the ol supplies the numbering the brief refers to by number. */
+/* The projection table runs to 36 rows and 7 columns, so it takes one step
+   down from `.tf-data-table`'s shared 14px. Scoped — tool-company-setup.html's
+   two tables are 9 and 12 rows and keep the shared size. */
+.tf-projection-table .tf-data-table table { font-size: var(--tf-text-xs); }
+.tf-projection-table .tf-data-table :is(th, td) { padding: 6px var(--tf-space-1); }
+
 .tf-footnotes { font-size: var(--tf-text-sm); color: var(--tf-ink-soft); margin: 0 0 var(--tf-space-4); padding-left: var(--tf-space-3); }
 .tf-footnotes li { margin-bottom: var(--tf-space-1); line-height: 1.5; }
 
@@ -3484,7 +3526,7 @@ button.tf-pill { cursor: pointer; }
      table. These three breaks are the SAME pagination the generated PDF
      builds with addPage(), stated once per medium; if one changes the other
      must change with it, which is why they are commented as a pair here and
-     in assets/tool-consultancy-cashflow.js. */
+     in assets/tool-cashflow-projection.js. */
   .tf-recap { break-before: page; }
   .tf-projection-table { break-before: page; }
   .tf-view-toggle { display: none !important; }

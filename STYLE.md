@@ -1,4 +1,4 @@
-v046 | 2026-08-01 | 2314 lines
+v047 | 2026-08-01 | 2372 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -2013,7 +2013,7 @@ exactly once in STYLE.css, at its token definition.
   synthetic probe of all three classes in *both* rule families. Every
   before/after pair matched exactly; no console errors.
 
-### Consultancy cashflow tool — tool-consultancy-cashflow.html — 2026-08-01
+### Simple cash flow tool — tool-cashflow-projection.html — 2026-08-01
 
 The **second** tool page, and the first real test of whether the first tool's
 shell is a pattern or a one-off. It is a pattern: `.tf-tool-layout` /
@@ -2023,7 +2023,7 @@ shell is a pattern or a one-off. It is a pattern: `.tf-tool-layout` /
 **unchanged**. The geometry settled over tool-company-setup's five review rounds
 (260px rail, `space-between` + 62ch content cap, the 24px image→nav gap) was
 reused as found and deliberately **not re-derived**. Paired with STYLE.css v044,
-same commit per SCOPE.md. Engine in `assets/tool-consultancy-cashflow.js`
+same commit per SCOPE.md. Engine in `assets/tool-cashflow-projection.js`
 (SCOPE.md §3). Steps are `#revenue` / `#costs` / `#projection`, switched by the
 same `references.js` tablist idiom; arriving at step 3 recomputes, so steps 1
 and 2 stay editable with no stale projection and no "recalculate" button.
@@ -2312,3 +2312,61 @@ a display change: rounding 0.7 clients to 1 in every month compounds into a
 materially different revenue line over 36 months. The tip is reworded as asked;
 **the math is deliberately left fractional** pending a decision, since guessing
 either way silently changes every number on the page.
+
+**Round 4 — third review, 2026-08-01.** Eleven findings. Paired with STYLE.css
+v047. The tool is **renamed** in this round: "Consultancy Cashflow Projection"
+becomes **"Simple Cash Flow Projection"**, and the slug follows it from
+`tool-consultancy-cashflow.html` to `tool-cashflow-projection.html`. TOOLS.md §1
+holds slugs stable against title edits, but nothing had shipped yet — the rename
+is free now and would not have been later. `tool-002` is unchanged, since an ID
+never moves. SCOPE.md §3 names this page as a jsPDF consumer and is corrected in
+its own direct-to-main commit.
+
+- **Nothing is prefilled any more.** Not the numbers, not the months. This
+  **supersedes the original brief's defaults** — horizon 3, start month = the
+  current machine month, sign lag 2, duration 3, 50/50 terms. The page opens as
+  a blank sheet; `placeholder=` carries the shape of each expected answer. The
+  touched-gating from Round 3 is what makes this bearable: a blank form is an
+  invalid form, and without it the page would open shouting.
+
+- **TWO entry widths, not one — and the reason is measured.** Round 3's single
+  shared width was the wrong resolution of a real conflict. A native
+  `<input type="month">` must hold "September 2026" — **129px of text at the
+  field's own 16px, plus 28px padding, 4px border and the ~22px the browser
+  reserves for its picker indicator: 183px**. Pinning every box to that floor is
+  what made a two-character answer sit in an absurd box; pinning the month
+  picker down to a numeric width clips the year behind the icon, which is what a
+  150px pass actually did. So `--tf-entry-w` is **120px** for numeric entries and
+  `--tf-entry-month-w` is **190px** for month entries. Every box of a kind
+  matches every other of that kind, and both kinds share a left edge — which is
+  what the original raggedness complaint was about: boxes that stepped in and
+  out with the length of the unit word beside them.
+
+- **`max-width`, not `flex-basis` — a real bug.** Round 3 pinned the box with
+  `flex: 0 0 180px`, which cannot shrink. In any track narrower than itself —
+  the payment-terms pair, and the cost row's Amount column — the box overflowed
+  and butted straight into its neighbour with **no gap at all**, so two boxes
+  read as one control. Capping instead of pinning gives the same even width
+  wherever there is room and lets the box yield where there is not. Measured
+  after: 43px between the payment-terms pair, 16px between every cost-row field.
+
+- **Cost and commission are separated everywhere** — chart, table and summary.
+  The model now carries `opex` (every entered cost) apart from `commission`
+  (the one outgoing that moves with revenue rather than with the plan), with
+  `costs` still the two together for the net line. In the chart the below-zero
+  bar became a **stack**: entered costs in `--tf-wash-brick`, commission beneath
+  in `--tf-wash-plum`. Plum enters this tool's palette here; it is already in
+  the sheet's data set and needs no new hue. The legend drops "Total" and gains
+  the third key.
+
+- **Table: `Cost` and `Commission` as separate columns, and single-month
+  `Net cash` removed** — it was the arithmetic of the three columns beside it,
+  and Cumulative cash is the figure a reader follows down the page. Type steps
+  down to `--tf-text-xs`, scoped to `.tf-projection-table`, since this table
+  runs to 36 rows and 7 columns where tool-company-setup's run to 9 and 12 and
+  keep the shared 14px. Periods read as **MMM-YY** ("Aug-26", "Q3-26"): a
+  36-row column of "September 2026" spends most of its width on the word.
+
+- **`.tf-summary` splits into two `.tf-summary-row`s** — the three horizon
+  totals, then breakeven month and end cash. Five equal-looking numbers on one
+  row read as an undifferentiated strip.
