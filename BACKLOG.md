@@ -1,4 +1,4 @@
-v035 | 2026-08-01 | 251 lines
+v036 | 2026-08-02 | 252 lines
 
 # BACKLOG.md — threeflows-new
 
@@ -61,6 +61,7 @@ branch, no PR.
 | BL-033 | close | others | Delete the `staging.threeflows.com` DNS record at Cloudflare. It has zero repo footprint — no CNAME file, no workflow, no branch, no Pages reference — and is a leftover from the github.io preview phase | 2026-07-31 | DNS record deleted at Cloudflare by user 2026-08-01. Record had zero repo footprint — leftover from the pre-cutover github.io preview phase. |
 | BL-034 | close | page | `contact.html` needs a new form endpoint, owner-managed. Promoted from §I item 2 so it is trackable as a row rather than buried in the inventory | 2026-07-31 | Endpoint deployed and verified by test submission 2026-08-01 — header row written, 10-column row with subject, notification email carries the Subject line. Code change merged in PR #95. |
 | BL-035 | close | bug | STYLE.css's v40 changelog (~lines 80-82, not 53-56 — the v41 and v42 entries were prepended above it) and TWO STYLE.md passages describe the fit-dot pattern with names and hues that never shipped. STYLE.md ~1626-1638 names `.tf-fit-dot-solo` / `-together` / `-no` on teal / plum / stone with three wrong hex pairs; STYLE.md ~1697-1703 — omitted when this row was raised — names `td.tf-fit-solo/-together/-no` and additionally calls `.tf-fit-dot` retired, which it is not (it ships six times across the two legends; v40 retired the dot COLUMN, not the class). Shipped code is `.tf-fit-you` / `-assist` / `-we` on brick / ochre / teal. The ratchet is what the reuse check reads before defining a new pattern, so a wrong entry sends the next reader looking for classes that do not exist. Correct all three records; do not rewrite history beyond making them accurate | 2026-08-01 | PR98 |
+| BL-036 | open | feature | Evaluate and deploy reader engagement on blog and tool pages: rank, like, save, share. Record counts internally and display counts externally to readers | 2026-08-02 | |
 
 ## Inventory / page checklist
 
