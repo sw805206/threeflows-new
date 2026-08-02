@@ -1,4 +1,4 @@
-v020 | 2026-08-02 | 145 lines
+v021 | 2026-08-02 | 145 lines
 
 # SCOPE.md — threeflows.com
 
@@ -86,9 +86,9 @@ pages are publicly reachable — a page not linked there is live but unlisted. N
 doc restates it, and no doc tracks visibility separately. Its current shape is
 Home, Services (dropdown: Plan → `business-planning.html`,
 Source → `sourcing-support.html`, Launch → `launch-hypercare.html`, Grow →
-`ongoing-management.html`), Resources (dropdown: Blogs, References), About,
-Contact. Dropdowns are flat and single-tier, using the `.tf-has-dropdown`
-mechanism.
+`ongoing-management.html`), Resources (dropdown: Blogs, References, Tools),
+About, Contact. Dropdowns are flat and single-tier, using the
+`.tf-has-dropdown` mechanism.
 
 ### Internal pages
 
