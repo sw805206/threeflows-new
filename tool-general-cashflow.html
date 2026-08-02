@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>General Cashflow Projection — Three Flows Solutions</title>
+  <meta name="description" content="Model a month-by-month cash position: revenue from signed projects, one-time, annual and monthly costs, commission, and a running net position across your planning horizon.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+  <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+</head>
+<body class="tf-app">
+  <!-- Shared header injected from partials.html -->
+  <div id="tf-header"></div>
+
+  <main class="tf-section" data-tool-id="tool-002">
+    <div class="tf-container">
+
+      <!-- Shell is tool-company-setup.html's, unchanged: ONE rail + ONE content
+           column (.tf-tool-layout), the rail stacking the lede image, the CTA
+           and the step nav; the content column carrying the back-link, h1,
+           intro, disclaimer, divider, then the panels. That geometry was
+           settled over five review rounds on the first tool and is reused as
+           found, not re-derived. -->
+      <div class="tf-tool-layout">
+        <div class="tf-tool-rail">
+          <img class="tf-rail-img tf-photo" src="assets/images/tool-general-cashflow.jpg" alt="">
+
+          <div class="tf-cta-inline">
+            <p>Want help pressure-testing your numbers?</p>
+            <p>We build these models with clients &mdash; <a href="contact.html?subject=Cashflow%20projection%20-%20">contact us</a>.</p>
+          </div>
+
+          <div class="tf-step-nav" role="tablist" aria-label="Cashflow projection steps" aria-orientation="vertical">
+            <button type="button" class="tf-step-nav-item" role="tab" id="tab-revenue" data-tab="revenue" aria-selected="true" aria-controls="panel-revenue" tabindex="0">
+              <span class="tf-step-nav-num">Step 1</span>
+              <span class="tf-step-nav-desc">Revenue Assumptions</span>
+            </button>
+            <button type="button" class="tf-step-nav-item" role="tab" id="tab-costs" data-tab="costs" aria-selected="false" aria-controls="panel-costs" tabindex="-1">
+              <span class="tf-step-nav-num">Step 2</span>
+              <span class="tf-step-nav-desc">Cost Assumptions</span>
+            </button>
+            <button type="button" class="tf-step-nav-item" role="tab" id="tab-projection" data-tab="projection" aria-selected="false" aria-controls="panel-projection" tabindex="-1">
+              <span class="tf-step-nav-num">Step 3</span>
+              <span class="tf-step-nav-desc">Cashflow Projection</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="tf-tool-content">
+          <div class="tf-post-topnav">
+            <a href="tools.html">&larr; Tools</a>
+          </div>
+          <h1>General Cashflow Projection</h1>
+          <p class="tf-prose-intro">Enter how you win work and what it costs to run, and see the month-by-month cash position across your planning horizon. Steps 1 and 2 stay editable &mdash; come back to Step 3 and it recalculates.</p>
+          <p class="tf-card-body"><strong>Disclaimer:</strong> This is a planning model, not a forecast. It projects the assumptions you enter and nothing else &mdash; it applies no capacity limit, no collection lag, and no allowance for the work you do not win. Treat the output as a starting point for a conversation with your CPA or advisor, not as a financial projection to rely on.</p>
+          <hr class="tf-tool-divider">
+
+          <div class="tf-tool-panels">
+
+          <!-- Panel 1: revenue assumptions -->
+          <section class="tf-tool-panel" id="panel-revenue" role="tabpanel" aria-labelledby="tab-revenue" data-tool-panel="revenue">
+            <div class="tf-panel-head">
+              <h2>Revenue Assumptions</h2>
+              <div class="tf-panel-actions no-print">
+                <button type="button" class="tf-pill tf-pill-outline" data-reset>Start over</button>
+              </div>
+            </div>
+
+            <div class="tf-card">
+
+              <!-- General first: the two answers that frame every other one —
+                   how long the model runs and when it starts. Everything below
+                   is measured from them. -->
+              <div class="tf-assume-group">
+                <h3>General assumptions</h3>
+
+                <div class="tf-explained">
+                  <div class="tf-field">
+                    <label class="tf-label" for="r-horizon">Planning horizon</label>
+                    <div class="tf-input-uom">
+                      <input class="tf-input" type="number" id="r-horizon" min="1" max="10" step="1" inputmode="numeric" data-assume>
+                      <span class="tf-uom">years</span>
+                    </div>
+                    <p class="tf-field-error" id="err-horizon" hidden></p>
+                  </div>
+                  <p class="tf-explain-note">How far out the projection runs. Everything after the last month is excluded from the totals, so a longer horizon captures more of the work you have already signed.</p>
+                </div>
+
+                <div class="tf-explained">
+                  <div class="tf-field">
+                    <label class="tf-label" for="r-start">Business start month</label>
+                    <div class="tf-monthpick" data-monthpick>
+                      <input type="hidden" id="r-start" data-assume>
+                    </div>
+                  </div>
+                  <p class="tf-explain-note">Your business starts when you spend the first dollar on it. You usually spend before you earn, though that is not an absolute rule. Month 1 of the projection is this month.</p>
+                </div>
+              </div>
+
+              <div class="tf-assume-group">
+                <h3>Revenue assumptions</h3>
+
+                <div class="tf-explained">
+                  <div class="tf-field">
+                    <label class="tf-label" for="r-approach">Start approaching leads</label>
+                    <div class="tf-monthpick" data-monthpick>
+                      <input type="hidden" id="r-approach" data-assume>
+                    </div>
+                    <p class="tf-field-error" id="err-approach" hidden></p>
+                  </div>
+                  <p class="tf-explain-note">The month you start to engage with potential clients.</p>
+                </div>
+
+                <div class="tf-explained">
+                  <div class="tf-field">
+                    <label class="tf-label" for="r-leads">Leads approached per month</label>
+                    <div class="tf-input-uom">
+                      <input class="tf-input" type="number" id="r-leads" min="0" step="0.01" inputmode="decimal" data-assume>
+                      <span class="tf-uom">leads</span>
+                    </div>
+                    <p class="tf-field-error" id="err-leads" hidden></p>
+                  </div>
+                  <p class="tf-explain-note">How many prospects you reach in a typical month, held flat across the horizon.</p>
+                </div>
+
+                <div class="tf-explained">
+                  <div class="tf-field">
+                    <label class="tf-label" for="r-conversion">Conversion to a paying client</label>
+                    <div class="tf-input-uom">
+                      <input class="tf-input" type="number" id="r-conversion" min="0" max="100" step="0.01" inputmode="decimal" data-assume>
+                      <span class="tf-uom">%</span>
+                    </div>
+                    <p class="tf-field-error" id="err-conversion" hidden></p>
+                  </div>
+                  <p class="tf-explain-note">Of the leads you approach, the percentage that become paying clients.</p>
+                </div>
+
+                <div class="tf-explained">
+                  <div class="tf-field">
+                    <label class="tf-label" for="r-tosign">Sales cycle time</label>
+                    <div class="tf-input-uom">
+                      <input class="tf-input" type="number" id="r-tosign" min="0" max="60" step="1" inputmode="numeric" data-assume>
+                      <span class="tf-uom">months</span>
+                    </div>
+                    <p class="tf-field-error" id="err-tosign" hidden></p>
+                  </div>
+                  <p class="tf-explain-note">How long it takes for a sales lead to sign a contract.</p>
+                </div>
+
+                <div class="tf-explained">
+                  <div class="tf-field">
+                    <label class="tf-label" for="r-charge">Average charge per client</label>
+                    <div class="tf-input-uom">
+                      <span class="tf-uom tf-uom-pre">$</span>
+                      <input class="tf-input" type="number" id="r-charge" min="0" step="0.01" inputmode="decimal" data-assume>
+                    </div>
+                    <p class="tf-field-error" id="err-charge" hidden></p>
+                  </div>
+                  <p class="tf-explain-note">One project per client. Total project charge, not a monthly rate.</p>
+                </div>
+
+                <div class="tf-explained">
+                  <div class="tf-field">
+                    <span class="tf-label">Payment terms</span>
+                    <!-- Labels and inputs are FLAT children of one grid, not two
+                         stacked .tf-field columns: "On completion" wraps to two
+                         lines where "Upfront" does not, and nesting made each
+                         input sit under its own label's height, so the two boxes
+                         fell out of line. Row 1 holds both labels, row 2 both
+                         inputs. -->
+                    <div class="tf-terms-grid">
+                      <label class="tf-label tf-label-sub" for="r-upfront">Upfront</label>
+                      <label class="tf-label tf-label-sub" for="r-oncomplete">On completion</label>
+                      <div class="tf-input-uom">
+                        <input class="tf-input" type="number" id="r-upfront" min="0" max="100" step="0.01" inputmode="decimal" data-assume>
+                        <span class="tf-uom">%</span>
+                      </div>
+                      <div class="tf-input-uom">
+                        <input class="tf-input" type="number" id="r-oncomplete" min="0" max="100" step="0.01" inputmode="decimal" data-assume>
+                        <span class="tf-uom">%</span>
+                      </div>
+                    </div>
+                    <p class="tf-field-error" id="err-terms" hidden></p>
+                  </div>
+                  <p class="tf-explain-note">Upfront cash lands in the signing month; the balance lands when the work finishes.</p>
+                </div>
+
+                <div class="tf-explained">
+                  <div class="tf-field">
+                    <label class="tf-label" for="r-tocomplete">Project duration</label>
+                    <div class="tf-input-uom">
+                      <input class="tf-input" type="number" id="r-tocomplete" min="1" max="60" step="1" inputmode="numeric" data-assume>
+                      <span class="tf-uom">months</span>
+                    </div>
+                    <p class="tf-field-error" id="err-tocomplete" hidden></p>
+                  </div>
+                  <p class="tf-explain-note">The time it takes to complete the project, in months.</p>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- Panel 2: cost assumptions -->
+          <section class="tf-tool-panel" id="panel-costs" role="tabpanel" aria-labelledby="tab-costs" data-tool-panel="costs" hidden>
+            <div class="tf-panel-head">
+              <h2>Cost Assumptions</h2>
+              <div class="tf-panel-actions no-print">
+                <button type="button" class="tf-pill tf-pill-outline" data-reset>Start over</button>
+              </div>
+            </div>
+
+            <div class="tf-card">
+
+              <div class="tf-cost-group">
+                <div class="tf-explained">
+                  <h3>One-time purchases</h3>
+                  <p class="tf-explain-note">Assets and equipment &mdash; a laptop, a desk, a camera. Charged once, in the month you buy it.</p>
+                </div>
+                <div class="tf-repeat" id="rep-onetime"></div>
+                <p class="tf-field-error" id="err-amt-onetime" hidden></p>
+                <p class="tf-field-error" id="err-onetime" hidden></p>
+                <button type="button" class="tf-repeat-add" data-add="onetime" aria-label="Add one-time cost" title="Add one-time cost">+</button>
+              </div>
+
+              <div class="tf-cost-group">
+                <div class="tf-explained">
+                  <h3>Annual costs</h3>
+                  <p class="tf-explain-note">Company filing, insurance, license, permits. Recurs every 12 months from the first occurrence on or after the start month &mdash; so a start month matching the anchor pays in month 1.</p>
+                </div>
+                <div class="tf-repeat" id="rep-annual"></div>
+                <p class="tf-field-error" id="err-amt-annual" hidden></p>
+                <button type="button" class="tf-repeat-add" data-add="annual" aria-label="Add annual cost" title="Add annual cost">+</button>
+              </div>
+
+              <div class="tf-cost-group">
+                <div class="tf-explained">
+                  <h3>Monthly costs</h3>
+                  <p class="tf-explain-note">Labor cost, rent, office expense. Runs from its own start month to the end of the horizon; there is no end date.</p>
+                </div>
+                <div class="tf-repeat" id="rep-monthly"></div>
+                <p class="tf-field-error" id="err-amt-monthly" hidden></p>
+                <p class="tf-field-error" id="err-monthly" hidden></p>
+                <button type="button" class="tf-repeat-add" data-add="monthly" aria-label="Add monthly cost" title="Add monthly cost">+</button>
+              </div>
+
+              <div class="tf-cost-group">
+                <div class="tf-explained">
+                  <h3>Sales commission</h3>
+                  <p class="tf-explain-note">Paid in the month the cash is received, not the month the client signs &mdash; so a client on split terms generates commission twice.</p>
+                </div>
+                <div class="tf-explained">
+                  <div class="tf-field">
+                    <label class="tf-label" for="c-commission">Commission rate</label>
+                    <div class="tf-input-uom">
+                      <input class="tf-input" type="number" id="c-commission" min="0" max="100" step="0.01" inputmode="decimal" data-assume>
+                      <span class="tf-uom">% of revenue</span>
+                    </div>
+                    <p class="tf-field-error" id="err-commission" hidden></p>
+                  </div>
+                  <p class="tf-explain-note"></p>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- Panel 3: projection. Screen order IS print order — chart, then
+               footnotes, then table. The assumptions recap between them is
+               print/PDF-only (page 2 of the output). -->
+          <section class="tf-tool-panel" id="panel-projection" role="tabpanel" aria-labelledby="tab-projection" data-tool-panel="projection" hidden>
+            <div class="tf-panel-head">
+              <h2>Cashflow Projection</h2>
+              <div class="tf-panel-actions no-print">
+                <button type="button" class="tf-pill tf-pill-outline" data-reset>Start over</button>
+                <button type="button" class="tf-pill tf-pill-outline" data-pdf>Download PDF</button>
+              </div>
+            </div>
+
+            <!-- Blocking-input notice: shown instead of the projection when an
+                 assumption is invalid (payment terms off 100, a cost dated
+                 before the start month). Never a silently wrong chart. -->
+            <div id="projection-blocked" hidden></div>
+
+            <div id="projection-body">
+              <div class="tf-view-toggle no-print" role="group" aria-label="Chart and table period">
+                <button type="button" class="tf-view-toggle-btn" data-view="month" aria-pressed="false">Monthly</button>
+                <button type="button" class="tf-view-toggle-btn" data-view="quarter" aria-pressed="true">Quarterly</button>
+              </div>
+
+              <div class="tf-chart-scroll" id="chart-host"></div>
+              <div class="tf-chart-legend" id="chart-legend"></div>
+
+              <ol class="tf-footnotes" id="footnotes"></ol>
+
+              <!-- Page 2 of the printed/PDF output. -->
+              <div class="tf-recap tf-print-only">
+                <h3>Assumptions</h3>
+                <dl class="tf-recap-list" id="recap"></dl>
+              </div>
+
+              <div class="tf-projection-table">
+                <div class="tf-summary" id="summary"></div>
+                <div class="tf-data-table">
+                  <table id="table-projection"></table>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          </div><!-- /.tf-tool-panels -->
+        </div><!-- /.tf-tool-content -->
+      </div><!-- /.tf-tool-layout -->
+
+    </div>
+  </main>
+
+  <!-- Shared footer injected from partials.html -->
+  <div id="tf-footer"></div>
+
+  <!-- Repeatable cost rows are cloned from these templates by the engine, so
+       the row markup lives in the PAGE (where markup belongs) rather than as a
+       string inside the JS. -->
+  <template id="tpl-onetime">
+    <div class="tf-repeat-row" data-row>
+      <div class="tf-field">
+        <label class="tf-label">Description</label>
+        <input class="tf-input" type="text" data-f="desc" placeholder="Laptop, desk, camera">
+      </div>
+      <div class="tf-field">
+        <label class="tf-label">Amount</label>
+        <div class="tf-input-uom">
+          <span class="tf-uom tf-uom-pre">$</span>
+          <input class="tf-input" type="number" min="0" step="0.01" inputmode="decimal" data-f="amount">
+        </div>
+      </div>
+      <div class="tf-field">
+        <label class="tf-label">Month</label>
+        <div class="tf-monthpick" data-monthpick><input type="hidden" data-f="month"></div>
+      </div>
+      <button type="button" class="tf-repeat-del" data-del aria-label="Remove this cost" title="Remove this cost">×</button>
+    </div>
+  </template>
+
+  <template id="tpl-annual">
+    <div class="tf-repeat-row" data-row>
+      <div class="tf-field">
+        <label class="tf-label">Description</label>
+        <input class="tf-input" type="text" data-f="desc" placeholder="Registered agent, insurance">
+      </div>
+      <div class="tf-field">
+        <label class="tf-label">Amount</label>
+        <div class="tf-input-uom">
+          <span class="tf-uom tf-uom-pre">$</span>
+          <input class="tf-input" type="number" min="0" step="0.01" inputmode="decimal" data-f="amount">
+        </div>
+      </div>
+      <div class="tf-field">
+        <label class="tf-label">Month of year</label>
+        <select class="tf-input" data-f="monthOfYear">
+          <option value="1">January</option><option value="2">February</option>
+          <option value="3">March</option><option value="4">April</option>
+          <option value="5">May</option><option value="6">June</option>
+          <option value="7">July</option><option value="8">August</option>
+          <option value="9">September</option><option value="10">October</option>
+          <option value="11">November</option><option value="12">December</option>
+        </select>
+      </div>
+      <button type="button" class="tf-repeat-del" data-del aria-label="Remove this cost" title="Remove this cost">×</button>
+    </div>
+  </template>
+
+  <template id="tpl-monthly">
+    <div class="tf-repeat-row" data-row>
+      <div class="tf-field">
+        <label class="tf-label">Description</label>
+        <input class="tf-input" type="text" data-f="desc" placeholder="Rent, salary, software">
+      </div>
+      <div class="tf-field">
+        <label class="tf-label">Amount</label>
+        <div class="tf-input-uom">
+          <span class="tf-uom tf-uom-pre">$</span>
+          <input class="tf-input" type="number" min="0" step="0.01" inputmode="decimal" data-f="amount">
+        </div>
+      </div>
+      <div class="tf-field">
+        <label class="tf-label">Starting</label>
+        <div class="tf-monthpick" data-monthpick><input type="hidden" data-f="month"></div>
+      </div>
+      <button type="button" class="tf-repeat-del" data-del aria-label="Remove this cost" title="Remove this cost">×</button>
+    </div>
+  </template>
+
+  <!-- PDF generation — jsPDF + its autoTable plugin, from cdnjs with
+       Subresource Integrity. The SCOPE.md §3 dependency exception (v017)
+       names this page as a consumer: same versions, same SRI hashes, same
+       crossorigin / referrerpolicy / defer treatment as
+       tool-company-setup.html. If the CDN is blocked or a hash fails,
+       window.jspdf is simply undefined and the engine falls back to
+       window.print() — whose stylesheet paginates identically — so the button
+       is never dead. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+          integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk"
+          crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js"
+          integrity="sha384-Xl/CUCfJbzsngMp0CFxkmF0VW/8C160IsGujqeQlIhaGxKz2+JsIGORFqtCPeldF"
+          crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+
+  <!-- Tool engine: step switching, the cashflow model, the hand-built SVG
+       chart, the table, the footnotes and PDF generation. Separate file,
+       vanilla JS — SCOPE.md §3 keeps a tool's calculation logic out of the
+       page. -->
+  <script src="assets/tool-general-cashflow.js" defer></script>
+
+  <!-- Fetch snippet: load partials.html (relative), inject header/footer,
+       mark the current nav link, and wire dropdowns + the mobile menu.
+       Fails silently (no nav rather than a broken page). -->
+  <script src="assets/partials.js" defer></script>
+</body>
+</html>
