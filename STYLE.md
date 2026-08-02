@@ -1,4 +1,4 @@
-v045 | 2026-08-01 | 2301 lines
+v046 | 2026-08-01 | 2314 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -2256,11 +2256,24 @@ STYLE.css v046.
   intrinsic min-content width from becoming the `1fr` track's floor. Measured
   after: row right edge 1175 inside the card's 1201.
 - **`Start over` (NEW behaviour, no new pattern)** — a `.tf-pill
-  .tf-pill-outline` in each panel head that clears every entry and every cost
-  row and re-seeds the months from the machine clock. It **asks before it
-  wipes**, by relabelling itself to "Clear everything?" rather than opening a
-  dialog: the sheet has no modal pattern, and inventing one for a single
-  control would be the larger change. It disarms on blur or on any other click.
+  .tf-pill-outline` in each panel head that empties **every** box and removes
+  every cost row, returning to step 1. It **asks before it wipes**, by
+  relabelling itself to "Clear everything?" rather than opening a dialog: the
+  sheet has no modal pattern, and inventing one for a single control would be
+  the larger change. It disarms on blur or on any other click.
+  **A blank sheet means blank, prefills included** (corrected on review — a
+  first pass restored the opening defaults and re-seeded the months from the
+  machine clock, which is "reset", not "start over"). The page's own `value=`
+  attributes still prefill on FIRST load, where a sensible starting point
+  helps; `placeholder=` on each numeric field keeps the expected shape of the
+  answer visible once the box is empty.
+  **This forced a change to when errors are shown.** Emptying every box makes
+  every box invalid, so a form that reports on sight would answer "Start over"
+  with a wall of red for questions nobody has been asked yet. Errors are now
+  displayed only once a field has been TOUCHED, or once the projection is
+  asked for — at which point every outstanding message is revealed at once and
+  the projection blocks. The rules themselves are untouched and still live in
+  one place; only the moment their message appears changed.
 - Copy: tips reworded throughout and shortened; "Approach to signing" became
   **"Sales cycle time"**; the leads unit shortened to "leads"; the payment-terms
   note lost its "the two must total 100%, type one and the other fills in"
