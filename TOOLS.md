@@ -1,4 +1,4 @@
-v003 | 2026-08-02 | 155 lines
+v004 | 2026-08-02 | 182 lines
 
 # TOOLS.md — tool page naming and IDs
 
@@ -73,12 +73,39 @@ split, the 62ch content cap — is STYLE.md's and is not restated here.
 **Rail** (`.tf-tool-rail`, sticky): lede image → CTA block → step switcher.
 
 **Content** (`.tf-tool-content`): "← Tools" topnav → `h1` → `.tf-prose-intro` →
-`.tf-tool-divider` → a right-aligned action row → the panel → the legal block at
-the foot, under its own divider.
+`.tf-tool-divider` → the action row → the panel → the byline → the legal block,
+under its own divider.
 
-The action row sits **above the panel and outside it**, so the controls hold one
-position instead of moving with each panel's heading. `.tf-panel-head` is
-therefore TITLE-ONLY; the panel keeps its visible `h2`.
+**The action row** sits above the panel and outside it, so the controls hold one
+position instead of moving with each panel's heading. It carries two things at
+opposite ends: the **step pager** on the left, and Start over / Download PDF on
+the right. The pager is TEXT, on the blog's `.tf-post-pager` idiom —
+deliberately unlike the pill controls beside it, because navigation is not an
+action — and is labelled with the destination step number only
+("← Step 1 | Step 3 →"). At the ends the control is DISABLED, not hidden, so
+the row does not jump as you move; it is an `<a>` with no `href`, which is
+non-focusable without swapping the element out. Print-hidden: it is page
+navigation.
+
+**Each panel** carries a "Step N" eyebrow (`.tf-kicker`) above its `h2`, the
+same two-line relationship the rail uses, so the panel identifies itself on
+paper where no rail sits beside it. `.tf-panel-head` is otherwise TITLE-ONLY.
+**The step number is authored once**, in the rail's `.tf-step-nav-num`; the
+eyebrow and both pager labels are derived from it at runtime, so renumbering the
+rail cannot leave them disagreeing. The cost is that the eyebrow does NOT appear
+in a grep of the static HTML — the markup carries an empty
+`[data-step-eyebrow]` slot and the number lands at runtime.
+
+**The byline** — the logo mark plus "Presented by Three Flows Solutions" — sits
+at the head of the legal block, on screen, in print and in the PDF. The
+" | printed on YYYY-MM-DD HH:MM" stamp appears in print and PDF ONLY, taken at
+print/download time rather than page load: on screen a timestamp that changed
+every visit would read as a moving publication date. The PDF draws the mark with
+jsPDF primitives from the logo's real geometry, so `.tf-byline` and the engines
+are commented as a pair.
+
+**Rail, pager, eyebrow and the URL hash are one state**, driven by a single
+tablist. There is no second source of truth for which step is active.
 
 ## 6. Required copy
 
