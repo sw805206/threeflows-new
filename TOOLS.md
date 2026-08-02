@@ -1,4 +1,4 @@
-v002 | 2026-08-02 | 151 lines
+v003 | 2026-08-02 | 155 lines
 
 # TOOLS.md — tool page naming and IDs
 
@@ -133,8 +133,12 @@ panel content.
   reached the point of printing a hand-tightened paraphrase of its own
   disclaimer, a third wording of one notice. A missing element yields an empty
   string, never a stale fallback.
-- **`.tf-prose-intro` is copied verbatim onto the `tools.html` card** — the rule
-  BLOG.md §3 sets for `recap`. Nothing checks it; edit both in one commit.
+- **`.tf-prose-intro` is copied verbatim to TWO other places** — the
+  `tools.html` card body, and the page's own `<meta name="description">`. One
+  wording per tool, in three locations; the page's intro is the source. This
+  follows the rule BLOG.md §3 sets for `recap`. Nothing checks any of it; edit
+  all three in one commit. tool-001's meta drifted precisely this way and sat
+  stale until the page went indexable.
 
 ## 8. Per-tool variation
 
