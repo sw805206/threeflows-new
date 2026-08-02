@@ -1,6 +1,19 @@
-/* v049 | 2026-08-01 | 3655 lines
+/* v050 | 2026-08-02 | 3681 lines
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v50 · 2026-08-02 · Cash flow tool — payment-terms pair becomes .tf-terms-grid
+                     (paired with STYLE.md v051). One flat 2x2 grid: both
+                     labels on row 1, both inputs on row 2, so the boxes share
+                     a grid row and no label can push one out of line with the
+                     other. Third shape tried here; the previous two fixed
+                     unequal WIDTH (minmax(AUTO,1fr) on the shared
+                     .tf-field-row) and then left unequal HEIGHT, because each
+                     input sat under its own label and "On completion" wraps
+                     where "Upfront" does not. The .tf-assume-group
+                     .tf-field-row override is DELETED — this page was its only
+                     consumer; .tf-field-row itself and contact.html's use of
+                     it are untouched.
 
    v49 · 2026-08-01 · Cash flow tool, fifth review (paired with STYLE.md v049).
                      .tf-empty-note (NEW) replaces the .tf-callout-warn block
@@ -3436,12 +3449,25 @@ button.tf-pill { cursor: pointer; }
   border-bottom: var(--tf-rule-light);
 }
 .tf-assume-group .tf-explained { margin-top: var(--tf-space-3); }
-/* The payment-terms pair. `.tf-field-row`'s shared `1fr 1fr` resolves as
-   minmax(AUTO, 1fr), so the column holding the longer sub-label ("On
-   completion") won more width than its twin and the two boxes rendered
-   visibly different sizes. minmax(0, 1fr) makes them equal. Scoped here rather
-   than changed in the shared rule, which contact.html also uses. */
-.tf-assume-group .tf-field-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+/* The payment-terms pair — a 2x2 grid whose children are FLAT: both labels on
+   row 1, both inputs on row 2. Two earlier shapes failed here, and the second
+   failure is the instructive one. `.tf-field-row`'s shared `1fr 1fr` resolves
+   as minmax(AUTO, 1fr), so the column holding the longer sub-label won more
+   width and the boxes came out different SIZES. Fixing that with minmax(0,1fr)
+   left a second fault: each input still sat inside its own `.tf-field`, under
+   its own label, and "On completion" wraps to two lines where "Upfront" does
+   not — so the two boxes sat at different HEIGHTS.
+   Flattening solves both at once, and structurally rather than by tuning: the
+   inputs share a grid row, so no label can ever push one out of line with the
+   other, at any width or wording. `align-items: end` keeps each label sitting
+   directly above its own box when one of them wraps. */
+.tf-terms-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: var(--tf-space-3);
+  row-gap: var(--tf-space-1);      /* the label-to-input gap .tf-field uses */
+  align-items: end;
+}
 /* Sub-label under a group label ("Upfront" beneath "Payment terms") — the
    quieter of two stacked labels, so the pair does not read as two questions. */
 .tf-label-sub { font-weight: 400; color: var(--tf-ink-soft); }

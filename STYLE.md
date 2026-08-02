@@ -1,4 +1,4 @@
-v050 | 2026-08-02 | 2477 lines
+v051 | 2026-08-02 | 2499 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -2475,3 +2475,25 @@ Paired with STYLE.css v049.
   was never enough — the markup survives inside it, so anything that shows the
   body again would flash the previous model's numbers. Clearing is the only
   state that cannot go stale.
+
+**Round 7 — payment-terms alignment, 2026-08-02.** One finding. Paired with
+STYLE.css v050.
+
+- **`.tf-terms-grid` (NEW) — the payment-terms pair is one flat 2x2 grid.**
+  Both labels on row 1, both inputs on row 2. This is the THIRD shape tried
+  here, and the previous two each fixed a different half of the same problem:
+  `.tf-field-row`'s shared `1fr 1fr` resolves as `minmax(AUTO, 1fr)`, so the
+  column holding the longer sub-label won more width and the boxes came out
+  different SIZES; correcting that with `minmax(0, 1fr)` left each input
+  nested inside its own `.tf-field`, under its own label, and "On completion"
+  wraps to two lines where "Upfront" does not — so the boxes then sat at
+  different HEIGHTS.
+  Flattening fixes both **structurally rather than by tuning**: the two inputs
+  share a grid row, so no label can push one out of line with the other at any
+  width or wording. Verified in the failing case specifically — at a width
+  where the labels render 22px and 45px tall, both boxes still report the same
+  top and the same width. `align-items: end` keeps each label directly above
+  its own box when one wraps.
+  The `.tf-assume-group .tf-field-row` override added two rounds ago is DELETED
+  rather than left orphaned: this page was its only consumer. `.tf-field-row`
+  itself is untouched, and contact.html continues to use it unchanged.
