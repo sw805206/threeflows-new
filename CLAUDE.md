@@ -1,4 +1,4 @@
-v007 | 2026-08-01 | 205 lines
+v008 | 2026-08-02 | 209 lines
 
 # Working Rules
 
@@ -135,7 +135,11 @@ mixed into other changes.
 
 **Show client-facing changes on localhost.** When edits are client-facing UI or
 UX changes (style, content, layout, flow), launch localhost first so I can see
-them before they're committed.
+them before they're committed. Start the server with caching disabled, or hand
+over the URL cache-busted (`?v=<short-sha>` or equivalent) — never a bare
+`localhost:####`. Beating the cache is Claude's job, not mine: I should never
+have to hard-reload, clear a cache, or open a private window to see the version
+you just built, and a review of a stale page is a wasted review.
 
 ## Part C — Global Human/Claude Processes
 
