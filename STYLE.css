@@ -1,7 +1,19 @@
-/* v052 | 2026-08-02 | 3819 lines
+/* v053 | 2026-08-02 | 3831 lines
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v53 · 2026-08-02 · Byline goes PRINT/PDF ONLY. .tf-byline was shown on screen
+                     as well; the human does not want the mark and the line on
+                     the webpage, only on the downloaded PDF. The rule now sets
+                     display:none and @media print turns it back to FLEX — not
+                     the .tf-print-only block idiom, which would break the mark
+                     and the line apart onto separate rows. .tf-byline-date and
+                     its print counterpart are DELETED rather than left
+                     orphaned: the stamp needed its own scope only while the
+                     byline was visible on screen, and its parent is print-only
+                     now. Markup and both engines are UNCHANGED — the jsPDF path
+                     never consulted this sheet, so the downloaded PDF is
+                     unaffected. CSS-only, one rule pair.
    v52 · 2026-08-02 · Tool step pager + presented-by byline. Two additive rules,
                      no new token, hue or scale value.
                      (1) .tf-panel-actions .tf-post-pager — the step pager shares
@@ -3122,15 +3134,16 @@ a.tf-icon-brand:focus { color: #004182; }        /* LinkedIn blue, pressed */
 }
 
 /* Presented-by byline — the logo mark, the line, and a light rule beneath, at
-   the head of the legal block. Shown on SCREEN, in PRINT and in the generated
-   PDF; only the "printed on" stamp is print/PDF-only, since a timestamp that
-   changes on every page load reads as a moving publication date on screen.
+   the head of the legal block. PRINT AND PDF ONLY — it does not appear on the
+   webpage. `display: none` here, turned back on inside @media print; the
+   "printed on" stamp no longer needs its own scope, since its whole parent is
+   print-only now.
    THE PDF DRAWS THIS SAME LINE with jsPDF primitives from the logo's real
    geometry — if one changes the other must change with it, which is why they
    are commented as a pair here and in assets/tool-company-setup.js and
    assets/tool-general-cashflow.js. Same posture as the pagination block. */
 .tf-byline {
-  display: flex;
+  display: none;                 /* print/PDF only — see the note above */
   align-items: center;
   gap: var(--tf-space-2);
   padding-bottom: var(--tf-space-2);
@@ -3140,7 +3153,6 @@ a.tf-icon-brand:focus { color: #004182; }        /* LinkedIn blue, pressed */
   color: var(--tf-ink-soft);
 }
 .tf-byline svg { width: 24px; height: auto; flex-shrink: 0; }
-.tf-byline-date { display: none; }
 /* The CTA sits in the RAIL between the lede image and the step list. One
    instance outside the panels, so it neither repeats nor shifts as steps
    switch (it previously trailed the Q&A card on step 1 but led the table on
@@ -3357,10 +3369,10 @@ button.tf-pill { cursor: pointer; }
      over cleanly at the smaller print font size. */
   .tf-step-nav, .tf-post-topnav, .tf-rail-img { display: none !important; }
 
-  /* The byline's "printed on" stamp — print and PDF only. `inline`, not the
-     `.tf-print-only` block idiom, because it sits inside the byline's own flex
-     line rather than being a block of its own. */
-  .tf-byline-date { display: inline; }
+  /* The byline is print/PDF only, so it turns ON here rather than off. `flex`,
+     not the `.tf-print-only` block idiom, because the mark and the line share a
+     row; `display: block` would break them apart. */
+  .tf-byline { display: flex; }
 
   /* The WHO column's wash backgrounds carry the row's meaning, so they must
      survive to paper/PDF — browsers strip background colours from print by
