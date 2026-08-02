@@ -1,4 +1,4 @@
-v022 | 2026-08-02 | 144 lines
+v023 | 2026-08-02 | 146 lines
 
 # SCOPE.md — threeflows.com
 
@@ -38,7 +38,9 @@ Product docs, all in this repo:
 - **BLOG.md** — add-a-post procedure and manifest schema
 - **TOOLS.md** — tool page naming and internal ID scheme
 - **BACKLOG.md** — the backlog table and page inventory; the CLAUDE.md Part C
-  backlog process is ACTIVE for this project
+  backlog process is ACTIVE for this project. Its rendered view is
+  `int-backlog.html`, which fetches BACKLOG.md at runtime; that page is where
+  the Part C flush verification is performed
 - **PROCESS.md** — project-specific human/Claude procedures
 
 CLAUDE.md is deliberately not on that list: it holds universal working rules,
