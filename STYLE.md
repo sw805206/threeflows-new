@@ -1,4 +1,4 @@
-v054 | 2026-08-02 | 2636 lines
+v055 | 2026-08-02 | 2694 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -2634,3 +2634,61 @@ because a reader looking for how that eyebrow is styled should find the answer
 in one hop rather than assume a missing pattern. Its NUMBER is not styling at
 all: it is derived at runtime from the rail's `.tf-step-nav-num`, so the markup
 carries an empty `[data-step-eyebrow]` slot — see TOOLS.md §5.
+
+### Byline goes print/PDF only — STYLE.css only — 2026-08-02
+
+Paired with STYLE.css v053. Amends the entry above: `.tf-byline` was recorded
+there as shown on SCREEN, in print AND in the PDF. It is now **print and PDF
+only** — the mark and the line are not wanted on the webpage, only on the
+downloaded document.
+
+`display: none` on the base rule, turned back to **`flex`** inside
+`@media print` — deliberately NOT the `.tf-print-only` block idiom, which sets
+`display: block` and would break the mark and the line apart onto separate rows.
+That is the second print-only element in this sheet that cannot use
+`.tf-print-only`: the idiom suits blocks, not flex rows.
+
+**`.tf-byline-date` is DELETED**, base rule and print counterpart both. It
+existed only to hide the timestamp while the byline was visible on screen; with
+the whole parent print-only it has no job. The `<span>` stays in the markup and
+the engines still fill it at print time — with no rule scoping it, the stamp
+renders inline inside a print-only parent. The previous entry's reasoning for
+why the stamp and the byline parted company is therefore **superseded**: they
+did so only because the byline was on screen, which it no longer is.
+
+Markup and both engines UNCHANGED. jsPDF never consults this sheet, so the
+downloaded PDF is unaffected — it still draws the byline from the logo's real
+geometry. **Browser Print keeps the byline** deliberately: `window.print()` is
+the fallback when the jsPDF CDN is blocked, so dropping it there would leave a
+blocked user's printout with no attribution at all.
+
+### Action row wraps on narrow screens — STYLE.css only — 2026-08-02
+
+Paired with STYLE.css v054. `.tf-panel-actions` gains **`flex-wrap: wrap`** —
+one declaration on the existing rule, no new pattern.
+
+The tool pages' action row holds three items — the step pager plus Start over
+and Download PDF — and at 320px they do not fit the 272px container. With
+`nowrap` the row overflowed to the **START** edge, because
+`justify-content: flex-end` packs from the right: the pager's leading arrow
+rendered at `x = -1`, one pixel off-screen, while the pills squeezed their
+labels onto two lines.
+
+**The reusable lesson: `scrollWidth > clientWidth` does NOT detect this.**
+`scrollWidth` measures overflow to the right only, so a `flex-end` row
+overflowing leftward reads as perfectly clean. That check was run and reported
+no overflow; the clipping was found by LOOKING at the rendered page. Any
+right-packed flex row needs an eye, or a comparison of the first item's `left`
+against its container's.
+
+`margin-inline-end: auto` and `justify-content: flex-end` both still apply, so
+**desktop is unchanged** — measured at 1280px: one row, pager left, controls
+flush right. Below ~390px the row now wraps rather than shrinking, which also
+returns the pills to single-line labels (31px tall, was 48px).
+
+**A deliberate trade at 375px**, the most common phone width: it previously
+fitted on one row, but with ZERO slack — Download PDF's right edge landed
+exactly on the container edge — and with the pills shrunk to two lines. Two
+clean rows replace one cramped one. The alternative, a media query giving the
+pager `flex-basis: 100%` so both controls stay paired on their own line, was
+rejected as more CSS and another breakpoint to maintain.
