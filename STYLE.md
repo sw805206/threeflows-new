@@ -1,4 +1,4 @@
-v052 | 2026-08-02 | 2494 lines
+v053 | 2026-08-02 | 2591 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -1570,6 +1570,14 @@ edited in place rather than superseded in a new entry each time).
   shape already supports without changes. A **`.tf-post-topnav`** back-link
   ("← Tools" → `tools.html`, the blog "← Blogs" idiom) sits above it.
 
+  **SUPERSEDED 2026-08-02 (v053).** The liability disclaimer no longer sits in
+  this header column. It moved to a three-paragraph block at the FOOT of
+  `.tf-tool-content` — generic notice, privacy notice, then the tool's own
+  sentence — headed `.tf-meta` "Disclaimer and privacy" and styled by the new
+  `.tf-tool-legal`. The header column is now back-link, h1, intro, divider. The
+  `.tf-card-body` reuse described above ended with the move; see the 2026-08-02
+  ratchet entry.
+
 - **`.tf-tool-divider` (NEW) — the sand section rule** between the header and
   the step rail/panel body (STYLE.md §4: sand divides major sections). Not
   `.tf-prose hr` — that rule is scoped to `.tf-prose` for dividing sections of
@@ -1693,6 +1701,14 @@ edited in place rather than superseded in a new entry each time).
   print-hidden — both are page-navigation, meaningless once on paper — and so
   is the header's lede photo (`.tf-intro-split-img` specifically, NOT the
   whole `.tf-intro-split`, so the page's h1/intro/disclaimer still print).
+
+  **AMENDED 2026-08-02 (v053).** "The page's h1/intro/disclaimer still print"
+  holds, but the disclaimer now prints from the FOOT block, not the header. The
+  rule itself is unchanged and still binding: `.tf-tool-legal` is NOT
+  print-hidden, and all three of its paragraphs print. NB the rail is not
+  print-hidden as a whole — only `.tf-step-nav`, `.tf-post-topnav` and
+  `.tf-rail-img` are — so the rail CTA still prints; its new `--tf-cream` ground
+  does not, since the rule does not opt into `print-color-adjust`.
   Table columns get a PRINT-ONLY rebalance: Est. time and Who's involved
   narrow (14%/16% screen → 10%/10% print), Step and Cost widen to absorb the
   freed space (46%/16% screen → 48%/26% print) — screen keeps its
@@ -1730,6 +1746,11 @@ panel and reviewed the header on-screen; eight findings, all addressed:
   .tf-meta`'s light rule closes the header block under the TEXT, never
   reaching under the rail beside it). Confirmed against a live blog page
   screenshot the human supplied.
+
+  **SUPERSEDED 2026-08-02 (v053).** The header `.tf-tool-divider` now closes
+  under the INTRO, the disclaimer having moved out. The text-column-only scope
+  described above is unchanged and still correct. A SECOND `.tf-tool-divider`
+  now opens the foot legal block, so the page carries two.
 - **Checkbox and Who's-involved columns REMOVED entirely** (screen and print,
   not just print-hidden as a first pass mistakenly assumed) — `.tf-rowcheck`
   and its "mark step done" affordance are gone. The step **number cell is now
@@ -1885,6 +1906,13 @@ blog's actual STRUCTURE, not just its measurements:
   closing divider, and then the panels. The image→nav gap is now just
   `.tf-rail-img`'s own `margin-bottom: --tf-space-3` — **measured 24px**,
   identical to a blog post. `.tf-tool-header` is retired.
+
+  **SUPERSEDED 2026-08-02 (v053).** The running order is now back-link, h1,
+  intro, divider, action row, panels, divider, legal block. Two changes: the
+  disclaimer moved from the header to the foot, and the panel actions moved out
+  of `.tf-panel-head` to a right-aligned row above the panels. Rail composition
+  (lede image, CTA, step nav) is unchanged, and the measured 24px image→nav
+  rhythm still holds with the CTA's new cream ground.
 - **The whole rail sticks**, not the nav alone — matching `.tf-toc`.
 - **Divider tightened** to `--tf-space-3` / `--tf-space-4` (was `-4`/`-6`),
   since it now closes a header block inside the content column rather than
@@ -2492,3 +2520,72 @@ STYLE.css v050.
   The `.tf-assume-group .tf-field-row` override added two rounds ago is DELETED
   rather than left orphaned: this page was its only consumer. `.tf-field-row`
   itself is untouched, and contact.html continues to use it unchanged.
+
+### Tool shell — foot legal block, rail CTA ground, action row — 2026-08-02
+
+Paired with STYLE.css v051, shipped in `a8cf2a9` (PR #103). Three CSS rules and
+a shell reshape across both tool pages. No new token, hue or scale value.
+
+**NB on process.** STYLE.css rode the same branch and PR as the pages, deviating
+from CLAUDE.md Part B's "STYLE.css gets its own branch and PR" — done
+deliberately at the human's request so the cream CTA ground could be reviewed
+against the shell in one pass. The deviation was bounded: the two commits were
+never mixed (`2d2ff8a` CSS-only, `58a5095` pages/engines) and no `.md`
+governance doc rode the branch. Recorded so the history reads as a decision.
+
+- **Disclaimer moves out of the header to a foot block — `.tf-tool-legal`
+  (NEW).** The page now opens on the tool rather than on a notice. Three
+  paragraphs under a `.tf-meta` "Disclaimer and privacy" heading: a GENERIC
+  notice character-identical across both tool pages and `tools.html`, a PRIVACY
+  paragraph (tool pages only — nothing entered is sent or stored, entries die
+  with the page, download the PDF to keep them), then each tool's OWN existing
+  disclaimer, its bold `Disclaimer:` lead-in dropped now that the block heading
+  does that job. `--tf-text-sm` in `--tf-stone` at the blog's 62ch measure,
+  under its own sand `.tf-tool-divider`. Declared rather than reused because no
+  existing class carries that pair — `.tf-card-body` is text-sm but ink-soft,
+  `.tf-repeat-empty` is text-sm/stone but is the cost editor's empty state. The
+  `.tf-meta` heading is a CHILD, not a `.tf-prose` direct child, so it takes no
+  `.tf-prose > .tf-meta` underline rule. **Contrast on record: `--tf-stone` on
+  `--tf-paper` measures ~2.13:1, below WCAG AA for body text — chosen by the
+  human after the ratio was reported.** Not print-hidden; all three print.
+
+- **Rail CTA takes a raised `--tf-cream` ground.** One scoped rule,
+  `.tf-tool-rail .tf-cta-inline`: `--tf-cream` background plus `--tf-space-2`
+  padding, square corners, NO border and NO radius — the `.tf-ref-group` /
+  dropdown-panel idiom, where `--tf-cream`'s raised-surface role (§2) carries
+  the lift on its own. A border or radius here would have introduced a second,
+  competing card treatment inside a 260px column. Scoped to the rail, so the
+  service pages' and the blog's `.tf-cta-inline` are untouched. Round 5's margin
+  rule (symmetric `--tf-space-3`, `--tf-text-sm`) is KEPT UNCHANGED and was not
+  retuned: the 24px still measures image-edge → box-edge, so the rail's image→nav
+  rhythm is undisturbed — measured 24px above and 24px below. Copy reduced to one
+  sentence, opening `contact.html` in a NEW TAB, deliberately and only on tool
+  pages, so a reader mid-way through the inputs does not lose them.
+
+- **Panel actions move ABOVE the panel — `.tf-panel-actions` amended.** Out of
+  `.tf-panel-head` to a right-aligned row above the panels and outside them, so
+  the controls hold one fixed position instead of moving with each panel's
+  heading — the same reasoning that put the CTA in the rail. The rule gains
+  `justify-content: flex-end` and a `--tf-space-2` bottom margin. **The §5 reuse
+  check genuinely failed:** the sheet had NO right-alignment mechanism of any
+  kind — no `flex-end`, no `margin-left: auto`. Folded into the existing rule
+  rather than declared as a new class, since every consumer moves and no
+  differently-aligned use survives. `.tf-panel-head` is now TITLE-ONLY; its
+  `space-between` / wrap declarations are retained, not stripped, as it is the
+  shared tool-shell block and nothing else about it changed. `Start over` is on
+  tool-002 only — tool-001 has no input to clear.
+
+- **Engines read the page instead of restating it.** Both PDF builders
+  hardcoded the title, the intro and the disclaimer, so a copy edit changed the
+  page and left the generated document behind — and tool-002 additionally
+  printed a hand-tightened PARAPHRASE of its own disclaimer, a third wording of
+  one notice. All three strings are now read from the DOM through one
+  `headText()` helper scoped to `.tf-tool-content`, plus `legalParagraphs()` for
+  the foot block, and the whole block prints at the TOP of the generated
+  document ahead of the panel content. Each falls back to an empty string, never
+  a stale copy, so a markup change cannot resurrect old wording. Verified by
+  intercepting every string the engine writes and diffing it against the DOM:
+  title, intro, legal heading and all three legal paragraphs identical on both
+  pages. Because the PDF button no longer sits inside a panel, tool-001's handler
+  reads the active step from the tablist's `aria-selected` rather than
+  `closest('[data-tool-panel]')` — the same source the panels switch on.
