@@ -1,6 +1,19 @@
-/* v048 | 2026-08-01 | 3635 lines
+/* v049 | 2026-08-01 | 3655 lines
    ==========================================================================
    Three Flows Solutions — brand stylesheet
+
+   v49 · 2026-08-01 · Cash flow tool, fifth review (paired with STYLE.md v049).
+                     .tf-empty-note (NEW) replaces the .tf-callout-warn block
+                     that listed every outstanding problem on step 3 — after
+                     "Start over", whose job is to empty the form, that meant
+                     eleven red lines for questions nobody had been asked. One
+                     sentence, body colour, no icon. Problems are reported
+                     inline instead, and only once a field has been LEFT rather
+                     than while it is being typed in. Commission's bar moves
+                     from --tf-wash-plum to --tf-wash-slate: plum and brick are
+                     neighbouring warm tints and read as one bar at wash
+                     strength (the fill is set by the engine, so no rule here
+                     changes). No new token.
 
    v48 · 2026-08-01 · Cash flow tool, fourth review (paired with STYLE.md v048).
                      .tf-monthpick (NEW) replaces <input type="month">, which
@@ -3603,6 +3616,13 @@ button.tf-pill { cursor: pointer; }
    two tables are 9 and 12 rows and keep the shared size. */
 .tf-projection-table .tf-data-table table { font-size: var(--tf-text-xs); }
 .tf-projection-table .tf-data-table :is(th, td) { padding: 6px var(--tf-space-1); }
+
+/* "Nothing to show yet" — deliberately NOT a .tf-callout-warn. An incomplete
+   form is a state, not a fault, and the aggregated red list that used to sit
+   here fired on every field at once after "Start over" (which empties
+   everything by design). Problems are reported inline, beside the field that
+   has them, as the form is filled in. */
+.tf-empty-note { font-size: var(--tf-text-sm); color: var(--tf-ink-soft); margin: 0 0 var(--tf-space-4); }
 
 .tf-footnotes { font-size: var(--tf-text-sm); color: var(--tf-ink-soft); margin: 0 0 var(--tf-space-4); padding-left: var(--tf-space-3); }
 .tf-footnotes li { margin-bottom: var(--tf-space-1); line-height: 1.5; }

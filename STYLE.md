@@ -1,4 +1,4 @@
-v048 | 2026-08-01 | 2422 lines
+v049 | 2026-08-01 | 2465 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -2357,7 +2357,8 @@ its own direct-to-main commit.
   bar became a **stack**: entered costs in `--tf-wash-brick`, commission beneath
   in `--tf-wash-plum`. Plum enters this tool's palette here; it is already in
   the sheet's data set and needs no new hue. The legend drops "Total" and gains
-  the third key.
+  the third key. *(SUPERSEDED in Round 6 — plum sits too close to brick at
+  wash strength; commission moved to `--tf-wash-slate`.)*
 
 - **Table: `Cost` and `Commission` as separate columns, and single-month
   `Net cash` removed** — it was the arithmetic of the three columns beside it,
@@ -2420,3 +2421,45 @@ out to be one thing. Paired with STYLE.css v048.
 
 - Copy: "The share of leads that convert to a paying client" → "Of the leads you
   approach, the percentage that become paying clients."
+
+**Round 6 — fifth review, 2026-08-01.** Three findings, all about restraint.
+Paired with STYLE.css v049.
+
+- **Errors no longer fire while a field is being filled in.** The complaint was
+  literal and correct: a freshly added cost row was told, before it had been
+  touched, that its empty Month field was "dated before the start month". Two
+  faults behind it. First, an UNCHOSEN month was being tested against the start
+  month at all — it is not dated too early, it is not dated. Missing and
+  too-early are now separate conditions with separate messages, and missing
+  never speaks while the form is being filled in. Second, the moment of display
+  moved: a field is promoted to "touched" on **change / focusout**, not on
+  `input`, and an error is never shown for the field that currently holds
+  focus. Typing is silent; leaving a field with a genuinely wrong value speaks;
+  correcting it clears immediately, without waiting for another blur. The
+  touched set is keyed by ELEMENT (a `WeakSet`) rather than by id, because the
+  repeatable rows have no ids.
+  A real bug fell out of writing this: the per-row amount check had been
+  writing to `err-amounts`, an id that **does not exist in the page**, so
+  `setError` silently returned and no amount error had ever been displayed.
+  Each cost group now has its own `err-amt-*` slot beside the rows it belongs
+  to.
+
+- **The aggregated error block is gone entirely.** `.tf-callout-warn` on step 3
+  listed every outstanding problem at once, which after "Start over" — a
+  control whose whole job is to empty the form — meant eleven red lines for
+  questions nobody had been asked. It is replaced by **`.tf-empty-note`
+  (NEW)**: one sentence, body colour, no icon, naming the step that is
+  unfinished so an abandoned half-filled row is not a silent dead end.
+  Step 3 also stops forcing every inline message out on arrival. Problems are
+  reported where they happen, as they happen.
+
+- **Commission moves from `--tf-wash-plum` to `--tf-wash-slate`.** Plum and
+  brick are neighbouring warm tints and read as the same bar at wash strength,
+  which defeated the point of splitting cost from commission. Slate is cool
+  against both. No new token — it is already in the data set.
+
+- **"Start over" clears on one click.** The arm-then-confirm relabel introduced
+  in Round 3 was rejected: it read as the button not working, particularly from
+  step 3, where the second click frequently landed after something else had
+  disarmed it. The control clears **every step**, which it always did — the
+  two-step interaction was what obscured that.
