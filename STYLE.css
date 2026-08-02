@@ -1,7 +1,24 @@
-/* v053 | 2026-08-02 | 3831 lines
+/* v054 | 2026-08-02 | 3849 lines
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v54 · 2026-08-02 · .tf-panel-actions gains flex-wrap: wrap. The action row
+                     holds three items on the tool pages — the step pager plus
+                     Start over and Download PDF — and at 320px they do not fit
+                     272px of container. With nowrap the row overflowed to the
+                     START edge, because justify-content: flex-end packs from
+                     the right: the pager's leading arrow rendered at x = -1,
+                     one pixel off-screen, while the pills squeezed their labels
+                     onto two lines. NB `row.scrollWidth > row.clientWidth` does
+                     NOT catch this — scrollWidth measures overflow to the right
+                     only, so a flex-end row that overflows leftward reads as
+                     clean. It was found by looking at the page.
+                     One declaration on the existing rule, no new pattern.
+                     margin-inline-end: auto and justify-content: flex-end both
+                     still apply, so desktop is unchanged (measured: one row,
+                     controls flush right at 1280px). Below ~390px the row now
+                     wraps instead of shrinking, which also returns the pills to
+                     single-line labels — 31px tall, was 48px.
    v53 · 2026-08-02 · Byline goes PRINT/PDF ONLY. .tf-byline was shown on screen
                      as well; the human does not want the mark and the line on
                      the webpage, only on the downloaded PDF. The rule now sets
@@ -3117,6 +3134,7 @@ a.tf-icon-brand:focus { color: #004182; }        /* LinkedIn blue, pressed */
    to this position, so there is no second, differently-aligned use to protect. */
 .tf-panel-actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
   gap: var(--tf-space-1);
   margin: 0 0 var(--tf-space-2);
