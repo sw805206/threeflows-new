@@ -3,5 +3,10 @@
     "toolID": "tool-001",
     "filename": "tool-company-setup.html",
     "title": "Company Setup Checklist"
+  },
+  {
+    "toolID": "tool-002",
+    "filename": "tool-general-cashflow.html",
+    "title": "General Cashflow Projection"
   }
 ]
