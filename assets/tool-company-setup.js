@@ -206,17 +206,28 @@
     var width = doc.internal.pageSize.getWidth();
     var y = margin;
 
-    // Title + intro + disclaimer — the page's own header text, so a printed
-    // checklist still identifies itself and carries the legal notice.
+    // Title + intro + disclaimer — READ FROM THE DOM, never restated here. The
+    // page's header is the single source: editing the markup changes the PDF in
+    // the same edit, so the two cannot drift apart. Each falls back to '' rather
+    // than a stale copy, so a markup change can never resurrect old wording.
     doc.setFont('times', 'bold').setFontSize(20).setTextColor.apply(doc, PDF_INK);
-    doc.text('Company Setup Checklist', margin, y);
+    doc.text(headText('h1'), margin, y);
     y += 20;
     doc.setFont('helvetica', 'normal').setFontSize(10).setTextColor.apply(doc, PDF_INK);
-    y = writeWrapped(doc, 'Decide your entity, then work prep & filing and post-filing setup in any order — nothing here is prerequisite for anything else.', margin, y, width - margin * 2, 13);
-    y += 6;
-    doc.setFontSize(8).setTextColor.apply(doc, PDF_INK_SOFT);
-    y = writeWrapped(doc, 'Disclaimer: Three Flows Solutions is a business operations consultancy, not a law firm or CPA practice. Entity formation involves state-specific rules and individual tax circumstances that only a licensed attorney or CPA can properly advise on.', margin, y, width - margin * 2, 10);
-    y += 14;
+    y = writeWrapped(doc, headText('.tf-prose-intro'), margin, y, width - margin * 2, 13);
+    y += 10;
+
+    // Disclaimer + privacy block, at the TOP of the document, ahead of the panel
+    // content. Read from the page's own foot block, paragraph for paragraph.
+    doc.setFont('helvetica', 'bold').setFontSize(8).setTextColor.apply(doc, PDF_INK_SOFT);
+    doc.text(headText('[data-tool-legal] .tf-meta'), margin, y);
+    y += 10;
+    doc.setFont('helvetica', 'normal');
+    legalParagraphs().forEach(function (para) {
+      y = writeWrapped(doc, para, margin, y, width - margin * 2, 10);
+      y += 5;
+    });
+    y += 9;
 
     doc.setFont('times', 'bold').setFontSize(14).setTextColor.apply(doc, PDF_INK);
     doc.text(PANEL_TITLE[which], margin, y);
@@ -274,6 +285,27 @@
 
   // jsPDF has no built-in "wrap and advance"; splitTextToSize + a line
   // counter is the documented idiom.
+  /* The page's own text, for the PDF. Scoped to .tf-tool-content so the
+     selectors cannot pick up a panel's copy. Never restated in JS: editing the
+     markup changes the PDF in the same edit, so the two cannot drift apart.
+     Empty string rather than a stale fallback, so a markup change can never
+     resurrect old wording. */
+  function headText(sel) {
+    var el = document.querySelector('.tf-tool-content ' + sel);
+    return el ? el.textContent.trim() : '';
+  }
+
+  /* The foot-of-page disclaimer + privacy block, paragraph by paragraph. The
+     .tf-meta heading is skipped — the PDF prints its own heading — and the
+     paragraphs keep their source order (generic, privacy, tool-specific). */
+  function legalParagraphs() {
+    var block = document.querySelector('[data-tool-legal]');
+    if (!block) return [];
+    return [].map.call(block.querySelectorAll('p:not(.tf-meta)'), function (p) {
+      return p.textContent.trim();
+    }).filter(Boolean);
+  }
+
   function writeWrapped(doc, text, x, y, maxWidth, lineHeight) {
     var lines = doc.splitTextToSize(text, maxWidth);
     doc.text(lines, x, y);
@@ -282,8 +314,13 @@
 
   document.querySelectorAll('[data-pdf]').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      var panel = btn.closest('[data-tool-panel]');
-      buildPdf(panel ? panel.getAttribute('data-tool-panel') : 'decide');
+      /* The action row now sits ABOVE the panels and outside them, so the button
+         can no longer find its step with closest('[data-tool-panel]'). The
+         tablist is the same source the panels themselves switch on: the one tab
+         with aria-selected="true" names the visible step. Falls back to the
+         first step, as the old closest() lookup did. */
+      var tab = document.querySelector('.tf-step-nav [role="tab"][aria-selected="true"]');
+      buildPdf(tab ? tab.getAttribute('data-tab') : 'decide');
     });
   });
 })();

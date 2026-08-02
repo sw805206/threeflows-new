@@ -1281,6 +1281,27 @@
     });
   }
 
+  /* The page's own text, for the PDF. Scoped to .tf-tool-content so the
+     selectors cannot pick up a panel's copy. Never restated in JS: editing the
+     markup changes the PDF in the same edit, so the two cannot drift apart.
+     Empty string rather than a stale fallback, so a markup change can never
+     resurrect old wording. */
+  function headText(sel) {
+    var el = document.querySelector('.tf-tool-content ' + sel);
+    return el ? el.textContent.trim() : '';
+  }
+
+  /* The foot-of-page disclaimer + privacy block, paragraph by paragraph. The
+     .tf-meta heading is skipped — the PDF prints its own heading — and the
+     paragraphs keep their source order (generic, privacy, tool-specific). */
+  function legalParagraphs() {
+    var block = document.querySelector('[data-tool-legal]');
+    if (!block) return [];
+    return [].map.call(block.querySelectorAll('p:not(.tf-meta)'), function (p) {
+      return p.textContent.trim();
+    }).filter(Boolean);
+  }
+
   function writeWrapped(doc, text, x, y, maxWidth, lineHeight) {
     var lines = doc.splitTextToSize(text, maxWidth);
     doc.text(lines, x, y);
@@ -1302,15 +1323,30 @@
     var ink = [38, 34, 31], inkSoft = [85, 80, 77], sand = [229, 223, 215];
 
     // --- page 1: chart + footnotes
+    // Title + intro + disclaimer — READ FROM THE DOM, never restated here. The
+    // page's header is the single source, so editing the markup changes the PDF
+    // in the same edit. The disclaimer previously carried a hand-tightened
+    // PARAPHRASE of the page's; it now prints the page's own sentence verbatim.
     var y = margin;
     doc.setFont('times', 'bold').setFontSize(20).setTextColor.apply(doc, ink);
-    doc.text('General Cashflow Projection', margin, y);
+    doc.text(headText('h1'), margin, y);
     y += 18;
-    doc.setFont('helvetica', 'normal').setFontSize(9).setTextColor.apply(doc, inkSoft);
-    y = writeWrapped(doc, 'Disclaimer: this is a planning model, not a forecast. It projects the assumptions ' +
-      'entered and nothing else — no capacity limit, no collection lag, no allowance for work not won.',
-      margin, y, inner, 11);
+    doc.setFont('helvetica', 'normal').setFontSize(10).setTextColor.apply(doc, ink);
+    y = writeWrapped(doc, headText('.tf-prose-intro'), margin, y, inner, 13);
     y += 10;
+
+    // Disclaimer + privacy block, at the TOP of the document, ahead of the chart
+    // and tables. Read from the page's own foot block, paragraph for paragraph;
+    // this replaces the hand-tightened paraphrase that used to live here.
+    doc.setFont('helvetica', 'bold').setFontSize(8).setTextColor.apply(doc, inkSoft);
+    doc.text(headText('[data-tool-legal] .tf-meta'), margin, y);
+    y += 10;
+    doc.setFont('helvetica', 'normal');
+    legalParagraphs().forEach(function (para) {
+      y = writeWrapped(doc, para, margin, y, inner, 10);
+      y += 5;
+    });
+    y += 5;
 
     var chart = buildChart(periods, mode);
     // Rasterize at 2x the size it will actually be DRAWN at, not 2x the SVG's
