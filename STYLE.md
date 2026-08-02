@@ -1,4 +1,4 @@
-v053 | 2026-08-02 | 2591 lines
+v054 | 2026-08-02 | 2636 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -2589,3 +2589,48 @@ governance doc rode the branch. Recorded so the history reads as a decision.
   pages. Because the PDF button no longer sits inside a panel, tool-001's handler
   reads the active step from the tablist's `aria-selected` rather than
   `closest('[data-tool-panel]')` — the same source the panels switch on.
+
+### Tool step pager + presented-by byline — 2026-08-02
+
+Paired with STYLE.css v052, shipped in `01cc76d` (PR #108). Two additive rules;
+no new token, hue or scale value. STYLE.css again rode the feature branch as its
+own commit, at the human's request, so the rules could be reviewed against the
+markup that consumes them — the same bounded Part B deviation as v051, and no
+`.md` doc rode the branch.
+
+- **`.tf-panel-actions .tf-post-pager` — the step pager shares the action row
+  but sits at the OPPOSITE end.** `margin-inline-end: auto`, deliberately NOT a
+  switch to `justify-content: space-between`: the row keeps `flex-end`, so a
+  future single-control row still right-aligns instead of silently flying left.
+  Size is capped at **`--tf-text-xs`, the panel eyebrow's size** — the pager is
+  navigation and must never out-shout the "Step N" it sits above; at the
+  inherited base size it did. The blog's **`.tf-post-pager`, `.is-disabled` and
+  `.tf-pager-sep` are REUSED untouched**: the pager is TEXT, deliberately unlike
+  the `.tf-pill` controls beside it, because navigation is not an action. Ends
+  are disabled rather than hidden so the row does not jump between steps —
+  an `<a>` with no `href`, which is non-focusable without swapping the element.
+
+- **`.tf-byline` (NEW) — the presented-by line at the head of the legal block.**
+  Logo mark, "Presented by Three Flows Solutions", and a `--tf-rule-light` rule
+  beneath. Shown on SCREEN, in print AND in the PDF — it is not a print-only
+  block, so it does not use `.tf-print-only`. Only the **`.tf-byline-date`**
+  "printed on" stamp is print/PDF-only, and it is `display: inline` inside the
+  byline's own flex line rather than the `.tf-print-only` block idiom, which
+  would break the line. **Why the stamp and the byline part company:** the date
+  is read at print/download time, so on screen it would change on every visit
+  and read as a moving publication date.
+  **The generated PDF draws this same line** with three jsPDF `roundedRect`
+  primitives taken from `assets/logo-mark.svg`'s real geometry — a 100-unit
+  viewBox starting at `y=8.5`, scaled to an 18pt mark, in the same `--tf-ink` /
+  `--tf-brick` / `--tf-stone` values the SVG carries. No rasterization and no
+  second asset. Stating one layout twice is the risk the pagination block
+  already flagged, so the two are **commented as a PAIR** here and in
+  `assets/tool-company-setup.js` and `assets/tool-general-cashflow.js` — the
+  v44 precedent.
+
+**The panel step eyebrow needed NO rule.** `.tf-kicker` is the site's eyebrow
+and was reused as-is for the "Step N" line above each panel `h2`. Recorded here
+because a reader looking for how that eyebrow is styled should find the answer
+in one hop rather than assume a missing pattern. Its NUMBER is not styling at
+all: it is derived at runtime from the rail's `.tf-step-nav-num`, so the markup
+carries an empty `[data-step-eyebrow]` slot — see TOOLS.md §5.
