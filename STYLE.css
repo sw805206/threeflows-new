@@ -1,7 +1,45 @@
-/* v050 | 2026-08-02 | 3681 lines
+/* v051 | 2026-08-02 | 3757 lines
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v51 · 2026-08-02 · Tool rail CTA gets a raised cream ground. ONE rule, scoped
+                     .tf-tool-rail .tf-cta-inline, so the service pages' and the
+                     blog's .tf-cta-inline are untouched: --tf-cream background
+                     plus --tf-space-2 padding, square corners, no border and no
+                     radius — the .tf-ref-group / dropdown-panel idiom, where
+                     --tf-cream's raised-surface role already carries the lift on
+                     its own. No new token, hue or scale value. The Round-5
+                     margin rule (symmetric --tf-space-3, --tf-text-sm) is kept
+                     UNCHANGED: the 24px still measures image-edge → box-edge, so
+                     the rail's image→nav rhythm is undisturbed; the new 16px is
+                     interior and reads as the box's own inset, not as added gap.
+                     NB the rail is NOT print-hidden as a whole (only
+                     .tf-step-nav / .tf-post-topnav / .tf-rail-img are), so this
+                     CTA still prints — the cream does not, since the rule does
+                     not opt into print-color-adjust and browsers strip
+                     backgrounds by default. The jsPDF output never consults CSS
+                     at all. Paired STYLE.md ratchet entry is deliberately NOT in
+                     this commit — STYLE.md goes direct to main.
+                     SECOND change, same commit: .tf-panel-actions moves out of
+                     .tf-panel-head to a row ABOVE the panel and gains
+                     `justify-content: flex-end` + a --tf-space-2 bottom margin,
+                     so the controls hold one fixed position instead of moving
+                     with each panel's heading. The sheet had NO right-alignment
+                     mechanism (no flex-end, no margin-left:auto anywhere), so
+                     the §5 reuse check genuinely fails; folded into the existing
+                     rule rather than declared as a new class, since every
+                     consumer moves and no differently-aligned use survives.
+                     .tf-panel-head is now title-only — its space-between/wrap
+                     declarations are retained, not stripped: it is the shared
+                     tool-shell block and nothing else about it changed.
+                     THIRD change: .tf-tool-legal — the foot-of-page disclaimer +
+                     privacy block, --tf-text-sm in --tf-stone at the 62ch
+                     measure. Declared rather than reused because no existing
+                     class carries that pair (.tf-card-body is text-sm but
+                     ink-soft; .tf-repeat-empty is text-sm/stone but is the cost
+                     editor's empty state), so the §5 check fails. NB --tf-stone
+                     on --tf-paper measures ~2.13:1, below WCAG AA for body text
+                     — specified by the human after the ratio was reported.
    v50 · 2026-08-02 · Cash flow tool — payment-terms pair becomes .tf-terms-grid
                      (paired with STYLE.md v051). One flat 2x2 grid: both
                      labels on row 1, both inputs on row 2, so the boxes share
@@ -3021,10 +3059,10 @@ a.tf-icon-brand:focus { color: #004182; }        /* LinkedIn blue, pressed */
 .tf-step-nav-num { display: block; font-size: var(--tf-text-sm); font-weight: 700; }
 .tf-step-nav-desc { display: block; font-size: var(--tf-text-sm); margin-top: 2px; }
 
-/* Panel head — title left, Print/Download actions right. Restored per-panel
-   (not a single page-level action): with the rail swapping panels, only one
-   is ever visible, so each panel's own Print/Download correctly reflects
-   whichever step is active. */
+/* Panel head — now TITLE-ONLY. The actions moved out to `.tf-panel-actions`
+   above the panel (below), so the flex row here has a single child; the
+   space-between / wrap declarations are retained rather than stripped, since
+   the head is the shared tool-shell block and nothing else about it changed. */
 .tf-panel-head {
   display: flex;
   justify-content: space-between;
@@ -3033,7 +3071,19 @@ a.tf-icon-brand:focus { color: #004182; }        /* LinkedIn blue, pressed */
   gap: var(--tf-space-2);
   margin: 0 0 var(--tf-space-3);
 }
-.tf-panel-actions { display: flex; gap: var(--tf-space-1); }
+/* Action row — right-aligned, directly ABOVE the panel and outside it, so the
+   controls hold one fixed position instead of moving with each panel's own
+   heading. `justify-content: flex-end` is the addition: the sheet had no
+   right-alignment mechanism of any kind (no flex-end, no margin-left:auto), so
+   the reuse check genuinely fails here. Folded into this existing rule rather
+   than declared as a new class — every consumer of `.tf-panel-actions` moves
+   to this position, so there is no second, differently-aligned use to protect. */
+.tf-panel-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--tf-space-1);
+  margin: 0 0 var(--tf-space-2);
+}
 /* The CTA sits in the RAIL between the lede image and the step list. One
    instance outside the panels, so it neither repeats nor shifts as steps
    switch (it previously trailed the Q&A card on step 1 but led the table on
@@ -3041,9 +3091,35 @@ a.tf-icon-brand:focus { color: #004182; }        /* LinkedIn blue, pressed */
    0 bottom — 48px would over-detach it inside a 260px column, and it now
    needs bottom air too since the steps follow it. `--tf-text-sm` suits the
    narrower measure. */
-.tf-tool-rail .tf-cta-inline { margin-block: var(--tf-space-3); font-size: var(--tf-text-sm); }
+.tf-tool-rail .tf-cta-inline {
+  margin-block: var(--tf-space-3);
+  font-size: var(--tf-text-sm);
+  /* Raised cream ground, so the rail's one ACTION reads as a distinct surface
+     rather than a third block of rail text sitting between the photo and the
+     steps. `--tf-cream` in its established raised/recessed-surface role
+     (.tf-ref-group, the dropdown panel): square corners, NO border and NO
+     radius — the ground alone carries the lift, exactly as those two do. */
+  background: var(--tf-cream);
+  padding: var(--tf-space-2);
+}
 .tf-tool-rail .tf-cta-inline p { margin: 0 0 var(--tf-space-1); }
 .tf-tool-rail .tf-cta-inline p:last-child { margin-bottom: 0; }
+/* Foot-of-page legal block on a tool page — the disclaimer + privacy notice,
+   moved out of the header so the page opens on the tool rather than a notice.
+   Fine print: `--tf-text-sm` in `--tf-stone` at the blog's 62ch measure. No
+   existing class carried this pair (`.tf-card-body` is text-sm but ink-soft;
+   `.tf-repeat-empty` is text-sm/stone but is the cost-editor's empty state), so
+   the §5 reuse check fails and this is declared. The `.tf-meta` heading keeps
+   its own ink-soft, sitting a shade above the body — and it is a CHILD here,
+   not a `.tf-prose` direct child, so it takes no `.tf-prose > .tf-meta` rule. */
+.tf-tool-legal {
+  max-width: 62ch;
+  font-size: var(--tf-text-sm);
+  color: var(--tf-stone);
+}
+.tf-tool-legal > * { margin: 0 0 var(--tf-space-2); }
+.tf-tool-legal > :last-child { margin-bottom: 0; }
+
 /* A <button> wearing .tf-pill (Print/Download) needs a pointer cursor — the
    base pill is tag furniture, usually a non-interactive <span>, so it sets
    none. Scoped to button so a static tag pill is unaffected. */
