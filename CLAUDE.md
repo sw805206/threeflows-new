@@ -1,4 +1,4 @@
-v008 | 2026-08-02 | 209 lines
+v009 | 2026-08-02 | 215 lines
 
 # Working Rules
 
@@ -87,13 +87,14 @@ and sync to that version.
 
 **Governance docs go direct to main.** Every `.md` governance doc listed in
 SCOPE.md — CLAUDE.md, SCOPE.md, BLOG.md, BACKLOG.md, PROCESS.md and the like —
-is committed straight to main and pushed immediately. No branch, no PR. They do
-not deploy, so committing them cannot touch the live site. Push is the finish
+is committed straight to main and pushed immediately. No branch, no PR. Their
+blast radius is small: they carry no styling or page logic, so a bad edit
+degrades a doc or an internal view, never the public site. Push is the finish
 line: an edit left uncommitted or unpushed is the failure this rule exists to
 prevent.
 
-**STYLE.css is the exception.** It is both a governance doc and a served asset,
-so committing it to main changes the live site with no review. It keeps branch
+**STYLE.css is the exception.** It is publicly served across every page, so
+committing it to main changes the live site with no review. It keeps branch
 and PR discipline.
 
 **Governance docs carry a version stamp.** Line 1 of every `.md` governance doc
@@ -197,7 +198,12 @@ word-for-word copy verified by count — N pending rows in the block = N new row
 out — which guards against dropped or duplicated rows. P## become permanent
 `BL-###`, assigned in cumulative sequence from the last BL number in the file
 and never reused. Category and status are assigned at flush. BACKLOG.md is a
-governance doc, so the flush is committed and pushed per Part B.
+governance doc, so the flush is committed and pushed per Part B. If the project
+publishes a rendered backlog view, verify the flush there rather than in the raw
+file: push, wait for the deploy to land, then confirm the new rows render as
+correctly-columned rows. This is what catches an unescaped pipe, which is silent
+in the source and only visible once rendered. Verify against the deployed page,
+not a local copy, and not before the deploy confirms.
 
 **Status rules.** Code never self-closes: done items move to `review`, not
 `close`. Close is mine alone and needs evidence in **Closed-by** — the `PR##`
