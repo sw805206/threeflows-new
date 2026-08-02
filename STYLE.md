@@ -1,4 +1,4 @@
-v049 | 2026-08-01 | 2465 lines
+v050 | 2026-08-02 | 2477 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -2463,3 +2463,15 @@ Paired with STYLE.css v049.
   step 3, where the second click frequently landed after something else had
   disarmed it. The control clears **every step**, which it always did — the
   two-step interaction was what obscured that.
+
+- **Follow-up, same day: step 3 survived "Start over" with the old chart and
+  table still in it.** Reported and reproduced. The cause was a one-line
+  leftover in `startOver()` — `TOUCHED = {}`, from before the touched set
+  became a `WeakSet` — which made `TOUCHED.has()` throw on the next validation
+  pass and took `refresh()` down with it, so step 3 never reached even the
+  "nothing to show" note. Fixed, and hardened: `clearProjection()` now EMPTIES
+  every rendered part of step 3 (chart, legend, footnotes, recap, summary,
+  table) both on reset and whenever the projection cannot run. Hiding the panel
+  was never enough — the markup survives inside it, so anything that shows the
+  body again would flash the previous model's numbers. Clearing is the only
+  state that cannot go stale.
