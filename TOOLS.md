@@ -1,4 +1,4 @@
-v001 | 2026-08-01 | 66 lines
+v002 | 2026-08-02 | 151 lines
 
 # TOOLS.md — tool page naming and IDs
 
@@ -64,3 +64,88 @@ commit. Nothing checks this for you.
 `blog-###` and `tool-###` are distinct prefixes in one unambiguous namespace, so
 future blog ↔ tool cross-referencing can resolve an ID against either manifest —
 not designed and not implemented now.
+
+## 5. Page shape
+
+The order of parts, as shipped. Geometry — the 260px rail, the `space-between`
+split, the 62ch content cap — is STYLE.md's and is not restated here.
+
+**Rail** (`.tf-tool-rail`, sticky): lede image → CTA block → step switcher.
+
+**Content** (`.tf-tool-content`): "← Tools" topnav → `h1` → `.tf-prose-intro` →
+`.tf-tool-divider` → a right-aligned action row → the panel → the legal block at
+the foot, under its own divider.
+
+The action row sits **above the panel and outside it**, so the controls hold one
+position instead of moving with each panel's heading. `.tf-panel-head` is
+therefore TITLE-ONLY; the panel keeps its visible `h2`.
+
+## 6. Required copy
+
+These three strings must not drift, so they are reproduced here in full. The
+page is the source; this section is the check.
+
+The legal block sits at the foot of the content column, headed `.tf-meta`
+**"Disclaimer and privacy"**, and carries three paragraphs in this order:
+**generic, privacy, tool-specific.**
+
+**1. Generic** — character-identical on both tool pages AND on `tools.html`.
+Being quoted in three places, it changes in ONE commit, per STYLE.md's
+quoted-values rule:
+
+> Three Flows Solutions is a business consultancy. These free tools are provided
+> to introduce business logic. Do not use the output as the basis for a final
+> business decision or for execution without discussing it with qualified
+> professional service providers, and check the federal, state, and institutional
+> regulations, laws, and standards that apply to your situation.
+
+**2. Privacy** — tool pages only. It is deliberately NOT on `tools.html`, which
+has no inputs to describe:
+
+> Nothing you enter in these free tools is sent to us or stored anywhere — we
+> have no record of it and cannot retrieve it for you. Your entries exist only
+> while the page is open; refreshing or leaving the page clears them. Download
+> the PDF if you want to keep your work.
+
+**3. Tool-specific** — each tool's own, per §8.
+
+**Rail CTA**, identical on both pages. It opens in a new tab, deliberately and
+only here, so a reader mid-way through the inputs does not lose them:
+
+> Want something customized to your business? Contact us.
+
+The legal block is **not print-hidden** — all three paragraphs print — and the
+PDF places the whole block at the TOP of the generated document, ahead of the
+panel content.
+
+## 7. Constraints
+
+- **Front-end only, and no persistence of any kind.** No backend and no database
+  (SCOPE.md), and additionally **no `localStorage`, no `sessionStorage`, no
+  cookies** — nothing that outlives the page. That last rule is what makes §6's
+  privacy paragraph true rather than aspirational. A future "save my progress"
+  request is a change to this rule and to that paragraph, not a feature that
+  fits around them.
+- **The engine lives in `assets/tool-<slug>.js`** — never inline (SCOPE.md).
+- **No user-facing copy is restated in the JS.** The title, the intro and the
+  legal block are READ FROM THE DOM when the PDF is built. This is written from a
+  failure: both engines once hardcoded all three, and both drifted — tool-002
+  reached the point of printing a hand-tightened paraphrase of its own
+  disclaimer, a third wording of one notice. A missing element yields an empty
+  string, never a stale fallback.
+- **`.tf-prose-intro` is copied verbatim onto the `tools.html` card** — the rule
+  BLOG.md §3 sets for `recap`. Nothing checks it; edit both in one commit.
+
+## 8. Per-tool variation
+
+Three things legitimately differ between tools. Everything else in §5–§7 is
+shared.
+
+- **"Start over"** appears only where there is input to clear. tool-002 has it;
+  tool-001 has none, and none was invented for symmetry.
+- **The tool-specific disclaimer paragraph** — §6's third paragraph.
+- **Kind — checklist or calculator.** Shown on the index card only, as a Lucide
+  icon plus the word, inside `.tf-card-kicker`: `list-checks` "Checklist",
+  `calculator` "Calculator". Both at **16px, not STYLE.md §2's 22px default** —
+  22px dwarfs a 12px uppercase kicker. Stroke stays 1.75px and the colour comes
+  from the kicker's own brick through `currentColor`, so §2 holds otherwise.
