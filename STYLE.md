@@ -1,4 +1,4 @@
-v051 | 2026-08-02 | 2499 lines
+v052 | 2026-08-02 | 2494 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -2013,7 +2013,7 @@ exactly once in STYLE.css, at its token definition.
   synthetic probe of all three classes in *both* rule families. Every
   before/after pair matched exactly; no console errors.
 
-### Simple cash flow tool — tool-cashflow-projection.html — 2026-08-01
+### Simple cash flow tool — tool-general-cashflow.html — 2026-08-01
 
 The **second** tool page, and the first real test of whether the first tool's
 shell is a pattern or a one-off. It is a pattern: `.tf-tool-layout` /
@@ -2023,7 +2023,7 @@ shell is a pattern or a one-off. It is a pattern: `.tf-tool-layout` /
 **unchanged**. The geometry settled over tool-company-setup's five review rounds
 (260px rail, `space-between` + 62ch content cap, the 24px image→nav gap) was
 reused as found and deliberately **not re-derived**. Paired with STYLE.css v044,
-same commit per SCOPE.md. Engine in `assets/tool-cashflow-projection.js`
+same commit per SCOPE.md. Engine in `assets/tool-general-cashflow.js`
 (SCOPE.md §3). Steps are `#revenue` / `#costs` / `#projection`, switched by the
 same `references.js` tablist idiom; arriving at step 3 recomputes, so steps 1
 and 2 stay editable with no stale projection and no "recalculate" button.
@@ -2304,19 +2304,14 @@ STYLE.css v046.
   generated PDF's summary line was changed in the same commit — it restated the
   old four cost totals and would otherwise have disagreed with the page.
 
-**Open question, recorded not resolved — client counts.** The review's reword
-for the conversion tip read "% of leads that are converted to a paying customer,
-**round to a full person**". Rounding client counts to whole people would
-reverse the original brief's explicit "FRACTIONAL, never rounded", and it is not
-a display change: rounding 0.7 clients to 1 in every month compounds into a
-materially different revenue line over 36 months. The tip is reworded as asked;
-**the math is deliberately left fractional** pending a decision, since guessing
-either way silently changes every number on the page.
+**Client counts stay fractional** — confirmed on review. Rounding 0.7 clients to
+1 in every month compounds into a materially different revenue line over 36
+months, so the count is carried unrounded and displayed to one decimal.
 
 **Round 4 — third review, 2026-08-01.** Eleven findings. Paired with STYLE.css
 v047. The tool is **renamed** in this round: "Consultancy Cashflow Projection"
 becomes **"Simple Cash Flow Projection"**, and the slug follows it from
-`tool-consultancy-cashflow.html` to `tool-cashflow-projection.html`. TOOLS.md §1
+`tool-consultancy-cashflow.html` to `tool-general-cashflow.html`. TOOLS.md §1
 holds slugs stable against title edits, but nothing had shipped yet — the rename
 is free now and would not have been later. `tool-002` is unchanged, since an ID
 never moves. SCOPE.md §3 names this page as a jsPDF consumer and is corrected in

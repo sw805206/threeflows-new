@@ -44,7 +44,7 @@
 
    v47 · 2026-08-01 · Cash flow tool, third review + RENAME (paired with
                      STYLE.md v047). The tool is now "Simple Cash Flow
-                     Projection" at tool-cashflow-projection.html; the section
+                     Projection" at tool-general-cashflow.html; the section
                      comment below follows it. TWO entry widths replace Round
                      3's single one, because a single one is not achievable: a
                      native month input needs 183px (measured — 129px of text,
@@ -3233,7 +3233,7 @@ button.tf-pill { cursor: pointer; }
   }
 }
 
-/* ── Simple cash flow tool (tool-cashflow-projection.html) ──────────────
+/* ── Simple cash flow tool (tool-general-cashflow.html) ──────────────
    The SECOND tool. Reuses the first tool's whole shell unchanged —
    .tf-tool-layout / -rail / -content, .tf-step-nav, .tf-tool-panel,
    .tf-panel-head, .tf-tool-divider, .tf-data-table, the form kit, .tf-pill
@@ -3669,7 +3669,7 @@ button.tf-pill { cursor: pointer; }
      table. These three breaks are the SAME pagination the generated PDF
      builds with addPage(), stated once per medium; if one changes the other
      must change with it, which is why they are commented as a pair here and
-     in assets/tool-cashflow-projection.js. */
+     in assets/tool-general-cashflow.js. */
   .tf-recap { break-before: page; }
   .tf-projection-table { break-before: page; }
   .tf-view-toggle { display: none !important; }
