@@ -1,4 +1,4 @@
-v010 | 2026-08-01 | 292 lines
+v011 | 2026-08-03 | 312 lines
 
 # BLOG.md — how to add a blog post
 
@@ -40,6 +40,7 @@ One object per post. Field order below is the house order.
 | `imageAlt` | — | Per §7. Absent → `alt=""`. |
 | `recap` | ✔ | **Verbatim copy of the post's `.tf-prose-intro` text.** Card body on the index. |
 | `readMinutes` | ✔ | Integer, per §6. Feeds the index card only. |
+| `listenMinutes` | ✔ | Integer, per §6. Feeds the index card only. Same word count as `readMinutes`, different divisor — **the two are computed together and change together.** |
 
 **`status` caveat — it unlists, it does not hide.** `status` is only read by the
 index filter and the pager filter. A post whose status is not `"published"` is
@@ -70,8 +71,11 @@ Copy `blog-template.html` to the slug, set `data-blog-id` on `<main>`, fill the
   the body needs a pattern that does not exist, see §9.
 - Strip everything from the source document: inline styles, old classes, fonts,
   scripts.
-- The date meta line is baked as `<p class="tf-meta">Month D, YYYY</p>`; blog.js
-  appends ` · N min read` at runtime.
+- The date meta line is baked as `<p class="tf-meta">Month D, YYYY</p>` — the
+  **full month**; blog.js appends ` · N min read · M min listen` at runtime, then
+  the Listen button. The index card is formatted by blog.js from the manifest's
+  `YYYY-MM-DD` and abbreviates the month to three letters; that asymmetry is
+  deliberate, and the baked full month here is the half not to "fix".
 
 ## 4. Title rules
 
@@ -108,7 +112,12 @@ Render the new post at **1280px** and confirm:
       the title and recap against their `min-height` reservations before
       concluding anything.
 - [ ] Rail: image (if any) → "In this article" → H2 list. Rail top `120`.
-- [ ] Reading time on the date line matches the manifest's `readMinutes` (§6).
+- [ ] Reading time AND listen time on the date line match the manifest's
+      `readMinutes` and `listenMinutes` (§6).
+- [ ] Listen button renders at the end of that line and reads the post. It is
+      injected by blog.js, so a post needs no wiring for it — but a post whose
+      body top misses the shared y above is the case where its zero-height
+      budget has been disturbed.
 - [ ] Pager: neighbours re-wire **automatically by date** — no manual linking.
       Previous = next older published, Next = next newer; an absent neighbour
       renders muted, not hidden.
@@ -120,12 +129,21 @@ Render the new post at **1280px** and confirm:
 ambiguous — blog.js mutes both pager sides and warns to the console. Give each
 post its own date.
 
-## 6. Reading time
+## 6. Reading time and listen time
 
 ```
-readMinutes = ceil(words / 220)
+readMinutes   = ceil(words / 220)
+listenMinutes = ceil(words / 150)
 words = .tf-prose text, EXCLUDING h1, .tf-meta, .tf-post-topnav, style, script
 ```
+
+**One word count, two divisors.** `listenMinutes` is the read-aloud duration
+for the Listen control on the post page, and uses the *identical* scope — 150
+wpm is where a synthesized voice at rate 1 lands. Never recount for it with a
+different scope: `blog.js` counts once, through a single shared function, and
+derives both figures plus the text the control actually speaks. A second
+extractor written alongside it is how the meta line ends up promising nine
+minutes of audio for a body the speech never reaches.
 
 This is blog.js's exact scope (clone `.tf-prose`, remove those five, count
 whitespace-separated tokens). The h1 is excluded **so a title edit never moves
@@ -136,10 +154,12 @@ component inside `.tf-prose` would have its CSS and JS tallied as words. Every
 other element counts — paragraphs, headings, list items, and any future body
 element.
 
-- The **post page computes this live from the DOM**. The **index card reads
-  `readMinutes` from the manifest**. They are independent.
-- **Compute at post-add, and RECOMPUTE whenever a post body is edited** —
-  otherwise the card and the post page silently disagree.
+- The **post page computes both live from the DOM**. The **index card reads
+  `readMinutes` and `listenMinutes` from the manifest**. They are independent.
+- **Compute at post-add, and RECOMPUTE BOTH whenever a post body is edited** —
+  otherwise the card and the post page silently disagree. Both numbers come off
+  one count, so recomputing one and not the other is not a smaller version of
+  the job; it is the same drift with half the evidence on the page.
 - To compute: render the post and evaluate the scope above, or ask Code to.
 
 ## 7. Images (optional per post)
