@@ -1,4 +1,4 @@
-v036 | 2026-08-02 | 252 lines
+v037 | 2026-08-02 | 252 lines
 
 # BACKLOG.md — threeflows-new
 
@@ -110,7 +110,7 @@ un-build it — so only the evidence moves, never the status.
 | launch-hypercare.html | svc3.html — renamed from the `service-launch.html` shell per SCOPE.md v010 Services restructure (ex-svc3, &ldquo;Launch&rdquo;, Runningmate). Built as the tier-2 Launch detail page — a TEMPLATE REPEAT of sourcing-support.html (same intro-split / 2-up / flow+FAQ band / CTA; no new STYLE patterns). Nav-linked as &ldquo;Launch&rdquo;, §B redirect retargeted, and the superseded shell deleted, all in PR #37 | close | 228aa43 |
 | ongoing-management.html | svc4.html — renamed from the `service-management.html` shell per SCOPE.md v010 Services restructure (ex-svc4, &ldquo;Grow&rdquo;, Runningmate). Built as the tier-2 Grow detail page — a TEMPLATE REPEAT of launch-hypercare.html (same intro-split / 2-up / flow+FAQ band / CTA; no new STYLE patterns). Completes the four detail pages. Nav-linked as &ldquo;Grow&rdquo;, §B redirect retargeted, and the superseded shell deleted, all in PR #37 | close | 3da0495 |
 | blogs.html | blog.html + bloglist.json | close | e337c40 |
-| references.html | useful-websites.html — shipped as a data-driven directory backed by `references.json` + `assets/references.js`, both new files not previously recorded in §A | close | 43209ed |
+| links.html | useful-websites.html — shipped as a data-driven directory backed by `references.json` + `assets/references.js`, both new files not previously recorded in §A. **RENAMED 2026-08-02:** the page shipped as `references.html` and was renamed to `links.html` (nav label References → Links, kicker → LINKS, hero asset → `assets/images/links.jpg`); the h1 "The Retailer's Library" is unchanged, the data files keep their `references.*` names, and the old URL 404s by design | close | 43209ed |
 | seminars.html | webinars.html (+ livestream.html folded in via redirect) | open | |
 | tools.html | free-tools.html (shell only; individual tool pages deferred — BL-009) | open | |
 | about.html | about.html | close | 086e26b |
