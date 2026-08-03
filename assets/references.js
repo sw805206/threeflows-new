@@ -1,4 +1,4 @@
-/* references.js — renders the References directory (references.html) from
+/* references.js — renders the Links directory (links.html) from
    references.json: a segmented tab control, and per tab a set of cream group
    panels each holding a card grid.
 
