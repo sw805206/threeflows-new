@@ -141,5 +141,16 @@
     "imageAlt": "Five illustrated people stand and sit on isometric tiles, each bearing a coloured Google app icon including Gmail, Calendar, Drive, and Play.",
     "recap": "Cash is tightest when the temptation to spend is strongest. One monthly subscription — seven to ten dollars — buys a professional foundation, and leaves the rest for the only job that matters this early: finding customers.",
     "readMinutes": 5
+  },
+  {
+    "blogID": "blog-014",
+    "filename": "blog-too-late-ecommerce.html",
+    "title": "Is e-Commerce Too Late to Start?",
+    "date": "2026-04-23",
+    "status": "published",
+    "image": "assets/images/blog-too-late-ecommerce.jpg",
+    "imageAlt": "An Amazon 4-star store sign mounted under the glass canopy of a shopfront entrance.",
+    "recap": "Too late is the wrong question. E-commerce has not closed — it has stopped being free, and what it asks now is one real advantage: a product, an audience, inventory on hand, capital, a partner, or your own effort.",
+    "readMinutes": 9
   }
 ]
