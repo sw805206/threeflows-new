@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nike’s $2M Warehouse Theft: Nothing Was Hacked — Three Flows Solutions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+  <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+</head>
+<body class="tf-app">
+  <!-- Shared header injected from partials.html -->
+  <div id="tf-header"></div>
+
+  <main class="tf-section" data-blog-id="blog-017">
+    <div class="tf-container">
+      <div class="tf-prose-layout" data-toc>
+      <div class="tf-prose">
+        <!-- TOP NAV ROW: back-to-blogs (left) + prev/next pager (right).
+             blog.js fills the pager; an absent neighbour renders muted. -->
+        <div class="tf-post-topnav">
+          <a href="blogs.html">← Blogs</a>
+          <span class="tf-post-pager"></span>
+        </div>
+        <!-- POST HEADER: h1 → dek → date (divider). blog.js appends
+             " · N min read" to the date meta. An optional rail image renders
+             from the manifest's "image" field — never marked up here. -->
+        <h1>Nike’s $2M Warehouse Theft: Nothing Was Hacked</h1>
+        <p class="tf-prose-intro">Twelve people were indicted in July over $2 million of Nike product that walked out of a Memphis distribution center on 3,119 shipping labels. No system was breached. The only counterfeit object in the entire scheme was a sticker.</p>
+        <p class="tf-meta">July 29, 2026</p>
+
+        <!-- POST BODY: prose only. h2 = main sections (appear in the rail),
+             h3 = subsections. -->
+        <p>Most supply chain security spending assumes the threat is outside the building — a breached system, a hijacked trailer, a spoofed carrier account. The Memphis case is a useful corrective, because it ran for three years using none of that.</p>
+
+        <h2>What Actually Left the Building</h2>
+
+        <p>Between July 2021 and June 2024, according to a federal indictment unsealed on July 21, a group operating inside and outside Nike’s North American Logistics Center in Memphis moved at least $2 million of product out of the facility without breaking anything.</p>
+
+        <p>The method was to identify cartons worth reselling, print a UPS label addressed to a location the group controlled, and put it on the box.</p>
+
+        <p>Everything downstream of that sticker was genuine. Real carrier, real shipping account, real scan events, real delivery, real signature. The freight did not leave at night in an unmarked van; it went out the dock door in the normal outbound flow, on a normal truck, with tracking anyone could have followed. Prosecutors say this happened 3,119 times.</p>
+
+        <p>Six of the twelve defendants are former Nike employees. The indictment describes a floor manager bringing labels into the facility and warehouse associates applying them to specified cartons, with resellers on the outside receiving the goods and paying the group more than $900,000. Deliveries went to California, Wisconsin and Indiana. The most sophisticated technology involved was a label printer.</p>
+
+        <div class="tf-callout">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <div>
+            <p class="tf-callout-body">Everything here is an allegation. All twelve defendants are charged with conspiracy to transport stolen property in interstate commerce, all are presumed innocent, and the case is unresolved. UPS is not a defendant and is not accused of any wrongdoing — the labels were legitimate labels, bought on legitimate accounts, and the carrier moved the freight exactly as instructed.</p>
+          </div>
+        </div>
+
+        <h2>Every Control Did Exactly What It Was Built to Do</h2>
+
+        <p>The uncomfortable part is that nothing failed. Each control performed to specification, and the specification was the problem.</p>
+
+        <p>Access control passed, because everyone involved was authorized to be in the building and authorized to touch the goods. Carrier verification passed, because the carrier was real. Track and trace passed, and would have shown a clean chain of custody to anyone who looked, because the chain was clean — it simply ended somewhere nobody had approved. Proof of delivery passed. Somebody signed.</p>
+
+        <p>Inventory variance is the one control that eventually notices, and it notices in the worst possible form: a number in a monthly report, long after the goods are gone, describing a quantity rather than an event. Shrink tells you that you lost something. It does not tell you which box, on which truck, on whose instruction.</p>
+
+        <p>The gap the case exposes is narrow and specific. Nobody owned the question of whether the address on the carton was the address the order said it should go to.</p>
+
+        <h2>Your 3PL Has the Same Shape</h2>
+
+        <p>It is tempting to file this under “large company, large warehouse, not my problem.” The shape is worth looking at again before you do.</p>
+
+        <p>Nike operates its own facility, staffed by its own employees, with resources for internal audit that almost no growing brand has. If it can run for three years there, consider the position of a brand whose inventory sits in a third-party warehouse, handled by staff it has never met, employed by a company it has no visibility into, shipping on labels generated by systems it does not administer.</p>
+
+        <p>You are not exposed because your 3PL is careless. You are exposed because your goods spend most of their life in a building where you cannot see the dock, and the person applying the label is several employment relationships away from anyone who answers to you.</p>
+
+        <h2>What to Ask Your 3PL</h2>
+
+        <p>None of these require a security budget. They require somebody to answer them in writing.</p>
+
+        <div class="tf-prose-table">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Ask</th>
+                <th scope="col">What a good answer sounds like</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Who can generate a shipping label, and against which accounts?</td>
+                <td>A named, short list, reviewed on a schedule, with generation logged to a user</td>
+              </tr>
+              <tr>
+                <td>Does the destination on the label get checked against the destination on the order?</td>
+                <td>Yes, systematically, before release — not by eye, and not only on exceptions</td>
+              </tr>
+              <tr>
+                <td>What happens when an address does not match?</td>
+                <td>The shipment stops and a human is notified, rather than a warning nobody reads</td>
+              </tr>
+              <tr>
+                <td>Can one supervisor decide where goods go without a second approval?</td>
+                <td>No, above a defined value threshold</td>
+              </tr>
+              <tr>
+                <td>How often do the people applying labels change stations?</td>
+                <td>Regularly enough that no one position becomes a permanent private channel</td>
+              </tr>
+              <tr>
+                <td>Do outbound records reconcile automatically against customer orders and invoices?</td>
+                <td>Daily or weekly, with unmatched shipments surfaced as a report someone owns</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>The last one matters most, and it is the cheapest. A three-year scheme is not defeated by catching the first carton. It is defeated by anything that makes the aggregate visible — because a shipment that matches no order is invisible one at a time, and unmistakable in a column.</p>
+
+        <h2>The Cheap Version of This Conversation</h2>
+
+        <p>Today it is sneakers, which are unusually good theft targets: high value per cubic foot, instant resale, and a secondary market that does not ask hard questions. Tomorrow it is electronics, or components, or anything with a waiting list.</p>
+
+        <p>The lesson is not that warehouses need better technology. Nike’s warehouse worked. The lesson is that a supply chain is only as strong as its least-supervised step, and that step is usually the most boring one in the building — the moment somebody decides what goes on the outside of the box.</p>
+
+        <p>If you have never asked your 3PL the six questions above, that is the whole task. It costs one email.</p>
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared footer injected from partials.html -->
+  <div id="tf-footer"></div>
+
+  <!-- Fetch snippet: load partials.html (relative), inject header/footer,
+       mark the current nav link, and wire dropdowns + the mobile menu.
+       Fails silently (no nav rather than a broken page). -->
+  <script src="assets/partials.js" defer></script>
+  <script src="assets/toc.js"></script>
+  <script src="assets/blog.js"></script>
+  <script src="assets/lightbox.js"></script>
+</body>
+</html>
