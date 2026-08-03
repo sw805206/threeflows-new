@@ -135,7 +135,7 @@
     var ry = oy + 22;
     doc.setDrawColor(221, 214, 207).setLineWidth(1);   // --tf-stone-light
     doc.line(margin, ry, right, ry);
-    return ry + 14;
+    return ry + 24;   // air before the title — see the note above
   }
 
   window.addEventListener('hashchange', function () { activate(currentTab()); });
@@ -371,6 +371,7 @@
       });
     }
 
+    stampPageNumbers(doc);
     doc.save('company-setup-' + which + '.pdf');
   }
 
@@ -395,6 +396,21 @@
     return [].map.call(block.querySelectorAll('p:not(.tf-meta)'), function (p) {
       return p.textContent.trim();
     }).filter(Boolean);
+  }
+
+
+  /* Page N of M, footed on every page. Added AFTER the document is built,
+     because the total is not known until then. Shared shape across both tool
+     PDFs — if one changes the other must change with it. */
+  function stampPageNumbers(doc) {
+    var n = doc.internal.getNumberOfPages();
+    var w = doc.internal.pageSize.getWidth();
+    var h = doc.internal.pageSize.getHeight();
+    for (var i = 1; i <= n; i++) {
+      doc.setPage(i);
+      doc.setFont('helvetica', 'normal').setFontSize(8).setTextColor(85, 80, 77);
+      doc.text('Page ' + i + ' of ' + n, w / 2, h - 20, { align: 'center' });
+    }
   }
 
   function writeWrapped(doc, text, x, y, maxWidth, lineHeight) {

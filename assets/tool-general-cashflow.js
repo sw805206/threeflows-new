@@ -148,7 +148,7 @@
     var ry = oy + 22;
     doc.setDrawColor(221, 214, 207).setLineWidth(1);   // --tf-stone-light
     doc.line(margin, ry, right, ry);
-    return ry + 14;
+    return ry + 24;   // air before the title — see the note above
   }
 
   window.addEventListener('hashchange', function () { activate(currentTab()); });
@@ -1385,6 +1385,21 @@
     }).filter(Boolean);
   }
 
+
+  /* Page N of M, footed on every page. Added AFTER the document is built,
+     because the total is not known until then. Shared shape across both tool
+     PDFs — if one changes the other must change with it. */
+  function stampPageNumbers(doc) {
+    var n = doc.internal.getNumberOfPages();
+    var w = doc.internal.pageSize.getWidth();
+    var h = doc.internal.pageSize.getHeight();
+    for (var i = 1; i <= n; i++) {
+      doc.setPage(i);
+      doc.setFont('helvetica', 'normal').setFontSize(8).setTextColor(85, 80, 77);
+      doc.text('Page ' + i + ' of ' + n, w / 2, h - 20, { align: 'center' });
+    }
+  }
+
   function writeWrapped(doc, text, x, y, maxWidth, lineHeight) {
     var lines = doc.splitTextToSize(text, maxWidth);
     doc.text(lines, x, y);
@@ -1505,9 +1520,16 @@
         headStyles: { fillColor: false, textColor: inkSoft, fontStyle: 'bold', lineColor: sand },
         footStyles: { fillColor: false, textColor: ink, fontStyle: 'bold', lineColor: sand },
         columnStyles: { 0: { cellWidth: 62 }, 1: { halign: 'right' }, 2: { halign: 'right' },
-                        3: { halign: 'right' }, 4: { halign: 'right' }, 5: { halign: 'right' }, 6: { halign: 'right' } }
+                        3: { halign: 'right' }, 4: { halign: 'right' }, 5: { halign: 'right' }, 6: { halign: 'right' } },
+        /* columnStyles does not reach the FOOT section, so the Horizon totals
+           rendered left-aligned under right-aligned figures. Set explicitly per
+           cell; column 0 ("Horizon") stays left, as its head does. */
+        didParseCell: function (d) {
+          if (d.section === 'foot' && d.column.index > 0) d.cell.styles.halign = 'right';
+        }
       });
 
+      stampPageNumbers(doc);
       doc.save('general-cashflow-' + mode + 'ly.pdf');
     })['catch'](function () { window.print(); });
   }
