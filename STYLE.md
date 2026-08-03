@@ -1,4 +1,4 @@
-v055 | 2026-08-02 | 2694 lines
+v056 | 2026-08-02 | 2694 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -195,7 +195,7 @@ SCOPE.md's relative-links constraint. Derived from `index.html`:
 
 Nav targets are the real relative filenames: `index.html`, `business-planning.html`,
 `sourcing-support.html`, `launch-hypercare.html`, `ongoing-management.html`,
-`blogs.html`, `references.html`, `about.html`, `contact.html`, `privacy.html`.
+`blogs.html`, `links.html`, `about.html`, `contact.html`, `privacy.html`.
 A page carrying the ital font axis (only `index.html`, for the band-3 quote)
 requests it in the font `<link>`; every other page uses the stack above.
 
