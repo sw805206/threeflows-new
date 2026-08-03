@@ -8,7 +8,8 @@
     "image": "assets/images/blog-welcome-to-three-flows.jpg",
     "imageAlt": "Four hands fit green, yellow, blue and pink jigsaw pieces together on a white table.",
     "recap": "Every business is the management of three flows. Our job is to help you master all three — by teaching you what we know, and working beside you when knowing isn’t enough.",
-    "readMinutes": 4
+    "readMinutes": 4,
+    "listenMinutes": 6
   },
   {
     "blogID": "blog-002",
@@ -19,7 +20,8 @@
     "image": "assets/images/blog-cut-import-costs.jpg",
     "imageAlt": "Stacked shipping containers in long rows fill a port yard, seen from above.",
     "recap": "Four legitimate, widely underused mechanisms can dramatically reduce what you pay to bring goods into the US. Most growing brands miss most of them.",
-    "readMinutes": 5
+    "readMinutes": 5,
+    "listenMinutes": 7
   },
   {
     "blogID": "blog-003",
@@ -30,7 +32,8 @@
     "image": "assets/images/blog-factory-data.jpg",
     "imageAlt": "Workers in blue coats assemble and pack small parts at a row of benches in a factory.",
     "recap": "The physical goods move. The paperwork doesn’t. Here’s what poor factory data quality actually costs growing brands — and what to do about it.",
-    "readMinutes": 6
+    "readMinutes": 6,
+    "listenMinutes": 8
   },
   {
     "blogID": "blog-004",
@@ -41,7 +44,8 @@
     "image": "assets/images/blog-amazon-inbound.jpg",
     "imageAlt": "The Amazon logo with its orange smile arrow, mounted on the light-grey facade of a large warehouse above the employee entrance.",
     "recap": "What actually happens between the truck arriving at the dock and your listing showing “In Stock” — and how to keep your freight moving through it.",
-    "readMinutes": 5
+    "readMinutes": 5,
+    "listenMinutes": 7
   },
   {
     "blogID": "blog-005",
@@ -52,7 +56,8 @@
     "image": "assets/images/blog-obbba-business-provisions.jpg",
     "imageAlt": "A document headed 'ONE BIG BEAUTIFUL BILL' in white serif capitals, bearing the Great Seal of the United States, resting on an American flag beneath a metal clipboard clip.",
     "recap": "The most common mistake is treating these provisions as items to note and revisit at tax time. The value — especially on the R&D side — is in the planning before the filing, not in the filing itself.",
-    "readMinutes": 5
+    "readMinutes": 5,
+    "listenMinutes": 8
   },
   {
     "blogID": "blog-006",
@@ -63,7 +68,8 @@
     "image": "assets/images/blog-amazon-two-new-policies.jpg",
     "imageAlt": "A laptop screen showing the Amazon website open in the Safari browser, with the Amazon logo, a \"Deliver to Australia\" label, and navigation links including Today's Deals, Customer Service, and Gift Cards.",
     "recap": "Within weeks of each other, Amazon announced two platform changes that quietly shift the ground beneath sellers. Neither is catastrophic on its own — but together, they reward sellers who already have their operations in order.",
-    "readMinutes": 5
+    "readMinutes": 5,
+    "listenMinutes": 8
   },
   {
     "blogID": "blog-007",
@@ -74,7 +80,8 @@
     "image": "assets/images/blog-warehouse-placement-case-study.jpg",
     "imageAlt": "A satellite night-lights view of the continental United States, where dense clusters of city lights mark population centres and the mountain west appears largely dark.",
     "recap": "A $180M home goods brand had climbing inventory costs and slower deliveries. Here’s what our Supply Chain Analyzer and Optimizer found, and the network we recommended.",
-    "readMinutes": 7
+    "readMinutes": 7,
+    "listenMinutes": 11
   },
   {
     "blogID": "blog-008",
@@ -85,7 +92,8 @@
     "image": "assets/images/blog-sourcing-strategy-2x2.jpg",
     "imageAlt": "A market stall table draped in black cloth displays rows of small round containers in pink, blue, and grey on wooden crates, with a framed sign reading \"homemade\" at the centre.",
     "recap": "A practical framework for small business owners just getting started — the 2×2 that covers most of the decision, and what to do when the theory meets reality.",
-    "readMinutes": 7
+    "readMinutes": 7,
+    "listenMinutes": 9
   },
   {
     "blogID": "blog-009",
@@ -96,7 +104,8 @@
     "image": "assets/images/blog-unit-economics-2-vs-20.jpg",
     "imageAlt": "A taped cardboard shipping box sits on a woven rug striped in yellow, blue, tan, and red.",
     "recap": "A quick unit economics walk-down, the \"free shipping\" trap, and how to tell whether a product is worth your time to sell.",
-    "readMinutes": 6
+    "readMinutes": 6,
+    "listenMinutes": 9
   },
   {
     "blogID": "blog-010",
@@ -107,7 +116,8 @@
     "image": "assets/images/blog-cashflow-vs-unit-economics.jpg",
     "imageAlt": "A white ceramic piggy bank on a green background, with three coins suspended in a line above its coin slot.",
     "recap": "A follow-up to the unit economics post — because a healthy per-unit P&L can still put you deep in the hole before you see your first dollar back.",
-    "readMinutes": 5
+    "readMinutes": 5,
+    "listenMinutes": 7
   },
   {
     "blogID": "blog-011",
@@ -118,7 +128,8 @@
     "image": "assets/images/blog-fedex-2026-rate-heatmap.jpg",
     "imageAlt": "A FedEx delivery truck parked on a snow-covered street during heavy snowfall, framed by bare winter trees.",
     "recap": "The headline rate increase is 5.9%. The actual distribution across weights and zones tells a different story — and every business owner should know how to see it.",
-    "readMinutes": 5
+    "readMinutes": 5,
+    "listenMinutes": 8
   },
   {
     "blogID": "blog-012",
@@ -129,7 +140,8 @@
     "image": "assets/images/blog-entity-formation.jpg",
     "imageAlt": "A stencil reading 'Live, Work, Create' spray-painted in white on a red brick wall.",
     "recap": "Filing the paperwork takes an afternoon. The decisions that determine whether you filed the right thing take longer — and skipping that planning step is the single most common mistake founders make.",
-    "readMinutes": 8
+    "readMinutes": 8,
+    "listenMinutes": 11
   },
   {
     "blogID": "blog-013",
@@ -140,7 +152,8 @@
     "image": "assets/images/blog-google-workspace.jpg",
     "imageAlt": "Five illustrated people stand and sit on isometric tiles, each bearing a coloured Google app icon including Gmail, Calendar, Drive, and Play.",
     "recap": "Cash is tightest when the temptation to spend is strongest. One monthly subscription — seven to ten dollars — buys a professional foundation, and leaves the rest for the only job that matters this early: finding customers.",
-    "readMinutes": 5
+    "readMinutes": 5,
+    "listenMinutes": 7
   },
   {
     "blogID": "blog-014",
@@ -151,7 +164,8 @@
     "image": "assets/images/blog-too-late-ecommerce.jpg",
     "imageAlt": "An Amazon 4-star store sign mounted under the glass canopy of a shopfront entrance.",
     "recap": "Too late is the wrong question. E-commerce has not closed — it has stopped being free, and what it asks now is one real advantage: a product, an audience, inventory on hand, capital, a partner, or your own effort.",
-    "readMinutes": 9
+    "readMinutes": 9,
+    "listenMinutes": 14
   },
   {
     "blogID": "blog-017",
@@ -162,6 +176,7 @@
     "image": "assets/images/blog-warehouse-insider-risk.jpg",
     "imageAlt": "Three people in red jumpsuits and matching Salvador Dalí masks pose together on a crowded city street at night, one holding a phone overhead.",
     "recap": "Twelve people were indicted in July over $2 million of Nike product that walked out of a Memphis distribution center on 3,119 shipping labels. No system was breached. The only counterfeit object in the entire scheme was a sticker.",
-    "readMinutes": 5
+    "readMinutes": 5,
+    "listenMinutes": 7
   }
 ]
