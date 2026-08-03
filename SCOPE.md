@@ -1,4 +1,4 @@
-v023 | 2026-08-02 | 146 lines
+v024 | 2026-08-02 | 146 lines
 
 # SCOPE.md — threeflows.com
 
@@ -78,7 +78,7 @@ section covers it. Stage 3 is the trigger to create one.
 `index.html` (Home); `business-planning.html`, `sourcing-support.html`,
 `launch-hypercare.html`, `ongoing-management.html` (services); `blogs.html`
 (index — individual posts are `blog-<slug>.html`, per BLOG.md §1);
-`references.html`; `seminars.html`; `tools.html` (index — individual tools are
+`links.html`; `seminars.html`; `tools.html` (index — individual tools are
 `tool-<slug>.html`, per TOOLS.md §1); `about.html`; `contact.html`;
 `privacy.html`; `surveys.html` (cover for individual survey pages).
 
@@ -87,7 +87,7 @@ pages are publicly reachable — a page not linked there is live but unlisted. N
 doc restates it, and no doc tracks visibility separately. Its current shape is
 Home, Services (dropdown: Plan → `business-planning.html`,
 Source → `sourcing-support.html`, Launch → `launch-hypercare.html`, Grow →
-`ongoing-management.html`), Resources (dropdown: Blogs, References, Tools),
+`ongoing-management.html`), Resources (dropdown: Blogs, Links, Tools),
 About, Contact. Dropdowns are flat and single-tier, using the
 `.tf-has-dropdown` mechanism.
 
