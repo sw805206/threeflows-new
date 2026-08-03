@@ -152,5 +152,16 @@
     "imageAlt": "An Amazon 4-star store sign mounted under the glass canopy of a shopfront entrance.",
     "recap": "Too late is the wrong question. E-commerce has not closed — it has stopped being free, and what it asks now is one real advantage: a product, an audience, inventory on hand, capital, a partner, or your own effort.",
     "readMinutes": 9
+  },
+  {
+    "blogID": "blog-017",
+    "filename": "blog-warehouse-insider-risk.html",
+    "title": "Nike’s $2M Warehouse Theft: Nothing Was Hacked",
+    "date": "2026-07-29",
+    "status": "published",
+    "image": "assets/images/blog-warehouse-insider-risk.jpg",
+    "imageAlt": "Three people in red jumpsuits and matching Salvador Dalí masks pose together on a crowded city street at night, one holding a phone overhead.",
+    "recap": "Twelve people were indicted in July over $2 million of Nike product that walked out of a Memphis distribution center on 3,119 shipping labels. No system was breached. The only counterfeit object in the entire scheme was a sticker.",
+    "readMinutes": 5
   }
 ]
