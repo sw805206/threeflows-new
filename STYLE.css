@@ -1,7 +1,45 @@
-/* v054 | 2026-08-02 | 3849 lines
+/* v055 | 2026-08-03 | 3971 lines
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
+   v55 · 2026-08-03 · .tf-listen (NEW) + .tf-blog-grid .tf-meta (NEW).
+                     (2) The blog index card meta drops to 9.5px, scoped to the
+                     index grid by a .tf-blog-grid hook blog.js adds, so every
+                     other .tf-meta on the site is untouched. The line now
+                     carries date + read + listen: worst case
+                     "Sep 30, 2026 · 12 min read · 18 min listen" measured
+                     309.45px at 12px against 248px of room in a 300px card
+                     (the auto-fill floor), so it wrapped there and at 375px.
+                     9.5px measures 245.0px, clearing by 3.0px; 10px is 257.9px
+                     and fails. Tracking stays 0.14em BY DECISION even though it
+                     is the bigger lever — 70.55px, 23% of the line — so the
+                     meta treatment stays identical sitewide and the cost is
+                     paid in type size. Off-scale raw px per the .tf-callout-body
+                     13px / .tf-btn 15px / .tf-card-title 21px precedent; a
+                     --tf-text-2xs token would pull an int-stylebook specimen row
+                     in (PROCESS.md §4) for one consumer.
+                     (1) .tf-listen — the blog read-aloud toggle. A real
+                     <button> that assets/blog.js injects at the end of a
+                     post's .tf-meta line; two states, Listen and Stop, carried
+                     by the LABEL so it is the accessible name and no aria-live
+                     region is needed. Built from existing tokens only — brick
+                     for the action, --tf-text-xs at .tf-meta's uppercase +
+                     0.14em treatment, --tf-space-1/-2 for the gaps. No new
+                     token, hue or scale value, and no post marks it up.
+                     BORDERLESS BY CONSTRAINT, not taste: the control lives
+                     inside the meta paragraph whose bottom border is the
+                     divider BLOG.md §5's shared body y (454.73 / 486.73) is
+                     measured from, so any growth in that line box moves every
+                     post's body down. The strut is 19.2px (12px x 1.6) and the
+                     control is 14px — line-height:1, zero padding, no frame,
+                     14px Lucide icon rather than the 22px default, and
+                     vertical-align:middle (on the default baseline the box
+                     hangs 1px below the strut's descent — measured 455.73).
+                     A framed variant measured 24px and pushed the body 5px;
+                     it was dropped for that reason. Measured on blog-014:
+                     454.734375 with the control, 454.734375 without it.
+                     Re-measure the shared y both ways before adding padding,
+                     a border or a taller icon here.
    v54 · 2026-08-02 · .tf-panel-actions gains flex-wrap: wrap. The action row
                      holds three items on the tool pages — the step pager plus
                      Start over and Download PDF — and at 320px they do not fit
@@ -925,6 +963,64 @@ main .tf-container > h1:not(:has(+ .tf-prose-intro)) { margin-bottom: var(--tf-s
   padding-bottom: var(--tf-space-3);
   border-bottom: var(--tf-rule-light);
 }
+
+/* Listen control (`.tf-listen`) — the read-aloud toggle `assets/blog.js`
+   injects at the end of a post's `.tf-meta` line, after the read and listen
+   times. A real <button> with two states, Listen and Stop; the LABEL is its
+   accessible name, so the state change is announced without an aria-live
+   region, and `:focus-visible` (the global 2px brick outline) already covers
+   the keyboard case. No post marks this up — the control is injected, so a
+   post still introduces no class of its own.
+
+   BORDERLESS, and that is a constraint rather than a preference. The control
+   sits INSIDE the meta paragraph, whose bottom border is the divider the post
+   body's shared y is measured from (BLOG.md §5: 454.73 / 486.73). Anything
+   that grows that line box moves every post's body down. The meta strut is
+   12px x 1.6 = 19.2px, so the control is built to sit under it: `line-height:
+   1`, no padding, no frame, and a 14px icon — a 14px box inside a 19.2px line.
+   A framed version was measured at 24px and would have pushed the body 5px.
+
+   `vertical-align: middle` is part of that, not cosmetic. On the default
+   `baseline` the box aligns by its LAST flex item's baseline and hangs 1px
+   below the strut's descent — measured 455.73, one pixel out. Centring it on
+   the x-height puts the whole 14px box inside the 19.2px line, and the body
+   then lands at 454.734375 with the control present and 454.734375 with it
+   removed: exactly zero. Do not add padding, a border, or a taller icon here
+   without re-measuring the shared y both ways.
+
+   Brick carries the affordance instead of a frame — it is the accent for a
+   primary action (STYLE.md §2), and it reads as a control against the
+   ink-soft meta text beside it. Uppercase + 0.14em tracking are `.tf-meta`'s
+   own treatment, inherited in spirit so the button reads as the last item of
+   that line rather than a slab dropped into it. Square corners per §4.
+
+   The Lucide icon runs at 14px, not the 22px default: 22px would stand a head
+   taller than the 12px label and blow the line box. Stroke stays 1.75. */
+.tf-listen {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  gap: var(--tf-space-1);
+  margin-inline-start: var(--tf-space-2);
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: var(--tf-font-body);
+  font-size: var(--tf-text-xs);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: var(--tf-brick);
+  cursor: pointer;
+}
+.tf-listen:hover { color: var(--tf-brick-dark); }
+/* Speaking state — the label already says "Stop"; ink drops the control back
+   to the meta line's own tone so the brick accent reads as "start this", not
+   as a permanent highlight. */
+.tf-listen.is-speaking { color: var(--tf-ink); }
+.tf-listen.is-speaking:hover { color: var(--tf-brick-dark); }
+
 /* Inline links in prose are underlined — colour alone shouldn't carry a link
    inside running text. */
 .tf-prose a { text-decoration: underline; }
@@ -1523,6 +1619,32 @@ a:hover { color: var(--tf-brick-dark); }
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: var(--tf-space-3);
 }
+
+/* Blog index card meta — the ONE place `.tf-meta` runs smaller than 12px.
+   `.tf-blog-grid` is a style hook `assets/blog.js` puts on the blog index grid
+   and nowhere else, so post pages, privacy.html's "Last updated" and the tool
+   pages keep the shared 12px treatment untouched.
+
+   Why: the card meta carries three items now — `Sep 30, 2026 · 12 min read ·
+   18 min listen`, the worst case at 42 characters — inside a card the grid can
+   squeeze to 300px, which leaves 248px of text room after the card's 24px
+   padding. Measured in this exact context: 309.45px at 12px, so it wrapped to
+   two lines at the narrowest track and at 375px mobile. 9.5px measures 245.0px
+   and clears 248px by 3.0px; 10px measures 257.9px and does not.
+
+   Tracking is deliberately NOT touched. It is where the width actually goes —
+   0.14em over 42 characters costs 70.55px, 23% of the line, and at 12px the
+   same string fits in 238.91px with tracking removed. Keeping 0.14em holds the
+   meta treatment identical to every other `.tf-meta` on the site and pays for
+   it in type size instead. That was the explicit call; don't "fix" it by
+   loosening the type back up and tightening the tracking.
+
+   9.5px is off the type scale, which bottoms out at `--tf-text-xs` (12px), and
+   is a raw px for the same reason `.tf-callout-body` is 13px, `.tf-btn` 15px
+   and `.tf-card-title` 21px — a component internal measured for its own box,
+   not a scale step. A `--tf-text-2xs` token would drag an int-stylebook.html
+   specimen row in with it (PROCESS.md §4) for a single consumer. */
+.tf-blog-grid .tf-meta { font-size: 9.5px; }
 
 /* Card link — the whole card is one <a> (single tab stop, whole surface
    clickable). It must NOT take the base link colour: pin every state to
