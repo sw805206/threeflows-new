@@ -1,4 +1,4 @@
-v056 | 2026-08-02 | 2694 lines
+v057 | 2026-08-03 | 2756 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -2692,3 +2692,65 @@ exactly on the container edge — and with the pills shrunk to two lines. Two
 clean rows replace one cramped one. The alternative, a media query giving the
 pager `flex-basis: 100%` so both controls stay paired on their own line, was
 rejected as more CSS and another breakpoint to maintain.
+
+### Blog read-aloud control + index card meta — blog posts, blogs.html — 2026-08-03
+
+Paired with STYLE.css v055, same commit per SCOPE.md. **Two** additive patterns
+from one feature (PR #118): the control itself, and the card meta size the
+control's companion figure forced. No new token, hue or scale value; no
+page-local style; no post marks either of them up.
+
+**`.tf-listen`** — the read-aloud toggle `assets/blog.js` injects at the end of
+a post's `.tf-meta` line, after the read and listen times. A real `<button>`
+with two states, Listen and Stop, carried by the **label**, so the label is the
+accessible name and the state change announces without an `aria-live` region;
+`:focus-visible`'s global 2px brick outline already covers the keyboard case.
+Built from existing tokens: brick for the action, `--tf-text-xs` at `.tf-meta`'s
+own uppercase + 0.14em treatment, `--tf-space-1`/`-2` for the gaps.
+
+**Borderless is a constraint, not a preference, and this is the part to read
+before touching it.** The control sits INSIDE the meta paragraph whose bottom
+border is the divider BLOG.md §5's shared body y is measured from. Anything
+that grows that line box moves every post's body down — the one number §5 asks
+you to check is the one this control is positioned to not disturb. The meta
+strut is 19.2px (12px x 1.6); the control is 14px, via `line-height: 1`, zero
+padding, no frame, and a **14px** Lucide icon rather than the sheet's 22px
+default. `vertical-align: middle` is load-bearing too: on the default
+`baseline` an inline-flex box aligns by its last flex item's baseline and hangs
+1px below the strut's descent — measured 455.73, one pixel out. Measured on
+blog-014 with the fix: **454.734375 with the control present, 454.734375 with
+it removed.** A framed variant measured 24px and would have pushed the body
+5px; it was dropped for that reason, not on looks. Re-measure the shared y BOTH
+WAYS before adding padding, a border, or a taller icon here.
+
+**`.tf-blog-grid .tf-meta`** — the blog index card meta at **9.5px**, the one
+place in the sheet `.tf-meta` runs under 12px. `.tf-blog-grid` is a style hook
+`blog.js` puts on the index grid and nowhere else, so post pages,
+`privacy.html`'s "Last updated" and the tool pages keep the shared treatment
+untouched. Layout still comes entirely from `.tf-card-grid`.
+
+Why: the card line now carries three items. Worst case
+`Sep 30, 2026 · 12 min read · 18 min listen` — 42 characters — measured
+**309.45px** at 12px against **248px** of text room in a 300px card, which is
+`.tf-card-grid`'s `auto-fill` floor, after the card's 24px padding. It wrapped
+there, and at 375px it wrapped on **every real string**, not just the worst
+case. 9.5px measures 245.0px and clears by 3.0px; 10px measures 257.9px and
+does not.
+
+**Tracking stays 0.14em by decision, and that decision was made against the
+numbers.** Tracking is the bigger lever by far: 0.14em over 42 characters costs
+**70.55px**, 23% of the line, and the same string fits in 238.91px at the full
+12px with tracking removed. Holding 0.14em keeps the meta treatment identical
+to every other `.tf-meta` on the site and pays the width in type size instead.
+Do not "fix" this later by loosening the type back up and tightening the
+tracking — that is the trade that was considered and declined.
+
+9.5px is off the type scale, which bottoms out at `--tf-text-xs` (12px), and is
+a raw px for the same reason `.tf-callout-body` is 13px, `.tf-btn` 15px and
+`.tf-card-title` 21px: a component internal measured for its own box, not a
+scale step. A `--tf-text-2xs` token was rejected — adding a type-scale token
+obliges an `int-stylebook.html` specimen row (PROCESS.md §4) for a single
+consumer.
+
+No stylebook re-sync: no token or scale-set change, so PROCESS.md §4 requires
+nothing here.
