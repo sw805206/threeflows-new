@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Why Not Whatnot: A Livestream Selling Model — Three Flows Solutions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+  <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <style>
+    /* blog-015 page-local breakeven chart. A genuine one-off (STYLE.md §5), so it
+       is not in STYLE.css; recorded in the §6 ratchet record. Scoped .tf-bev-*.
+       Static SVG, no JS, no library. Every value is a token: the three series take
+       the washed data palette (--tf-wash-*), type comes off the scale
+       (--tf-text-xs), rules take the sheet's own rule tones. Same footing as
+       blog-007's map, blog-009's bar chart and blog-010's cashflow viz.
+       Placed in <head>, OUTSIDE .tf-prose, per the BL-018 idiom. */
+    .tf-bev { margin: var(--tf-space-4) 0; }
+    .tf-bev-chart { display: block; width: 100%; height: auto; }
+    .tf-bev-chart text { font-family: var(--tf-font-body); font-size: var(--tf-text-xs); }
+    /* Gridlines take the within-a-thing tone; the zero line is the axis itself,
+       so it takes ink (STYLE.md §4). */
+    .tf-bev-grid line { stroke: var(--tf-stone-light); stroke-width: 1; }
+    .tf-bev-grid .tf-bev-base { stroke: var(--tf-ink); stroke-width: 1; }
+    /* HAIRLINE SEPARATOR, not more contrast. The washed palette is equal-weight by
+       design, so two stacked segments differ in hue but not in value and their
+       shared boundary disappears. A 0.5px stone hairline on every segment draws
+       that boundary — and the bar's own outline against paper — without darkening
+       a fill or breaking the palette. */
+    .tf-bev-seg,
+    .tf-bev-sw { stroke: var(--tf-stone); stroke-width: 0.5; }
+    /* Series fills. The legend LABELS carry the names the prose uses — cost of
+       goods, commission, hourly cost — so the palette can change without touching
+       a word of the body copy. */
+    .tf-bev-chart .seg-cog  { fill: var(--tf-wash-brick); }
+    .tf-bev-chart .seg-comm { fill: var(--tf-wash-slate); }
+    .tf-bev-chart .seg-hr   { fill: var(--tf-wash-ochre); }
+    .tf-bev-legend text { fill: var(--tf-ink-soft); }
+    .tf-bev-ytick text { fill: var(--tf-ink-soft); text-anchor: end; }
+    .tf-bev-xtick { fill: var(--tf-ink-soft); text-anchor: middle; }
+    .tf-bev-atitle { fill: var(--tf-ink-soft); text-anchor: middle; }
+    /* The stack total IS the breakeven price, so it is the one figure printed at
+       full ink weight. It is drawn ABOVE its bar, which puts the tallest bar's
+       label across the $20 gridline (measured: 6.3px over). A PAPER HALO behind
+       the glyphs is the fix rather than moving the label or dropping the
+       gridline — paint-order puts the stroke down first, so the line is
+       interrupted by the number instead of running through it. */
+    .tf-bev-val {
+      fill: var(--tf-ink);
+      font-weight: 500;
+      text-anchor: middle;
+      paint-order: stroke fill;
+      stroke: var(--tf-paper);
+      stroke-width: 3;
+      stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body class="tf-app">
+  <!-- Shared header injected from partials.html -->
+  <div id="tf-header"></div>
+
+  <main class="tf-section" data-blog-id="blog-015">
+    <div class="tf-container">
+      <div class="tf-prose-layout" data-toc>
+      <div class="tf-prose">
+        <!-- TOP NAV ROW: back-to-blogs (left) + prev/next pager (right).
+             blog.js fills the pager; an absent neighbour renders muted. -->
+        <div class="tf-post-topnav">
+          <a href="blogs.html">← Blogs</a>
+          <span class="tf-post-pager"></span>
+        </div>
+        <!-- POST HEADER: h1 → dek → date (divider). blog.js appends
+             " · N min read · M min listen" to the date meta. An optional rail
+             image renders from the manifest's "image" field — never marked up here. -->
+        <h1>Why Not Whatnot: A Livestream Selling Model</h1>
+        <p class="tf-prose-intro">A client wanted to know two things before his first livestream sale: how low his price can go, and how fast he has to sell. It turned out neither question has an answer on its own.</p>
+        <p class="tf-meta">May 17, 2026</p>
+
+        <p>Whatnot is a livestream selling app, best known for live auctions. A seller goes live, talks through the product, and takes bids in real time while buyers comment and check out inside the stream. It has grown fast — merchants were expected to move over $6 billion on the platform in 2025, and roughly one in five US digital shoppers now buys something off a livestream.</p>
+
+        <p>Two months ago, a client came to us excited about it. His product had gone stale through his existing channels and this looked like the way out. He had done the back-of-the-envelope version already: buy cost is low, and an aggressive $15 — 70% off his $50 list — still leaves room, so as long as the units sell, he makes money.</p>
+
+        <p>But it also felt uneasy. What he could not do was hold four moving parts in his head at once — price, speed, platform spend, and the person on camera — and see which one to pull.</p>
+
+        <p>So we built him a model before he started, then helped him use it to steer while he was live. The process was fascinating.</p>
+
+        <h2>What he wanted to know</h2>
+
+        <p>The client would sign up with the platform and hire two influencers. He knows he needs to sell fast, and that a lower price helps. But he needs quantified measures —</p>
+
+        <p>How fast does he need to sell, and how low can the price go.</p>
+
+        <h2>What we knew</h2>
+
+        <div class="tf-prose-table">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Input</th>
+                <th scope="col">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Landed cost, all in</td>
+                <td>$3,500</td>
+              </tr>
+              <tr>
+                <td>Units bought / sellable</td>
+                <td>500 / 490</td>
+              </tr>
+              <tr>
+                <td>Cost per sellable unit</td>
+                <td>$7.14</td>
+              </tr>
+              <tr>
+                <td>Platform fees and traffic</td>
+                <td>$70 per hour</td>
+              </tr>
+              <tr>
+                <td>Influencer</td>
+                <td>$20 per hour, plus 15% of revenue</td>
+              </tr>
+              <tr>
+                <td>Outbound shipping</td>
+                <td>A wash — excluded</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>What nobody knew</h2>
+
+        <p>Three things, and no amount of modeling beforehand could produce them.</p>
+
+        <p>How $70 an hour translates into people watching. How price changes the rate people buy at. Whether one influencer converts better than another.</p>
+
+        <p>Nobody knew, because nobody had done it before. These could only be measured, and only by going live. So the model makes them variables, and the client uses the data he collects to extrapolate forward.</p>
+
+        <p>That is not a reason to skip the model. It is the reason to build one. A model does not guarantee you anything. It tells you how the variables relate, and how a change in the inputs moves the result you care about most.</p>
+
+        <p>The model guides the execution. The execution refines the model. Repeat.</p>
+
+        <h2>Before: the plan</h2>
+
+        <!-- ============================================================
+             PAGE-LOCAL FIGURE — blog-015 only. Hand-authored static SVG: no CDN,
+             no charting library, no JS. Nine rates across the x axis; each bar
+             stacks cost of goods, commission and hourly cost bottom to top, and
+             the stack TOTAL is the breakeven price at that rate, printed above
+             the bar. Geometry was computed, not hand-typed; the figures are the
+             verified set and are not recomputed here. Colours are the washed data
+             palette via --tf-wash-*; the scoped <style> sits in <head>, outside
+             .tf-prose, per the BL-018 idiom.
+             X axis is CATEGORICAL — the nine rates sit in equal bands rather than
+             on a linear scale, which is what a stacked bar requires. The steep-
+             then-flat shape the prose describes still reads correctly off the
+             stack heights.
+             ============================================================ -->
+        <div class="tf-bev">
+        <svg class="tf-bev-chart" viewBox="0 0 636 348" role="img" aria-label="Stacked bar chart of breakeven price against selling speed, for nine rates from 10 to 100 units sold per hour. Each bar stacks three per-unit cost components and the stack total is the breakeven price at that rate. Cost of goods is fixed at $7.14 in every bar. Hourly cost falls from $9.00 at 10 units an hour to $0.92 at 100, and commission falls from $2.85 to $1.42, so the breakeven price falls from $18.99 to $9.48 — steeply across the first few rates, then almost flat beyond 40 units an hour.">
+          <g class="tf-bev-legend">
+            <rect class="tf-bev-sw seg-cog" x="52" y="12" width="10" height="10"/>
+            <text x="67" y="21">Cost of goods</text>
+            <rect class="tf-bev-sw seg-comm" x="187.9" y="12" width="10" height="10"/>
+            <text x="202.9" y="21">Commission</text>
+            <rect class="tf-bev-sw seg-hr" x="301.9" y="12" width="10" height="10"/>
+            <text x="316.9" y="21">Hourly cost</text>
+          </g>
+          <g class="tf-bev-grid">
+            <line x1="52" y1="298" x2="630" y2="298" class="tf-bev-base"/>
+            <line x1="52" y1="235" x2="630" y2="235"/>
+            <line x1="52" y1="172" x2="630" y2="172"/>
+            <line x1="52" y1="109" x2="630" y2="109"/>
+            <line x1="52" y1="46" x2="630" y2="46"/>
+          </g>
+          <g class="tf-bev-ytick">
+            <text x="44" y="302">$0</text>
+            <text x="44" y="239">$5</text>
+            <text x="44" y="176">$10</text>
+            <text x="44" y="113">$15</text>
+            <text x="44" y="50">$20</text>
+          </g>
+          <g>
+            <rect class="tf-bev-seg seg-cog" x="62.1" y="208" width="44" height="90"/>
+            <rect class="tf-bev-seg seg-comm" x="62.1" y="172.1" width="44" height="35.9"/>
+            <rect class="tf-bev-seg seg-hr" x="62.1" y="58.7" width="44" height="113.4"/>
+            <text class="tf-bev-val" x="84.1" y="51.7">$18.99</text>
+            <text class="tf-bev-xtick" x="84.1" y="314">10</text>
+          </g>
+          <g>
+            <rect class="tf-bev-seg seg-cog" x="126.3" y="208" width="44" height="90"/>
+            <rect class="tf-bev-seg seg-comm" x="126.3" y="178.7" width="44" height="29.4"/>
+            <rect class="tf-bev-seg seg-hr" x="126.3" y="102.3" width="44" height="76.4"/>
+            <text class="tf-bev-val" x="148.3" y="95.3">$15.53</text>
+            <text class="tf-bev-xtick" x="148.3" y="314">15</text>
+          </g>
+          <g>
+            <rect class="tf-bev-seg seg-cog" x="190.6" y="208" width="44" height="90"/>
+            <rect class="tf-bev-seg seg-comm" x="190.6" y="182" width="44" height="26.1"/>
+            <rect class="tf-bev-seg seg-hr" x="190.6" y="124.1" width="44" height="57.8"/>
+            <text class="tf-bev-val" x="212.6" y="117.1">$13.81</text>
+            <text class="tf-bev-xtick" x="212.6" y="314">20</text>
+          </g>
+          <g>
+            <rect class="tf-bev-seg seg-cog" x="254.8" y="208" width="44" height="90"/>
+            <rect class="tf-bev-seg seg-comm" x="254.8" y="184" width="44" height="24.1"/>
+            <rect class="tf-bev-seg seg-hr" x="254.8" y="137.7" width="44" height="46.2"/>
+            <text class="tf-bev-val" x="276.8" y="130.7">$12.72</text>
+            <text class="tf-bev-xtick" x="276.8" y="314">25</text>
+          </g>
+          <g>
+            <rect class="tf-bev-seg seg-cog" x="319" y="208" width="44" height="90"/>
+            <rect class="tf-bev-seg seg-comm" x="319" y="185.2" width="44" height="22.8"/>
+            <rect class="tf-bev-seg seg-hr" x="319" y="145.9" width="44" height="39.3"/>
+            <text class="tf-bev-val" x="341" y="138.9">$12.08</text>
+            <text class="tf-bev-xtick" x="341" y="314">30</text>
+          </g>
+          <g>
+            <rect class="tf-bev-seg seg-cog" x="383.2" y="208" width="44" height="90"/>
+            <rect class="tf-bev-seg seg-comm" x="383.2" y="186.9" width="44" height="21.2"/>
+            <rect class="tf-bev-seg seg-hr" x="383.2" y="156.8" width="44" height="30.1"/>
+            <text class="tf-bev-val" x="405.2" y="149.8">$11.21</text>
+            <text class="tf-bev-xtick" x="405.2" y="314">40</text>
+          </g>
+          <g>
+            <rect class="tf-bev-seg seg-cog" x="447.4" y="208" width="44" height="90"/>
+            <rect class="tf-bev-seg seg-comm" x="447.4" y="188.1" width="44" height="19.9"/>
+            <rect class="tf-bev-seg seg-hr" x="447.4" y="164.9" width="44" height="23.2"/>
+            <text class="tf-bev-val" x="469.4" y="157.9">$10.56</text>
+            <text class="tf-bev-xtick" x="469.4" y="314">50</text>
+          </g>
+          <g>
+            <rect class="tf-bev-seg seg-cog" x="511.7" y="208" width="44" height="90"/>
+            <rect class="tf-bev-seg seg-comm" x="511.7" y="189.3" width="44" height="18.8"/>
+            <rect class="tf-bev-seg seg-hr" x="511.7" y="173" width="44" height="16.3"/>
+            <text class="tf-bev-val" x="533.7" y="166">$9.92</text>
+            <text class="tf-bev-xtick" x="533.7" y="314">75</text>
+          </g>
+          <g>
+            <rect class="tf-bev-seg seg-cog" x="575.9" y="208" width="44" height="90"/>
+            <rect class="tf-bev-seg seg-comm" x="575.9" y="190.1" width="44" height="17.9"/>
+            <rect class="tf-bev-seg seg-hr" x="575.9" y="178.6" width="44" height="11.6"/>
+            <text class="tf-bev-val" x="597.9" y="171.6">$9.48</text>
+            <text class="tf-bev-xtick" x="597.9" y="314">100</text>
+          </g>
+          <text class="tf-bev-atitle" x="341" y="336">Units sold per hour</text>
+          <text class="tf-bev-atitle" transform="rotate(-90 14 172)" x="14" y="172">Breakeven price per unit</text>
+        </svg>
+        </div>
+
+        <p>This is the output of a simulation model. It shows him the relationship between the speed to sell and the breakeven price — as these are the two levers his influencers can manage.</p>
+
+        <p>No surprise — the faster one can sell, the fixed cost (platform fee and labor cost, $90/hr total) can be spread thinner, making the breakeven price lower. The hope is that a lower price boosts sales, but one can only lower it to a certain threshold.</p>
+
+        <p>Since nobody knows the actual speed, or the prices the audience is willing to pay, this graph is there to enable the team to act quickly during the live.</p>
+
+        <h2>During: the refinement</h2>
+
+        <div class="tf-prose-table">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Session</th>
+                <th scope="col">1</th>
+                <th scope="col">2</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Influencer</td>
+                <td>A</td>
+                <td>B</td>
+              </tr>
+              <tr>
+                <td>Hours</td>
+                <td>8</td>
+                <td>6</td>
+              </tr>
+              <tr>
+                <td>Total sold</td>
+                <td>124</td>
+                <td>119</td>
+              </tr>
+              <tr>
+                <td>Selling price</td>
+                <td>$19.95</td>
+                <td>$18.00</td>
+              </tr>
+              <tr>
+                <td>Speed</td>
+                <td>15.5</td>
+                <td>19.8</td>
+              </tr>
+              <tr>
+                <td>Profit</td>
+                <td>$497.02</td>
+                <td>$430.70</td>
+              </tr>
+              <tr>
+                <td>Breakeven price</td>
+                <td>$15.23</td>
+                <td>$13.74</td>
+              </tr>
+              <tr>
+                <td>Breakeven speed</td>
+                <td>9.2</td>
+                <td>11.0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Influencer A ran eight hours and sold 124 units, an average of 15.5 an hour at $19.95 each. Based on the model, breakeven speed at $19.95 is 9.2 an hour — meaning if he wants to maintain this price, he needs to sell 9.2 units per hour.</p>
+
+        <p>An influencer can influence the selling speed but cannot control it. Price was the only lever the client held directly. So the boss set the new price at $18 and handed the next shift to influencer B, knowing that at $18 the speed threshold rises to 11.0.</p>
+
+        <p>While A and B were live, the client watched the speeds. With the model already built, he knew that at A’s speed the breakeven price is $15.23 and at B’s it is $13.74 — and as they slowed or sped up, he entered the new speed and had the new breakeven price immediately. He could tune up and down in real time.</p>
+
+        <h2>After: the validation</h2>
+
+        <p>On the surface, B won everything.</p>
+
+        <div class="tf-prose-table">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Per hour</th>
+                <th scope="col">A</th>
+                <th scope="col">B</th>
+                <th scope="col">Winner</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Units</td>
+                <td>15.5</td>
+                <td>19.8</td>
+                <td>B, +28%</td>
+              </tr>
+              <tr>
+                <td>Revenue</td>
+                <td>$309.23</td>
+                <td>$357.00</td>
+                <td>B, +15%</td>
+              </tr>
+              <tr>
+                <td>Profit</td>
+                <td>$62.13</td>
+                <td>$71.78</td>
+                <td>B, +15%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Three metrics, three wins, no argument. And all three share the same blind spot: they measure how hard an hour was worked, not what each unit earned on its way out the door. B sold cheaper. Per-hour metrics reward her for the discount and never charge her for it.</p>
+
+        <p>Now divide by units instead of by hours, and the ranking inverts.</p>
+
+        <div class="tf-prose-table">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Per unit</th>
+                <th scope="col">A</th>
+                <th scope="col">B</th>
+                <th scope="col">Winner</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Profit</td>
+                <td>$4.01</td>
+                <td>$3.62</td>
+                <td>A, +11%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>Same two sessions. Same numbers. A wins by 11%.</p>
+
+        <p>Neither metric is wrong. They answer different questions, and which one is honest depends entirely on what is scarce.</p>
+
+        <p>Profit per hour is right when hours are scarce and stock is replaceable — you can reorder inventory, you cannot buy back a Saturday night. Profit per unit is right when stock is scarce and hours are not: every unit is irreplaceable, so you want the most out of each one even if it takes longer.</p>
+
+        <p>The client has 490 units to clear. He can buy platform hours whenever he likes. The lot is not being reordered. Stock is the constraint. Which makes profit per unit the honest metric here, and makes A the better session.</p>
+
+        <p>If that argument feels abstract, here is the concrete version. Give A and B the same job: clear the entire lot, all 490 units, each at the price and speed they actually achieved. Now it is like for like — same product, same quantity, the same $3,500 of stock consumed. The only things that differ are the price each charged and the hours each took. Whoever ends with more money won.</p>
+
+        <ul>
+          <li>A’s way, $19.95 at 15.5 an hour: 32 billed hours, about $1,929</li>
+          <li>B’s way, $18.00 at 19.8 an hour: 25 billed hours, about $1,747</li>
+        </ul>
+
+        <p>A takes seven hours longer and finishes about $182 ahead. Same shelf, same cost of goods, more money at the end of it. That is the whole comparison, and A wins it.</p>
+
+        <p>None of which makes the $18 decision a bad one. Cutting price to move faster is a sound instinct, and it was made mid-stream on a single night’s data with the clock running. The point is only that there was $182 sitting on the other side of it, and the model could have surfaced that in the moment — if anyone had said out loud that the lot, not the calendar, was the thing being managed.</p>
+
+        <p>From B’s side of it: at $18 there were two bars she could have been held to. She needed 18.7 an hour to match A’s profit per hour, and 21.7 an hour to match his profit per unit. She did 19.8. She cleared one bar and missed the other — and when stock is the limit, the one she missed is the one that mattered.</p>
+
+        <h3>And none of this makes B the loser</h3>
+
+        <p>She was asked to beat a speed target, at a price she was given, and was then measured against a different metric entirely, on one night of data. That is not analysis. It is a verdict wearing analysis as a costume.</p>
+
+        <p>She may also have drawn a harder room, or an easier one — nobody knows, because nobody measured the room. She went second, having watched A work. The shelf behind her held 366 units, not 490, which is a different selling problem.</p>
+
+        <p>Answering it properly would mean designing for it — fix the price, alternate A and B across comparable slots, repeat until the noise washes out. That costs selling hours. Whether the answer is worth the hours is a business judgment, not a modeling one.</p>
+
+        <p>We think this is the most useful thing the model did all week, and it did it by refusing to conclude. Instead it exposed a process flaw upstream of itself. The model was flexible enough — it answers per hour or per unit equally well, and it would have answered either one on request. What was missing was the objective. Nobody had said which constraint the business was actually managing, and until that is named, a model will hand you a perfectly correct number that points at the wrong decision.</p>
+
+        <h2>The human side</h2>
+
+        <p>Everything above is the lab-rat way of putting it, and it is not the whole story.</p>
+
+        <p>Before A and B ever went live, there was nothing to compare. You cannot rank two people you have not watched work. Then you watch one session and you do form a view — the energy level, the savviness in converting a hesitant buyer, the instinct for when to push the price. That view is real information, and it arrives faster than any dataset.</p>
+
+        <p>But it is a hypothesis, not a conclusion. You will like the person who reminds you of yourself. You will remember the one great moment and forget the flat hour. The evidence does not always support the feeling, and when it does not, the feeling is usually the thing that is wrong.</p>
+
+        <p>So the two work together. The data is there to confirm what you observe. The data is also there when you cannot observe.</p>
+
+        <p>Being fair to your numbers and being fair to your people turn out to be the same discipline. A model that tells you what you cannot yet claim is doing exactly the job you built it for.</p>
+
+        <p>The team spent the first session’s $497 on a late-night dinner and drinks right after the first 8 hours. All of it.</p>
+
+        <p>That was the right call. It was not about profit, it was tuition, and it was team building. What they were celebrating was not the money — it was that after two full days they finally knew the number nobody could have told them in advance, and they had learned how to hold a room they could not stand in.</p>
+
+        <h2>The point</h2>
+
+        <p>None of this is really about livestream selling.</p>
+
+        <p>A model does not tell you what will happen. It tells you which number decides the outcome, so you know what to watch and what to do when you see it. Before the stream it turned breakeven from a price into a curve. During the stream it turned one session’s results into the next session’s price. And at the moment it would have been easiest to draw a conclusion about a person, it showed exactly why the evidence would not carry one.</p>
+
+        <p>Build it, act on it, measure, feed it back. Do by what you learn, and learn from what you do. Not just the product. Not just the process. The people as well.</p>
+
+        <div class="tf-callout">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          <div>
+            <p class="tf-callout-body">Our thanks to the client for letting us share this. His numbers are masked and the model is simplified — the point is the shape of the reasoning, not the figures.</p>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared footer injected from partials.html -->
+  <div id="tf-footer"></div>
+
+  <!-- Fetch snippet: load partials.html (relative), inject header/footer,
+       mark the current nav link, and wire dropdowns + the mobile menu.
+       Fails silently (no nav rather than a broken page). -->
+  <script src="assets/partials.js" defer></script>
+  <script src="assets/toc.js"></script>
+  <script src="assets/blog.js"></script>
+  <script src="assets/lightbox.js"></script>
+</body>
+</html>
