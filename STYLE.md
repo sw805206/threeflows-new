@@ -1,4 +1,4 @@
-v058 | 2026-08-04 | 2829 lines
+v059 | 2026-08-04 | 2875 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -2757,6 +2757,11 @@ nothing here.
 
 ### `.tf-stat-grid` first consumer + page-local breakeven chart — blog-015 — 2026-08-04
 
+> **SUPERSEDED IN PART, 2026-08-04.** The `.tf-stat-grid` half of this entry is
+> **withdrawn** — the consumer it records was cut before the post shipped. See
+> "`.tf-stat-grid` first-consumer claim withdrawn" at the end of this record. The
+> `.tf-bev-*` half stands unchanged and is still accurate.
+
 **No paired `STYLE.css` change** — the first entry here in a while that adds
 nothing to the sheet. That is the point of both halves: one pattern already
 existed and was applied rather than redefined, and the other is a one-off that
@@ -2827,3 +2832,44 @@ measure both figures before wiring the manifest.
 
 No stylebook re-sync: no token or scale-set change, so PROCESS.md §4 requires
 nothing here.
+
+### `.tf-stat-grid` first-consumer claim withdrawn — blog-015 review — 2026-08-04
+
+Correction to the v058 entry above, which is annotated rather than rewritten —
+the "fit-dot names corrected" precedent applies: a wrong ratchet entry is worse
+than none, but the record of having been wrong is worth keeping.
+
+**`.tf-stat-grid` has zero consumers again, and never really had one.** v058
+recorded blog-015's "During: the refinement" stat trio as the pattern's first
+use. That trio was **cut during the post's content revision** — the section was
+rewritten around a per-session comparison table — and the class went with it.
+Verified by grep across every `*.html` at the time of writing: the only
+`.tf-stat-*` consumer in the repo is `index.html`, and it uses
+**`.tf-stat-cards`**, the separated-tile variant, not the ruled grid. So the
+position is exactly what BLOG.md §9 and BL-012 have said all along: **the CSS
+exists, and the first use is still ahead of it.** BLOG.md §9 needs no edit; it
+was right and briefly looked stale.
+
+**Two consequences the next author needs.**
+
+- **`.tf-stat-grid` still carries `margin: 0`.** The one thing the aborted
+  consumer did prove is that the pattern has a real defect: with no block margin,
+  the element that follows it renders flush against the bottom rule — measured
+  0px on the live page before the trio was cut. A fix was written and staged on
+  `style/stat-grid-in-prose` (STYLE.css v056 / STYLE.md v059): inside `.tf-prose`
+  it took `.tf-prose-table`'s exact `0 0 var(--tf-space-2)`, plus a drop from
+  `--tf-text-2xl` to `--tf-text-xl` on `.tf-stat-value`, since 36px is the same
+  size as `.tf-prose h2` and the figure competed with the heading above it. That
+  branch was **closed unmerged** — a fix with no consumer is speculation, and the
+  next real consumer should re-derive it against what that page actually needs.
+  **Neither correction is on `main`.** Expect both faults on first use.
+- **`STYLE.css` is at v055 and was never touched by any of this.** The v056 in
+  the paragraph above exists only in the abandoned branch's history.
+
+**The lesson worth keeping, which is why this entry is longer than the
+correction.** v058 was written the moment the markup landed, before the content
+had settled, and it asserted a durable fact about the design system on the
+strength of one uncommitted page. A ratchet entry records what the **sheet**
+does; a page can be rewritten the next afternoon, and this one was. **Wait for
+the consumer to ship before recording it as one** — or write the entry so it
+survives the page being cut.
