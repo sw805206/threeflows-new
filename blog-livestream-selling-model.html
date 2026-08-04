@@ -59,17 +59,6 @@
       stroke-width: 3;
       stroke-linejoin: round;
     }
-    /* Model note under the figure. .tf-meta carries the meta treatment, and it
-       sits inside .tf-bev rather than as a direct child of .tf-prose, so it does
-       NOT pick up the page-header rule that `.tf-prose > .tf-meta` draws. Its
-       uppercase + tracking is right for a date line and wrong for a formula —
-       `ceil` and the parentheses stop being readable — so both are released here
-       and nowhere else. */
-    .tf-bev .tf-meta {
-      margin: var(--tf-space-1) 0 0;
-      text-transform: none;
-      letter-spacing: normal;
-    }
   </style>
 </head>
 <body class="tf-app">
@@ -262,9 +251,8 @@
             <text class="tf-bev-xtick" x="597.9" y="314">100</text>
           </g>
           <text class="tf-bev-atitle" x="341" y="336">Units sold per hour</text>
-          <text class="tf-bev-atitle" transform="rotate(-90 14 172)" x="14" y="172">Breakeven price</text>
+          <text class="tf-bev-atitle" transform="rotate(-90 14 172)" x="14" y="172">Breakeven price per unit</text>
         </svg>
-          <p class="tf-meta">Model: hours = ceil(490 / rate); hourly cost = 90 × hours / 490; breakeven price = (3500 + 90 × hours) / (0.85 × 490); commission = 15% of that price.</p>
         </div>
 
         <p>This is the output of a simulation model. It shows him the relationship between the speed to sell and the breakeven price — as these are the two levers his influencers can manage.</p>
@@ -332,8 +320,6 @@
         <p>Influencer A ran eight hours and sold 124 units, an average of 15.5 an hour at $19.95 each. Based on the model, breakeven speed at $19.95 is 9.2 an hour — meaning if he wants to maintain this price, he needs to sell 9.2 units per hour.</p>
 
         <p>An influencer can influence the selling speed but cannot control it. Price was the only lever the client held directly. So the boss set the new price at $18 and handed the next shift to influencer B, knowing that at $18 the speed threshold rises to 11.0.</p>
-
-        <p>Based on this analysis, after the first session, the client set the price at $18 and handed the next event to influencer B.</p>
 
         <p>While A and B were live, the client watched the speeds. With the model already built, he knew that at A’s speed the breakeven price is $15.23 and at B’s it is $13.74 — and as they slowed or sped up, he entered the new speed and had the new breakeven price immediately. He could tune up and down in real time.</p>
 
