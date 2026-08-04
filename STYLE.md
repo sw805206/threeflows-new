@@ -1,4 +1,4 @@
-v057 | 2026-08-03 | 2756 lines
+v058 | 2026-08-04 | 2829 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -2751,6 +2751,79 @@ a raw px for the same reason `.tf-callout-body` is 13px, `.tf-btn` 15px and
 scale step. A `--tf-text-2xs` token was rejected — adding a type-scale token
 obliges an `int-stylebook.html` specimen row (PROCESS.md §4) for a single
 consumer.
+
+No stylebook re-sync: no token or scale-set change, so PROCESS.md §4 requires
+nothing here.
+
+### `.tf-stat-grid` first consumer + page-local breakeven chart — blog-015 — 2026-08-04
+
+**No paired `STYLE.css` change** — the first entry here in a while that adds
+nothing to the sheet. That is the point of both halves: one pattern already
+existed and was applied rather than redefined, and the other is a one-off that
+§5 keeps out of the sheet on purpose. `STYLE.css` stays at v055.
+
+**`.tf-stat-grid` finally has a consumer.** The CSS has shipped since v22 with
+**zero** HTML consumers — BLOG.md §9 and BL-012 both flagged it as "CSS exists,
+awaiting first use", and the v20 record noted it went unused when
+`.tf-stat-cards` took index.html's band 3 (that ground is ink, where a
+shared-rule mesh reads like a spreadsheet). blog-015's "During: the refinement"
+section is a paper ground and a stat trio, which is exactly what the pattern was
+built for, so the post **applies the existing class and redefines nothing**:
+three `> div` cells, each a `.tf-stat-value` + `.tf-stat-label` pair, no
+override. Verified 3-up at desktop (210.6px cells at 1280px) and 2-up below 768,
+which is the v22 6-up repair doing its job at a cell count it had never been
+exercised with. **A future reader should stop treating this as an orphan** —
+`.tf-stat-grid` is live, and the BL-025 / BL-026 rows that cite "the
+`.tf-stat-grid` precedent" for retaining orphaned CSS now cite a pattern that
+waited about two weeks and then got used, which is the argument for retention,
+not against it.
+
+**`.tf-bev-*` — a page-local one-off, recorded so the next figure finds it.**
+The post's breakeven figure is a hand-authored static inline SVG (no CDN, no
+charting library, no JS) on the same footing as blog-007's placement map,
+blog-009's bar chart and blog-010's cashflow viz: scoped `<style>` in `<head>`,
+**outside `.tf-prose`**, per the BL-018 idiom. Built from tokens only — series
+fills from the washed data palette, gridlines `--tf-stone-light`, the zero line
+`--tf-ink` (§4: the axis is the component's own edge, the gridlines are within
+it), type from `--tf-text-xs`. Three decisions worth carrying forward:
+
+- **The washed palette is equal-weight by design, so stacked segments have no
+  value contrast to separate them.** `--tf-wash-brick` / `-slate` / `-ochre` sit
+  within a point or two of the same lightness — that is what makes them a
+  *series* palette — so two adjacent segments differ in hue and vanish into each
+  other at the boundary. The fix is a **0.5px `--tf-stone` hairline on every
+  segment**, which draws the internal boundaries and the bar's outline against
+  paper in one stroke. **Do not reach for a darker fill instead**: darkening one
+  series to make a boundary visible breaks the palette's equal weight and makes
+  that series read as more important than the others.
+- **Series are named in the legend by what they are, never by colour**, and the
+  body prose uses the identical words — cost of goods, commission, hourly cost.
+  So the palette can be reassigned without touching a word of the copy. Worth
+  imitating: a post that says "the blue band" is a post that pins the palette.
+- **A value label drawn above its bar will cross a gridline.** Measured: the
+  tallest bar's `$18.99` overlapped the `$20` line by 6.3px, and no amount of
+  axis headroom fixes it, because the gap between the tallest bar and the line
+  above it is smaller than a line of type. The label gets a **`--tf-paper` halo**
+  (`paint-order: stroke fill`) so the number interrupts the gridline instead of
+  colliding with it — cheaper than moving the label, and it keeps the gridline.
+
+**One `.tf-meta` instance override, scoped to the figure.** The model note under
+the chart reuses `.tf-meta`, which is right for its size and colour and wrong for
+its `text-transform: uppercase` + `0.14em` tracking: the note is a formula, and
+`CEIL(490 / RATE)` in tracked capitals is not readable. Both are released inside
+`.tf-bev` only, so the meta treatment is unchanged everywhere else. Note also
+that this caption sits **inside** `.tf-bev` rather than as a direct child of
+`.tf-prose` — deliberately, so it does not pick up the page-header bottom rule
+that `.tf-prose > .tf-meta` draws.
+
+**A cost to know about, not a defect.** The chart's 35 axis and legend words are
+`<text>` inside `.tf-prose`, so BLOG.md §6 counts them as prose — the BL-018
+class of problem, which `blog.js` solved for `style` and `script` but cannot
+solve for SVG text without excluding legitimate body content. On blog-015 that
+moved `readMinutes` from 8 to 9 (the 220wpm boundary is 1760 words; the chart put
+the body at 1766). Accepted by the user's decision so the index card and the post
+page agree. **Any future post with an inline figure should expect the same** and
+measure both figures before wiring the manifest.
 
 No stylebook re-sync: no token or scale-set change, so PROCESS.md §4 requires
 nothing here.
