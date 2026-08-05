@@ -1,4 +1,4 @@
-v059 | 2026-08-04 | 2875 lines
+v060 | 2026-08-05 | 2962 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -2873,3 +2873,90 @@ strength of one uncommitted page. A ratchet entry records what the **sheet**
 does; a page can be rewritten the next afternoon, and this one was. **Wait for
 the consumer to ship before recording it as one** — or write the entry so it
 survives the page being cut.
+
+### Reference card loses its action word; subgrid aligns the rows — links.html — 2026-08-05
+
+Paired with STYLE.css v056, same commit per SCOPE.md. One rule deleted, one
+`@supports` block added, one block comment corrected. No new token, hue or scale
+value.
+
+**NB on process.** STYLE.md rides the feature branch here rather than going
+direct to main, deviating from CLAUDE.md Part B's governance-doc rule. Done at
+the human's request so the ratchet entry and the sheet change land together —
+the same bounded deviation recorded in the v051 entry above. The deviation is
+kept narrow: STYLE.css + STYLE.md are one commit, the data/JS change is a
+separate one, and no other `.md` governance doc rides the branch.
+
+- **`.tf-ref-card-action` DELETED.** The card carried a bottom-right action word
+  — "Visit", "Sign up", "Intro" — supplied per row by `references.json`'s
+  `action` key and emitted as a `<span>` by `assets/references.js`. All three
+  halves are gone: the key from all 164 rows, the element from the renderer, and
+  the rule from the sheet. **The reason is that it never earned its row.** The
+  whole card is already one `<a>`, so a label saying "Visit" restated what the
+  entire clickable surface was doing, and the three action verbs in rotation
+  read as a taxonomy the user was meant to decode rather than information.
+  Clicking behaviour is UNCHANGED — the word was text *inside* the link, never
+  the link itself.
+- **The shared hover rule loses one half, keeps the other.**
+  `.tf-ref-card:hover .tf-ref-card-name` **stays** — the title still goes brick
+  on hover, which is now the card's only hover signal. Only the
+  `.tf-ref-card-action` half of the selector list was removed. Worth stating
+  because deleting a rule that is *half* of a grouped selector is the easy way
+  to take a live behaviour down with a dead one.
+- **`.tf-ref-card-desc` drops `flex: 1 1 auto`.** It existed solely to push the
+  action word to the card bottom. With nothing below it to push, it was inert —
+  and once the card became a grid (below) it would have been actively
+  misleading, a `flex` longhand on an element whose parent no longer establishes
+  a flex container. Removed rather than left as a fossil.
+- **Card height: nothing was added.** Removing the row shortened every card by
+  a measured **29px** (128px → 99px at the common one-line-name size). No fixed
+  height, `grid-auto-rows`, `min-height` or `line-clamp` was introduced, and no
+  description text was edited. This is recorded because the obvious instinct on
+  seeing shorter cards is to pin the height back, and that instinct is wrong:
+  the card should be as tall as its content.
+
+- **`.tf-ref-grid > .tf-ref-card` becomes a SUBGRID (NEW).** The sheet's first
+  use of `grid-template-rows: subgrid`, so the next author finds it here rather
+  than reinventing it.
+
+  **The defect.** A card name that wraps to two lines — "OEC — Observatory of
+  Economic Complexity" — made that card's head block 41px against its
+  neighbour's 21px, so the two descriptions in the same row started 20px apart.
+  The cards themselves were already even (grid stretch), but their *contents*
+  were not, and the eye reads the body copy, not the box.
+
+  **The fix.** Each card spans two parent rows and adopts them
+  (`grid-row: span 2` + `grid-template-rows: subgrid`), so every head in a row
+  resolves to the tallest head in *that* row and every description starts on one
+  line. Measured after: 0 misaligned rows across all 50 grid rows of all three
+  tabs.
+
+  **Why not a `min-height` on the head**, which is the one-line version of this
+  fix: it pins every card in the directory to a hypothetical two-line name,
+  padding the ~90% that need one line, and it still fails the day a three-line
+  name arrives. Subgrid reserves nothing — the row grows to what it actually
+  contains.
+
+  **The gap gotcha, recorded because it is not obvious.** The parent grid's
+  `--tf-space-2` (16px) row-gap governs the space *between* card rows, while
+  `.tf-ref-card`'s own `--tf-space-1` (8px) gap overrides it as the subgrid's
+  internal gutter. So head→body stayed at 8px, exactly as the flex column had
+  it — verified, not assumed. A subgrid inherits its parent's gutters unless it
+  declares its own; had the card not already carried a `gap`, this change would
+  have silently doubled the head→body spacing.
+
+  **Wrapped in `@supports (grid-template-rows: subgrid)`**, matching the sheet's
+  soft-fail posture (`references.js`, `partials.js`, `toc.js`: enhancement never
+  breaks the base). Without subgrid the flex column above stands untouched and
+  the cards render exactly as they did before — misaligned, but not broken.
+
+**The stale-filename problem this change did NOT fix.** `STYLE.css` still calls
+this page `references.html` in nine comment sites (the `.tf-ref-*` block header
+among them). The file has been `links.html` since `b870e5a`, and STYLE.md §5 was
+already corrected in `9e77336` — so the two docs currently disagree. Left alone
+deliberately: a rename sweep is a comment-only pass across the whole sheet and
+does not belong in a behavioural commit. Flagged here so the next reader knows
+it is known, not missed.
+
+No stylebook re-sync: no token or type-scale set was added, removed or renamed,
+so PROCESS.md §4 requires nothing.
