@@ -1,4 +1,4 @@
-/* v057 | 2026-08-05 | 4050 lines
+/* v058 | 2026-08-05 | 4063 lines
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
@@ -3475,10 +3475,23 @@ button.tf-pill { cursor: pointer; }
    itself is UNCHANGED, so blog-post tables keep their ink frame. Flagged as
    an open reconciliation item (BACKLOG), not applied sitewide here. */
 .tf-data-table { overflow-x: auto; }
+/* Frame drawn TWICE — border for LAYOUT, outline for PAINT — the same fix
+   .tf-prose table carries, and for the same reason. --tf-rule-sand and
+   --tf-rule-light are both 2px solid and differ only in colour, so under
+   border-collapse the sand frame loses every edge segment a cell border
+   touches (the tie-break is cell over table). The `:last-child` rules below
+   hide that on a plain grid but cannot reach a cell the frame meets from
+   anywhere else. An outline takes no part in the collapse, so it renders the
+   frame unconditionally; `outline-offset: -2px` seats it where the border
+   sits, and keeping the border means geometry is untouched. This fixes only
+   WHETHER the frame paints — whether it should be SAND or ink is the separate
+   reconciliation item noted above, and is NOT settled here. */
 .tf-data-table table {
   width: 100%;
   border-collapse: collapse;
   border: var(--tf-rule-sand);
+  outline: var(--tf-rule-sand);
+  outline-offset: -2px;
   background: var(--tf-paper);
   font-size: var(--tf-text-sm);
   line-height: 1.5;

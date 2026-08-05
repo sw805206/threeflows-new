@@ -1,4 +1,4 @@
-v061 | 2026-08-05 | 3015 lines
+v062 | 2026-08-05 | 3055 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -3010,6 +3010,46 @@ the branch.
   sand frame, so it has the identical defect, and it is deliberately left alone:
   it is a separate pattern on tool pages with its own open reconciliation item in
   BACKLOG. Fixing it is the same two lines whenever that item is taken up.
+
+No stylebook re-sync: no token or type-scale set was added, removed or renamed,
+so PROCESS.md §4 requires nothing.
+
+### Data-table frame survives border-collapse — STYLE.css only — 2026-08-05
+
+Paired with STYLE.css v058, same commit per SCOPE.md. Two declarations added to
+one existing rule, plus a block comment. Applies the fix the entry above made to
+`.tf-prose table` to the one other pattern carrying the same defect. No new token,
+hue or scale value, and no markup or JS change.
+
+**NB on process.** STYLE.md rides the feature branch here with STYLE.css, the same
+bounded deviation recorded in the v051, v056 and v057 entries.
+
+- **Same defect, different colour.** `.tf-data-table` frames in `--tf-rule-sand`
+  and rules its internals in `--tf-rule-light`. Both are **2px solid**, so under
+  `border-collapse` the frame loses on the cell-over-table tie-break exactly as
+  the prose table's ink frame did. The entry above called this out and
+  deliberately left it; this closes it.
+- **The visible symptom is the frame's own ring, nowhere else.** Every internal
+  rule that reaches the frame punched a 2px hole in it: the horizontal row rules
+  through the **left and right** frame columns, the vertical column rules through
+  the **top and bottom** frame rows. Measured on the two `tool-company-setup`
+  tables: **216 stone-light pixels sitting on the sand frame**, at exactly ten x
+  positions — `40, 41` and `938, 939` (the frame's own 2px columns) and `94, 95`,
+  `453, 454`, `615, 616` (the three column boundaries, on the frame's top and
+  bottom rows only).
+- **Fix and verification are the prose table's, unchanged.** `outline` +
+  `outline-offset: -2px`, border kept so geometry is untouched. Verified by
+  differencing two rendered screenshots of the real populated tables: **216 pixels
+  changed, every one of them `light → sand`, and nothing else in the image moved**
+  — which is simultaneously the paint fix and the proof of zero reflow, since a
+  changed box size would have shifted thousands of pixels of text.
+- **Whether the frame should be SAND or ink is NOT settled here.** That is the
+  separate reconciliation item the block comment has always flagged, and it is a
+  design decision. This change only makes the sand frame paint reliably, so
+  whichever colour that item lands on will now actually render.
+- **Both tool pages re-checked** in a clean browser after the change:
+  `tool-company-setup.html` and `tool-general-cashflow.html` load with no console
+  errors.
 
 No stylebook re-sync: no token or type-scale set was added, removed or renamed,
 so PROCESS.md §4 requires nothing.
