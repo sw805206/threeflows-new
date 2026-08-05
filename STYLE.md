@@ -1,4 +1,4 @@
-v060 | 2026-08-05 | 2962 lines
+v061 | 2026-08-05 | 3015 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -2957,6 +2957,59 @@ already corrected in `9e77336` — so the two docs currently disagree. Left alon
 deliberately: a rename sweep is a comment-only pass across the whole sheet and
 does not belong in a behavioural commit. Flagged here so the next reader knows
 it is known, not missed.
+
+No stylebook re-sync: no token or type-scale set was added, removed or renamed,
+so PROCESS.md §4 requires nothing.
+
+### Prose-table frame survives border-collapse — STYLE.css only — 2026-08-05
+
+Paired with STYLE.css v057, same commit per SCOPE.md. Two declarations added to
+one existing rule, plus a block comment. No new token, hue or scale value, and no
+markup change on any page.
+
+**NB on process.** STYLE.md rides the feature branch here rather than going
+direct to main, the same bounded deviation recorded in the v051 and v056 entries
+— STYLE.css + STYLE.md are one commit, and no other `.md` governance doc rides
+the branch.
+
+- **The defect: the ink frame was losing to the light internal rules.** Under
+  `border-collapse: collapse` every shared edge is resolved to a single painted
+  border. Width decides first, then style, and only then does the cell-over-table
+  tie-break apply. `--tf-rule` (2px solid ink) and `--tf-rule-light` (2px solid
+  stone-light) are **the same width and the same style**, so the frame lost every
+  segment a cell border touched. This was never a blog-016 bug — it has been true
+  since the pattern shipped in STYLE.css v7.
+- **What made it visible.** `.tf-prose tr > :last-child` and
+  `.tf-prose tbody tr:last-child > *` clear the borders that would meet the frame,
+  which hides the conflict on a plain grid — but they address the *last row* and
+  *last column*, and cannot reach a cell that meets the frame from anywhere else.
+  A `rowspan` cell reaching the last row belongs to an **earlier `<tr>`**, so
+  `tr:last-child` never matches it and its light bottom border won along the
+  entire width of that column. Measured on blog-016: **143 stone-light pixels on a
+  636px bottom edge.** The same tie-break was already putting a 2px light nick at
+  every column and row boundary of every table on the site — **304 such pixels
+  across the 10 tables shipped before blog-016**, small enough to read as
+  antialiasing rather than as a defect.
+- **The fix is an outline, not a different border.** An outline is painted over
+  the border box and takes no part in border collapse, so it renders the frame
+  unconditionally, whatever any cell border wins. `outline-offset: -2px` pulls it
+  inside so it sits exactly where the border sits.
+- **The border is KEPT, not replaced.** Outlines never occupy space, so dropping
+  the border to avoid declaring the frame twice would have shrunk every existing
+  table by 4px and reflowed the prose beneath it. Keeping both is the reason this
+  change is provably layout-neutral: all 11 tables measured **identical width,
+  height and page position** before and after. The doubled declaration is
+  deliberate and the block comment says so, so a later reader does not "tidy" the
+  border away.
+- **Verified by painted pixels, not computed style.** `getComputedStyle` reports
+  what was declared, not what won the collapse, so it cannot see this defect at
+  all. Every frame edge of all 11 tables was sampled from a rendered screenshot:
+  **304 stone-light pixels before, 0 after**, across blog-004, blog-005, blog-007,
+  blog-015, blog-016 and blog-017.
+- **`.tf-data-table` is NOT changed.** It carries the identical structure with a
+  sand frame, so it has the identical defect, and it is deliberately left alone:
+  it is a separate pattern on tool pages with its own open reconciliation item in
+  BACKLOG. Fixing it is the same two lines whenever that item is taken up.
 
 No stylebook re-sync: no token or type-scale set was added, removed or renamed,
 so PROCESS.md §4 requires nothing.
