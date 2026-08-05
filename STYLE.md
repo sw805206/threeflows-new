@@ -1,4 +1,4 @@
-v062 | 2026-08-05 | 3055 lines
+v063 | 2026-08-05 | 3110 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -83,6 +83,14 @@ Scale (from style.css tokens): hero 48 / h2 36 / h3 27 / lead 20 / body 16 / cap
 **No italics anywhere in the brand** — Space Grotesk ships no italic style, so `em`/`i` render as faux-oblique. Emphasis is `<strong>` or sentence structure. (Testimonials were already never-italic; this generalizes the rule.) `.tf-prose em, .tf-prose i` normalize to upright medium as a defensive net.
 
 **Heading capitalization is per level** — h1 and h2 use conventional (Chicago-style) Title Case: capitalize the first and last word and all principal words; lowercase articles (a, an, the), coordinating conjunctions (and, but, or), and prepositions regardless of length (to, from, of, in, on, with, through…). h3 uses sentence case: capitalize only the first word and any proper nouns. Casing is AUTHORED IN THE MARKUP, not applied via CSS `text-transform` (which cannot lowercase function words or selectively case by level). Proper nouns, acronyms, and product/brand names keep their own capitalization at every level. Kickers/meta remain uppercased via their own class and are unaffected. **Exception — confirmation/UI feedback headings** (the `.tf-form-success` `.tf-callout` title, "Thank you") are **sentence case despite being an h2**, because they are UI feedback, not section headings; a heading audit must not "correct" them to Title Case.
+
+**Currency and percent take the figure test** — the SYMBOL when it is bound to a specific figure ($25,000, 12.5%, $0), the WORD when there is no figure ("your first dollar back", "a percentage of revenue", "the dollar amount", "the percentage increase"). Tables, form labels, UOM slots, chart axes, chart legends and tool output always take the symbol. A spelled-out number carrying its unit is an approximation, not a price point, and stays in words: "roughly seven to ten dollars per user per month" (`blog-google-workspace.html`) is correct as written — `$7–10` would give it a precision the copy deliberately avoids — recorded here so it is not re-litigated. The form-label clause covers the LABEL only; the explain-note prose beneath a field is running prose and takes the figureless test, which is why "Of the leads you approach, the percentage that become paying clients." (`tool-general-cashflow.html`) is correct as a word directly under a field whose UOM slot renders `%`. **Exception — alt text is exempt.** Alt strings spell out what the visible prose symbolises ("1 to 150 pounds", "Zones 2 to 8") as a deliberate screen-reader convention, and a copy audit must not flatten it.
+
+**The multiplication sign is `×`** — used for dimensions (L × W, 18 × 18, weight × zone), for grid names (2×2, 3×3, 1×1), and for multipliers (10× ex-factory, 4× cost). All three are house style. This records existing practice; nothing on the site is out of compliance.
+
+**Ampersands belong in abbreviations, labels and headings** — `&` is correct in closed abbreviations (P&L, R&D, E&O, Q&A), in chart series and table row labels (Shipping & Tariff, Return & Discard), and in navigation, section and group headings (Privacy & Terms, Logistics & Ops). Everywhere else in running prose, write "and". **Carve-out — `references.json` card descriptions** use `&` inline as a compression habit ("tariff & trade", "ACH & wires"); those are data fields, not running prose, and are OUT OF SCOPE of this rule. They are not violations — do not normalise them.
+
+**Ranges are the author's choice — a decision, not an omission.** This guide takes no position on hyphen vs en dash in a numeric range. The known state is recorded so a future audit reads the silence as settled rather than missed: 66 en-dash ranges across 12 files, and 8 hyphenated ranges confined to `blog-unit-economics-2-vs-20.html`, deliberately left as they are.
 
 ---
 
@@ -3053,3 +3061,50 @@ bounded deviation recorded in the v051, v056 and v057 entries.
 
 No stylebook re-sync: no token or type-scale set was added, removed or renamed,
 so PROCESS.md §4 requires nothing.
+
+### Copy-symbol rule added to §3 — sitewide sweep, zero changes — 2026-08-05
+
+PROSE-ONLY, no paired STYLE.css edit — the v027 / v028 / v023 precedent, where a
+rule was written into §3 to record existing intent and no stylesheet or page was
+touched. STYLE.md goes direct to main under CLAUDE.md Part B; STYLE.css is not
+opened and its stamp is not bumped.
+
+- **The sweep found 20 candidates and ZERO warranted changes.** A
+  case-insensitive word-boundary search for `dollar` / `dollars` / `percent` /
+  `percentage` / `percentages` across every root `*.html`, `assets/**/*.js` and
+  the three data manifests returned 20 lines of running prose, none in comments.
+  Every one of them is already correct. §3 therefore DESCRIBES what the site does
+  — it does not trigger a copy pass, and no page copy changes with it.
+- **Why write a rule that changes nothing.** The practice was consistent but
+  unrecorded, so the next author had nothing to write against and the next audit
+  had nothing to check against. An undocumented convention that 20 instances
+  happen to agree on is one careless edit away from becoming two conventions.
+- **Four decisions, recorded so they are not re-opened.** (1) Currency and
+  percent take the FIGURE TEST — symbol when bound to a figure, word when
+  figureless — always symbol in tables, form labels, UOM slots, chart axes,
+  legends and tool output, with alt text exempt as a screen-reader convention and
+  the explain-note prose under a field counted as running prose, not as its
+  label. (2) `×` is house style for dimensions, grid names and multipliers. (3)
+  `&` is correct in closed abbreviations, chart/table labels and headings, with
+  `references.json` card descriptions carved out as data fields. (4) RANGES: the
+  guide takes NO POSITION on hyphen vs en dash. That non-position is itself the
+  decision — the known state (66 en-dash ranges across 12 files, 8 hyphenated
+  ranges confined to `blog-unit-economics-2-vs-20.html`) is written down
+  precisely so a later audit does not read the silence as an oversight and
+  re-litigate it.
+- **Two worked examples are recorded rather than "fixed".** "roughly seven to ten
+  dollars per user per month" (`blog-google-workspace.html`) stays in words
+  because a spelled-out number carrying its unit is an approximation, and `$7–10`
+  would claim a precision the copy avoids. "Of the leads you approach, the
+  percentage that become paying clients." (`tool-general-cashflow.html`) stays in
+  words because it is an explain-note beneath a field, not the field's label —
+  the label's UOM slot renders `%` and is unaffected.
+- **Three categories were considered and DROPPED for lack of instances.**
+  Degrees / `°`, "No." as a number abbreviation, and `/` for "per" all have zero
+  or near-zero occurrences on the site. They are deliberately absent from §3;
+  writing rules for symbols nobody uses adds audit surface and no value.
+- **The sweep also surfaced two same-label drifts** — one field label rendering
+  two different strings in each of `tool-company-setup` and
+  `tool-general-cashflow`. Those are live code, so they are fixed SEPARATELY on
+  the `fix/label-drift` branch under normal PR discipline and are NOT part of
+  this commit.
