@@ -1214,7 +1214,7 @@
       ['Planning horizon', a.horizonYears + ' year' + (a.horizonYears === 1 ? '' : 's') + ' (' + model.N + ' months)'],
       ['Start month', longLabel(a.startAbs)],
       ['Start approaching leads', longLabel(a.approachAbs)],
-      ['Leads approached per month', clients(a.leads)],
+      ['Leads per month', clients(a.leads)],
       ['Conversion to paying client', a.conversion + '%'],
       ['Months from approach to signing', String(a.monthsToSign)],
       ['Average charge per client', money(a.charge)],
