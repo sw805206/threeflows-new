@@ -10,7 +10,7 @@
    2. Entity-type recommendation — reads the three-question radio form and
       renders a recommendation into #qa-result. Logic ported as-is from the
       human-reviewed reference implementation (source of truth for content).
-   3. The two data tables (Prep & filing, Post-filing setup) — rendered from
+   3. The two data tables (Prep & Filing, Post-filing setup) — rendered from
       plain arrays. The first column is the step NUMBER, colour-coded by
       responsibility (You / Assist / We) with the meaning in a title tooltip
       and named in the page's legend. "Download PDF" routes through
