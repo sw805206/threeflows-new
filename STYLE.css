@@ -1,4 +1,4 @@
-/* v056 | 2026-08-05 | 4032 lines
+/* v057 | 2026-08-05 | 4050 lines
    ==========================================================================
    Three Flows Solutions — brand stylesheet
 
@@ -1087,10 +1087,28 @@ main .tf-container > h1:not(:has(+ .tf-prose-intro)) { margin-bottom: var(--tf-s
   overflow-x: auto;
   margin: 0 0 var(--tf-space-2);
 }
+/* The frame is drawn TWICE, deliberately: as a border for LAYOUT and as an
+   outline for PAINT. Under border-collapse the table's own border loses every
+   edge segment where a cell border meets it, because the two are both 2px
+   solid and differ only in colour — and the collapse tie-break is cell over
+   table. The two rules below clear the last row's and last column's borders,
+   which hides that for a plain grid, but they cannot reach a cell the frame
+   meets from anywhere else: a rowspanned cell reaching the last row belongs to
+   an earlier <tr>, so its light bottom border wins along the whole width of
+   that column (measured 143px of a 636px bottom edge on blog-016). The same
+   tie-break puts a 2px light nick at every column and row boundary on every
+   prose table already shipped. An outline is painted over the border box and
+   takes no part in the collapse, so it renders the frame unconditionally;
+   `outline-offset: -2px` pulls it inside to sit exactly where the border sits.
+   The border is KEPT rather than replaced so geometry is untouched — outlines
+   never occupy space, and dropping the border would shrink every existing
+   table by 4px. See STYLE.md, 2026-08-05 ratchet entry. */
 .tf-prose table {
   width: 100%;
   border-collapse: collapse;
   border: var(--tf-rule);
+  outline: var(--tf-rule);
+  outline-offset: -2px;
   background: var(--tf-paper);
   font-size: var(--tf-text-sm);
   line-height: 1.5;
