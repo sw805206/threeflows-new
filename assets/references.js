@@ -178,10 +178,6 @@
     desc.textContent = entry.description || '';
     a.appendChild(desc);
 
-    var action = el('span', 'tf-ref-card-action');
-    action.textContent = entry.action || 'Visit';
-    a.appendChild(action);
-
     return a;
   }
 })();
