@@ -1,4 +1,4 @@
-v011 | 2026-08-03 | 312 lines
+v012 | 2026-08-05 | 313 lines
 
 # BLOG.md — how to add a blog post
 
@@ -99,11 +99,14 @@ Render the new post at **1280px** and confirm:
 - [ ] **Body top lands at the shared y** at desktop (≥820px). The value depends
       on what the body OPENS with, because the first element's own top margin is
       part of the measurement:
-      - opens with a `<p>` (a lede paragraph) → **`454.73`** — 11 of 13 posts
-      - opens with an `<h2>` (straight into the first section) → **`486.73`** —
-        blog-012 and blog-013
+      - opens with a `<p>` (a lede paragraph) → **`454.73`**
+      - opens with an `<h2>` (straight into the first section) → **`486.73`**
 
-      The 32px gap between them is an `h2`'s larger top margin, not a defect.
+      The 32px between them is margin collapsing, not a defect: the `.tf-meta`
+      divider carries a 16px bottom margin, an `h2` carries a 48px top margin,
+      and the two collapse to the larger — so an `h2` **replaces** the 16px
+      rather than adding to it. A lede paragraph sets no top margin, so it takes
+      the divider's 16px as-is.
       **Measure the first body element after the `.tf-meta` divider, not the
       first `<h2>`** — on a post that opens with a paragraph those are different
       elements, and measuring the `h2` returns a number that varies with the
@@ -291,10 +294,8 @@ as four deferred patterns under BL-012; **two of the four shipped on
 
 **Shipped — reuse these, do not rebuild them:**
 
-- **`.tf-prose-table`** — prose tables. Defined in STYLE.css v7; in use on
-  `blog-amazon-inbound`, `blog-obbba-business-provisions`, and
-  `blog-warehouse-placement-case-study`. Apply the class; never restyle a table
-  inside a post.
+- **`.tf-prose-table`** — prose tables. Defined in STYLE.css v7. Apply the
+  class; never restyle a table inside a post.
 - **`.tf-callout`** — the replacement for the old repo's emoji note blocks.
   First live use on `business-planning`; since extended with the
   `-warn` / `-affirm` accent modifiers and `.tf-callout-list`.
