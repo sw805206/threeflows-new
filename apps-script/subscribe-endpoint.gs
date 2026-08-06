@@ -185,17 +185,42 @@ var PAGE_MANAGE = SITE_BASE + 'subscribe.html?manage=1';
 var CONFIRM_SUBJECT = 'Confirm your subscription to Three Flows updates';
 
 /**
- * THE CONFIRMATION BODY — NOT YET SUPPLIED.
+ * THE CONFIRMATION BODY — human-authored, reproduced verbatim.
  *
- * Plain text. Content is the human's to write, so this is a placeholder and the
- * endpoint FAILS CLOSED while it holds one: bodyReady_() returns false, no mail
- * is sent, and the row is still written at pending exactly as a tripped cap
- * behaves. A premature deploy therefore cannot mail placeholder text to anyone.
+ * Plain text, sent as-is. {{CONFIRM_URL}} is replaced with the confirm link.
+ * Written as an array of lines so the copy stays readable and reviewable in a
+ * diff; double quotes throughout because the copy contains apostrophes and
+ * escaping them would obscure the words. Line breaks are the author's — do not
+ * re-wrap.
  *
- * {{CONFIRM_URL}} is substituted with the confirm link. Put it wherever the copy
- * wants it; it may appear more than once.
+ * NO UNSUBSCRIBE FOOTER IS APPENDED TO THIS MAIL, deliberately. The recipient is
+ * not subscribed yet — a pending row is not a subscription — so there is nothing
+ * to unsubscribe from, and offering the option would compete with the copy's own
+ * instruction to ignore the email. "Ignore this and you won't be added" IS the
+ * opt-out for a double opt-in confirmation, and it is the correct one. The
+ * postal address is present because the copy carries it; mailFooter_ below is
+ * for the UPDATE mails, which do need an unsubscribe link.
+ *
+ * If this is ever reset to a placeholder, bodyReady_() fails closed: no mail is
+ * sent, the row is still written at pending, exactly as a tripped cap behaves.
  */
-var CONFIRM_BODY = '__CONFIRM_BODY__';
+var CONFIRM_BODY = [
+  "Thanks for subscribing to Three Flows updates.",
+  "",
+  "Click below to confirm your email address:",
+  "",
+  "{{CONFIRM_URL}}",
+  "",
+  "We'll email you when there's something new: blog posts, tools,",
+  "seminars, and occasional news.",
+  "",
+  "If you didn't request this, ignore this email — you won't be",
+  "added, and we won't contact you again.",
+  "",
+  "—",
+  "Three Flows Solutions LLC",
+  "7211 Austin St. PMB 168, Forest Hills, NY 11375"
+].join('\n');
 
 /** Postal address, required in commercial mail and settled as belonging in the
  *  email footer — never on privacy.html. */
@@ -661,15 +686,19 @@ function unsubscribeUrl_(token) {
 }
 
 /**
- * The footer every subscription email carries.
+ * The footer every UPDATE email carries. NOT USED BY STAGE 2 — nothing calls it
+ * yet, and that is correct: the only mail stage 2 sends is the confirmation,
+ * which deliberately carries no unsubscribe link (see CONFIRM_BODY).
  *
- * The postal address is here and ONLY here — settled: it belongs in the email
- * footer, never on privacy.html. Commercial mail is required to carry a physical
- * mailing address; the privacy page is not, and adding it there was decided
- * against.
+ * It is defined now, and exercised directly by the test harness so it is not
+ * untested dead code, because the alternative is that the first update mail
+ * invents a second version of the footer and the two drift.
  *
- * Stage 2 sends only the confirmation, but the footer is defined once, here, so
- * the update mails of a later stage cannot drift into a second version of it.
+ * The postal address appears here and in CONFIRM_BODY — the two places mail goes
+ * out from — and NOWHERE on the site. That is settled: commercial mail is
+ * required to carry a physical mailing address; privacy.html is not, and putting
+ * it there was decided against.
+ *
  * The unsubscribe URL is one-click by design — see doGet.
  */
 function mailFooter_(token) {
@@ -689,8 +718,10 @@ function mailFooter_(token) {
  * subscribed, whereas refusing to send loses them.
  */
 function sendConfirmation_(email, token) {
-  var body = CONFIRM_BODY.split('{{CONFIRM_URL}}').join(confirmUrl_(token)) +
-             mailFooter_(token);
+  // The body is sent EXACTLY as authored, with only {{CONFIRM_URL}} filled in.
+  // No footer is appended — see CONFIRM_BODY for why a confirmation carries no
+  // unsubscribe link, and note the copy supplies its own sign-off and address.
+  var body = CONFIRM_BODY.split('{{CONFIRM_URL}}').join(confirmUrl_(token));
 
   var options = { name: FROM_NAME };
   try {

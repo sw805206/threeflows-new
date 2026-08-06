@@ -150,6 +150,10 @@ const sandbox = {
 vm.createContext(sandbox);
 vm.runInContext(fs.readFileSync(TARGET, 'utf8'), sandbox);
 
+/** The human-authored confirmation copy, captured as loaded so the send tests
+ *  exercise the real thing rather than a stand-in. */
+const AUTHORED_BODY = sandbox.CONFIRM_BODY;
+
 /* ── Harness plumbing ────────────────────────────────────────────────────── */
 
 /** The sheet's frozen row 1, asserted against rather than imported. */
@@ -158,7 +162,6 @@ const H = ['timestamp', 'email', 'status', 'token', 'confirmed_at',
 
 const C = { TS: 0, EMAIL: 1, STATUS: 2, TOKEN: 3, CONFIRMED: 4, UNSUB: 5, SRC: 6, SENT: 7 };
 
-const REAL_BODY = 'Hello.\n\nConfirm here: {{CONFIRM_URL}}\n';
 const PLACEHOLDER_BODY = '__CONFIRM_BODY__';
 
 function reset(opts) {
@@ -173,7 +176,7 @@ function reset(opts) {
   aliases = ['principals@threeflows.com'];
   mailThrows = false;
   log.length = 0;
-  sandbox.CONFIRM_BODY = ('body' in opts) ? opts.body : REAL_BODY;
+  sandbox.CONFIRM_BODY = ('body' in opts) ? opts.body : AUTHORED_BODY;
 }
 
 const post = e => sandbox.doPost(e).getContent();
@@ -304,9 +307,22 @@ check('from the verified alias', (at(sentMail,0,'options')||{}).from === 'princi
 check('from name set', (at(sentMail,0,'options')||{}).name === 'Three Flows Solutions');
 check('{{CONFIRM_URL}} substituted', /action=confirm&token=/.test(at(sentMail,0,'body')) &&
       !/\{\{CONFIRM_URL\}\}/.test(at(sentMail,0,'body')));
-check('footer carries the unsubscribe link', /Unsubscribe: .*action=unsubscribe/.test(at(sentMail,0,'body')));
-check('footer carries the postal address',
+/* The confirmation deliberately carries NO unsubscribe link: the recipient is
+   not subscribed yet, and the copy's "ignore this email" IS the opt-out for a
+   double opt-in. Offering unsubscribe would compete with that instruction. */
+check('NO unsubscribe link — nothing to unsubscribe from yet',
+      at(sentMail,0,'body').indexOf('action=unsubscribe') === -1);
+check('the ignore-clause that makes that correct is present',
+      /ignore this email/.test(at(sentMail,0,'body')));
+check('opens with the authored first line',
+      at(sentMail,0,'body').indexOf('Thanks for subscribing to Three Flows updates.') === 0);
+check('carries the postal address from the copy itself',
       at(sentMail,0,'body').indexOf('7211 Austin St. PMB 168, Forest Hills, NY 11375') !== -1);
+check('address appears exactly ONCE — no appended duplicate footer',
+      at(sentMail,0,'body').split('7211 Austin St.').length - 1 === 1,
+      'occurrences: ' + (at(sentMail,0,'body').split('7211 Austin St.').length - 1));
+check('sent as plain text, no htmlBody',
+      (at(sentMail,0,'options')||{}).htmlBody === undefined);
 check('confirm_sent_at stamped', row1()[C.SENT] instanceof Date);
 check('counter incremented', JSON.parse(props.confirmSendCounter).count === 1);
 check('Ops mirrors the count', opsValue('confirm_sends_today') === 1, String(opsValue('confirm_sends_today')));
@@ -537,7 +553,17 @@ mailThrows = false;
 r = sub('fails@example.com');
 check('no cooldown was armed → the retry sends', sentMail.length === 1, 'sent: ' + sentMail.length);
 
-section('34. Lock is released after every path');
+section('34. mailFooter_ — unused by stage 2, but must stay correct');
+/* Nothing calls it yet: the only mail stage 2 sends is the confirmation, which
+   carries no unsubscribe link. It is exercised directly so the definition the
+   first update mail will depend on is not untested dead code. */
+reset();
+const footer = sandbox.mailFooter_('99999999-aaaa-4bbb-8ccc-dddddddddddd');
+check('carries a one-click unsubscribe link', /Unsubscribe: .*action=unsubscribe&token=/.test(footer));
+check('carries the postal address', footer.indexOf('7211 Austin St. PMB 168, Forest Hills, NY 11375') !== -1);
+check('carries the company name', footer.indexOf('Three Flows Solutions LLC') !== -1);
+
+section('35. Lock is released after every path');
 reset();
 sub('l1@example.com');
 sub('l2@example.com');
