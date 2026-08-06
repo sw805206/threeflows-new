@@ -44,21 +44,26 @@
   'use strict';
 
   /* ─── THE ENDPOINT ─────────────────────────────────────────────────────────
-     NOT WIRED YET. Replace this ONE string with the deployed Apps Script /exec
-     URL — the same shape contact-form.js uses, and the only change needed here.
+     The deployed Apps Script /exec URL, wired the same way contact-form.js wires
+     its own. Used in two places: the fetch() calls below, and the confirm form's
+     `action`, which this script fills in — one constant, because a second copy
+     hardcoded in the markup would drift the moment the deployment changed.
 
-     It is used in two places: the fetch() calls below, and the confirm form's
-     `action` attribute, which this script fills in. Keeping it in one constant
-     is deliberate — a second copy hardcoded in the markup would drift the moment
-     the deployment URL changed, and the endpoint's own redeploy caveat makes a
-     stale URL expensive.
+     It is PUBLIC by necessity: the browser has to POST to it, so it is readable
+     by anyone who views this file. That is not a leak, and the endpoint is not
+     defended by the URL being hard to find — the honeypot, the server-side
+     validation, the per-address cooldown and the daily cap are what defend it.
 
-     While it holds the placeholder: the subscribe and manage forms fall back to
-     the client-side swap they had before (no request), and the confirm button
-     does NOT fake a confirmation — it reveals the expired-link message instead.
-     Claiming someone is subscribed when nothing was written is the one failure
-     worth special-casing. */
-  var SUBSCRIBE_ENDPOINT = '__SUBSCRIBE_ENDPOINT__';
+     Redeploying with Manage deployments → New version keeps this URL. Only a
+     brand-new deployment would change it, which would break this line and the
+     confirm links already sitting in inboxes alike.
+
+     If it is ever reset to a placeholder: the subscribe and manage forms fall
+     back to the client-side swap (no request), and the confirm button does NOT
+     fake a confirmation — it reveals the expired-link message instead. Claiming
+     someone is subscribed when nothing was written is the one failure worth
+     special-casing. */
+  var SUBSCRIBE_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyXsDKH6u9XG7dNigQtvK0W5CQA3nhTal3aceq2XTnvPBUEGVuM-57A8E5f8wJ83QrZAg/exec';
 
   function endpointReady() {
     return SUBSCRIBE_ENDPOINT && SUBSCRIBE_ENDPOINT.indexOf('__') !== 0;
