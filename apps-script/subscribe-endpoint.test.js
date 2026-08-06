@@ -474,30 +474,38 @@ out = get({ parameter: { action: 'unsubscribe', token: unsubToken } });
 check('still the unsubscribed page', /subscribe\.html\?unsubscribed=1/.test(out));
 check('status unchanged', row1()[C.STATUS] === 'unsubscribed');
 
-section('28. The cooldown ALSO gates unsubscribed → pending');
-/* Deliberate, and worth pinning: the row still carries confirm_sent_at from its
-   original confirmation, so an immediate re-subscribe is inside the window and
-   nothing happens — no token, no status change, no mail. The spec says "inside
-   the window, do nothing at all" without carving out this transition.
-   CONSEQUENCE: someone who unsubscribes by accident and re-subscribes straight
-   away is silently stalled for 15 minutes. Flagged for the human; not changed
-   here, because the approved design does not exempt this path. */
-snap = JSON.stringify(row1());
-r = sub('un@example.com');
-check('returns the same OK', r === 'OK');
-check('row untouched — still unsubscribed', JSON.stringify(row1()) === snap);
-check('no mail sent', sentMail.length === 1, 'sent: ' + sentMail.length);
-
-section('29. Re-subscribe past the cooldown clears confirmed_at');
-row1()[C.SENT] = new Date(Date.now() - 20 * 60 * 1000);   // 20 min ago
+section('28. unsubscribed → pending is EXEMPT from the cooldown');
+/* THE CARVE-OUT, pinned so a future reader does not revert it as a bug.
+   confirm_sent_at is still recent from the original confirmation, so a blanket
+   cooldown would silence this — and someone who unsubscribed by accident would
+   be stalled 15 minutes, staring at "Check your inbox" with nothing coming.
+   Reaching "unsubscribed" requires clicking a tokenised link, which proves
+   control of the mailbox; an attacker POSTing someone else's address can only
+   ever drive it to pending. So the exemption opens no mailbombing vector. */
+check('precondition: confirm_sent_at is recent enough to have blocked this',
+      row1()[C.SENT] instanceof Date && (Date.now() - row1()[C.SENT].getTime()) < 15 * 60 * 1000);
 r = sub('un@example.com');
 console.log('    ' + show());
-check('status back to pending', row1()[C.STATUS] === 'pending');
+check('returns the same OK', r === 'OK');
+check('status back to pending DESPITE the recent send', row1()[C.STATUS] === 'pending');
 check('unsubscribed_at cleared', row1()[C.UNSUB] === '');
 check('confirmed_at CLEARED — status is the single answer', row1()[C.CONFIRMED] === '');
 check('token rotated', row1()[C.TOKEN] !== unsubToken);
-check('a fresh confirmation was sent', sentMail.length === 2, 'sent: ' + sentMail.length);
+check('a fresh confirmation WAS sent', sentMail.length === 2, 'sent: ' + sentMail.length);
 check('still one row', dataRows().length === 1);
+
+section('29. ...and the exemption is NARROW — pending is still gated');
+/* The row is now pending with a fresh confirm_sent_at. An immediate re-submit
+   takes the PENDING path, which is the attacker-reachable one, and must still be
+   silenced. If this ever stops holding, the carve-out has been widened from one
+   transition into a blanket removal — which is the actual regression to fear. */
+const afterResubToken = row1()[C.TOKEN];
+const afterResubSent = row1()[C.SENT];
+r = sub('un@example.com');
+check('returns the same OK', r === 'OK');
+check('no third mail', sentMail.length === 2, 'sent: ' + sentMail.length);
+check('token NOT rotated', row1()[C.TOKEN] === afterResubToken);
+check('confirm_sent_at NOT touched', row1()[C.SENT] === afterResubSent);
 
 section('30. Confirming again after re-subscribe stamps a FRESH confirmed_at');
 const priorConfirmedAt = row1()[C.CONFIRMED];

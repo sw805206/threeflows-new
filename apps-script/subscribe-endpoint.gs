@@ -768,6 +768,8 @@ function sendConfirmation_(email, token) {
  * skipping the send would invalidate the token in the email the person already
  * has, leaving them clicking a dead link — strictly worse than doing nothing.
  * A brand-new address has never been sent to, so no cooldown can apply to it.
+ * The unsubscribed → pending transition is EXEMPT — see the note at the check
+ * itself for why that opens no mailbombing vector.
  *
  * confirmed_at IS cleared on the unsubscribed → pending path, so that status is
  * the single answer to where someone is: a pending row never carries a
@@ -804,8 +806,22 @@ function subscribe_(sheet, email, emailKey, sourcePage) {
   }
 
   // Cooldown: re-arm and send are one unit, so skip BOTH or neither.
+  //
+  // EXEMPT: unsubscribed → pending. Do NOT "fix" this back to a blanket check.
+  // Reaching "unsubscribed" requires clicking a tokenised link, which proves
+  // control of the mailbox — an attacker POSTing someone else's address can only
+  // ever drive it to pending, never to unsubscribed. So this transition cannot
+  // be used to mailbomb anyone, and the cooldown buys nothing here while costing
+  // something real: without the exemption, an accidental unsubscribe followed by
+  // an immediate re-subscribe is silently stalled for 15 minutes, and the person
+  // is left staring at "Check your inbox" with no email coming.
+  //
+  // The exemption is deliberately NARROW. pending → pending is still gated (that
+  // IS the attacker-reachable path), and a re-submit straight after this
+  // re-subscribe lands on the pending path and is gated normally.
   var lastSent = found.confirmSentAt;
-  if (lastSent instanceof Date && (now.getTime() - lastSent.getTime()) < COOLDOWN_MS) {
+  if (found.status !== STATUS_UNSUBSCRIBED &&
+      lastSent instanceof Date && (now.getTime() - lastSent.getTime()) < COOLDOWN_MS) {
     return 'noop-cooldown';
   }
 
@@ -1124,10 +1140,21 @@ function handleSubscribePost_(p) {
    doGet/doPost are web-reachable, so running these still requires editor access.
 
    THEY WRITE REAL ROWS AND SEND REAL MAIL. CONFIRM_BODY is filled in, so the
-   fail-closed guard no longer holds anything back. Use the example.com addresses
-   below — never a real one, and never your own, or you will be confirming a live
-   subscription. Each run consumes one of the day's 200 sends. Delete the rows
-   afterwards.
+   fail-closed guard no longer holds anything back. Each run consumes one of the
+   day's 200 sends. Delete the rows afterwards.
+
+   ADDRESSES — two kinds, on purpose.
+   The mocks that SEND (testFormEncoded, testJson) use plus-addressed variants of
+   contact@threeflows.com, a real mailbox we own. Deliberately NOT example.com:
+   that domain accepts no mail, so every run would HARD-BOUNCE, and repeated hard
+   bounces from a young sending domain are exactly the signal that damages sender
+   reputation. A deliverable address costs nothing, and it is strictly more
+   useful — the confirmation actually arrives, so the rendered mail and the real
+   confirm button can both be exercised end to end rather than assumed. The plus
+   tag keeps the test rows obvious in the Sheet and filterable in Gmail.
+   The mocks that NEVER SEND (honeypot, malformed, formula injection) keep
+   example.com, because nothing leaves the building and a visibly fake address
+   says so at a glance.
 
    Suggested order for a first run:
      1. testFormEncoded       → new "pending" row, token filled, confirmation
@@ -1153,17 +1180,19 @@ function handleSubscribePost_(p) {
    ───────────────────────────────────────────────────────────────────────────── */
 
 /** Mock: form-encoded / multipart — the encoding contact-form.js already uses,
- *  and the one recommended for stage 3. */
+ *  and the one recommended for stage 3. Sends a REAL confirmation to
+ *  contact+subtest@threeflows.com; open it and click through to test the whole
+ *  loop. Delete the row and the mail afterwards. */
 function testFormEncoded() {
   var e = {
     parameter: {
-      email: 'form-test@example.com',
+      email: 'contact+subtest@threeflows.com',
       source_page: 'subscribe.html',
       website: ''
     },
     postData: {
       type: 'application/x-www-form-urlencoded',
-      contents: 'email=form-test%40example.com&source_page=subscribe.html&website='
+      contents: 'email=contact%2Bsubtest%40threeflows.com&source_page=subscribe.html&website='
     }
   };
   Logger.log('response: ' + doPost(e).getContent());
@@ -1178,7 +1207,7 @@ function testJson() {
     postData: {
       type: 'application/json',
       contents: JSON.stringify({
-        email: 'json-test@example.com',
+        email: 'contact+subtest-json@threeflows.com',
         source_page: 'subscribe.html',
         website: ''
       })
