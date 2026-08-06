@@ -1227,10 +1227,29 @@ function doGet(e) {
     return page_('Confirm your subscription',
       '<h1 style="font-size:1.3em">Confirm your subscription</h1>' +
       '<p>Click the button below to start receiving Three Flows updates.</p>' +
-      /* An EMPTY action posts back to the current URL, which IS the /exec URL
-         being viewed — so omitting it is strictly more robust than emitting a
-         base we may not know. Never interpolate a possibly-empty base here. */
-      '<form method="post"' + (execUrl_() ? ' action="' + esc_(execUrl_()) + '"' : '') + '>' +
+      /* target="_top" IS LOAD-BEARING — without it this form does not work at
+         all, for anyone.
+
+         HtmlService renders this page inside a sandboxed iframe served from
+         googleusercontent.com. A form submit is a NAVIGATION, and its default
+         target is the frame it sits in — so the POST tried to load
+         script.google.com/macros/s/.../exec INSIDE that iframe. Google serves
+         /exec with framing denied, and the browser answered
+         "script.google.com refused to connect". It looked like a Workspace URL
+         rewrite; it was not, and it failed identically in incognito.
+
+         _top navigates the WHOLE TAB instead, so the response loads as a
+         top-level document with nothing to frame. This is the documented way out
+         of the HtmlService sandbox.
+
+         setXFrameOptionsMode is NOT the fix and does not help here: it governs
+         whether OUR output may be embedded by others, not whether Google's /exec
+         response consents to being framed.
+
+         An EMPTY action posts back to the current URL, which IS the /exec being
+         viewed — so omitting it is more robust than emitting a base we may not
+         know. Never interpolate a possibly-empty base here. */
+      '<form method="post" target="_top"' + (execUrl_() ? ' action="' + esc_(execUrl_()) + '"' : '') + '>' +
       '<input type="hidden" name="action" value="confirm">' +
       '<input type="hidden" name="token" value="' + esc_(token) + '">' +
       '<button type="submit" style="font:inherit;padding:.7em 1.4em;border:0;' +

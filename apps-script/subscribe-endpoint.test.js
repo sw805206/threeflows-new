@@ -478,6 +478,13 @@ const preToken = row1()[C.TOKEN];
 snap = JSON.stringify(row1());
 out = get({ parameter: { action: 'confirm', token: preToken } });
 check('renders a form that POSTs', /<form method="post"/.test(out));
+/* Without target="_top" the submit navigates the HtmlService SANDBOX IFRAME to
+   script.google.com/exec, which Google serves with framing denied — the browser
+   shows "script.google.com refused to connect" and the button does nothing, for
+   everyone, incognito included. One attribute is the difference between this
+   page working and not existing. */
+check('form targets _top — escapes the HtmlService sandbox iframe',
+      /<form method="post" target="_top"/.test(out));
 check('carries the token as a hidden field', out.indexOf(preToken) !== -1);
 check('row completely unchanged — a scanner prefetch confirms nobody',
       JSON.stringify(row1()) === snap);
