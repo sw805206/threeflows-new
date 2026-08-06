@@ -8,17 +8,19 @@
  * site only POSTs to the deployed /exec URL. This file lives in the repo so the
  * endpoint logic is versioned and reviewable.
  *
- * ── STAGE 1 OF 3 — SCOPE (read before extending) ──────────────────────────
- * This stage writes ROWS ONLY. It sends NO EMAIL of any kind — no confirmation
- * mail, no notification. A row written here sits at status "pending" and stays
- * there until stage 2 exists. Nothing in this file calls MailApp or GmailApp,
- * deliberately.
- *   Stage 2: send the confirmation mail + handle the confirm / unsubscribe
- *            links, flipping "pending" → "active" and stamping confirmed_at.
- *   Stage 3: wire assets/subscribe.js to POST here (see FRONTEND CONTRACT).
- * Until stage 2 ships, a subscriber never receives the confirmation link that
- * subscribe.html and privacy.html both promise. That gap is why this endpoint
- * should NOT be wired into the page yet.
+ * ── STAGES 1 + 2 — WHAT IS BUILT ──────────────────────────────────────────
+ * Stage 1 (done): doPost writes rows. Subscribe / re-arm / no-op / re-subscribe.
+ * Stage 2 (this): the confirmation mail, the confirm and unsubscribe links, and
+ *                 the abuse controls that make sending safe — a per-address
+ *                 cooldown, a daily cap that fails closed, and a gated alert.
+ * Stage 3 (next): wire assets/subscribe.js to POST here. NOT DONE — the page
+ *                 still runs its client-side-only swap and posts nowhere.
+ *
+ * BEFORE THIS CAN GO LIVE: CONFIRM_BODY below is a PLACEHOLDER. While it holds
+ * that placeholder the endpoint writes rows and REFUSES TO SEND, exactly as if
+ * the daily cap were tripped. That is deliberate — a premature deploy cannot
+ * mail placeholder text to a real person. Fill it in, redeploy, and sending
+ * begins.
  *
  * ── HOW IT IS DEPLOYED ────────────────────────────────────────────────────
  * CONTAINER-BOUND script on the "Subscribe" Google Sheet (Extensions → Apps
@@ -36,27 +38,50 @@
  * signed in — and for everyone who has no Google account at all. "Anyone" here
  * means "unauthenticated", NOT "anyone can read the Sheet": the script runs as
  * the owner, so the Sheet itself stays private and only this code touches it.
- * The honeypot, the server-side validation, and the uniform response below are
- * what defend the endpoint — not the access setting.
+ * The honeypot, the server-side validation, the cooldown, the cap and the
+ * uniform response are what defend the endpoint — not the access setting.
+ *
+ * SCOPES: stage 2 adds GmailApp (to send AS an alias), MailApp (quota only),
+ * PropertiesService and ScriptApp. The first authorisation prompt after pasting
+ * this will therefore ask for more than stage 1 did. That is expected.
+ *
+ * SEND-AS ALIAS — operational prerequisite.
+ * The script runs as the Sheet's owner. To make mail arrive FROM
+ * principals@threeflows.com, that address must exist as a verified "Send mail
+ * as" alias on the owning Gmail account (Gmail → Settings → Accounts). MailApp
+ * cannot set `from` at all; GmailApp can, but ONLY to a verified alias — an
+ * unverified one is silently ignored and the mail goes out as the owner. This
+ * file checks GmailApp.getAliases() and WARNS in the execution log rather than
+ * failing, because a confirmation from the wrong address is still better than
+ * no confirmation. Check the log after the first live send.
  *
  * ── REDEPLOY CAVEAT (important) ───────────────────────────────────────────
  * To change this script AFTER go-live WITHOUT breaking the wired URL, edit the
  * code, then Deploy → Manage deployments → (pencil/edit the existing Web app
  * deployment) → Version: New version → Deploy. This keeps the SAME /exec URL.
  * Creating a brand-new deployment instead mints a NEW URL and silently breaks
- * the form until the frontend is re-wired.
+ * BOTH the form and every confirm/unsubscribe link already sitting in an inbox.
+ * After go-live that second consequence is the severe one: those links are
+ * permanent and unrecallable.
  *
  * ── THE SHEET ─────────────────────────────────────────────────────────────
- * Tab "Subscribe", row 1 frozen, headers in A–G exactly as HEADER below:
+ * Tab "Subscribe", row 1 frozen, headers in A–H exactly as HEADER below:
  *   A timestamp | B email | C status | D token | E confirmed_at
- *   F unsubscribed_at | G source_page
+ *   F unsubscribed_at | G source_page | H confirm_sent_at
+ * H IS NEW IN STAGE 2 — add it to the live Sheet before deploying.
  * Read BY NAME, never by index, so re-ordering tabs cannot repoint the writes.
+ *
+ * A second tab, "Ops", mirrors the send counter and the last cap trip so the
+ * state is visible when the Sheet is opened rather than hidden in a properties
+ * store that cannot be inspected. It is created on demand.
  *
  * ── FRONTEND CONTRACT (what stage 3 must send) ────────────────────────────
  * Fields, all optional except email:
  *   email        the address (required; validated again here, server-side)
  *   source_page  where the submit came from, e.g. "subscribe.html"
  *   website      HONEYPOT — must be present and EMPTY on a real submit
+ * `action` may be omitted, or sent as "subscribe" — both route to the subscribe
+ * flow, so the stage-1 contract is unchanged by stage 2's routing.
  * Both encodings are accepted (see readParams_): form-encoded/multipart via
  * e.parameter, or a JSON body via e.postData.contents.
  * RECOMMENDED: `body: new FormData(form)` with NO explicit Content-Type, exactly
@@ -69,11 +94,15 @@
  * The frontend checks only res.ok, matching contact-form.js.
  */
 
-/** Tab that stores subscribers, and its header row. Labels are lowercase and
- *  match the frozen row 1 of the live Sheet exactly. */
+/* ═══════════════════════════════════════════════════════════════════════════
+   CONFIGURATION
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/** Tabs. HEADER matches the frozen row 1 of the live Sheet exactly. */
 var SHEET_NAME = 'Subscribe';
+var OPS_SHEET_NAME = 'Ops';
 var HEADER = ['timestamp', 'email', 'status', 'token', 'confirmed_at',
-              'unsubscribed_at', 'source_page'];
+              'unsubscribed_at', 'source_page', 'confirm_sent_at'];
 
 /** 1-based column positions, derived from HEADER's order above. Named so a
  *  column move is a one-line change here rather than a hunt for magic numbers. */
@@ -84,6 +113,7 @@ var COL_TOKEN           = 4;   // D
 var COL_CONFIRMED_AT    = 5;   // E
 var COL_UNSUBSCRIBED_AT = 6;   // F
 var COL_SOURCE_PAGE     = 7;   // G
+var COL_CONFIRM_SENT_AT = 8;   // H — stage 2
 
 /** Status vocabulary. Any value outside this set is treated as UNKNOWN and left
  *  strictly alone — see subscribe_ for why that is the safe default. */
@@ -100,12 +130,90 @@ var MAX_EMAIL_LEN = 254;
 var MAX_SOURCE_LEN = 200;
 
 /**
+ * PER-ADDRESS COOLDOWN — 15 minutes, measured from confirm_sent_at.
+ *
+ * Long enough to cover the case that generates almost every genuine re-submit:
+ * "it hasn't arrived yet, let me try again." Someone who has waited a quarter of
+ * an hour and still has nothing has a real delivery problem, and re-sending is
+ * the right answer for them.
+ *
+ * It keys off confirm_sent_at (last SEND), NOT timestamp (last SUBMIT). Once a
+ * cap-skipped write updates timestamp without sending, those two diverge and
+ * timestamp becomes the wrong clock.
+ */
+var COOLDOWN_MS = 15 * 60 * 1000;
+
+/**
+ * DAILY SEND CAP, and the reserve left for everything else.
+ *
+ * A Workspace account allows on the order of 1,500 recipients/day. The gap
+ * between 200 and that ceiling is the point, not the number: the endpoint must
+ * never be able to consume the quota principals@ needs for actual business
+ * correspondence. 200 is roughly 40x any plausible genuine spike while leaving
+ * ~1,300 untouched.
+ *
+ * QUOTA_RESERVE is an INDEPENDENT floor read from the platform itself. The
+ * counter below is fast and precise but can drift; getRemainingDailyQuota is
+ * authoritative. If fewer than this many sends remain, refuse regardless of what
+ * the counter believes.
+ */
+var DAILY_SEND_CAP = 200;
+var QUOTA_RESERVE = 100;
+
+/** Every "day" boundary in this file is New York's, computed explicitly —
+ *  never inherited from the script project's timezone setting. */
+var TIMEZONE = 'America/New_York';
+
+/** PropertiesService keys. The counter carries its own date so rollover is
+ *  implicit: a stored date that is not today means the count is zero. */
+var PROP_COUNTER = 'confirmSendCounter';
+var PROP_ALERT_DATE = 'capAlertDate';
+
+/** Where the cap alert goes, and who confirmation mail comes from. */
+var ALERT_TO = 'contact@threeflows.com';
+var FROM_ADDRESS = 'principals@threeflows.com';
+var FROM_NAME = 'Three Flows Solutions';
+
+/** Public site root. Confirm and unsubscribe both hand the visitor back to the
+ *  real branded page rather than leaving them on a Google URL. */
+var SITE_BASE = 'https://threeflows.com/';
+var PAGE_CONFIRMED = SITE_BASE + 'subscribe.html?confirmed=1';
+var PAGE_UNSUBSCRIBED = SITE_BASE + 'subscribe.html?unsubscribed=1';
+var PAGE_MANAGE = SITE_BASE + 'subscribe.html?manage=1';
+
+/** Settled copy. */
+var CONFIRM_SUBJECT = 'Confirm your subscription to Three Flows updates';
+
+/**
+ * THE CONFIRMATION BODY — NOT YET SUPPLIED.
+ *
+ * Plain text. Content is the human's to write, so this is a placeholder and the
+ * endpoint FAILS CLOSED while it holds one: bodyReady_() returns false, no mail
+ * is sent, and the row is still written at pending exactly as a tripped cap
+ * behaves. A premature deploy therefore cannot mail placeholder text to anyone.
+ *
+ * {{CONFIRM_URL}} is substituted with the confirm link. Put it wherever the copy
+ * wants it; it may appear more than once.
+ */
+var CONFIRM_BODY = '__CONFIRM_BODY__';
+
+/** Postal address, required in commercial mail and settled as belonging in the
+ *  email footer — never on privacy.html. */
+var POSTAL_ADDRESS = 'Three Flows Solutions LLC\n' +
+                     '7211 Austin St. PMB 168, Forest Hills, NY 11375';
+
+/** Shape of a Utilities.getUuid() token. Tokens arrive from a URL, so they are
+ *  UNTRUSTED INPUT: validated against this before being looked up or echoed
+ *  into any HTML. */
+var TOKEN_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+
+/**
  * Permissive email SHAPE check — deliberately not RFC 5322.
  *
- * The brief the page was built to: rejecting a valid address is worse than
- * accepting a typo, because a typo simply never confirms and the row expires at
- * "pending" harmlessly. So this asks only for a local part, an @, and a dotted
- * domain — the same shape assets/contact-form.js checks client-side.
+ * Rejecting a valid address is worse than accepting a typo, because a typo
+ * simply never confirms and the row expires at "pending" harmlessly. So this
+ * asks only for a local part, an @, and a dotted domain — the same shape
+ * assets/contact-form.js checks client-side.
  *
  * The ONE tightening: the first character must be alphanumeric. That is not
  * pedantry about addresses, it is a SHEET-FORMULA GUARD. Apps Script's
@@ -123,14 +231,19 @@ var EMAIL_RE = /^[A-Za-z0-9][^\s@]*@[^\s@]+\.[^\s@]+$/;
  */
 var SOURCE_PAGE_RE = /^[A-Za-z0-9._\/?=&%-]{1,200}$/;
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 /**
- * The ONE response every caller gets: plain-text 200 "OK".
+ * The ONE response every subscribe caller gets: plain-text 200 "OK".
  *
  * UNIFORM BY DESIGN. A new subscriber, a re-submit, an address already active,
- * a returning unsubscriber, a bot caught by the honeypot and a malformed
- * address all receive this identical body. Anything that varied by path would
- * turn the endpoint into a membership oracle — POST an address, read the
- * response, learn whether it is on the list. It is not, and must not become one.
+ * a returning unsubscriber, a submit silenced by the cooldown, one dropped by
+ * the cap, a bot caught by the honeypot and a malformed address all receive this
+ * identical body. Anything that varied by path would turn the endpoint into a
+ * membership oracle — POST an address, read the response, learn whether it is on
+ * the list. It is not, and must not become one.
  *
  * The deliberate EXCEPTION is infrastructure failure (see doPost): if the write
  * could not be attempted, this function is not reached and the platform returns
@@ -142,6 +255,73 @@ function ok_() {
     .createTextOutput('OK')
     .setMimeType(ContentService.MimeType.TEXT);
 }
+
+/** Escape for interpolation into HTML. Tokens are validated against TOKEN_RE
+ *  before they ever reach here, but a value taken from a URL gets both. */
+function esc_(s) {
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+/**
+ * The confirm/unsubscribe interstitials are DELIBERATELY PLAIN.
+ *
+ * They are served from script.google.com, live for about two seconds, and exist
+ * only to carry the visitor to the real page. Styling them to match the site
+ * would mean either duplicating brand tokens here — where nothing keeps them in
+ * sync with STYLE.css — or cross-origin loading the live stylesheet and making
+ * the click depend on it. The branded experience is subscribe.html, which is
+ * where every path below lands.
+ */
+function page_(title, bodyHtml) {
+  var html =
+    '<!DOCTYPE html><html><head><meta charset="utf-8">' +
+    '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<title>' + esc_(title) + '</title></head>' +
+    '<body style="font-family:system-ui,-apple-system,sans-serif;line-height:1.5;' +
+    'max-width:34em;margin:3em auto;padding:0 1.25em">' + bodyHtml + '</body></html>';
+  return HtmlService.createHtmlOutput(html);
+}
+
+/**
+ * Hand the visitor to a real site page.
+ *
+ * Three mechanisms, deliberately: a JS hop out of the HtmlService sandbox iframe
+ * (window.top, or the address bar keeps showing Google), a meta refresh for when
+ * scripts are blocked, and a visible link for when both fail. A redirect that
+ * silently strands someone mid-confirmation is the failure worth spending nine
+ * lines to avoid.
+ */
+function redirect_(url, label) {
+  var safe = esc_(url);
+  return HtmlService.createHtmlOutput(
+    '<!DOCTYPE html><html><head><meta charset="utf-8">' +
+    '<meta http-equiv="refresh" content="0;url=' + safe + '">' +
+    '<title>' + esc_(label) + '</title></head>' +
+    '<body style="font-family:system-ui,-apple-system,sans-serif;line-height:1.5;' +
+    'max-width:34em;margin:3em auto;padding:0 1.25em">' +
+    '<p>' + esc_(label) + '</p>' +
+    '<p><a href="' + safe + '">Continue to threeflows.com</a></p>' +
+    '<script>window.top.location.href=' + JSON.stringify(url) + ';</script>' +
+    '</body></html>'
+  );
+}
+
+/** The one answer to every bad, stale or already-spent link. Identical for a
+ *  malformed token, an unknown token and a token whose row has moved on, so the
+ *  page cannot be used to probe which tokens exist. Points at the manage page,
+ *  which exists precisely as this fallback. */
+function invalidLinkPage_() {
+  return page_('Link no longer valid',
+    '<h1 style="font-size:1.3em">This link is no longer valid</h1>' +
+    '<p>It may have already been used, or replaced by a newer email.</p>' +
+    '<p><a href="' + esc_(PAGE_MANAGE) + '">Manage or cancel your subscription</a></p>');
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   INPUT
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 /**
  * Read the POST body under EITHER encoding, because which one the page will
@@ -216,6 +396,15 @@ function safeSourcePage_(raw) {
   return SOURCE_PAGE_RE.test(s) ? s : '';
 }
 
+/** Today, in New York, as yyyy-MM-dd. The single definition of "day" here. */
+function today_() {
+  return Utilities.formatDate(new Date(), TIMEZONE, 'yyyy-MM-dd');
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SHEET ACCESS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 /**
  * Resolve the Subscribe tab, creating it if absent and writing the header row
  * when the tab is EMPTY.
@@ -226,8 +415,10 @@ function safeSourcePage_(raw) {
  * header, which is how that Sheet ended up headerless. This covers a fresh tab
  * and a cleared one, and never touches a tab that already holds rows.
  *
- * It also freezes row 1 on creation, matching the live Sheet's setup, so a
- * rebuilt tab behaves like the original rather than subtly differently.
+ * NOTE it does NOT retrofit column H onto a tab that already has rows — adding
+ * the stage-2 header to the live Sheet is a manual step, called out at the top.
+ * Silently rewriting a populated header row is the kind of "help" that destroys
+ * data.
  */
 function getSheet_() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -242,88 +433,589 @@ function getSheet_() {
   return sheet;
 }
 
-/**
- * Find the 1-based row for an email, comparing trimmed + lowercased against
- * column B. Returns 0 when absent.
- *
- * Reads columns B:C in ONE getValues call rather than per-row reads — a
- * per-row loop over a growing list is the classic Apps Script timeout. The
- * status travels back with the match so the caller needs no second read.
- */
-function findRow_(sheet, emailKey) {
-  var last = sheet.getLastRow();
-  if (last < 2) {
-    return { row: 0, status: '' };   // header only, or empty
+/** The Ops tab, created on demand. Label/value pairs, so a new metric is a new
+ *  row rather than a schema change. */
+function getOpsSheet_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(OPS_SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(OPS_SHEET_NAME);
   }
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(['metric', 'value']);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
 
-  var values = sheet.getRange(2, COL_EMAIL, last - 1, 2).getValues();   // B:C
-  for (var i = 0; i < values.length; i++) {
-    if (normEmail_(values[i][0]) === emailKey && emailKey !== '') {
-      return { row: i + 2, status: normEmail_(values[i][1]) };
+/** Upsert a metric on the Ops tab. Mirrors state that otherwise lives only in
+ *  PropertiesService, which cannot be inspected by opening the Sheet. */
+function setOpsMetric_(name, value) {
+  try {
+    var sheet = getOpsSheet_();
+    var last = sheet.getLastRow();
+    if (last >= 2) {
+      var labels = sheet.getRange(2, 1, last - 1, 1).getValues();
+      for (var i = 0; i < labels.length; i++) {
+        if (str_(labels[i][0]) === name) {
+          sheet.getRange(i + 2, 2).setValue(value);
+          return;
+        }
+      }
     }
+    sheet.appendRow([name, value]);
+  } catch (opsErr) {
+    // Ops mirroring is observability, never correctness. A failure here must
+    // not fail a subscribe or lose a confirmation.
+    console.warn('Ops mirror failed for "' + name + '": ' + opsErr);
   }
-  return { row: 0, status: '' };
 }
 
 /**
- * The state machine, run INSIDE the lock. Returns a short string naming the
- * path taken — for the execution log only; the caller's response never varies.
+ * Find the 1-based row for an email, comparing trimmed + lowercased against
+ * column B. Returns row 0 when absent.
  *
- * Paths, per the subscription rules:
- *   absent        → append a pending row with a fresh token
- *   pending       → re-arm: new token, new timestamp, status untouched.
- *                   A re-submit almost always means the first mail was lost.
+ * Reads A:H in ONE getValues call rather than per-row reads — a per-row loop
+ * over a growing list is the classic Apps Script timeout. Status, token and
+ * confirm_sent_at travel back with the match so the caller needs no second read.
+ */
+function findRow_(sheet, emailKey) {
+  var miss = { row: 0, status: '', token: '', confirmSentAt: '' };
+  var last = sheet.getLastRow();
+  if (last < 2 || emailKey === '') return miss;
+
+  var values = sheet.getRange(2, 1, last - 1, HEADER.length).getValues();
+  for (var i = 0; i < values.length; i++) {
+    if (normEmail_(values[i][COL_EMAIL - 1]) === emailKey) {
+      return {
+        row: i + 2,
+        status: normEmail_(values[i][COL_STATUS - 1]),
+        token: str_(values[i][COL_TOKEN - 1]),
+        confirmSentAt: values[i][COL_CONFIRM_SENT_AT - 1]
+      };
+    }
+  }
+  return miss;
+}
+
+/**
+ * Find the 1-based row holding a token. Exact, case-sensitive match on a UUID.
+ * Callers MUST have validated the token against TOKEN_RE first — this does not
+ * re-check, and an empty token must never match an empty cell.
+ */
+function findRowByToken_(sheet, token) {
+  var miss = { row: 0, status: '', email: '' };
+  var last = sheet.getLastRow();
+  if (last < 2 || token === '') return miss;
+
+  var values = sheet.getRange(2, 1, last - 1, HEADER.length).getValues();
+  for (var i = 0; i < values.length; i++) {
+    if (str_(values[i][COL_TOKEN - 1]) === token) {
+      return {
+        row: i + 2,
+        status: normEmail_(values[i][COL_STATUS - 1]),
+        email: str_(values[i][COL_EMAIL - 1])
+      };
+    }
+  }
+  return miss;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SEND BUDGET — counter, cap, quota floor, alert
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/**
+ * Read today's send count.
+ *
+ * The stored value carries its own date, so ROLLOVER IS IMPLICIT: a date that is
+ * not today reads as zero, and no scheduled trigger is needed to reset anything.
+ * A corrupt or absent value also reads as zero — the sheet's confirm_sent_at
+ * column is the auditable record, and a recount from it repairs any drift.
+ */
+function counterRead_() {
+  try {
+    var raw = PropertiesService.getScriptProperties().getProperty(PROP_COUNTER);
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      if (parsed && parsed.date === today_() && typeof parsed.count === 'number') {
+        return parsed.count;
+      }
+    }
+  } catch (err) {
+    console.warn('Send counter unreadable, treating as 0: ' + err);
+  }
+  return 0;
+}
+
+/**
+ * Increment today's count and mirror it to Ops.
+ *
+ * PropertiesService IS NOT TRANSACTIONAL — two concurrent executions can both
+ * read 41 and both write 42. This is only ever called from inside the script
+ * lock the subscribe flow already holds, which is what makes it safe. Do not
+ * call it from an unlocked path.
+ */
+function counterIncrement_() {
+  var next = counterRead_() + 1;
+  var day = today_();
+  PropertiesService.getScriptProperties()
+    .setProperty(PROP_COUNTER, JSON.stringify({ date: day, count: next }));
+  setOpsMetric_('confirm_sends_today', next);
+  setOpsMetric_('counter_date', day);
+  return next;
+}
+
+/** Is the confirmation copy filled in? While it is not, sending is refused —
+ *  see CONFIRM_BODY. */
+function bodyReady_() {
+  return CONFIRM_BODY && CONFIRM_BODY.indexOf('__') !== 0;
+}
+
+/**
+ * May a confirmation be sent right now? Returns a reason string, or '' to allow.
+ *
+ * Three independent gates, cheapest first:
+ *   1. The copy is not written yet → refuse (fail closed on a half-built deploy).
+ *   2. Our own counter has reached DAILY_SEND_CAP.
+ *   3. The platform's own remaining quota is below QUOTA_RESERVE. This catches
+ *      counter drift AND protects the quota that ordinary business mail from
+ *      this account needs — the counter knows nothing about mail sent by hand.
+ */
+function sendBlockedReason_() {
+  if (!bodyReady_()) return 'confirmation body not configured';
+  if (counterRead_() >= DAILY_SEND_CAP) return 'daily cap of ' + DAILY_SEND_CAP + ' reached';
+  try {
+    var remaining = MailApp.getRemainingDailyQuota();
+    setOpsMetric_('remaining_gmail_quota', remaining);
+    if (remaining < QUOTA_RESERVE) {
+      return 'platform quota below reserve (' + remaining + ' < ' + QUOTA_RESERVE + ')';
+    }
+  } catch (quotaErr) {
+    // Quota unreadable: allow, and let the cap and the send itself be the guard.
+    console.warn('Quota check failed, proceeding on the counter alone: ' + quotaErr);
+  }
+  return '';
+}
+
+/**
+ * Tell the owner the cap tripped — ONCE per day.
+ *
+ * The gating is not a nicety. The cap tripping means requests are arriving in
+ * volume; an ungated alert would become its own flood, mailbombing the owner
+ * with warnings about mailbombing.
+ *
+ * Note the circularity this sits inside: the alert is itself an email, sent at
+ * the exact moment the endpoint is trying to stop sending email. That is why
+ * DAILY_SEND_CAP (200) sits so far below the platform's ~1,500 — the gap is what
+ * guarantees the alert can still get out. Apps Script's own failure
+ * notifications will never cover this: they fire on execution FAILURES, and a
+ * tripped cap is a successful execution that chose not to send.
+ */
+function alertCapTripped_(reason, pendingEmail) {
+  var day = today_();
+  var props = PropertiesService.getScriptProperties();
+
+  setOpsMetric_('last_cap_trip', new Date());
+  setOpsMetric_('last_cap_trip_reason', reason);
+
+  if (props.getProperty(PROP_ALERT_DATE) === day) return;   // already alerted today
+
+  var body =
+    'The subscribe endpoint stopped sending confirmation emails.\n\n' +
+    'Reason:      ' + reason + '\n' +
+    'Date:        ' + day + ' (' + TIMEZONE + ')\n' +
+    'Sends today: ' + counterRead_() + ' of ' + DAILY_SEND_CAP + '\n\n' +
+    'Subscribers are STILL BEING RECORDED — rows are written at status\n' +
+    '"pending" with an empty confirm_sent_at. Nothing is being lost; those\n' +
+    'people simply have not been mailed yet.\n\n' +
+    'To find them: filter the Subscribe tab for status "pending" and an empty\n' +
+    'confirm_sent_at. That is exactly the set awaiting a confirmation.\n\n' +
+    'This alert is sent at most once per day.\n';
+
+  try {
+    MailApp.sendEmail(ALERT_TO, 'Subscribe endpoint: sending halted (' + reason + ')', body);
+    props.setProperty(PROP_ALERT_DATE, day);
+    setOpsMetric_('last_alert_sent', day);
+  } catch (mailErr) {
+    // If even the alert cannot go out, the log is the last channel left.
+    console.error('CAP ALERT FAILED (' + reason + '), pending address count unaffected: ' + mailErr);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   OUTBOUND MAIL
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/** The deployed /exec URL, which is also the base for every emailed link. */
+function execUrl_() {
+  return ScriptApp.getService().getUrl();
+}
+
+function confirmUrl_(token) {
+  return execUrl_() + '?action=confirm&token=' + encodeURIComponent(token);
+}
+
+function unsubscribeUrl_(token) {
+  return execUrl_() + '?action=unsubscribe&token=' + encodeURIComponent(token);
+}
+
+/**
+ * The footer every subscription email carries.
+ *
+ * The postal address is here and ONLY here — settled: it belongs in the email
+ * footer, never on privacy.html. Commercial mail is required to carry a physical
+ * mailing address; the privacy page is not, and adding it there was decided
+ * against.
+ *
+ * Stage 2 sends only the confirmation, but the footer is defined once, here, so
+ * the update mails of a later stage cannot drift into a second version of it.
+ * The unsubscribe URL is one-click by design — see doGet.
+ */
+function mailFooter_(token) {
+  return '\n\n--\n' +
+         'Unsubscribe: ' + unsubscribeUrl_(token) + '\n\n' +
+         POSTAL_ADDRESS + '\n';
+}
+
+/**
+ * Send the confirmation. Throws on failure so the caller can decide whether the
+ * row write still stands (it does — see subscribe_).
+ *
+ * GmailApp, not MailApp, because only GmailApp can set `from`, and only to a
+ * VERIFIED send-as alias. An unverified alias is ignored silently and the mail
+ * goes out as the account owner, so the alias is checked and warned about rather
+ * than enforced: a confirmation from the wrong address still gets the subscriber
+ * subscribed, whereas refusing to send loses them.
+ */
+function sendConfirmation_(email, token) {
+  var body = CONFIRM_BODY.split('{{CONFIRM_URL}}').join(confirmUrl_(token)) +
+             mailFooter_(token);
+
+  var options = { name: FROM_NAME };
+  try {
+    var aliases = GmailApp.getAliases();
+    if (aliases && aliases.indexOf(FROM_ADDRESS) !== -1) {
+      options.from = FROM_ADDRESS;
+    } else {
+      console.warn('"' + FROM_ADDRESS + '" is not a verified send-as alias on this ' +
+                   'account — sending as the owner instead. Add it in Gmail → ' +
+                   'Settings → Accounts to fix.');
+    }
+  } catch (aliasErr) {
+    console.warn('Could not read send-as aliases, sending as the owner: ' + aliasErr);
+  }
+
+  GmailApp.sendEmail(email, CONFIRM_SUBJECT, body, options);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SUBSCRIBE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/**
+ * The subscribe state machine, run INSIDE the lock. Returns a short string
+ * naming the path taken — for the execution log only; the caller's response
+ * never varies.
+ *
+ * Paths:
+ *   absent        → append a pending row with a fresh token, then send
+ *   pending       → re-arm: new token, new timestamp, then send
  *   active        → NOTHING. No write, no timestamp touch. Already subscribed.
  *   unsubscribed  → treat as a fresh subscribe: new token, status back to
- *                   pending, unsubscribed_at cleared. Someone who left is
- *                   allowed to return.
- *   anything else → NOTHING, and warn.
+ *                   pending, unsubscribed_at AND confirmed_at cleared, then send
+ *   anything else → NOTHING, and warn
  *
- * That last case is the one worth defending. An unrecognised status is most
- * likely a hand-added suppression ("bounced", "complained", "do not mail"), and
- * re-arming it would mail someone who was deliberately taken off. Doing nothing
- * can strand a legitimate subscriber, which is recoverable by hand; mailing a
- * suppressed address is not. The warning puts it in the execution log so the
- * owner can see it happened.
+ * THE COOLDOWN GATES RE-ARM AND SEND AS ONE UNIT. Inside the window nothing at
+ * all happens: no new token, no timestamp write, no send. Re-arming while
+ * skipping the send would invalidate the token in the email the person already
+ * has, leaving them clicking a dead link — strictly worse than doing nothing.
+ * A brand-new address has never been sent to, so no cooldown can apply to it.
  *
- * confirmed_at is deliberately NOT cleared on the unsubscribed → pending path.
- * It records when this address FIRST confirmed, which stays true history; stage
- * 2 overwrites it on the next confirm anyway.
+ * confirmed_at IS cleared on the unsubscribed → pending path, so that status is
+ * the single answer to where someone is: a pending row never carries a
+ * confirmation date. The cost is that the previous consent timestamp is lost at
+ * that moment; it is accepted because the NEW subscription's proof of consent is
+ * the new confirmed_at, written when they confirm again. (confirmed_at is NOT
+ * cleared on active → unsubscribed — there, confirmed_at and unsubscribed_at
+ * together are the audit trail showing consent existed and when it ended.)
+ *
+ * An unrecognised status is most likely a hand-added suppression ("bounced",
+ * "complained", "do not mail"), and re-arming it would mail someone who was
+ * deliberately taken off. Doing nothing can strand a legitimate subscriber,
+ * which is recoverable by hand; mailing a suppressed address is not.
  */
 function subscribe_(sheet, email, emailKey, sourcePage) {
   var found = findRow_(sheet, emailKey);
   var now = new Date();
+  var row;
 
   if (found.row === 0) {
-    sheet.appendRow([now, email, STATUS_PENDING, Utilities.getUuid(), '', '', sourcePage]);
-    return 'appended';
+    sheet.appendRow([now, email, STATUS_PENDING, Utilities.getUuid(), '', '', sourcePage, '']);
+    row = sheet.getLastRow();
+    return dispatchConfirmation_(sheet, row, email, 'appended');
   }
 
   if (found.status === STATUS_ACTIVE) {
     return 'noop-active';
   }
 
-  if (found.status === STATUS_PENDING) {
-    sheet.getRange(found.row, COL_TIMESTAMP).setValue(now);
-    sheet.getRange(found.row, COL_TOKEN).setValue(Utilities.getUuid());
-    return 're-armed-pending';
+  if (found.status !== STATUS_PENDING && found.status !== STATUS_UNSUBSCRIBED) {
+    console.warn('Row ' + found.row + ' has unrecognised status "' + found.status +
+                 '" — left untouched. Resolve by hand if this address should be able to subscribe.');
+    return 'noop-unknown-status';
   }
 
+  // Cooldown: re-arm and send are one unit, so skip BOTH or neither.
+  var lastSent = found.confirmSentAt;
+  if (lastSent instanceof Date && (now.getTime() - lastSent.getTime()) < COOLDOWN_MS) {
+    return 'noop-cooldown';
+  }
+
+  row = found.row;
+  sheet.getRange(row, COL_TIMESTAMP).setValue(now);
+  sheet.getRange(row, COL_TOKEN).setValue(Utilities.getUuid());
   if (found.status === STATUS_UNSUBSCRIBED) {
-    sheet.getRange(found.row, COL_TIMESTAMP).setValue(now);
-    sheet.getRange(found.row, COL_STATUS).setValue(STATUS_PENDING);
-    sheet.getRange(found.row, COL_TOKEN).setValue(Utilities.getUuid());
-    sheet.getRange(found.row, COL_UNSUBSCRIBED_AT).setValue('');
-    return 'resubscribed';
+    sheet.getRange(row, COL_STATUS).setValue(STATUS_PENDING);
+    sheet.getRange(row, COL_UNSUBSCRIBED_AT).setValue('');
+    sheet.getRange(row, COL_CONFIRMED_AT).setValue('');
   }
-
-  console.warn('Row ' + found.row + ' has unrecognised status "' + found.status +
-               '" — left untouched. Resolve by hand if this address should be able to subscribe.');
-  return 'noop-unknown-status';
+  return dispatchConfirmation_(sheet, row, email,
+                               found.status === STATUS_UNSUBSCRIBED ? 'resubscribed' : 're-armed-pending');
 }
 
 /**
- * Entry point. Handles a subscribe POST.
+ * Send the confirmation for a row that has just been written, or decline to.
+ *
+ * FAILS CLOSED, AND THE ROW SURVIVES EITHER WAY. When the budget refuses, the
+ * subscriber is already recorded at pending with an empty confirm_sent_at —
+ * which is precisely the marker that makes a later backfill possible, and the
+ * reason column H exists at all. Losing an email is recoverable; losing a
+ * subscriber is not.
+ *
+ * confirm_sent_at is stamped only AFTER the send succeeds, so it always means
+ * "we actually mailed this person", never "we meant to".
+ */
+function dispatchConfirmation_(sheet, row, email, outcome) {
+  var blocked = sendBlockedReason_();
+  if (blocked) {
+    console.warn('Confirmation NOT sent (' + blocked + '). Row ' + row +
+                 ' stands at pending with an empty confirm_sent_at.');
+    alertCapTripped_(blocked, email);
+    return outcome + '+no-send(' + blocked + ')';
+  }
+
+  try {
+    var token = str_(sheet.getRange(row, COL_TOKEN).getValue());
+    sendConfirmation_(email, token);
+  } catch (mailErr) {
+    // The row is already safe. A send failure must not fail the request, or the
+    // visitor would be told to retry and would re-arm the token pointlessly.
+    console.error('Confirmation send failed for row ' + row + ' (row kept): ' + mailErr);
+    return outcome + '+send-failed';
+  }
+
+  sheet.getRange(row, COL_CONFIRM_SENT_AT).setValue(new Date());
+  counterIncrement_();
+  return outcome + '+sent';
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CONFIRM  and  UNSUBSCRIBE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/**
+ * TOKEN SEMANTICS — read before changing any of this.
+ *
+ * There is ONE token per row, and it is ROTATED at every transition that mints a
+ * new invitation. It is not a single-use nonce, because the two links it serves
+ * have opposite lifetimes:
+ *
+ *   CONFIRM is effectively single-use, enforced by STATE rather than by burning
+ *   the token: confirming moves the row to active and rotates the token, so the
+ *   link in that email stops matching anything. A second click lands on the
+ *   invalid-link page.
+ *
+ *   UNSUBSCRIBE MUST LAST FOREVER. Its link goes in every update email, and
+ *   those sit in inboxes for years. A token burned on first use would turn every
+ *   archived email's unsubscribe link into a dead end — the exact failure that
+ *   makes people mark mail as spam instead. So unsubscribing does NOT rotate the
+ *   token, and repeat clicks are idempotent.
+ *
+ * The token minted AT CONFIRM is therefore the durable unsubscribe token, and it
+ * survives until the address re-subscribes (which mints a fresh one and retires
+ * the old links along with it).
+ *
+ * Guessing a token is not a practical attack: it is a v4 UUID. And every failure
+ * mode — malformed, unknown, wrong state — returns the SAME invalid-link page,
+ * so the endpoint cannot be used to probe which tokens exist.
+ */
+
+/**
+ * Confirm, reached only from the POST of the button on the interstitial.
+ *
+ * NEVER wire this to a GET. Mail scanners — Outlook Safe Links, corporate
+ * filters, some mobile clients — prefetch every URL in a message before the
+ * human sees it. A GET that flipped pending → active would fire without anyone
+ * clicking, manufacturing "confirmed" subscribers who never consented and
+ * hollowing out the double opt-in that privacy.html publicly claims. The button
+ * is what makes the consent real.
+ *
+ * confirmed_at is stamped fresh on every confirmation, including a
+ * re-subscribe's. It always means "when the CURRENT active state began" — the
+ * unsubscribed → pending path having already cleared the previous value.
+ */
+function confirm_(sheet, token) {
+  var found = findRowByToken_(sheet, token);
+  if (found.row === 0) return { ok: false, reason: 'unknown-token' };
+
+  if (found.status === STATUS_ACTIVE) {
+    // Already confirmed. Idempotent: send them to the same page a first
+    // confirmation reaches, rather than an error they cannot act on.
+    return { ok: true, reason: 'already-active' };
+  }
+  if (found.status !== STATUS_PENDING) {
+    return { ok: false, reason: 'not-pending(' + found.status + ')' };
+  }
+
+  sheet.getRange(found.row, COL_STATUS).setValue(STATUS_ACTIVE);
+  sheet.getRange(found.row, COL_CONFIRMED_AT).setValue(new Date());
+  sheet.getRange(found.row, COL_UNSUBSCRIBED_AT).setValue('');
+  // Rotate: this new token is the DURABLE unsubscribe token from here on, and
+  // rotating retires the confirm link that was just spent.
+  sheet.getRange(found.row, COL_TOKEN).setValue(Utilities.getUuid());
+  return { ok: true, reason: 'confirmed' };
+}
+
+/**
+ * Unsubscribe, reached by a one-click GET.
+ *
+ * One-click is deliberate and asymmetric with confirm. Prefetch here is harmless
+ * in direction — an accidental unsubscribe is an annoyance, not a manufactured
+ * consent — and privacy.html promises "a one-click unsubscribe link at the
+ * bottom" of every update. Adding a confirmation step would break that promise
+ * and add friction exactly where friction produces spam complaints.
+ *
+ * The token is NOT rotated, so every archived email's link keeps working and
+ * repeat clicks are idempotent.
+ */
+function unsubscribe_(sheet, token) {
+  var found = findRowByToken_(sheet, token);
+  if (found.row === 0) return { ok: false, reason: 'unknown-token' };
+
+  if (found.status === STATUS_UNSUBSCRIBED) {
+    return { ok: true, reason: 'already-unsubscribed' };
+  }
+
+  sheet.getRange(found.row, COL_STATUS).setValue(STATUS_UNSUBSCRIBED);
+  sheet.getRange(found.row, COL_UNSUBSCRIBED_AT).setValue(new Date());
+  // confirmed_at is deliberately KEPT: with unsubscribed_at it is the audit
+  // trail showing consent existed and when it ended.
+  return { ok: true, reason: 'unsubscribed' };
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ENTRY POINTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/**
+ * GET routing — the two emailed links, and nothing else.
+ *
+ *   ?action=confirm&token=…      → an interstitial with a BUTTON that POSTs.
+ *                                  Renders only; changes nothing. Safe to
+ *                                  prefetch, which is the entire point.
+ *   ?action=unsubscribe&token=…  → unsubscribes immediately, then redirects.
+ *   anything else                → the invalid-link page.
+ *
+ * The confirm branch takes no lock because it performs no write.
+ */
+function doGet(e) {
+  var p = (e && e.parameter) ? e.parameter : {};
+  var action = str_(p.action).toLowerCase();
+  var token = str_(p.token);
+
+  if (!TOKEN_RE.test(token)) return invalidLinkPage_();
+
+  if (action === 'confirm') {
+    return page_('Confirm your subscription',
+      '<h1 style="font-size:1.3em">Confirm your subscription</h1>' +
+      '<p>Click the button below to start receiving Three Flows updates.</p>' +
+      '<form method="post" action="' + esc_(execUrl_()) + '">' +
+      '<input type="hidden" name="action" value="confirm">' +
+      '<input type="hidden" name="token" value="' + esc_(token) + '">' +
+      '<button type="submit" style="font:inherit;padding:.7em 1.4em;border:0;' +
+      'background:#B2231C;color:#fff;cursor:pointer">Confirm my subscription</button>' +
+      '</form>');
+  }
+
+  if (action === 'unsubscribe') {
+    var lock = LockService.getScriptLock();
+    try {
+      lock.waitLock(LOCK_TIMEOUT_MS);
+    } catch (lockErr) {
+      throw new Error('Could not acquire lock within ' + LOCK_TIMEOUT_MS + 'ms: ' + lockErr);
+    }
+    var result;
+    try {
+      result = unsubscribe_(getSheet_(), token);
+      SpreadsheetApp.flush();
+    } finally {
+      lock.releaseLock();
+    }
+    console.log('unsubscribe: ' + result.reason);
+    return result.ok ? redirect_(PAGE_UNSUBSCRIBED, 'You have been unsubscribed.')
+                     : invalidLinkPage_();
+  }
+
+  return invalidLinkPage_();
+}
+
+/**
+ * POST routing.
+ *
+ *   action absent or "subscribe" → the subscribe flow (stage 1's contract,
+ *                                  unchanged: the page need not send `action`)
+ *   action "confirm"             → the confirm button on the interstitial
+ *
+ * Subscribe returns plain text for the page's fetch; confirm returns HTML,
+ * because it is a real browser navigation from a form. Different callers,
+ * different content types, one entry point.
+ */
+function doPost(e) {
+  var p = readParams_(e);
+  var action = str_(p.action).toLowerCase();
+
+  if (action === 'confirm') return handleConfirmPost_(p);
+  return handleSubscribePost_(p);
+}
+
+/** The confirm button's POST. */
+function handleConfirmPost_(p) {
+  var token = str_(p.token);
+  if (!TOKEN_RE.test(token)) return invalidLinkPage_();
+
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(LOCK_TIMEOUT_MS);
+  } catch (lockErr) {
+    throw new Error('Could not acquire lock within ' + LOCK_TIMEOUT_MS + 'ms: ' + lockErr);
+  }
+
+  var result;
+  try {
+    result = confirm_(getSheet_(), token);
+    SpreadsheetApp.flush();
+  } finally {
+    lock.releaseLock();
+  }
+
+  console.log('confirm: ' + result.reason);
+  return result.ok ? redirect_(PAGE_CONFIRMED, 'Your subscription is confirmed.')
+                   : invalidLinkPage_();
+}
+
+/**
+ * The subscribe POST.
  *
  * Order matters, and each step's failure mode is chosen deliberately:
  *
@@ -332,48 +1024,40 @@ function subscribe_(sheet, email, emailKey, sourcePage) {
  *   2. Validate the email server-side. The client's HTML5 check is not trusted —
  *      a direct POST never ran it. A malformed address returns success and
  *      writes nothing, for the same reason the honeypot does: any distinct
- *      response is a probe surface. It is logged so a genuinely broken client
- *      is still diagnosable from the execution log.
- *   3. Take the script lock, then read-then-write inside it. Without the lock,
- *      two near-simultaneous submits for the same address both find no row and
- *      both append — the duplicate this guards against. flush() forces the write
- *      out before the lock is released, so the next execution's read sees it.
- *   4. A lock timeout or a sheet failure THROWS, which the platform turns into a
- *      non-200. That is the one non-uniform response, and it is correct: the
- *      write did not happen, the caller should retry, and "the request failed"
- *      reveals nothing about who is on the list.
+ *      response is a probe surface.
+ *   3. Take the script lock, then read-then-write-then-send inside it. The lock
+ *      covers the counter increment too, which is what makes the
+ *      non-transactional PropertiesService read-modify-write safe.
+ *   4. A lock timeout or a sheet failure THROWS → non-200. That is the one
+ *      non-uniform response, and it is correct: the write did not happen, the
+ *      caller should retry, and "the request failed" reveals nothing about who
+ *      is on the list. A MAIL failure is NOT in this category — the row is
+ *      already safe, so it is swallowed and success is returned.
  */
-function doPost(e) {
-  var p = readParams_(e);
-
+function handleSubscribePost_(p) {
   var email      = str_(p.email);
   var honeypot   = str_(p.website);
   var sourcePage = safeSourcePage_(p.source_page);
   var emailKey   = normEmail_(email);
 
-  // 1. Silent honeypot drop — indistinguishable success, no side effects.
   if (honeypot !== '') {
     return ok_();
   }
 
-  // 2. Server-side shape check. Silent no-write, same success response.
   if (!isEmailShape_(email)) {
     console.warn('Rejected a malformed address (no row written). Length: ' + email.length);
     return ok_();
   }
 
-  // 3. Serialise the read-then-write.
   var lock = LockService.getScriptLock();
   try {
     lock.waitLock(LOCK_TIMEOUT_MS);
   } catch (lockErr) {
-    // 4. Could not even attempt the write → fail loudly so the caller retries.
     throw new Error('Could not acquire lock within ' + LOCK_TIMEOUT_MS + 'ms: ' + lockErr);
   }
 
   try {
-    var sheet = getSheet_();
-    var outcome = subscribe_(sheet, email, emailKey, sourcePage);
+    var outcome = subscribe_(getSheet_(), email, emailKey, sourcePage);
     SpreadsheetApp.flush();
     console.log('subscribe: ' + outcome);
   } finally {
@@ -391,33 +1075,46 @@ function doPost(e) {
    Safe to delete once the page is wired; they are not part of the endpoint.
    Run any of them from the Apps Script editor's function dropdown — the editor
    can only run zero-argument functions, which is why each builds its own mock
-   `e` and calls doPost with it.
+   `e` and calls an entry point with it.
 
    NO TRAILING UNDERSCORE ON THESE — do not "fix" them to match the private
    helpers above. In Apps Script a trailing underscore marks a function PRIVATE:
    it disappears from the editor's Run dropdown and cannot be invoked from it.
-   Every helper above is correctly private; these five must be PUBLIC or they
-   cannot be run, which is their entire purpose. (They were shipped with the
-   underscore once and had to be driven by hand-pasted wrappers — that is the
-   mistake this note exists to prevent.) Making them public exposes nothing over
-   HTTP: only doGet/doPost are web-reachable, so running these still requires
-   editor access to the script.
+   Every helper above is correctly private; these must be PUBLIC or they cannot
+   be run, which is their entire purpose. (They were shipped with the underscore
+   once and had to be driven by hand-pasted wrappers — that is the mistake this
+   note exists to prevent.) Making them public exposes nothing over HTTP: only
+   doGet/doPost are web-reachable, so running these still requires editor access.
 
-   THEY WRITE REAL ROWS to the Subscribe tab. Use the example.com addresses
-   below (never a real one) and delete the rows afterwards.
+   THEY WRITE REAL ROWS to the Subscribe tab, and once CONFIRM_BODY is filled in
+   they SEND REAL MAIL. Use the example.com addresses below — never a real one,
+   and never your own, or you will be confirming a live subscription — and delete
+   the rows afterwards.
 
    Suggested order for a first run:
-     1. testFormEncoded     → expect a new "pending" row, token filled
-     2. testFormEncoded     → run AGAIN: same row re-armed, token CHANGES,
-                              timestamp updates, still exactly one row
-     3. testJson            → a second pending row for the json@ address
-     4. testHoneypot        → returns OK, writes NOTHING (row count unchanged)
-     5. testMalformedEmail  → returns OK, writes NOTHING
-     6. testFormulaInjection→ returns OK, writes NOTHING
-   Then set the first row's status to "active" by hand and run 1 again: nothing
-   changes. Set it to "unsubscribed" and run 1 again: status returns to
-   "pending", token changes, unsubscribed_at clears. Those last two are the
-   paths the harness proves in memory but only the real Sheet can confirm.
+     1. testFormEncoded       → new "pending" row, token filled. Until
+                                CONFIRM_BODY is set, the log says
+                                "appended+no-send(confirmation body not
+                                configured)" — that is the fail-closed guard
+                                working, not an error.
+     2. testFormEncoded       → run AGAIN IMMEDIATELY: with a send having
+                                happened, expect "noop-cooldown" and NOTHING
+                                changed — same token, same timestamp. Before
+                                CONFIRM_BODY is set there is no confirm_sent_at,
+                                so no cooldown applies and it re-arms instead.
+     3. testJson              → a second pending row for the json@ address
+     4. testHoneypot          → returns OK, writes NOTHING (row count unchanged)
+     5. testMalformedEmail    → returns OK, writes NOTHING
+     6. testFormulaInjection  → returns OK, writes NOTHING
+     7. testShowLinks         → prints the confirm and unsubscribe URLs for the
+                                first pending row, so both can be opened in a
+                                browser without waiting for mail
+     8. testBudget            → prints the counter, the cap and the remaining
+                                platform quota
+   Then set a row's status to "active" by hand and run 1 again: nothing changes.
+   Set it to "unsubscribed" and run 1 again: status returns to "pending", token
+   changes, unsubscribed_at AND confirmed_at clear. Those two paths are the ones
+   the harness proves only in memory.
    ───────────────────────────────────────────────────────────────────────────── */
 
 /** Mock: form-encoded / multipart — the encoding contact-form.js already uses,
@@ -479,4 +1176,37 @@ function testMalformedEmail() {
 function testFormulaInjection() {
   var e = { parameter: { email: '=HYPERLINK("http://x")@example.com', source_page: 'subscribe.html', website: '' } };
   Logger.log('response: ' + doPost(e).getContent() + '  (expect NO new row)');
+}
+
+/**
+ * Print the confirm and unsubscribe URLs for the first row with a token, so both
+ * links can be exercised in a browser without waiting on mail. Reads only.
+ */
+function testShowLinks() {
+  var sheet = getSheet_();
+  var last = sheet.getLastRow();
+  if (last < 2) { Logger.log('No rows yet — run testFormEncoded first.'); return; }
+
+  var values = sheet.getRange(2, 1, last - 1, HEADER.length).getValues();
+  for (var i = 0; i < values.length; i++) {
+    var token = str_(values[i][COL_TOKEN - 1]);
+    if (token) {
+      Logger.log('row %s  %s  status=%s', i + 2, values[i][COL_EMAIL - 1], values[i][COL_STATUS - 1]);
+      Logger.log('confirm:     %s', confirmUrl_(token));
+      Logger.log('unsubscribe: %s', unsubscribeUrl_(token));
+      return;
+    }
+  }
+  Logger.log('No row carries a token.');
+}
+
+/** Print the send budget: today's count, the cap, the platform's remaining
+ *  quota, and whether sending is currently allowed (and if not, why). */
+function testBudget() {
+  Logger.log('date (%s):       %s', TIMEZONE, today_());
+  Logger.log('sends today:     %s of %s', counterRead_(), DAILY_SEND_CAP);
+  Logger.log('platform quota:  %s remaining (reserve %s)', MailApp.getRemainingDailyQuota(), QUOTA_RESERVE);
+  Logger.log('body configured: %s', bodyReady_());
+  var blocked = sendBlockedReason_();
+  Logger.log('sending:         %s', blocked ? 'BLOCKED — ' + blocked : 'allowed');
 }
