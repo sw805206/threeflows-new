@@ -16,11 +16,17 @@
  * Stage 3 (next): wire assets/subscribe.js to POST here. NOT DONE — the page
  *                 still runs its client-side-only swap and posts nowhere.
  *
- * BEFORE THIS CAN GO LIVE: CONFIRM_BODY below is a PLACEHOLDER. While it holds
- * that placeholder the endpoint writes rows and REFUSES TO SEND, exactly as if
- * the daily cap were tripped. That is deliberate — a premature deploy cannot
- * mail placeholder text to a real person. Fill it in, redeploy, and sending
- * begins.
+ * THIS WILL SEND REAL EMAIL ONCE DEPLOYED. CONFIRM_BODY holds the authored copy,
+ * so the fail-closed guard that held during development no longer trips. What
+ * stands between a deploy and a live send is only the daily cap, the per-address
+ * cooldown and the quota floor. Three manual steps are still required first:
+ *   1. Add column H, confirm_sent_at, to the live Subscribe Sheet. This script
+ *      will not retrofit a header onto a tab that already holds rows.
+ *   2. Verify principals@threeflows.com as a send-as alias (see below), or mail
+ *      goes out as the Sheet's owner instead.
+ *   3. Re-authorise — stage 2 needs scopes stage 1 did not.
+ * (If CONFIRM_BODY is ever reset to a placeholder, bodyReady_() fails closed
+ * again: rows are still written, nothing is sent.)
  *
  * ── HOW IT IS DEPLOYED ────────────────────────────────────────────────────
  * CONTAINER-BOUND script on the "Subscribe" Google Sheet (Extensions → Apps
