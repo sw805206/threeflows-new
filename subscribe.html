@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Unlisted page: published so the confirm / unsubscribe / manage links in an
+       email land somewhere real, but linked from nowhere and NOT in the nav.
+       noindex,nofollow and NO robots.txt entry — a disallow would stop crawlers
+       fetching the page and therefore stop them ever reading this tag
+       (SCOPE.md → Internal pages). -->
+  <meta name="robots" content="noindex,nofollow">
+  <title>Subscribe — Three Flows Solutions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+  <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+</head>
+<body class="tf-app">
+  <!-- Shared header injected from partials.html -->
+  <div id="tf-header"></div>
+
+  <!-- A "light" page on privacy.html's skeleton: no hero band, no header photo,
+       <main class="tf-section"> → .tf-container → .tf-prose, which is the
+       documented long-form structure (STYLE.md §6 → "Long-form prose"). No TOC
+       rail — .tf-prose-layout/data-toc is for long documents; each state here is
+       a single short block. No page-local <style>: every element below is an
+       existing STYLE.css pattern (.tf-prose, the form kit, .tf-callout). -->
+  <main class="tf-section">
+    <div class="tf-container">
+      <div class="tf-prose">
+
+        <!-- ══════════════ STATE 1 — SUBSCRIBE FORM (default) ══════════════
+             The DEFAULT state: visible in the markup, so with JS absent or
+             broken the page still renders the subscribe form (assets/
+             subscribe.js soft-fails like carousel.js / toc.js / the partials
+             fetch). The other three states are [hidden] at rest and revealed by
+             the script; only one state is ever shown. -->
+        <section id="tf-state-form">
+          <h1>Subscribe</h1>
+          <p class="tf-prose-intro">Subscribe to get Three Flows&rsquo; updates by email. Unsubscribe anytime.</p>
+
+          <!-- NO novalidate — unlike contact.html, validation here is the
+               browser's: type="email" + required and nothing else, so the
+               native bubble is the only message and no third-party checker is
+               involved (no api.mailcheck.ai — that would be a SCOPE
+               dependency-by-exception decision, and it has not been made).
+               No .tf-required asterisk: the marker exists to separate required
+               from optional fields, and this form has one field, always
+               required — the asterisk would carry no information. -->
+          <form class="tf-form" id="tf-subscribe-form" aria-label="Subscribe to email updates">
+            <div class="tf-field">
+              <label class="tf-label" for="sub-email">Email</label>
+              <input class="tf-input" type="email" id="sub-email" name="email" required autocomplete="email">
+            </div>
+            <!-- Action block. The small print and the manage link sit INSIDE
+                 .tf-form-foot, which is the documented home for the auxiliary
+                 lines around a submit button (contact.html's "* required" note,
+                 failure notice and intake link all live there) — it supplies the
+                 --tf-space-2 gaps between them, which .tf-form-note's own
+                 margin:0 does not. Keeping them inside the form also means the
+                 success swap hides them along with it: after submitting,
+                 "You're not subscribed until you click it" and the manage link
+                 both go with the form they belonged to. -->
+            <div class="tf-form-foot">
+              <button class="tf-btn tf-btn-primary" type="submit">Subscribe</button>
+              <p class="tf-form-note">We&rsquo;ll send a confirmation link to that address. You&rsquo;re not subscribed until you click it.</p>
+              <p class="tf-form-note">Already subscribed? <a href="subscribe.html?manage=1">Manage or cancel your subscription.</a></p>
+            </div>
+          </form>
+
+          <!-- Success swap — replaces the form in place on a valid submit, the
+               contact.html idiom reused unchanged: .tf-form-success on a
+               .tf-callout, brick Lucide check-circle, sentence-case title
+               (confirmation UI — STYLE.md §3). -->
+          <div class="tf-form-success tf-callout" id="tf-subscribe-success" hidden>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <div>
+              <h2 class="tf-callout-title">Check your inbox</h2>
+              <p class="tf-callout-body">We&rsquo;ve sent a confirmation link. Click it and you&rsquo;re subscribed.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ══════════════ STATE 2 — ?confirmed=1 ══════════════ -->
+        <section id="tf-state-confirmed" hidden>
+          <h1>You&rsquo;re subscribed</h1>
+          <p class="tf-prose-intro">You&rsquo;ll get an email when we publish something new. Unsubscribe anytime using the link at the bottom of any update.</p>
+        </section>
+
+        <!-- ══════════════ STATE 3 — ?unsubscribed=1 ══════════════
+             Gracious and short by decision: no re-pitch, no "are you sure",
+             no re-subscribe button. Do not add one. -->
+        <section id="tf-state-unsubscribed" hidden>
+          <h1>You&rsquo;re unsubscribed</h1>
+          <p class="tf-prose-intro">You won&rsquo;t receive further updates from Three Flows. Thanks for reading.</p>
+        </section>
+
+        <!-- ══════════════ STATE 4 — ?manage=1 ══════════════
+             The fallback for someone who no longer has an update email to
+             unsubscribe from: same single-field form, same deferred endpoint,
+             same "Check your inbox" swap — with its own body copy, below. -->
+        <section id="tf-state-manage" hidden>
+          <h1>Manage Your Subscription</h1>
+          <p class="tf-prose-intro">Enter your email and we&rsquo;ll send you a link to update or cancel your subscription.</p>
+
+          <form class="tf-form" id="tf-manage-form" aria-label="Manage your email subscription">
+            <div class="tf-field">
+              <label class="tf-label" for="manage-email">Email</label>
+              <input class="tf-input" type="email" id="manage-email" name="email" required autocomplete="email">
+            </div>
+            <div class="tf-form-foot">
+              <button class="tf-btn tf-btn-primary" type="submit">Send me a link</button>
+            </div>
+          </form>
+
+          <!-- Same swap as the subscribe state, but NOT the same words: this
+               form is where someone goes to cancel, so the body says what the
+               link actually does. The TITLE is shared, and stays sentence case
+               (confirmation UI — STYLE.md §3). -->
+          <div class="tf-form-success tf-callout" id="tf-manage-success" hidden>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <div>
+              <h2 class="tf-callout-title">Check your inbox</h2>
+              <p class="tf-callout-body">We&rsquo;ve sent a link to manage or cancel your subscription.</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared footer injected from partials.html -->
+  <div id="tf-footer"></div>
+
+  <!-- Page logic: reads location.search, shows the matching state, and swaps a
+       form for its "check your inbox" panel on a valid submit. NO endpoint is
+       wired — see the placeholder in the file. Not deferred, matching toc.js on
+       privacy.html: it runs the state swap before first paint, so a ?confirmed=1
+       arrival never flashes the subscribe form first. -->
+  <script src="assets/subscribe.js"></script>
+
+  <!-- Fetch snippet: load partials.html (relative), inject header/footer,
+       mark the current nav link, and wire dropdowns + the mobile menu.
+       Fails silently (no nav rather than a broken page). -->
+  <script src="assets/partials.js" defer></script>
+</body>
+</html>
