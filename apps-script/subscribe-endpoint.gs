@@ -1123,22 +1123,20 @@ function handleSubscribePost_(p) {
    note exists to prevent.) Making them public exposes nothing over HTTP: only
    doGet/doPost are web-reachable, so running these still requires editor access.
 
-   THEY WRITE REAL ROWS to the Subscribe tab, and once CONFIRM_BODY is filled in
-   they SEND REAL MAIL. Use the example.com addresses below — never a real one,
-   and never your own, or you will be confirming a live subscription — and delete
-   the rows afterwards.
+   THEY WRITE REAL ROWS AND SEND REAL MAIL. CONFIRM_BODY is filled in, so the
+   fail-closed guard no longer holds anything back. Use the example.com addresses
+   below — never a real one, and never your own, or you will be confirming a live
+   subscription. Each run consumes one of the day's 200 sends. Delete the rows
+   afterwards.
 
    Suggested order for a first run:
-     1. testFormEncoded       → new "pending" row, token filled. Until
-                                CONFIRM_BODY is set, the log says
-                                "appended+no-send(confirmation body not
-                                configured)" — that is the fail-closed guard
-                                working, not an error.
-     2. testFormEncoded       → run AGAIN IMMEDIATELY: with a send having
-                                happened, expect "noop-cooldown" and NOTHING
-                                changed — same token, same timestamp. Before
-                                CONFIRM_BODY is set there is no confirm_sent_at,
-                                so no cooldown applies and it re-arms instead.
+     1. testFormEncoded       → new "pending" row, token filled, confirmation
+                                mailed. Log: "appended+sent". A bounce is
+                                expected — example.com is a reserved domain.
+     2. testFormEncoded       → run AGAIN IMMEDIATELY: expect "noop-cooldown"
+                                and NOTHING changed — same token, same timestamp,
+                                same confirm_sent_at, no second mail. That is the
+                                15-minute per-address cooldown.
      3. testJson              → a second pending row for the json@ address
      4. testHoneypot          → returns OK, writes NOTHING (row count unchanged)
      5. testMalformedEmail    → returns OK, writes NOTHING
