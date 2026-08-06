@@ -26,10 +26,10 @@
  *   2. Verify principals@threeflows.com as a send-as alias (see below), or mail
  *      goes out as the Sheet's owner instead.
  *   3. Re-authorise — stage 2 needs scopes stage 1 did not.
- *   4. Deploy as a web app, then paste the resulting /exec URL into EXEC_URL
- *      below and redeploy (New version). Until that is done every emailed link
- *      has no usable base, and sending is REFUSED rather than mailing a dead
- *      link — see linkBaseReady_.
+ *   4. EXEC_URL is already filled in and COMMITTED — it does not need re-entering
+ *      after a paste, and must not be replaced with a placeholder. It only
+ *      changes if a brand-new deployment is created, which warnIfUrlDrifted_
+ *      will report in the log.
  * BOTH mail bodies are now configured, so nothing is held back by a placeholder:
  * a deploy sends confirmations AND manage links for real.
  * (If CONFIRM_BODY is ever reset to a placeholder, bodyReady_() fails closed
@@ -209,16 +209,26 @@ var FROM_NAME = 'Three Flows Solutions';
  * bug, because testing reports success.
  *
  * So the URL is pinned here, deterministically, exactly as
- * assets/contact-form.js pins its own endpoint. Paste the /exec URL after the
- * first deploy. getUrl() is kept only as a fallback for the case where this is
- * unset but a deployment does exist.
+ * assets/contact-form.js pins its own endpoint. getUrl() is kept only as a
+ * fallback for the case where this is somehow unset but a deployment exists.
+ *
+ * IT IS COMMITTED TO THE REPO ON PURPOSE — do not replace it with a placeholder.
+ * The value is PUBLIC by necessity: assets/subscribe.js must carry the same URL
+ * for the browser to POST to it, and that file is served from threeflows.com. So
+ * there is nothing to protect by omitting it here, and a placeholder costs
+ * something real — this file is meant to be PASTED into the editor, and a
+ * constant that must be re-typed after every paste is a constant that will
+ * eventually be forgotten. It nearly was. The endpoint is defended by the
+ * honeypot, the validation, the cooldown and the cap, not by this string being
+ * hard to find.
  *
  * It does NOT need updating for an ordinary redeploy: Deploy → Manage
- * deployments → New version keeps the same /exec URL. It DOES need updating if
- * a brand-new deployment is ever created, which is the same hazard the redeploy
- * caveat at the top of this file already warns about.
+ * deployments → New version keeps the same /exec URL. It DOES need updating if a
+ * brand-new deployment is ever created — and warnIfUrlDrifted_ below exists to
+ * catch exactly that, because a stale pin would otherwise win silently over the
+ * live deployment.
  */
-var EXEC_URL = '__EXEC_URL__';
+var EXEC_URL = 'https://script.google.com/macros/s/AKfycbyXsDKH6u9XG7dNigQtvK0W5CQA3nhTal3aceq2XTnvPBUEGVuM-57A8E5f8wJ83QrZAg/exec';
 
 /** Public site root. Confirm and unsubscribe both hand the visitor back to the
  *  real branded page rather than leaving them on a Google URL. */
@@ -736,6 +746,7 @@ function manageBodyReady_() {
  *      this account needs — the counter knows nothing about mail sent by hand.
  */
 function sendBlockedReason_(kind) {
+  warnIfUrlDrifted_();
   if (!linkBaseReady_()) {
     return 'web app URL unknown — set EXEC_URL, or deploy as a web app';
   }
@@ -837,6 +848,37 @@ function execUrl_() {
  */
 function linkBaseReady_() {
   return execUrl_() !== '';
+}
+
+/**
+ * Warn when the PINNED URL disagrees with the deployment actually running.
+ *
+ * This is the one hazard the pin introduces. execUrl_ prefers EXEC_URL, which is
+ * what makes links immune to the /dev-vs-/exec execution-context problem — but
+ * it also means that if someone ever creates a BRAND-NEW deployment, the stale
+ * pin keeps winning and every emailed link points at the old one. Silently.
+ *
+ * getUrl() is only trusted here as a COMPARISON, never as the value: it can
+ * legitimately differ by returning /dev when run from the editor, so a mismatch
+ * is reported as something to check rather than treated as an error. Called on
+ * every send, which costs nothing and means the log names the problem the first
+ * time a link goes out wrong.
+ */
+function warnIfUrlDrifted_() {
+  if (!EXEC_URL || EXEC_URL.indexOf('__') === 0) return;
+  var live = null;
+  try {
+    live = ScriptApp.getService().getUrl();
+  } catch (urlErr) {
+    return;
+  }
+  if (live && live !== EXEC_URL && live.indexOf('/dev') === -1) {
+    console.warn('EXEC_URL does not match the running deployment.\n' +
+                 '  pinned: ' + EXEC_URL + '\n' +
+                 '  live:   ' + live + '\n' +
+                 'If a NEW deployment was created, every emailed link still points at the ' +
+                 'pinned URL. Update EXEC_URL, or redeploy with Manage deployments → New version.');
+  }
 }
 
 /**

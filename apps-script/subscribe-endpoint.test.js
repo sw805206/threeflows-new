@@ -762,6 +762,32 @@ check('pinned alone is enough — no deployment lookup needed',
       sandbox.execUrl_() === 'https://script.google.com/macros/s/TESTID/exec' &&
       sandbox.linkBaseReady_() === true);
 
+section('37e. EXEC_URL is committed, and drift from the live deployment warns');
+/* The pin is committed on purpose — the value is public by necessity, since
+   assets/subscribe.js must carry the same URL for the browser to POST to it. A
+   placeholder would cost something real: this file is meant to be PASTED, and a
+   constant that must be re-typed after every paste is one that gets forgotten. */
+reset();
+check('EXEC_URL is a real /exec URL, not a placeholder',
+      /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(sandbox.EXEC_URL),
+      sandbox.EXEC_URL);
+/* The hazard the pin introduces: a NEW deployment would mint a new URL and the
+   stale pin would keep winning, silently. */
+serviceUrl = 'https://script.google.com/macros/s/ADIFFERENTDEPLOYMENT/exec';
+log.length = 0;
+sub('drift@example.com');
+check('a differing live deployment warns', log.some(l => /does not match the running deployment/.test(l)),
+      log.join(' | '));
+check('and the PINNED url still wins, so links stay consistent',
+      /macros\/s\/TESTID\/exec/.test(sandbox.unsubscribeUrl_('t')), sandbox.unsubscribeUrl_('t'));
+/* Running from the editor legitimately returns /dev — not drift, must not cry wolf. */
+reset();
+serviceUrl = 'https://script.google.com/macros/s/TESTID/dev';
+log.length = 0;
+sub('devurl@example.com');
+check('a /dev URL from the editor does NOT warn',
+      !log.some(l => /does not match the running deployment/.test(l)), log.join(' | '));
+
 section('38. UNKNOWN ACTION is rejected, never routed to subscribe');
 /* The regression this exists to prevent: doPost used to fall through to the
    subscribe flow for any action it did not recognise, so a manage submit against
