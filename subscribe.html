@@ -102,9 +102,9 @@
         <!-- ══════════════ STATE 4 — ?manage=1 ══════════════
              The fallback for someone who no longer has an update email to
              unsubscribe from: same single-field form, same deferred endpoint,
-             same "check your inbox" swap. -->
+             same "Check your inbox" swap — with its own body copy, below. -->
         <section id="tf-state-manage" hidden>
-          <h1>Manage your subscription</h1>
+          <h1>Manage Your Subscription</h1>
           <p class="tf-prose-intro">Enter your email and we&rsquo;ll send you a link to update or cancel your subscription.</p>
 
           <form class="tf-form" id="tf-manage-form" aria-label="Manage your email subscription">
@@ -117,11 +117,15 @@
             </div>
           </form>
 
+          <!-- Same swap as the subscribe state, but NOT the same words: this
+               form is where someone goes to cancel, so the body says what the
+               link actually does. The TITLE is shared, and stays sentence case
+               (confirmation UI — STYLE.md §3). -->
           <div class="tf-form-success tf-callout" id="tf-manage-success" hidden>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
             <div>
               <h2 class="tf-callout-title">Check your inbox</h2>
-              <p class="tf-callout-body">We&rsquo;ve sent a confirmation link. Click it and you&rsquo;re subscribed.</p>
+              <p class="tf-callout-body">We&rsquo;ve sent a link to manage or cancel your subscription.</p>
             </div>
           </div>
         </section>
