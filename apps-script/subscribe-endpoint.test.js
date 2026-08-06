@@ -153,6 +153,7 @@ vm.runInContext(fs.readFileSync(TARGET, 'utf8'), sandbox);
 /** The human-authored confirmation copy, captured as loaded so the send tests
  *  exercise the real thing rather than a stand-in. */
 const AUTHORED_BODY = sandbox.CONFIRM_BODY;
+const AUTHORED_MANAGE_BODY = sandbox.MANAGE_BODY;
 
 /* ── Harness plumbing ────────────────────────────────────────────────────── */
 
@@ -181,8 +182,12 @@ function reset(opts) {
   /* The manage copy is a placeholder in the .gs (the human writes it), so the
      tests supply a stand-in — except where the fail-closed guard is the thing
      under test. */
+  /* The manage BODY is authored, so the tests exercise the real copy. The
+     SUBJECT is still a placeholder in the .gs, so a stand-in is supplied here —
+     otherwise every manage case would fail closed and prove nothing. Case 37b
+     pins that the real placeholder subject DOES fail closed. */
   sandbox.MANAGE_SUBJECT = ('manageSubject' in opts) ? opts.manageSubject : 'Manage your subscription';
-  sandbox.MANAGE_BODY = ('manageBody' in opts) ? opts.manageBody : 'Cancel here: {{UNSUBSCRIBE_URL}}';
+  sandbox.MANAGE_BODY = ('manageBody' in opts) ? opts.manageBody : AUTHORED_MANAGE_BODY;
 }
 
 const post = e => sandbox.doPost(e).getContent();
@@ -586,6 +591,17 @@ check('exactly one mail sent', sentMail.length === 1, 'sent: ' + sentMail.length
 check('sent to the subscriber', at(sentMail,0,'to') === 'm@example.com');
 check('carries the DURABLE unsubscribe token, not a new one',
       at(sentMail,0,'body').indexOf(durable) !== -1);
+check('opens with the authored first line',
+      at(sentMail,0,'body').indexOf('You asked for a link to manage your subscription') === 0);
+/* Load-bearing, not decorative: anyone can request a manage link for any
+   address, so an unrequested one WILL sometimes land in a subscriber's inbox.
+   This sentence is what makes that harmless rather than alarming. */
+check('reassures an unrequested recipient they are still subscribed',
+      /nothing has\s+changed, and you're still subscribed/.test(at(sentMail,0,'body')));
+check('address appears exactly ONCE — no appended duplicate footer',
+      at(sentMail,0,'body').split('7211 Austin St.').length - 1 === 1);
+check('sent as plain text, no htmlBody',
+      (at(sentMail,0,'options')||{}).htmlBody === undefined);
 check('token NOT rotated — archived links still work', row1()[C.TOKEN] === durable);
 check('{{UNSUBSCRIBE_URL}} substituted', !/\{\{UNSUBSCRIBE_URL\}\}/.test(at(sentMail,0,'body')));
 check('manage_sent_at stamped', row1()[C.MSENT] instanceof Date);
@@ -635,6 +651,18 @@ check('manage copy unwritten → FAILS CLOSED, nothing sent',
 check('manage_sent_at NOT stamped', row1()[C.MSENT] === '');
 check('owner alerted', alertMail.length === 1 && /manage body not configured/.test(at(alertMail,0,'subject')),
       at(alertMail,0,'subject'));
+
+section('37b. MANAGE — a placeholder SUBJECT alone fails closed');
+/* The body is authored but the subject is not, and manageBodyReady_ requires
+   BOTH: a placeholder subject is just as visible in an inbox as a placeholder
+   body. This is the live state of the .gs today. */
+reset({ manageSubject: '__MANAGE_SUBJECT__' });
+sub('subj@example.com');
+post({ parameter: { action: 'confirm', token: row1()[C.TOKEN] } });
+sentMail.length = 0;
+check('authored body + placeholder subject → nothing sent',
+      manage('subj@example.com') === 'OK' && sentMail.length === 0, 'sent: ' + sentMail.length);
+check('manage_sent_at NOT stamped', row1()[C.MSENT] === '');
 
 section('38. UNKNOWN ACTION is rejected, never routed to subscribe');
 /* The regression this exists to prevent: doPost used to fall through to the

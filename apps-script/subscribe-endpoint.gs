@@ -233,22 +233,52 @@ var CONFIRM_BODY = [
 ].join('\n');
 
 /**
- * THE MANAGE EMAIL — NOT YET SUPPLIED.
+ * THE MANAGE EMAIL. Body authored and reproduced verbatim; SUBJECT STILL NEEDED.
  *
  * Sent when someone uses the manage/cancel form and their address is an ACTIVE
- * subscription. It must contain {{UNSUBSCRIBE_URL}}, which is substituted with
- * their durable one-click unsubscribe link, and — like CONFIRM_BODY — should
- * carry the postal address, because it is mail to a live subscriber.
+ * subscription. {{UNSUBSCRIBE_URL}} is replaced with their durable one-click
+ * link — the same one every update carries, which is exactly what the copy says.
  *
- * Content is the human's to write, so both are placeholders and manage FAILS
- * CLOSED while they are: no mail is sent and nothing is stamped. Note the
- * consequence for sequencing — until this copy exists, the manage form on
- * subscribe.html would say "check your inbox" and nothing would arrive, which
- * is the exact dishonesty building this action was meant to remove. THE COPY IS
- * THEREFORE A BLOCKER FOR MERGING THE SITE BRANCH, not just for this deploy.
+ * MANAGE_SUBJECT is still a placeholder, so manage STILL FAILS CLOSED: nothing
+ * is sent and nothing is stamped until it is filled in. manageBodyReady_()
+ * requires BOTH, because a placeholder subject is just as visible in an inbox as
+ * a placeholder body.
+ *
+ * The sequencing consequence stands until then: the site's manage form would say
+ * "check your inbox" and nothing would arrive — the exact dishonesty this action
+ * exists to remove. THE SUBJECT IS A BLOCKER FOR MERGING THE SITE BRANCH.
+ *
+ * NO FOOTER IS APPENDED, as with CONFIRM_BODY. The copy carries its own sign-off
+ * and postal address, and it already contains the unsubscribe link — appending
+ * mailFooter_ would print both twice.
+ *
+ * One line is load-bearing rather than decorative: "you can ignore it — nothing
+ * has changed, and you're still subscribed." Anyone can request a manage link
+ * for any address, so an unrequested one WILL occasionally land in a
+ * subscriber's inbox. That sentence is what makes an unrequested arrival
+ * harmless instead of alarming, and it is why nothing in this flow needs to be
+ * gated behind proof of identity.
  */
 var MANAGE_SUBJECT = '__MANAGE_SUBJECT__';
-var MANAGE_BODY = '__MANAGE_BODY__';
+
+var MANAGE_BODY = [
+  "You asked for a link to manage your subscription to Three Flows",
+  "updates.",
+  "",
+  "To unsubscribe, click below:",
+  "",
+  "{{UNSUBSCRIBE_URL}}",
+  "",
+  "That's the same link that appears at the bottom of every update",
+  "we send, so you can also cancel from any email in your inbox.",
+  "",
+  "If you didn't request this, you can ignore it — nothing has",
+  "changed, and you're still subscribed.",
+  "",
+  "—",
+  "Three Flows Solutions LLC",
+  "7211 Austin St. PMB 168, Forest Hills, NY 11375"
+].join('\n');
 
 /** Postal address, required in commercial mail and settled as belonging in the
  *  email footer — never on privacy.html. */
