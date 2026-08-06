@@ -43,6 +43,15 @@
           <h1>Subscribe</h1>
           <p class="tf-prose-intro">Subscribe to get Three Flows&rsquo; updates by email. Unsubscribe anytime.</p>
 
+          <!-- Shown ONLY when someone arrives on a confirm link that cannot be
+               used: a malformed ?confirm= token, or a confirm POST the endpoint
+               rejected. Rather than a sixth state, a bad confirm link lands here
+               on the FORM, because re-subscribing IS the remedy — the endpoint
+               re-arms the row and sends a fresh confirmation. Reuses
+               .tf-form-error (the brick-framed form-level notice) rather than
+               inventing a pattern. role=alert so it is announced when revealed. -->
+          <p class="tf-form-error" id="tf-confirm-expired" role="alert" hidden>That link has expired or isn&rsquo;t valid. Enter your email and we&rsquo;ll send a new one.</p>
+
           <!-- NO novalidate — unlike contact.html, validation here is the
                browser's: type="email" + required and nothing else, so the
                native bubble is the only message and no third-party checker is
@@ -56,6 +65,21 @@
               <label class="tf-label" for="sub-email">Email</label>
               <input class="tf-input" type="email" id="sub-email" name="email" required autocomplete="email">
             </div>
+
+            <!-- Where the submit came from, recorded on the row. Static per
+                 form, so a hidden input rather than anything JS builds. -->
+            <input type="hidden" name="source_page" value="subscribe.html">
+
+            <!-- Honeypot — the contact.html decoy reused unchanged, same field
+                 name the endpoint already checks. A visually-hidden field a human
+                 never sees or tabs to; a bot that fills every field fills this
+                 one and the endpoint silently drops the submission. Off-screen
+                 (.tf-hp), NOT display:none, so form-filling bots still see it. -->
+            <div class="tf-hp" aria-hidden="true">
+              <label for="sub-website">Website</label>
+              <input type="text" id="sub-website" name="website" tabindex="-1" autocomplete="off">
+            </div>
+
             <!-- Action block. The small print and the manage link sit INSIDE
                  .tf-form-foot, which is the documented home for the auxiliary
                  lines around a submit button (contact.html's "* required" note,
@@ -85,13 +109,48 @@
           </div>
         </section>
 
-        <!-- ══════════════ STATE 2 — ?confirmed=1 ══════════════ -->
+        <!-- ══════════════ STATE 2 — ?confirm=<token> ══════════════
+             The branded confirm page. The emailed confirmation link lands HERE,
+             not on an Apps Script URL, so the visitor never leaves threeflows.com.
+
+             WHY A BUTTON AND NOT A BARE LINK. Mail scanners — Outlook Safe Links,
+             corporate filters, some mobile clients — prefetch every URL in a
+             message before the human sees it. Rendering this page changes
+             nothing, so a prefetch is harmless; only the POST below confirms.
+             That is what keeps the double opt-in privacy.html claims honest.
+
+             REQUIRES JS, unavoidably: the token arrives in the URL and only a
+             script can move it into the field on a static page. With JS off the
+             button submits an empty token and the endpoint answers with its
+             invalid-link page — degraded, but a real message rather than silence.
+             The site's other forms already require JS (contact.html does), so
+             this is consistent with existing behaviour, not a new low. -->
+        <section id="tf-state-confirm" hidden>
+          <h1>Confirm Your Subscription</h1>
+          <p class="tf-prose-intro">Click the button below to start receiving Three Flows updates.</p>
+
+          <!-- A REAL form with method=post, not a JS-only button: with scripts
+               working, subscribe.js intercepts and POSTs in place; without them
+               the native submit still reaches the endpoint. `action` is left
+               empty here and filled by subscribe.js from SUBSCRIBE_ENDPOINT, so
+               the /exec URL lives in exactly ONE place and cannot drift between
+               the markup and the script. -->
+          <form class="tf-form" id="tf-confirm-form" method="post" aria-label="Confirm your email subscription">
+            <input type="hidden" name="action" value="confirm">
+            <input type="hidden" name="token" id="tf-confirm-token" value="">
+            <div class="tf-form-foot">
+              <button class="tf-btn tf-btn-primary" type="submit">Confirm my subscription</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- ══════════════ STATE 3 — ?confirmed=1 ══════════════ -->
         <section id="tf-state-confirmed" hidden>
           <h1>You&rsquo;re subscribed</h1>
           <p class="tf-prose-intro">You&rsquo;ll get an email when we publish something new. Unsubscribe anytime using the link at the bottom of any update.</p>
         </section>
 
-        <!-- ══════════════ STATE 3 — ?unsubscribed=1 ══════════════
+        <!-- ══════════════ STATE 4 — ?unsubscribed=1 ══════════════
              Gracious and short by decision: no re-pitch, no "are you sure",
              no re-subscribe button. Do not add one. -->
         <section id="tf-state-unsubscribed" hidden>
@@ -99,7 +158,7 @@
           <p class="tf-prose-intro">You won&rsquo;t receive further updates from Three Flows. Thanks for reading.</p>
         </section>
 
-        <!-- ══════════════ STATE 4 — ?manage=1 ══════════════
+        <!-- ══════════════ STATE 5 — ?manage=1 ══════════════
              The fallback for someone who no longer has an update email to
              unsubscribe from: same single-field form, same deferred endpoint,
              same "Check your inbox" swap — with its own body copy, below. -->
@@ -112,6 +171,15 @@
               <label class="tf-label" for="manage-email">Email</label>
               <input class="tf-input" type="email" id="manage-email" name="email" required autocomplete="email">
             </div>
+
+            <input type="hidden" name="action" value="manage">
+            <input type="hidden" name="source_page" value="subscribe.html?manage=1">
+
+            <div class="tf-hp" aria-hidden="true">
+              <label for="manage-website">Website</label>
+              <input type="text" id="manage-website" name="website" tabindex="-1" autocomplete="off">
+            </div>
+
             <div class="tf-form-foot">
               <button class="tf-btn tf-btn-primary" type="submit">Send me a link</button>
             </div>
