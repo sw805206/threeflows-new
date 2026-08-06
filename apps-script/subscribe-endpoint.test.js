@@ -61,7 +61,7 @@ let aliases = ['principals@threeflows.com'];
 let mailThrows = false;   // force a send failure
 const log = [];
 
-const HEADER_LEN = 8;
+const HEADER_LEN = 9;
 
 function makeSheet(store) {
   return {
@@ -158,9 +158,10 @@ const AUTHORED_BODY = sandbox.CONFIRM_BODY;
 
 /** The sheet's frozen row 1, asserted against rather than imported. */
 const H = ['timestamp', 'email', 'status', 'token', 'confirmed_at',
-           'unsubscribed_at', 'source_page', 'confirm_sent_at'];
+           'unsubscribed_at', 'source_page', 'confirm_sent_at', 'manage_sent_at'];
 
-const C = { TS: 0, EMAIL: 1, STATUS: 2, TOKEN: 3, CONFIRMED: 4, UNSUB: 5, SRC: 6, SENT: 7 };
+const C = { TS: 0, EMAIL: 1, STATUS: 2, TOKEN: 3, CONFIRMED: 4, UNSUB: 5, SRC: 6,
+            SENT: 7, MSENT: 8 };
 
 const PLACEHOLDER_BODY = '__CONFIRM_BODY__';
 
@@ -177,10 +178,16 @@ function reset(opts) {
   mailThrows = false;
   log.length = 0;
   sandbox.CONFIRM_BODY = ('body' in opts) ? opts.body : AUTHORED_BODY;
+  /* The manage copy is a placeholder in the .gs (the human writes it), so the
+     tests supply a stand-in — except where the fail-closed guard is the thing
+     under test. */
+  sandbox.MANAGE_SUBJECT = ('manageSubject' in opts) ? opts.manageSubject : 'Manage your subscription';
+  sandbox.MANAGE_BODY = ('manageBody' in opts) ? opts.manageBody : 'Cancel here: {{UNSUBSCRIBE_URL}}';
 }
 
 const post = e => sandbox.doPost(e).getContent();
 const get = e => sandbox.doGet(e).getContent();
+const manage = (email, extra) => post({ parameter: Object.assign({ action: 'manage', email, website: '' }, extra || {}) });
 const sub = (email, extra) => post({ parameter: Object.assign({ email, website: '', source_page: 'subscribe.html' }, extra || {}) });
 const dataRows = () => rows.slice(1);
 const row1 = () => rows[1];
@@ -193,6 +200,11 @@ const show = () => dataRows().map(r =>
  *  every case after it — which is exactly what `at(alertMail,0,'subject')` did when a
  *  mutation stopped the alert from being sent. */
 const at = (arr, i, k) => (arr && arr[i] ? arr[i][k] : '(nothing recorded)');
+
+/** Safe parse. An assertion about a JSON response must REPORT when the response
+ *  is not JSON, not throw and take every later case down with it — which is what
+ *  a bare JSON.parse did when a mutation made confirm always return HTML. */
+const asJson = t => { try { return JSON.parse(t); } catch (e) { return { ok: '(not JSON)' }; } };
 
 let pass = 0, fail = 0;
 function check(label, cond, detail) {
@@ -561,7 +573,105 @@ mailThrows = false;
 r = sub('fails@example.com');
 check('no cooldown was armed → the retry sends', sentMail.length === 1, 'sent: ' + sentMail.length);
 
-section('34. mailFooter_ — unused by stage 2, but must stay correct');
+section('34. MANAGE — an active subscriber is mailed their unsubscribe link');
+reset();
+sub('m@example.com');
+post({ parameter: { action: 'confirm', token: row1()[C.TOKEN] } });
+const durable = row1()[C.TOKEN];
+sentMail.length = 0;
+let out2 = manage('m@example.com');
+console.log('    ' + show());
+check('returns the same OK', out2 === 'OK');
+check('exactly one mail sent', sentMail.length === 1, 'sent: ' + sentMail.length);
+check('sent to the subscriber', at(sentMail,0,'to') === 'm@example.com');
+check('carries the DURABLE unsubscribe token, not a new one',
+      at(sentMail,0,'body').indexOf(durable) !== -1);
+check('token NOT rotated — archived links still work', row1()[C.TOKEN] === durable);
+check('{{UNSUBSCRIBE_URL}} substituted', !/\{\{UNSUBSCRIBE_URL\}\}/.test(at(sentMail,0,'body')));
+check('manage_sent_at stamped', row1()[C.MSENT] instanceof Date);
+check('confirm_sent_at NOT touched — separate clocks',
+      row1()[C.SENT] instanceof Date && row1()[C.SENT] !== row1()[C.MSENT]);
+check('counts against the shared daily budget',
+      JSON.parse(props.confirmSendCounter).count === 2, props.confirmSendCounter);
+
+section('35. MANAGE — its own cooldown, and NO exemption');
+/* Unlike unsubscribed → pending, this path IS attacker-reachable: anyone can
+   POST any address. So it gets the blanket cooldown, with no carve-out. */
+out2 = manage('m@example.com');
+check('returns the same OK', out2 === 'OK');
+check('no second mail', sentMail.length === 1, 'sent: ' + sentMail.length);
+
+section('36. MANAGE — only ACTIVE rows are mailed');
+[['pending', 'pending'], ['unsubscribed', 'unsubscribed'], ['bounced', 'an unrecognised status']]
+  .forEach(([status, label]) => {
+    reset();
+    sub('s@example.com');
+    row1()[C.STATUS] = status;
+    sentMail.length = 0;
+    const res = manage('s@example.com');
+    check(`${label} → OK, nothing sent`, res === 'OK' && sentMail.length === 0,
+          'sent: ' + sentMail.length);
+  });
+reset();
+check('unknown address → OK, nothing sent',
+      manage('nobody@example.com') === 'OK' && sentMail.length === 0 && dataRows().length === 0);
+
+section('37. MANAGE — honeypot, malformed address, fail-closed copy');
+reset();
+sub('hp@example.com');
+post({ parameter: { action: 'confirm', token: row1()[C.TOKEN] } });
+sentMail.length = 0;
+check('honeypot → OK, nothing sent',
+      manage('hp@example.com', { website: 'http://spam' }) === 'OK' && sentMail.length === 0);
+check('malformed address → OK, nothing sent',
+      manage('not-an-email') === 'OK' && sentMail.length === 0);
+reset({ manageBody: '__MANAGE_BODY__' });
+sub('fc@example.com');
+post({ parameter: { action: 'confirm', token: row1()[C.TOKEN] } });
+sentMail.length = 0;
+alertMail.length = 0;
+check('manage copy unwritten → FAILS CLOSED, nothing sent',
+      manage('fc@example.com') === 'OK' && sentMail.length === 0);
+check('manage_sent_at NOT stamped', row1()[C.MSENT] === '');
+check('owner alerted', alertMail.length === 1 && /manage body not configured/.test(at(alertMail,0,'subject')),
+      at(alertMail,0,'subject'));
+
+section('38. UNKNOWN ACTION is rejected, never routed to subscribe');
+/* The regression this exists to prevent: doPost used to fall through to the
+   subscribe flow for any action it did not recognise, so a manage submit against
+   an endpoint that had not learned "manage" yet would have SUBSCRIBED the person
+   and mailed them a confirmation — while they were trying to cancel. */
+reset();
+const res38 = post({ parameter: { action: 'destroy', email: 'unknown@example.com', website: '' } });
+check('returns the uniform OK', res38 === 'OK');
+check('NO row written', dataRows().length === 0, 'rows: ' + dataRows().length);
+check('NO mail sent', sentMail.length === 0);
+check('logged for a broken client to be found by', log.some(l => /unknown action/i.test(l)));
+reset();
+check('action="subscribe" still subscribes',
+      sub('explicit@example.com', { action: 'subscribe' }) === 'OK' && dataRows().length === 1);
+reset();
+check('absent action still subscribes',
+      sub('implicit@example.com') === 'OK' && dataRows().length === 1);
+
+section('39. format=json gives fetch() an answer it can branch on');
+reset();
+sub('j@example.com');
+const jTok = row1()[C.TOKEN];
+let body39 = post({ parameter: { action: 'confirm', token: jTok, format: 'json' } });
+check('valid token → {"ok":true}', asJson(body39).ok === true, body39);
+check('and it actually confirmed', row1()[C.STATUS] === 'active');
+body39 = post({ parameter: { action: 'confirm', token: jTok, format: 'json' } });
+check('spent token → {"ok":false}', asJson(body39).ok === false, body39);
+body39 = post({ parameter: { action: 'confirm', token: 'nope', format: 'json' } });
+check('malformed token → {"ok":false}', asJson(body39).ok === false, body39);
+/* The HTML path must be untouched — it is what the no-JS form submit gets. */
+reset();
+sub('h@example.com');
+const hOut = post({ parameter: { action: 'confirm', token: row1()[C.TOKEN] } });
+check('no format → still the HTML redirect', /subscribe\.html\?confirmed=1/.test(hOut));
+
+section('40. mailFooter_ — unused by stage 2, but must stay correct');
 /* Nothing calls it yet: the only mail stage 2 sends is the confirmation, which
    carries no unsubscribe link. It is exercised directly so the definition the
    first update mail will depend on is not untested dead code. */
@@ -571,7 +681,7 @@ check('carries a one-click unsubscribe link', /Unsubscribe: .*action=unsubscribe
 check('carries the postal address', footer.indexOf('7211 Austin St. PMB 168, Forest Hills, NY 11375') !== -1);
 check('carries the company name', footer.indexOf('Three Flows Solutions LLC') !== -1);
 
-section('35. Lock is released after every path');
+section('41. Lock is released after every path');
 reset();
 sub('l1@example.com');
 sub('l2@example.com');

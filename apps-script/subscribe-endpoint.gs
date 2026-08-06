@@ -20,8 +20,9 @@
  * so the fail-closed guard that held during development no longer trips. What
  * stands between a deploy and a live send is only the daily cap, the per-address
  * cooldown and the quota floor. Three manual steps are still required first:
- *   1. Add column H, confirm_sent_at, to the live Subscribe Sheet. This script
- *      will not retrofit a header onto a tab that already holds rows.
+ *   1. Add columns H (confirm_sent_at) and I (manage_sent_at) to the live
+ *      Subscribe Sheet. This script will not retrofit a header onto a tab that
+ *      already holds rows.
  *   2. Verify principals@threeflows.com as a send-as alias (see below), or mail
  *      goes out as the Sheet's owner instead.
  *   3. Re-authorise — stage 2 needs scopes stage 1 did not.
@@ -73,8 +74,10 @@
  * ── THE SHEET ─────────────────────────────────────────────────────────────
  * Tab "Subscribe", row 1 frozen, headers in A–H exactly as HEADER below:
  *   A timestamp | B email | C status | D token | E confirmed_at
- *   F unsubscribed_at | G source_page | H confirm_sent_at
- * H IS NEW IN STAGE 2 — add it to the live Sheet before deploying.
+ *   F unsubscribed_at | G source_page | H confirm_sent_at | I manage_sent_at
+ * I IS NEW IN DEPLOY A — add it to the live Sheet before deploying, as H was.
+ * It is a SEPARATE clock from H on purpose: a flood of manage requests must not
+ * be able to silence a legitimate confirmation re-send, nor the reverse.
  * Read BY NAME, never by index, so re-ordering tabs cannot repoint the writes.
  *
  * A second tab, "Ops", mirrors the send counter and the last cap trip so the
@@ -108,7 +111,7 @@
 var SHEET_NAME = 'Subscribe';
 var OPS_SHEET_NAME = 'Ops';
 var HEADER = ['timestamp', 'email', 'status', 'token', 'confirmed_at',
-              'unsubscribed_at', 'source_page', 'confirm_sent_at'];
+              'unsubscribed_at', 'source_page', 'confirm_sent_at', 'manage_sent_at'];
 
 /** 1-based column positions, derived from HEADER's order above. Named so a
  *  column move is a one-line change here rather than a hunt for magic numbers. */
@@ -120,6 +123,7 @@ var COL_CONFIRMED_AT    = 5;   // E
 var COL_UNSUBSCRIBED_AT = 6;   // F
 var COL_SOURCE_PAGE     = 7;   // G
 var COL_CONFIRM_SENT_AT = 8;   // H — stage 2
+var COL_MANAGE_SENT_AT  = 9;   // I — deploy A
 
 /** Status vocabulary. Any value outside this set is treated as UNKNOWN and left
  *  strictly alone — see subscribe_ for why that is the safe default. */
@@ -228,6 +232,24 @@ var CONFIRM_BODY = [
   "7211 Austin St. PMB 168, Forest Hills, NY 11375"
 ].join('\n');
 
+/**
+ * THE MANAGE EMAIL — NOT YET SUPPLIED.
+ *
+ * Sent when someone uses the manage/cancel form and their address is an ACTIVE
+ * subscription. It must contain {{UNSUBSCRIBE_URL}}, which is substituted with
+ * their durable one-click unsubscribe link, and — like CONFIRM_BODY — should
+ * carry the postal address, because it is mail to a live subscriber.
+ *
+ * Content is the human's to write, so both are placeholders and manage FAILS
+ * CLOSED while they are: no mail is sent and nothing is stamped. Note the
+ * consequence for sequencing — until this copy exists, the manage form on
+ * subscribe.html would say "check your inbox" and nothing would arrive, which
+ * is the exact dishonesty building this action was meant to remove. THE COPY IS
+ * THEREFORE A BLOCKER FOR MERGING THE SITE BRANCH, not just for this deploy.
+ */
+var MANAGE_SUBJECT = '__MANAGE_SUBJECT__';
+var MANAGE_BODY = '__MANAGE_BODY__';
+
 /** Postal address, required in commercial mail and settled as belonging in the
  *  email footer — never on privacy.html. */
 var POSTAL_ADDRESS = 'Three Flows Solutions LLC\n' +
@@ -285,6 +307,23 @@ function ok_() {
   return ContentService
     .createTextOutput('OK')
     .setMimeType(ContentService.MimeType.TEXT);
+}
+
+/**
+ * Machine-readable answer for a caller that asked for `format=json`.
+ *
+ * The HTML paths below cannot tell a browser's fetch() anything: an invalid
+ * token returns the invalid-link PAGE with a 200, so `res.ok` is true either
+ * way. subscribe.js needs to distinguish those, and this is how. The HTML path
+ * is untouched, so the no-JS form submit still gets a real page.
+ *
+ * It reveals only whether THIS token worked — never anything about an address —
+ * so it is not a membership oracle. A token is an unguessable v4 UUID.
+ */
+function jsonResult_(ok) {
+  return ContentService
+    .createTextOutput(JSON.stringify({ ok: !!ok }))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 /** Escape for interpolation into HTML. Tokens are validated against TOKEN_RE
@@ -511,7 +550,7 @@ function setOpsMetric_(name, value) {
  * confirm_sent_at travel back with the match so the caller needs no second read.
  */
 function findRow_(sheet, emailKey) {
-  var miss = { row: 0, status: '', token: '', confirmSentAt: '' };
+  var miss = { row: 0, status: '', token: '', email: '', confirmSentAt: '', manageSentAt: '' };
   var last = sheet.getLastRow();
   if (last < 2 || emailKey === '') return miss;
 
@@ -522,7 +561,9 @@ function findRow_(sheet, emailKey) {
         row: i + 2,
         status: normEmail_(values[i][COL_STATUS - 1]),
         token: str_(values[i][COL_TOKEN - 1]),
-        confirmSentAt: values[i][COL_CONFIRM_SENT_AT - 1]
+        email: str_(values[i][COL_EMAIL - 1]),
+        confirmSentAt: values[i][COL_CONFIRM_SENT_AT - 1],
+        manageSentAt: values[i][COL_MANAGE_SENT_AT - 1]
       };
     }
   }
@@ -603,18 +644,31 @@ function bodyReady_() {
   return CONFIRM_BODY && CONFIRM_BODY.indexOf('__') !== 0;
 }
 
+/** Same guard for the manage mail — see MANAGE_BODY. Both the subject and the
+ *  body must be real, because a placeholder subject is just as visible. */
+function manageBodyReady_() {
+  return MANAGE_BODY && MANAGE_BODY.indexOf('__') !== 0 &&
+         MANAGE_SUBJECT && MANAGE_SUBJECT.indexOf('__') !== 0;
+}
+
 /**
  * May a confirmation be sent right now? Returns a reason string, or '' to allow.
  *
- * Three independent gates, cheapest first:
+ * Three independent gates, cheapest first. `kind` is 'confirm' or 'manage' and
+ * selects which body must be configured; the cap and the quota floor are shared,
+ * because both kinds draw on the same daily budget.
  *   1. The copy is not written yet → refuse (fail closed on a half-built deploy).
  *   2. Our own counter has reached DAILY_SEND_CAP.
  *   3. The platform's own remaining quota is below QUOTA_RESERVE. This catches
  *      counter drift AND protects the quota that ordinary business mail from
  *      this account needs — the counter knows nothing about mail sent by hand.
  */
-function sendBlockedReason_() {
-  if (!bodyReady_()) return 'confirmation body not configured';
+function sendBlockedReason_(kind) {
+  if (kind === 'manage') {
+    if (!manageBodyReady_()) return 'manage body not configured';
+  } else if (!bodyReady_()) {
+    return 'confirmation body not configured';
+  }
   if (counterRead_() >= DAILY_SEND_CAP) return 'daily cap of ' + DAILY_SEND_CAP + ' reached';
   try {
     var remaining = MailApp.getRemainingDailyQuota();
@@ -729,6 +783,18 @@ function sendConfirmation_(email, token) {
   // unsubscribe link, and note the copy supplies its own sign-off and address.
   var body = CONFIRM_BODY.split('{{CONFIRM_URL}}').join(confirmUrl_(token));
 
+  GmailApp.sendEmail(email, CONFIRM_SUBJECT, body, fromOptions_());
+}
+
+/**
+ * The `from` options every outbound mail uses. Factored out so the confirmation
+ * and the manage link cannot drift into two different senders.
+ *
+ * The alias is checked and WARNED about rather than enforced: an unverified
+ * alias is silently ignored by Gmail and the mail goes out as the account owner,
+ * which is wrong but harmless — whereas refusing to send loses the subscriber.
+ */
+function fromOptions_() {
   var options = { name: FROM_NAME };
   try {
     var aliases = GmailApp.getAliases();
@@ -742,8 +808,18 @@ function sendConfirmation_(email, token) {
   } catch (aliasErr) {
     console.warn('Could not read send-as aliases, sending as the owner: ' + aliasErr);
   }
+  return options;
+}
 
-  GmailApp.sendEmail(email, CONFIRM_SUBJECT, body, options);
+/**
+ * Send the manage/cancel link. Throws on failure so the caller can decide.
+ * {{UNSUBSCRIBE_URL}} becomes the row's DURABLE unsubscribe token — the same
+ * link every update mail carries, not a new one — so this adds no extra
+ * credential to keep track of.
+ */
+function sendManageLink_(email, token) {
+  var body = MANAGE_BODY.split('{{UNSUBSCRIBE_URL}}').join(unsubscribeUrl_(token));
+  GmailApp.sendEmail(email, MANAGE_SUBJECT, body, fromOptions_());
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -850,7 +926,7 @@ function subscribe_(sheet, email, emailKey, sourcePage) {
  * "we actually mailed this person", never "we meant to".
  */
 function dispatchConfirmation_(sheet, row, email, outcome) {
-  var blocked = sendBlockedReason_();
+  var blocked = sendBlockedReason_('confirm');
   if (blocked) {
     console.warn('Confirmation NOT sent (' + blocked + '). Row ' + row +
                  ' stands at pending with an empty confirm_sent_at.');
@@ -968,6 +1044,68 @@ function unsubscribe_(sheet, token) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   MANAGE — mail someone their own unsubscribe link
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/**
+ * The self-serve fallback for someone who no longer has an update email to
+ * unsubscribe from. privacy.html points at subscribe.html?manage=1 publicly, so
+ * this is a promise already made in a live policy document, not an extra.
+ *
+ * ONLY an ACTIVE row gets mail. Anything else — no such address, still pending,
+ * already unsubscribed, an unrecognised status — does nothing at all. There is
+ * nothing to cancel in any of those cases, and inventing a mail for them would
+ * mean writing to people who never completed a subscription.
+ *
+ * UNIFORM OUTCOME REGARDLESS. The caller's response never varies (see ok_), so
+ * this cannot be used to ask "is this address on the list?" — and note the mail
+ * only ever goes TO the address entered, so even the send itself tells a prober
+ * nothing they could observe.
+ *
+ * ITS OWN COOLDOWN, ON ITS OWN COLUMN. This path IS attacker-reachable: anyone
+ * can POST any address here, unlike the unsubscribed → pending transition, which
+ * requires having clicked a tokenised link. So it gets no exemption. The clock is
+ * COL_MANAGE_SENT_AT rather than the confirmation's, so a flood of manage
+ * requests cannot silence a legitimate confirmation re-send, nor the reverse.
+ *
+ * The link sent is the row's DURABLE unsubscribe token — the same one every
+ * update mail carries. The token is NOT rotated, so this adds no new credential
+ * and does not invalidate anything already in the person's inbox.
+ */
+function manageLink_(sheet, email, emailKey) {
+  var found = findRow_(sheet, emailKey);
+  var now = new Date();
+
+  if (found.row === 0) return 'noop-not-found';
+  if (found.status !== STATUS_ACTIVE) return 'noop-not-active(' + found.status + ')';
+
+  var lastSent = found.manageSentAt;
+  if (lastSent instanceof Date && (now.getTime() - lastSent.getTime()) < COOLDOWN_MS) {
+    return 'noop-cooldown';
+  }
+
+  var blocked = sendBlockedReason_('manage');
+  if (blocked) {
+    console.warn('Manage link NOT sent (' + blocked + ') for row ' + found.row + '.');
+    alertCapTripped_(blocked, email);
+    return 'no-send(' + blocked + ')';
+  }
+
+  try {
+    /* Mail the STORED address, not the typed one: they match case-insensitively
+       by definition, and the stored value is the one the subscriber confirmed. */
+    sendManageLink_(found.email || email, found.token);
+  } catch (mailErr) {
+    console.error('Manage link send failed for row ' + found.row + ': ' + mailErr);
+    return 'send-failed';
+  }
+
+  sheet.getRange(found.row, COL_MANAGE_SENT_AT).setValue(new Date());
+  counterIncrement_();
+  return 'sent';
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    ENTRY POINTS
    ═══════════════════════════════════════════════════════════════════════════ */
 
@@ -1028,7 +1166,9 @@ function doGet(e) {
  *
  *   action absent or "subscribe" → the subscribe flow (stage 1's contract,
  *                                  unchanged: the page need not send `action`)
- *   action "confirm"             → the confirm button on the interstitial
+ *   action "confirm"             → the confirm button
+ *   action "manage"              → mail someone their own unsubscribe link
+ *   anything else                → REJECTED, nothing written (see below)
  *
  * Subscribe returns plain text for the page's fetch; confirm returns HTML,
  * because it is a real browser navigation from a form. Different callers,
@@ -1038,14 +1178,71 @@ function doPost(e) {
   var p = readParams_(e);
   var action = str_(p.action).toLowerCase();
 
+  if (action === '' || action === 'subscribe') return handleSubscribePost_(p);
   if (action === 'confirm') return handleConfirmPost_(p);
-  return handleSubscribePost_(p);
+  if (action === 'manage')  return handleManagePost_(p);
+
+  /* UNKNOWN ACTION → REJECT. Do NOT restore a fall-through to subscribe.
+     It used to default that way, and the consequence was the worst outcome
+     available here: a manage submit — someone asking to CANCEL — would have been
+     routed into the subscribe flow and answered with a confirmation email. An
+     action this endpoint does not recognise is a client that is out of step with
+     it, and the safe response is to do nothing.
+     Still the uniform OK, so the rejection reveals nothing; the log is where a
+     genuinely broken client shows up. */
+  console.warn('Rejected unknown action "' + action + '" — nothing written, nothing sent.');
+  return ok_();
 }
 
-/** The confirm button's POST. */
+/**
+ * The manage form's POST. Same front matter as subscribe — honeypot first, then
+ * server-side validation, then the lock — because it takes the same untrusted
+ * address from the same kind of public form.
+ */
+function handleManagePost_(p) {
+  var email    = str_(p.email);
+  var honeypot = str_(p.website);
+  var emailKey = normEmail_(email);
+
+  if (honeypot !== '') {
+    return ok_();
+  }
+
+  if (!isEmailShape_(email)) {
+    console.warn('Manage: rejected a malformed address (nothing sent). Length: ' + email.length);
+    return ok_();
+  }
+
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(LOCK_TIMEOUT_MS);
+  } catch (lockErr) {
+    throw new Error('Could not acquire lock within ' + LOCK_TIMEOUT_MS + 'ms: ' + lockErr);
+  }
+
+  try {
+    var outcome = manageLink_(getSheet_(), email, emailKey);
+    SpreadsheetApp.flush();
+    console.log('manage: ' + outcome);
+  } finally {
+    lock.releaseLock();
+  }
+
+  return ok_();
+}
+
+/**
+ * The confirm button's POST.
+ *
+ * Answers in one of two shapes. `format=json` gets {ok:true|false} — asked for by
+ * subscribe.js, which cannot read success off an HTML page that returns 200
+ * either way. Everything else gets the HTML redirect or invalid-link page, which
+ * is what a no-JS native form submit needs. Same logic, two renderings.
+ */
 function handleConfirmPost_(p) {
+  var wantsJson = str_(p.format).toLowerCase() === 'json';
   var token = str_(p.token);
-  if (!TOKEN_RE.test(token)) return invalidLinkPage_();
+  if (!TOKEN_RE.test(token)) return wantsJson ? jsonResult_(false) : invalidLinkPage_();
 
   var lock = LockService.getScriptLock();
   try {
@@ -1063,6 +1260,7 @@ function handleConfirmPost_(p) {
   }
 
   console.log('confirm: ' + result.reason);
+  if (wantsJson) return jsonResult_(result.ok);
   return result.ok ? redirect_(PAGE_CONFIRMED, 'Your subscription is confirmed.')
                    : invalidLinkPage_();
 }
@@ -1158,8 +1356,9 @@ function handleSubscribePost_(p) {
 
    Suggested order for a first run:
      1. testFormEncoded       → new "pending" row, token filled, confirmation
-                                mailed. Log: "appended+sent". A bounce is
-                                expected — example.com is a reserved domain.
+                                mailed. Log: "appended+sent". It is a DELIVERABLE
+                                address, so the mail should ARRIVE in the
+                                contact@ inbox — no bounce.
      2. testFormEncoded       → run AGAIN IMMEDIATELY: expect "noop-cooldown"
                                 and NOTHING changed — same token, same timestamp,
                                 same confirm_sent_at, no second mail. That is the
@@ -1171,8 +1370,14 @@ function handleSubscribePost_(p) {
      7. testShowLinks         → prints the confirm and unsubscribe URLs for the
                                 first pending row, so both can be opened in a
                                 browser without waiting for mail
-     8. testBudget            → prints the counter, the cap and the remaining
-                                platform quota
+     8. testBudget            → prints the counter, the cap, the remaining
+                                platform quota, and whether each mail kind is
+                                allowed to send
+     9. testManage            → mails the unsubscribe link, but ONLY once the
+                                address is ACTIVE (confirm it first). Needs
+                                MANAGE_SUBJECT/MANAGE_BODY filled in; until then
+                                it fails closed and sends nothing.
+    10. testUnknownAction     → returns OK, writes NOTHING, sends NOTHING
    Then set a row's status to "active" by hand and run 1 again: nothing changes.
    Set it to "unsubscribed" and run 1 again: status returns to "pending", token
    changes, unsubscribed_at AND confirmed_at clear. Those two paths are the ones
@@ -1270,7 +1475,34 @@ function testBudget() {
   Logger.log('date (%s):       %s', TIMEZONE, today_());
   Logger.log('sends today:     %s of %s', counterRead_(), DAILY_SEND_CAP);
   Logger.log('platform quota:  %s remaining (reserve %s)', MailApp.getRemainingDailyQuota(), QUOTA_RESERVE);
-  Logger.log('body configured: %s', bodyReady_());
-  var blocked = sendBlockedReason_();
-  Logger.log('sending:         %s', blocked ? 'BLOCKED — ' + blocked : 'allowed');
+  Logger.log('confirm copy:    %s', bodyReady_() ? 'configured' : 'NOT CONFIGURED');
+  Logger.log('manage copy:     %s', manageBodyReady_() ? 'configured' : 'NOT CONFIGURED');
+  var bc = sendBlockedReason_('confirm');
+  var bm = sendBlockedReason_('manage');
+  Logger.log('confirm sending: %s', bc ? 'BLOCKED — ' + bc : 'allowed');
+  Logger.log('manage sending:  %s', bm ? 'BLOCKED — ' + bm : 'allowed');
+}
+
+/**
+ * Mock: the manage form. Sends the unsubscribe link to an address that must
+ * ALREADY BE ACTIVE — run testFormEncoded, click the confirmation, then this.
+ * Anything not active is a silent no-op by design, so a "nothing happened" run
+ * usually means the row is still pending.
+ */
+function testManage() {
+  var e = {
+    parameter: {
+      action: 'manage',
+      email: 'contact+subtest@threeflows.com',
+      website: ''
+    }
+  };
+  Logger.log('response: ' + doPost(e).getContent());
+}
+
+/** Mock: an action this endpoint does not know. Must write nothing and send
+ *  nothing — NOT fall through to the subscribe flow. */
+function testUnknownAction() {
+  var e = { parameter: { action: 'destroy', email: 'contact+subtest@threeflows.com', website: '' } };
+  Logger.log('response: ' + doPost(e).getContent() + '  (expect NO row, NO mail)');
 }
