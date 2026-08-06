@@ -106,7 +106,11 @@
  * in the browser — JSON support here is for curl and for a client that sends
  * `Content-Type: text/plain`, not for a stock JSON fetch.
  * Response: always plain-text 200 "OK" (see ok_ and the uniform-response rule).
- * The frontend checks only res.ok, matching contact-form.js.
+ * The frontend checks only res.ok, matching contact-form.js — except the confirm
+ * POST, which sends format=json and reads {ok} (see handleConfirmPost_).
+ *
+ * CONFIRM LINKS POINT AT THE SITE, not at this script: the mail sends people to
+ * subscribe.html?confirm=<token>, which POSTs back here. See confirmUrl_.
  */
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -222,6 +226,8 @@ var SITE_BASE = 'https://threeflows.com/';
 var PAGE_CONFIRMED = SITE_BASE + 'subscribe.html?confirmed=1';
 var PAGE_UNSUBSCRIBED = SITE_BASE + 'subscribe.html?unsubscribed=1';
 var PAGE_MANAGE = SITE_BASE + 'subscribe.html?manage=1';
+/** The branded confirm page. Emailed confirm links point HERE, not at /exec. */
+var PAGE_CONFIRM = SITE_BASE + 'subscribe.html?confirm=';
 
 /** Settled copy. */
 var CONFIRM_SUBJECT = 'Confirm your subscription to Three Flows updates';
@@ -833,10 +839,48 @@ function linkBaseReady_() {
   return execUrl_() !== '';
 }
 
+/**
+ * The emailed confirm link — points at the SITE, not at /exec.
+ *
+ * WHY, and it is not mainly about branding. A mail from
+ * principals@threeflows.com whose only link resolves to script.google.com is a
+ * PHISHING SHAPE: mismatched sender and link domains are a real spam-filter
+ * signal and a real reader-trust signal, and this domain has just had SPF, DKIM
+ * and DMARC aligned — a Google link partly undoes that. The confirmation is also
+ * the FIRST mail anyone receives, sent to someone with no established
+ * relationship, so it is the message least able to survive looking wrong.
+ * After this change it carries exactly one link, on our own domain.
+ *
+ * The cost is a no-JS confirm path: subscribe.html is static and cannot read the
+ * token out of the URL without a script. That was weighed and accepted, because
+ * a visitor without JS cannot subscribe in the first place — the subscribe form
+ * is JS-only too — so the population that could need it is people who subscribed
+ * with scripts on and confirmed with them off. Close to nobody. If evidence ever
+ * appears, adding a second fallback link to the copy is a small change; nothing
+ * here forecloses it.
+ *
+ * doGet's confirm branch is DELIBERATELY KEPT. Links sent before this change are
+ * permanent and unrecallable, and they still resolve there.
+ */
 function confirmUrl_(token) {
-  return execUrl_() + '?action=confirm&token=' + encodeURIComponent(token);
+  return PAGE_CONFIRM + encodeURIComponent(token);
 }
 
+/**
+ * The unsubscribe link — STAYS on /exec, deliberately asymmetric with confirm.
+ *
+ * It has to work with no JavaScript. privacy.html publicly promises "a one-click
+ * unsubscribe link at the bottom" of every update, and the site cannot read a
+ * token from the URL without a script — so moving it here would turn one click
+ * into a silent no-op for anyone with scripts off, in the one flow where failure
+ * produces spam complaints rather than a shrug.
+ *
+ * That leaves a script.google.com URL in the manage mail and in future updates,
+ * which the confirm reasoning above argues against. Accepted, and the split is
+ * where the argument is strongest: the CONFIRMATION goes to someone with no
+ * relationship yet and now carries only our own domain, while these go to people
+ * who have already confirmed. Trust is cheapest to lose at first contact.
+ */
 function unsubscribeUrl_(token) {
   return execUrl_() + '?action=unsubscribe&token=' + encodeURIComponent(token);
 }
@@ -1208,7 +1252,10 @@ function manageLink_(sheet, email, emailKey) {
 /**
  * GET routing — the two emailed links, and nothing else.
  *
- *   ?action=confirm&token=…      → an interstitial with a BUTTON that POSTs.
+ *   ?action=confirm&token=…      → the interstitial: a BUTTON that POSTs.
+ *                                  LEGACY PATH since deploy B — new confirm
+ *                                  links point at subscribe.html — but kept
+ *                                  because links already sent are permanent.
  *                                  Renders only; changes nothing. Safe to
  *                                  prefetch, which is the entire point.
  *   ?action=unsubscribe&token=…  → unsubscribes immediately, then redirects.

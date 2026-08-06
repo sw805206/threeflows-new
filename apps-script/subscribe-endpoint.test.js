@@ -335,8 +335,16 @@ check('sent to the subscriber', at(sentMail,0,'to') === 'send@example.com');
 check('settled subject', at(sentMail,0,'subject') === 'Confirm your subscription to Three Flows updates');
 check('from the verified alias', (at(sentMail,0,'options')||{}).from === 'principals@threeflows.com');
 check('from name set', (at(sentMail,0,'options')||{}).name === 'Three Flows Solutions');
-check('{{CONFIRM_URL}} substituted', /action=confirm&token=/.test(at(sentMail,0,'body')) &&
-      !/\{\{CONFIRM_URL\}\}/.test(at(sentMail,0,'body')));
+check('{{CONFIRM_URL}} substituted', !/\{\{CONFIRM_URL\}\}/.test(at(sentMail,0,'body')));
+/* DEPLOY B: the confirm link points at the SITE, not at /exec. A mail from
+   principals@threeflows.com whose only link resolves to script.google.com is a
+   phishing shape — mismatched sender and link domains are a spam-filter signal
+   and a reader-trust signal, and this is the first mail anyone receives. */
+check('confirm link points at threeflows.com',
+      /https:\/\/threeflows\.com\/subscribe\.html\?confirm=/.test(at(sentMail,0,'body')),
+      at(sentMail,0,'body'));
+check('and NOT at script.google.com',
+      at(sentMail,0,'body').indexOf('script.google.com') === -1);
 /* The confirmation deliberately carries NO unsubscribe link: the recipient is
    not subscribed yet, and the copy's "ignore this email" IS the opt-out for a
    double opt-in. Offering unsubscribe would compete with that instruction. */
@@ -597,6 +605,35 @@ check('failure logged', log.some(l => l.startsWith('ERR')), log.join(' | '));
 mailThrows = false;
 r = sub('fails@example.com');
 check('no cooldown was armed → the retry sends', sentMail.length === 1, 'sent: ' + sentMail.length);
+
+section('33b. Deploy B — confirm on the site, unsubscribe still on /exec');
+/* The split is deliberate and asymmetric. Unsubscribe must work with NO JS —
+   privacy.html promises one-click — and a static page cannot read a token from
+   the URL without a script. Confirm can afford the JS dependency because a
+   visitor without JS cannot subscribe in the first place. */
+reset();
+sub('split@example.com');
+const cUrl = sandbox.confirmUrl_('8f14e45f-ea1b-4b9a-8b7c-1c2d3e4f5a6b');
+const uUrl = sandbox.unsubscribeUrl_('8f14e45f-ea1b-4b9a-8b7c-1c2d3e4f5a6b');
+check('confirm → site', cUrl === 'https://threeflows.com/subscribe.html?confirm=8f14e45f-ea1b-4b9a-8b7c-1c2d3e4f5a6b', cUrl);
+check('unsubscribe → /exec, so it works with no JS',
+      /^https:\/\/script\.google\.com\/.*action=unsubscribe/.test(uUrl), uUrl);
+check('the manage mail therefore still carries a Google URL — accepted, recorded',
+      sandbox.mailFooter_('8f14e45f-ea1b-4b9a-8b7c-1c2d3e4f5a6b').indexOf('script.google.com') !== -1);
+
+section('33c. The LEGACY interstitial still resolves pre-repoint links');
+/* Confirm links sent before deploy B are permanent and unrecallable. doGet's
+   confirm branch is kept for exactly them; deleting it would strand anyone who
+   had not yet clicked. */
+reset();
+sub('legacy@example.com');
+const legacyTok = row1()[C.TOKEN];
+const legacyOut = get({ parameter: { action: 'confirm', token: legacyTok } });
+check('old-style GET still renders the button', /<form method="post" target="_top"/.test(legacyOut));
+check('and still changes nothing until POSTed', row1()[C.STATUS] === 'pending');
+check('POSTing it still confirms',
+      post({ parameter: { action: 'confirm', token: legacyTok } }) &&
+      row1()[C.STATUS] === 'active');
 
 section('34. MANAGE — an active subscriber is mailed their unsubscribe link');
 reset();
