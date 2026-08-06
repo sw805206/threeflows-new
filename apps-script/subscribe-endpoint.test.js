@@ -59,6 +59,7 @@ let alertMail = [];     // MailApp sends (cap alerts)
 let quotaRemaining = 1500;
 let aliases = ['principals@threeflows.com'];
 let mailThrows = false;   // force a send failure
+let serviceUrl = null;    // ScriptApp.getService().getUrl(), null = never deployed
 const log = [];
 
 const HEADER_LEN = 9;
@@ -143,7 +144,10 @@ const sandbox = {
       sentMail.push({ to, subject, body, options });
     }
   },
-  ScriptApp: { getService: () => ({ getUrl: () => 'https://script.google.com/macros/s/TESTID/exec' }) },
+  /* Defaults to NULL — the undeployed state, which is what produced
+     "null?action=confirm&..." in a real test mail. Tests that need a deployment
+     set `serviceUrl`. */
+  ScriptApp: { getService: () => ({ getUrl: () => serviceUrl }) },
   JSON, String, Object, Array, Date, Error, RegExp, encodeURIComponent
 };
 
@@ -178,7 +182,11 @@ function reset(opts) {
   quotaRemaining = 1500;
   aliases = ['principals@threeflows.com'];
   mailThrows = false;
+  serviceUrl = null;
   log.length = 0;
+  /* EXEC_URL pinned, which is the recommended production configuration: links
+     must not depend on the execution context. Cases below override it. */
+  sandbox.EXEC_URL = 'https://script.google.com/macros/s/TESTID/exec';
   sandbox.CONFIRM_BODY = ('body' in opts) ? opts.body : AUTHORED_BODY;
   /* The manage copy is a placeholder in the .gs (the human writes it), so the
      tests supply a stand-in — except where the fail-closed guard is the thing
@@ -209,6 +217,12 @@ const at = (arr, i, k) => (arr && arr[i] ? arr[i][k] : '(nothing recorded)');
  *  is not JSON, not throw and take every later case down with it — which is what
  *  a bare JSON.parse did when a mutation made confirm always return HTML. */
 const asJson = t => { try { return JSON.parse(t); } catch (e) { return { ok: '(not JSON)' }; } };
+
+/** Read the send counter without assuming it exists. A mutation that stops
+ *  sending leaves the property unset, and a bare JSON.parse(undefined) throws —
+ *  taking every later case down with it. Third time this class of brittleness
+ *  has bitten; swept the file for the rest. */
+const counterCount = () => { try { return JSON.parse(props.confirmSendCounter).count; } catch (e) { return '(counter unset)'; } };
 
 let pass = 0, fail = 0;
 function check(label, cond, detail) {
@@ -340,7 +354,7 @@ check('address appears exactly ONCE — no appended duplicate footer',
 check('sent as plain text, no htmlBody',
       (at(sentMail,0,'options')||{}).htmlBody === undefined);
 check('confirm_sent_at stamped', row1()[C.SENT] instanceof Date);
-check('counter incremented', JSON.parse(props.confirmSendCounter).count === 1);
+check('counter incremented', counterCount() === 1);
 check('Ops mirrors the count', opsValue('confirm_sends_today') === 1, String(opsValue('confirm_sends_today')));
 
 section('12. Unverified alias → still sends, but warns');
@@ -423,7 +437,7 @@ reset();
 props.confirmSendCounter = JSON.stringify({ date: '2020-01-01', count: 9999 });
 sub('rollover@example.com');
 check('yesterday\'s count ignored → sent', sentMail.length === 1);
-check('counter reset to 1 for today', JSON.parse(props.confirmSendCounter).count === 1);
+check('counter reset to 1 for today', counterCount() === 1);
 
 section('21. Corrupt counter reads as zero rather than blocking');
 reset();
@@ -612,7 +626,7 @@ check('manage_sent_at stamped', row1()[C.MSENT] instanceof Date);
 check('confirm_sent_at NOT touched — separate clocks',
       row1()[C.SENT] instanceof Date && row1()[C.SENT] !== row1()[C.MSENT]);
 check('counts against the shared daily budget',
-      JSON.parse(props.confirmSendCounter).count === 2, props.confirmSendCounter);
+      counterCount() === 2, props.confirmSendCounter);
 
 section('35. MANAGE — its own cooldown, and NO exemption');
 /* Unlike unsubscribed → pending, this path IS attacker-reachable: anyone can
@@ -667,6 +681,42 @@ sentMail.length = 0;
 check('authored body + placeholder subject → nothing sent',
       manage('subj@example.com') === 'OK' && sentMail.length === 0, 'sent: ' + sentMail.length);
 check('manage_sent_at NOT stamped', row1()[C.MSENT] === '');
+
+section('37c. NO LINK BASE → fail closed, never mail a dead link');
+/* The bug this pins: ScriptApp.getService().getUrl() returns null until the
+   script is deployed as a web app, and concatenating null produced real mail
+   containing "null?action=confirm&token=...". A link that looks fine and cannot
+   work is worse than no mail — the send is spent, confirm_sent_at is stamped so
+   the row LOOKS mailed, and the cooldown then silences the retry. */
+reset();
+sandbox.EXEC_URL = '__EXEC_URL__';
+serviceUrl = null;
+r = sub('nolink@example.com');
+check('returns the same OK', r === 'OK');
+check('row STILL written at pending', dataRows().length === 1 && row1()[C.STATUS] === 'pending');
+check('NOTHING sent — no dead link mailed', sentMail.length === 0, 'sent: ' + sentMail.length);
+check('confirm_sent_at NOT stamped, so the row is not falsely marked mailed',
+      row1()[C.SENT] === '');
+check('owner alerted with the cause', alertMail.length === 1 &&
+      /web app URL unknown/.test(at(alertMail,0,'subject')), at(alertMail,0,'subject'));
+
+section('37d. execUrl_ never yields the string "null"');
+reset();
+sandbox.EXEC_URL = '__EXEC_URL__';
+serviceUrl = null;
+check('unset + undeployed → empty string, not null', sandbox.execUrl_() === '');
+check('and no link contains "null"', sandbox.confirmUrl_('t').indexOf('null') === -1);
+serviceUrl = 'https://script.google.com/macros/s/FROMSERVICE/exec';
+check('falls back to getUrl() when EXEC_URL is unset',
+      sandbox.execUrl_() === 'https://script.google.com/macros/s/FROMSERVICE/exec');
+sandbox.EXEC_URL = 'https://script.google.com/macros/s/PINNED/exec';
+check('the PINNED value wins over the execution context',
+      sandbox.execUrl_() === 'https://script.google.com/macros/s/PINNED/exec');
+reset();
+serviceUrl = null;
+check('pinned alone is enough — no deployment lookup needed',
+      sandbox.execUrl_() === 'https://script.google.com/macros/s/TESTID/exec' &&
+      sandbox.linkBaseReady_() === true);
 
 section('38. UNKNOWN ACTION is rejected, never routed to subscribe');
 /* The regression this exists to prevent: doPost used to fall through to the

@@ -26,6 +26,10 @@
  *   2. Verify principals@threeflows.com as a send-as alias (see below), or mail
  *      goes out as the Sheet's owner instead.
  *   3. Re-authorise — stage 2 needs scopes stage 1 did not.
+ *   4. Deploy as a web app, then paste the resulting /exec URL into EXEC_URL
+ *      below and redeploy (New version). Until that is done every emailed link
+ *      has no usable base, and sending is REFUSED rather than mailing a dead
+ *      link — see linkBaseReady_.
  * BOTH mail bodies are now configured, so nothing is held back by a placeholder:
  * a deploy sends confirmations AND manage links for real.
  * (If CONFIRM_BODY is ever reset to a placeholder, bodyReady_() fails closed
@@ -185,6 +189,32 @@ var PROP_ALERT_DATE = 'capAlertDate';
 var ALERT_TO = 'contact@threeflows.com';
 var FROM_ADDRESS = 'principals@threeflows.com';
 var FROM_NAME = 'Three Flows Solutions';
+
+/**
+ * THE DEPLOYED /exec URL — the base for every emailed link.
+ *
+ * WHY THIS IS A CONSTANT AND NOT JUST ScriptApp.getService().getUrl().
+ * getUrl() returns NULL until the script has been deployed as a web app, and
+ * string-concatenating null produced mail containing
+ * "null?action=confirm&token=..." — a link that looks fine and cannot work.
+ * Deploying does populate it, but the dependency is worse than that one failure:
+ * getUrl() answers for the CURRENT EXECUTION CONTEXT, so a run started from the
+ * editor can hand back the /dev URL, which only works for the script's owner
+ * while signed in. That would mint confirmation links that work perfectly for
+ * whoever tested them and fail for every actual subscriber — the worst kind of
+ * bug, because testing reports success.
+ *
+ * So the URL is pinned here, deterministically, exactly as
+ * assets/contact-form.js pins its own endpoint. Paste the /exec URL after the
+ * first deploy. getUrl() is kept only as a fallback for the case where this is
+ * unset but a deployment does exist.
+ *
+ * It does NOT need updating for an ordinary redeploy: Deploy → Manage
+ * deployments → New version keeps the same /exec URL. It DOES need updating if
+ * a brand-new deployment is ever created, which is the same hazard the redeploy
+ * caveat at the top of this file already warns about.
+ */
+var EXEC_URL = '__EXEC_URL__';
 
 /** Public site root. Confirm and unsubscribe both hand the visitor back to the
  *  real branded page rather than leaving them on a Google URL. */
@@ -688,9 +718,11 @@ function manageBodyReady_() {
 /**
  * May a confirmation be sent right now? Returns a reason string, or '' to allow.
  *
- * Three independent gates, cheapest first. `kind` is 'confirm' or 'manage' and
+ * Four independent gates, cheapest first. `kind` is 'confirm' or 'manage' and
  * selects which body must be configured; the cap and the quota floor are shared,
  * because both kinds draw on the same daily budget.
+ *   0. No usable link base → refuse. Every mail here carries a tokenised link,
+ *      so without one there is nothing worth sending.
  *   1. The copy is not written yet → refuse (fail closed on a half-built deploy).
  *   2. Our own counter has reached DAILY_SEND_CAP.
  *   3. The platform's own remaining quota is below QUOTA_RESERVE. This catches
@@ -698,6 +730,9 @@ function manageBodyReady_() {
  *      this account needs — the counter knows nothing about mail sent by hand.
  */
 function sendBlockedReason_(kind) {
+  if (!linkBaseReady_()) {
+    return 'web app URL unknown — set EXEC_URL, or deploy as a web app';
+  }
   if (kind === 'manage') {
     if (!manageBodyReady_()) return 'manage body not configured';
   } else if (!bodyReady_()) {
@@ -766,9 +801,36 @@ function alertCapTripped_(reason, pendingEmail) {
    OUTBOUND MAIL
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/** The deployed /exec URL, which is also the base for every emailed link. */
+/**
+ * The deployed /exec URL, or '' when it cannot be determined.
+ *
+ * Returns a STRING ALWAYS — never null — so no caller can concatenate the word
+ * "null" into a link. '' is the honest "unknown", and linkBaseReady_() below is
+ * what stops an unknown base ever reaching an email.
+ */
 function execUrl_() {
-  return ScriptApp.getService().getUrl();
+  if (EXEC_URL && EXEC_URL.indexOf('__') !== 0) return EXEC_URL;
+  var fromService = null;
+  try {
+    fromService = ScriptApp.getService().getUrl();
+  } catch (urlErr) {
+    console.warn('ScriptApp.getService().getUrl() threw: ' + urlErr);
+  }
+  return fromService || '';
+}
+
+/**
+ * Can a usable link be built at all?
+ *
+ * Gates SENDING, not just link-building — see sendBlockedReason_. A mail whose
+ * link cannot work is worse than no mail: the recipient cannot act, the send is
+ * spent against the daily cap, confirm_sent_at is stamped so the row LOOKS
+ * mailed, and the 15-minute cooldown then silences their retry. One missing
+ * deployment compounds into a subscriber who is stuck and invisible. Fail closed
+ * instead, exactly as an unwritten mail body does.
+ */
+function linkBaseReady_() {
+  return execUrl_() !== '';
 }
 
 function confirmUrl_(token) {
@@ -1165,7 +1227,10 @@ function doGet(e) {
     return page_('Confirm your subscription',
       '<h1 style="font-size:1.3em">Confirm your subscription</h1>' +
       '<p>Click the button below to start receiving Three Flows updates.</p>' +
-      '<form method="post" action="' + esc_(execUrl_()) + '">' +
+      /* An EMPTY action posts back to the current URL, which IS the /exec URL
+         being viewed — so omitting it is strictly more robust than emitting a
+         base we may not know. Never interpolate a possibly-empty base here. */
+      '<form method="post"' + (execUrl_() ? ' action="' + esc_(execUrl_()) + '"' : '') + '>' +
       '<input type="hidden" name="action" value="confirm">' +
       '<input type="hidden" name="token" value="' + esc_(token) + '">' +
       '<button type="submit" style="font:inherit;padding:.7em 1.4em;border:0;' +
@@ -1509,6 +1574,7 @@ function testBudget() {
   Logger.log('date (%s):       %s', TIMEZONE, today_());
   Logger.log('sends today:     %s of %s', counterRead_(), DAILY_SEND_CAP);
   Logger.log('platform quota:  %s remaining (reserve %s)', MailApp.getRemainingDailyQuota(), QUOTA_RESERVE);
+  Logger.log('link base:       %s', execUrl_() || 'UNKNOWN — set EXEC_URL or deploy as a web app');
   Logger.log('confirm copy:    %s', bodyReady_() ? 'configured' : 'NOT CONFIGURED');
   Logger.log('manage copy:     %s', manageBodyReady_() ? 'configured' : 'NOT CONFIGURED');
   var bc = sendBlockedReason_('confirm');
