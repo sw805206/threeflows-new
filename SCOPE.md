@@ -1,10 +1,10 @@
-v025 | 2026-08-02 | 146 lines
+v026 | 2026-08-05 | 146 lines
 
 # SCOPE.md — threeflows.com
 
 ## 1. Project
 
-Threeflows Solutions LLC is a boutique business consultancy specializing in
+Three Flows Solutions LLC is a boutique business consultancy specializing in
 business modeling and e-commerce. This repo holds threeflows.com, its
 multi-page static marketing website.
 
