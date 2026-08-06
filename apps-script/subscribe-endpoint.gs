@@ -26,6 +26,8 @@
  *   2. Verify principals@threeflows.com as a send-as alias (see below), or mail
  *      goes out as the Sheet's owner instead.
  *   3. Re-authorise — stage 2 needs scopes stage 1 did not.
+ * BOTH mail bodies are now configured, so nothing is held back by a placeholder:
+ * a deploy sends confirmations AND manage links for real.
  * (If CONFIRM_BODY is ever reset to a placeholder, bodyReady_() fails closed
  * again: rows are still written, nothing is sent.)
  *
@@ -233,33 +235,35 @@ var CONFIRM_BODY = [
 ].join('\n');
 
 /**
- * THE MANAGE EMAIL. Body authored and reproduced verbatim; SUBJECT STILL NEEDED.
+ * THE MANAGE EMAIL — human-authored, subject and body both settled.
  *
  * Sent when someone uses the manage/cancel form and their address is an ACTIVE
  * subscription. {{UNSUBSCRIBE_URL}} is replaced with their durable one-click
  * link — the same one every update carries, which is exactly what the copy says.
  *
- * MANAGE_SUBJECT is still a placeholder, so manage STILL FAILS CLOSED: nothing
- * is sent and nothing is stamped until it is filled in. manageBodyReady_()
- * requires BOTH, because a placeholder subject is just as visible in an inbox as
- * a placeholder body.
+ * THE SUBJECT IS A NEUTRAL NOUN PHRASE ON PURPOSE. "Manage your subscription"
+ * would have paralleled the confirmation's subject, and was rejected for a
+ * reason worth keeping: anyone can request a manage link for any address, so
+ * this mail SOMETIMES ARRIVES UNREQUESTED. An imperative subject reads as an
+ * instruction to someone who never asked for it; a noun phrase does not. Do not
+ * "fix" it into parallel construction with CONFIRM_SUBJECT.
  *
- * The sequencing consequence stands until then: the site's manage form would say
- * "check your inbox" and nothing would arrive — the exact dishonesty this action
- * exists to remove. THE SUBJECT IS A BLOCKER FOR MERGING THE SITE BRANCH.
+ * The body's closing line is load-bearing for the same reason, and the harness
+ * asserts it by content: "you can ignore it — nothing has changed, and you're
+ * still subscribed." It is literally true — a manage request rotates no token
+ * and changes no status — and it is what makes an unrequested arrival harmless
+ * rather than alarming. It is also why nothing in this flow needs gating behind
+ * proof of identity.
  *
  * NO FOOTER IS APPENDED, as with CONFIRM_BODY. The copy carries its own sign-off
  * and postal address, and it already contains the unsubscribe link — appending
  * mailFooter_ would print both twice.
  *
- * One line is load-bearing rather than decorative: "you can ignore it — nothing
- * has changed, and you're still subscribed." Anyone can request a manage link
- * for any address, so an unrequested one WILL occasionally land in a
- * subscriber's inbox. That sentence is what makes an unrequested arrival
- * harmless instead of alarming, and it is why nothing in this flow needs to be
- * gated behind proof of identity.
+ * If either is ever reset to a placeholder, manageBodyReady_() fails closed:
+ * nothing is sent, nothing is stamped. It requires BOTH, because a placeholder
+ * subject is just as visible in an inbox as a placeholder body.
  */
-var MANAGE_SUBJECT = '__MANAGE_SUBJECT__';
+var MANAGE_SUBJECT = 'Your Three Flows subscription';
 
 var MANAGE_BODY = [
   "You asked for a link to manage your subscription to Three Flows",
@@ -1404,9 +1408,9 @@ function handleSubscribePost_(p) {
                                 platform quota, and whether each mail kind is
                                 allowed to send
      9. testManage            → mails the unsubscribe link, but ONLY once the
-                                address is ACTIVE (confirm it first). Needs
-                                MANAGE_SUBJECT/MANAGE_BODY filled in; until then
-                                it fails closed and sends nothing.
+                                address is ACTIVE (confirm it first). A run that
+                                appears to do nothing almost always means the row
+                                is still pending.
     10. testUnknownAction     → returns OK, writes NOTHING, sends NOTHING
    Then set a row's status to "active" by hand and run 1 again: nothing changes.
    Set it to "unsubscribed" and run 1 again: status returns to "pending", token

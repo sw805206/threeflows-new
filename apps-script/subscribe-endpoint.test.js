@@ -154,6 +154,7 @@ vm.runInContext(fs.readFileSync(TARGET, 'utf8'), sandbox);
  *  exercise the real thing rather than a stand-in. */
 const AUTHORED_BODY = sandbox.CONFIRM_BODY;
 const AUTHORED_MANAGE_BODY = sandbox.MANAGE_BODY;
+const AUTHORED_MANAGE_SUBJECT = sandbox.MANAGE_SUBJECT;
 
 /* ── Harness plumbing ────────────────────────────────────────────────────── */
 
@@ -182,11 +183,9 @@ function reset(opts) {
   /* The manage copy is a placeholder in the .gs (the human writes it), so the
      tests supply a stand-in — except where the fail-closed guard is the thing
      under test. */
-  /* The manage BODY is authored, so the tests exercise the real copy. The
-     SUBJECT is still a placeholder in the .gs, so a stand-in is supplied here —
-     otherwise every manage case would fail closed and prove nothing. Case 37b
-     pins that the real placeholder subject DOES fail closed. */
-  sandbox.MANAGE_SUBJECT = ('manageSubject' in opts) ? opts.manageSubject : 'Manage your subscription';
+  /* Both manage copies are authored now, so the tests exercise the real thing.
+     Case 37b overrides the subject to prove the fail-closed guard still bites. */
+  sandbox.MANAGE_SUBJECT = ('manageSubject' in opts) ? opts.manageSubject : AUTHORED_MANAGE_SUBJECT;
   sandbox.MANAGE_BODY = ('manageBody' in opts) ? opts.manageBody : AUTHORED_MANAGE_BODY;
 }
 
@@ -589,6 +588,11 @@ console.log('    ' + show());
 check('returns the same OK', out2 === 'OK');
 check('exactly one mail sent', sentMail.length === 1, 'sent: ' + sentMail.length);
 check('sent to the subscriber', at(sentMail,0,'to') === 'm@example.com');
+/* A NEUTRAL NOUN PHRASE, not the imperative that would parallel the
+   confirmation's subject. This mail sometimes arrives unrequested, and an
+   imperative reads as an instruction to someone who never asked. */
+check('settled subject', at(sentMail,0,'subject') === 'Your Three Flows subscription',
+      at(sentMail,0,'subject'));
 check('carries the DURABLE unsubscribe token, not a new one',
       at(sentMail,0,'body').indexOf(durable) !== -1);
 check('opens with the authored first line',
@@ -652,10 +656,10 @@ check('manage_sent_at NOT stamped', row1()[C.MSENT] === '');
 check('owner alerted', alertMail.length === 1 && /manage body not configured/.test(at(alertMail,0,'subject')),
       at(alertMail,0,'subject'));
 
-section('37b. MANAGE — a placeholder SUBJECT alone fails closed');
-/* The body is authored but the subject is not, and manageBodyReady_ requires
-   BOTH: a placeholder subject is just as visible in an inbox as a placeholder
-   body. This is the live state of the .gs today. */
+section('37b. MANAGE — a placeholder SUBJECT alone still fails closed');
+/* Both copies are authored now, so this forces a placeholder subject back in to
+   prove the guard requires BOTH — a placeholder subject is just as visible in an
+   inbox as a placeholder body. */
 reset({ manageSubject: '__MANAGE_SUBJECT__' });
 sub('subj@example.com');
 post({ parameter: { action: 'confirm', token: row1()[C.TOKEN] } });
