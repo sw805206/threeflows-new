@@ -393,24 +393,36 @@ function doPost(e) {
    can only run zero-argument functions, which is why each builds its own mock
    `e` and calls doPost with it.
 
+   NO TRAILING UNDERSCORE ON THESE — do not "fix" them to match the private
+   helpers above. In Apps Script a trailing underscore marks a function PRIVATE:
+   it disappears from the editor's Run dropdown and cannot be invoked from it.
+   Every helper above is correctly private; these five must be PUBLIC or they
+   cannot be run, which is their entire purpose. (They were shipped with the
+   underscore once and had to be driven by hand-pasted wrappers — that is the
+   mistake this note exists to prevent.) Making them public exposes nothing over
+   HTTP: only doGet/doPost are web-reachable, so running these still requires
+   editor access to the script.
+
    THEY WRITE REAL ROWS to the Subscribe tab. Use the example.com addresses
    below (never a real one) and delete the rows afterwards.
 
    Suggested order for a first run:
-     1. test_formEncoded_   → expect a new "pending" row, token filled
-     2. test_formEncoded_   → run AGAIN: same row re-armed, token CHANGES,
+     1. testFormEncoded     → expect a new "pending" row, token filled
+     2. testFormEncoded     → run AGAIN: same row re-armed, token CHANGES,
                               timestamp updates, still exactly one row
-     3. test_json_          → a second pending row for the json@ address
-     4. test_honeypot_      → returns OK, writes NOTHING (row count unchanged)
-     5. test_malformedEmail_→ returns OK, writes NOTHING
+     3. testJson            → a second pending row for the json@ address
+     4. testHoneypot        → returns OK, writes NOTHING (row count unchanged)
+     5. testMalformedEmail  → returns OK, writes NOTHING
+     6. testFormulaInjection→ returns OK, writes NOTHING
    Then set the first row's status to "active" by hand and run 1 again: nothing
    changes. Set it to "unsubscribed" and run 1 again: status returns to
-   "pending", token changes, unsubscribed_at clears.
+   "pending", token changes, unsubscribed_at clears. Those last two are the
+   paths the harness proves in memory but only the real Sheet can confirm.
    ───────────────────────────────────────────────────────────────────────────── */
 
 /** Mock: form-encoded / multipart — the encoding contact-form.js already uses,
  *  and the one recommended for stage 3. */
-function test_formEncoded_() {
+function testFormEncoded() {
   var e = {
     parameter: {
       email: 'form-test@example.com',
@@ -428,7 +440,7 @@ function test_formEncoded_() {
 /** Mock: JSON body. e.parameter is empty exactly as it would be for a real
  *  JSON POST, so this exercises the readParams_ fallback rather than shadowing
  *  it with parameters that were never sent. */
-function test_json_() {
+function testJson() {
   var e = {
     parameter: {},
     postData: {
@@ -445,7 +457,7 @@ function test_json_() {
 
 /** Mock: honeypot filled — must return OK and write NOTHING. Check the row
  *  count before and after; it must not move. */
-function test_honeypot_() {
+function testHoneypot() {
   var e = {
     parameter: {
       email: 'bot-test@example.com',
@@ -457,14 +469,14 @@ function test_honeypot_() {
 }
 
 /** Mock: malformed address — must return OK and write NOTHING. */
-function test_malformedEmail_() {
+function testMalformedEmail() {
   var e = { parameter: { email: 'not-an-email', source_page: 'subscribe.html', website: '' } };
   Logger.log('response: ' + doPost(e).getContent() + '  (expect NO new row)');
 }
 
 /** Mock: the formula-injection guard. An address whose local part starts with
  *  "=" is rejected by EMAIL_RE, so nothing reaches the Sheet as a formula. */
-function test_formulaInjection_() {
+function testFormulaInjection() {
   var e = { parameter: { email: '=HYPERLINK("http://x")@example.com', source_page: 'subscribe.html', website: '' } };
   Logger.log('response: ' + doPost(e).getContent() + '  (expect NO new row)');
 }
