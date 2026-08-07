@@ -167,6 +167,20 @@
               <div>
                 <h2 class="tf-callout-title">Thank you</h2>
                 <p class="tf-callout-body">We'll respond within 2 business days.</p>
+                <!-- Subscribe CTA — INSIDE the success panel, so it renders only
+                     once the message-sent state does, and nowhere else on the
+                     page. contact-form.js SWAPS this panel in place (form.hidden
+                     = true, this revealed) rather than redirecting, so scoping it
+                     needed no restructuring.
+                     THE ONE PLACEMENT KEPT when the inline CTAs were replaced by
+                     the site-wide footer one: it is the only spot with good
+                     TIMING rather than good visibility — the reader has just
+                     finished something and is receptive — and the footer CTA is
+                     generic where this one can acknowledge what just happened.
+                     "While you're here" framing for that reason; an unframed
+                     subscribe pitch would read as if the form had not
+                     registered. -->
+                <p class="tf-callout-body">While you&rsquo;re here: <a href="subscribe.html">Subscribe</a> to get Three Flows&rsquo; updates by email. Unsubscribe anytime.</p>
               </div>
             </div>
           </div>
