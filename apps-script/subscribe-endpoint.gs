@@ -81,7 +81,8 @@
  * Tab "Subscribe", row 1 frozen, headers in A–H exactly as HEADER below:
  *   A timestamp | B email | C status | D token | E confirmed_at
  *   F unsubscribed_at | G source_page | H confirm_sent_at | I manage_sent_at
- * I IS NEW IN DEPLOY A — add it to the live Sheet before deploying, as H was.
+ *   J last_update_id
+ * I IS NEW IN DEPLOY A and J IN STAGE 4 — add them to the live Sheet, as H was.
  * It is a SEPARATE clock from H on purpose: a flood of manage requests must not
  * be able to silence a legitimate confirmation re-send, nor the reverse.
  * Read BY NAME, never by index, so re-ordering tabs cannot repoint the writes.
@@ -121,7 +122,8 @@
 var SHEET_NAME = 'Subscribe';
 var OPS_SHEET_NAME = 'Ops';
 var HEADER = ['timestamp', 'email', 'status', 'token', 'confirmed_at',
-              'unsubscribed_at', 'source_page', 'confirm_sent_at', 'manage_sent_at'];
+              'unsubscribed_at', 'source_page', 'confirm_sent_at', 'manage_sent_at',
+              'last_update_id'];
 
 /** 1-based column positions, derived from HEADER's order above. Named so a
  *  column move is a one-line change here rather than a hunt for magic numbers. */
@@ -134,6 +136,12 @@ var COL_UNSUBSCRIBED_AT = 6;   // F
 var COL_SOURCE_PAGE     = 7;   // G
 var COL_CONFIRM_SENT_AT = 8;   // H — stage 2
 var COL_MANAGE_SENT_AT  = 9;   // I — deploy A
+/* J — stage 4. The id of the most recent UPDATE delivered to this row. It is
+   what makes a bulk send resumable: the recipient set for a job is "active rows
+   whose last_update_id is not this job's", so re-running after an interruption
+   picks up exactly the unsent ones and can never double-send. Written by
+   subscribe-updates.gs, which shares this project's global scope. */
+var COL_LAST_UPDATE_ID  = 10;  // J — stage 4
 
 /** Status vocabulary. Any value outside this set is treated as UNKNOWN and left
  *  strictly alone — see subscribe_ for why that is the safe default. */

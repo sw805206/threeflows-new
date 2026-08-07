@@ -62,7 +62,7 @@ let mailThrows = false;   // force a send failure
 let serviceUrl = null;    // ScriptApp.getService().getUrl(), null = never deployed
 const log = [];
 
-const HEADER_LEN = 9;
+const HEADER_LEN = 10;
 
 function makeSheet(store) {
   return {
@@ -164,7 +164,8 @@ const AUTHORED_MANAGE_SUBJECT = sandbox.MANAGE_SUBJECT;
 
 /** The sheet's frozen row 1, asserted against rather than imported. */
 const H = ['timestamp', 'email', 'status', 'token', 'confirmed_at',
-           'unsubscribed_at', 'source_page', 'confirm_sent_at', 'manage_sent_at'];
+           'unsubscribed_at', 'source_page', 'confirm_sent_at', 'manage_sent_at',
+           'last_update_id'];
 
 const C = { TS: 0, EMAIL: 1, STATUS: 2, TOKEN: 3, CONFIRMED: 4, UNSUB: 5, SRC: 6,
             SENT: 7, MSENT: 8 };
@@ -232,6 +233,23 @@ function check(label, cond, detail) {
 function section(t) { console.log(`\n=== ${t} ===`); }
 
 /* ── Stage 1: the subscribe state machine ────────────────────────────────── */
+
+section('0. The column spec itself');
+/* This file claims to assert against the SPEC rather than re-derive it from the
+   code — but nothing actually compared HEADER, so growing it from 9 columns to
+   10 passed silently, and DELETING a column passed too. A duplicated constant
+   that is never compared is just a stale copy. Compared now: a column added,
+   removed or renamed in the .gs fails HERE first, which is the entire reason for
+   writing it out twice. */
+check('HEADER matches the expected column order exactly',
+      JSON.stringify(sandbox.HEADER) === JSON.stringify(H),
+      'gs:   ' + JSON.stringify(sandbox.HEADER) + '\n        spec: ' + JSON.stringify(H));
+check('the COL_* map agrees with those positions',
+      sandbox.COL_TIMESTAMP === 1 && sandbox.COL_EMAIL === 2 && sandbox.COL_STATUS === 3 &&
+      sandbox.COL_TOKEN === 4 && sandbox.COL_CONFIRMED_AT === 5 &&
+      sandbox.COL_UNSUBSCRIBED_AT === 6 && sandbox.COL_SOURCE_PAGE === 7 &&
+      sandbox.COL_CONFIRM_SENT_AT === 8 && sandbox.COL_MANAGE_SENT_AT === 9 &&
+      sandbox.COL_LAST_UPDATE_ID === 10);
 
 section('1. New address, form-encoded');
 reset();
