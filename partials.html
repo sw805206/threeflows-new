@@ -4,8 +4,10 @@
   every page by the snippet at the bottom of each shell page. Edit the
   header/footer once here; every page updates. Not a standalone page.
 
-  Hidden pages (surveys.html; privacy.html except the footer link) must
-  never be added to the nav.
+  Hidden pages (surveys.html; privacy.html and subscribe.html except their
+  footer links) must never be added to the nav. A footer link is NOT a nav
+  entry: the nav below is the source of truth for what is publicly listed
+  (SCOPE.md), and both pages stay unlisted and noindex regardless.
 -->
 <template id="tf-header-partial">
   <header class="tf-nav">
@@ -74,7 +76,23 @@
         <img src="assets/logo-mark-reversed.svg" alt="" class="tf-lockup-mark">
         <small>© 2026 Three Flows Solutions LLC. All rights reserved.</small>
       </div>
+      <!-- Subscribe joins Privacy & Terms in the footer bar — one word, no
+           sentence, no second row. The footer's spareness is the design; a CTA
+           that doubled its height would be a different footer.
+
+           NO NEW CSS, and nothing here is a new pattern. It is a second child of
+           the existing .tf-footer-links flex nav, so it inherits that nav's 14px
+           / 500 and its `gap: var(--tf-space-3)` — which IS the site's separator
+           between footer links. No glyph is added: the gap is what the footer
+           already uses, and a "·" or "|" would be inventing a device this
+           footer does not have. The colour comes from
+           `.tf-surface-ink.tf-footer a`, the footer-specific brick tint ratified
+           at ~4.8:1 against this lighter ground.
+
+           Subscribe sits FIRST because it is the action; the legal link
+           conventionally closes a footer. -->
       <nav class="tf-footer-links" aria-label="Footer">
+        <a href="subscribe.html">Subscribe</a>
         <a href="privacy.html">Privacy &amp; Terms</a>
       </nav>
     </div>
