@@ -248,8 +248,15 @@ var CONFIRM_SUBJECT = 'Confirm your subscription to Three Flows updates';
  * Plain text, sent as-is. {{CONFIRM_URL}} is replaced with the confirm link.
  * Written as an array of lines so the copy stays readable and reviewable in a
  * diff; double quotes throughout because the copy contains apostrophes and
- * escaping them would obscure the words. Line breaks are the author's — do not
- * re-wrap.
+ * escaping them would obscure the words.
+ *
+ * ONE PARAGRAPH PER LINE, NOT HARD-WRAPPED. Do not re-introduce ~60-character
+ * breaks. A hard-wrapped plain-text body gets wrapped AGAIN by the client at its
+ * own width, and on a phone that produces a ragged column of half-empty lines.
+ * Leaving each paragraph as one long line lets the reader's client wrap it once,
+ * to the width it actually has. The blank lines between paragraphs are what
+ * carries the structure. The footer's three lines — "—", the company, the
+ * address — ARE deliberate breaks and stay as they are.
  *
  * NO UNSUBSCRIBE FOOTER IS APPENDED TO THIS MAIL, deliberately. The recipient is
  * not subscribed yet — a pending row is not a subscription — so there is nothing
@@ -269,11 +276,9 @@ var CONFIRM_BODY = [
   "",
   "{{CONFIRM_URL}}",
   "",
-  "We'll email you when there's something new: blog posts, tools,",
-  "seminars, and occasional news.",
+  "We'll email you when there's something new: blog posts, tools, seminars, and occasional news.",
   "",
-  "If you didn't request this, ignore this email — you won't be",
-  "added, and we won't contact you again.",
+  "If you didn't request this, ignore this email — you won't be added, and we won't contact you again.",
   "",
   "—",
   "Three Flows Solutions LLC",
@@ -312,18 +317,15 @@ var CONFIRM_BODY = [
 var MANAGE_SUBJECT = 'Your Three Flows subscription';
 
 var MANAGE_BODY = [
-  "You asked for a link to manage your subscription to Three Flows",
-  "updates.",
+  "You asked for a link to manage your subscription to Three Flows updates.",
   "",
   "To unsubscribe, click below:",
   "",
   "{{UNSUBSCRIBE_URL}}",
   "",
-  "That's the same link that appears at the bottom of every update",
-  "we send, so you can also cancel from any email in your inbox.",
+  "That's the same link that appears at the bottom of every update we send, so you can also cancel from any email in your inbox.",
   "",
-  "If you didn't request this, you can ignore it — nothing has",
-  "changed, and you're still subscribed.",
+  "If you didn't request this, you can ignore it — nothing has changed, and you're still subscribed.",
   "",
   "—",
   "Three Flows Solutions LLC",

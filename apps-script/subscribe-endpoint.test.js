@@ -635,6 +635,26 @@ check('POSTing it still confirms',
       post({ parameter: { action: 'confirm', token: legacyTok } }) &&
       row1()[C.STATUS] === 'active');
 
+section('33d. Bodies are ONE PARAGRAPH PER LINE, not hard-wrapped');
+/* A hard-wrapped plain-text body gets wrapped AGAIN by the client at its own
+   width, which on a phone reads as a ragged column of half-empty lines. Blank
+   lines carry the structure; each paragraph is one long line. The footer's three
+   lines below the "—" are deliberate and exempt. */
+[['confirmation', sandbox.CONFIRM_BODY], ['manage', sandbox.MANAGE_BODY]].forEach(([label, body]) => {
+  const lines = body.split('\n');
+  const sep = lines.indexOf('—');
+  check(`${label}: has the — footer separator`, sep > 0, 'index: ' + sep);
+  const prose = lines.slice(0, sep);
+  let wrapped = null;
+  for (let i = 0; i + 1 < prose.length; i++) {
+    if (prose[i].trim() !== '' && prose[i + 1].trim() !== '') { wrapped = prose[i]; break; }
+  }
+  check(`${label}: no paragraph is split across two lines`, wrapped === null,
+        'wrapped at: ' + JSON.stringify(wrapped));
+  check(`${label}: footer keeps its two address lines`,
+        lines.slice(sep).filter(l => l.trim() !== '').length === 3, lines.slice(sep).join(' | '));
+});
+
 section('34. MANAGE — an active subscriber is mailed their unsubscribe link');
 reset();
 sub('m@example.com');
@@ -659,7 +679,7 @@ check('opens with the authored first line',
    address, so an unrequested one WILL sometimes land in a subscriber's inbox.
    This sentence is what makes that harmless rather than alarming. */
 check('reassures an unrequested recipient they are still subscribed',
-      /nothing has\s+changed, and you're still subscribed/.test(at(sentMail,0,'body')));
+      at(sentMail,0,'body').indexOf("nothing has changed, and you're still subscribed") !== -1);
 check('address appears exactly ONCE — no appended duplicate footer',
       at(sentMail,0,'body').split('7211 Austin St.').length - 1 === 1);
 check('sent as plain text, no htmlBody',
