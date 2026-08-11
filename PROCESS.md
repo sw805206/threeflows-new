@@ -1,4 +1,4 @@
-v010 | 2026-08-02 | 273 lines
+v011 | 2026-08-11 | 371 lines
 
 # PROCESS.md — Human/Claude working procedures (this project)
 
@@ -8,7 +8,7 @@ universal human/Claude rules live in CLAUDE.md Part C. Registered in SCOPE.md.
 
 Sections: (1) Images · (2) Blog updates · (3) Client and reference cards ·
 (4) Stylebook maintenance · (5) Privacy page stamp · (6) Building or adding a
-page · (7) Scheduled site scan
+page · (7) Scheduled site scan · (8) Sending an email update
 
 ---
 
@@ -271,3 +271,101 @@ without repo activity.
 
 **Status: the Action does not exist yet.** This section documents the intended
 process; building the workflow is tracked in BACKLOG.md.
+
+---
+
+## 8. Sending an email update
+
+Periodic email to confirmed subscribers — new blog posts, tools, seminars. The
+promise made publicly in `privacy.html` is what this has to satisfy: confirmed
+opt-in, no tracking pixels, an unsubscribe link in every update, and a list that
+never leaves our own Google Workspace.
+
+### Where the pieces live
+
+- **`subscribe.html` + `assets/subscribe.js`** — the public page, five states in
+  one file. In this repo, on main.
+- **`apps-script/subscribe-endpoint.gs`** — the web app the page POSTs to.
+  Writes rows, sends confirmations, handles confirm / unsubscribe / manage.
+- **`apps-script/subscribe-updates.gs`** — the update sender. Menu-driven, not
+  web-facing.
+- **Both `.gs` files run in ONE container-bound Apps Script project** on the
+  "Subscribe" Google Sheet, sharing global scope. `subscribe-updates.gs` calls
+  the endpoint's helpers and column map directly, so it throws on its own. Both
+  must be pasted; neither is executed by the static site.
+- **The Sheet** — tab `Subscribe` holds the list, columns A–J. Tab `Ops` mirrors
+  send counters and job state. Both are read BY NAME, so tab order is free and
+  extra tabs are invisible to the code. Do not rename or delete either:
+  `getSheet_` silently recreates a missing `Subscribe` as an empty tab.
+
+### The operator procedure lives in the Sheet, not here
+
+The step-by-step is a tab named **"How to send"** in the Subscribe Sheet. That is
+deliberate — the procedure is followed while standing in the Sheet, with the
+menu open, so it belongs where it is used rather than in a repo file the operator
+would have to go and find. This section is the record that the stream exists,
+what it depends on, and what it cannot do.
+
+In outline: the update is authored as a **Gmail draft addressed to
+`updates@threeflows.com`** (a sentinel address, matched on the To: field, exactly
+one at a time), tested through the identical code path via "Send test to me…",
+then sent from "Send update to active subscribers…". The draft is never sent by
+hand.
+
+### Prerequisites, all one-time and all manual
+
+Columns H, I and J on the live Sheet; `principals@threeflows.com` verified as a
+send-as alias; both files pasted; re-authorisation after a scope change.
+**All are satisfied as of 2026-08-11** — verified by a live test send that
+arrived from the correct alias with a working footer.
+
+**Never create a new Apps Script deployment.** Edit the existing web app:
+Deploy → Manage deployments → pencil → Version: New version. A new deployment
+mints a new `/exec` URL, which breaks the live form *and* every confirm and
+unsubscribe link already sitting in an inbox. Those links are permanent and
+unrecallable — this is the one irreversible mistake available here.
+
+### What the guards do, so nobody works around them
+
+- **One draft only.** Zero matches and two-or-more both hard-fail rather than
+  guess, because the send cannot be undone.
+- **Test-before-send.** A draft edited since its last test is refused. The guard
+  targets the exact sequence where mistakes ship: test, spot a typo, fix, send.
+- **Recipient count in the confirmation dialog.** The cheapest catch for "wrong
+  draft". A count that is not what you expected means stop.
+- **Resume by column J.** The recipient set is derived every run — active rows
+  whose `last_update_id` is not this job's — so an interrupted send is resumed by
+  simply running it again. Never a progress record to fall out of sync.
+- **Budget.** Updates stop while 250 of the platform quota remain, reserved for
+  time-critical confirmations. Separate counters, so neither kind of mail can
+  starve the other. Note there is **no daily cap on updates** — `DAILY_SEND_CAP`
+  gates confirmations only.
+- **Abandon unsends nothing.** It closes the job. The next send mints a new id,
+  so everyone already served looks unsent and would receive the same content
+  again. Only abandon when the open job carries different content.
+
+### Known gaps
+
+- **Images must be inserted by URL**, not uploaded. The send copies the draft's
+  subject and both body renderings but not its attachments, so an uploaded image
+  arrives as a broken `cid:` reference. Hosting the image on the site is also the
+  better shape for bulk mail — an embedded image is transmitted once per
+  recipient and pushes the message toward Gmail's clipping threshold, which would
+  hide the footer.
+- **No `List-Unsubscribe` header.** GmailApp cannot set custom headers; it needs
+  the Gmail API advanced service. This is the largest deliverability lever for
+  bulk mail, and without it someone who wants out is likelier to press "report
+  spam". The public one-click promise is met by the footer link.
+- **No send history.** Job ids are opaque UUIDs and the active-job record is
+  deleted on completion. The Ops tab is a last-write-wins mirror, never cleared —
+  it shows the *last* job's subject and start time whether or not that job is
+  still open. **`Show send status` is the authoritative check**, not Ops.
+- **No self-scheduling trigger,** by decision. A long job is chunked and resumed
+  by hand; an orphaned time-based trigger is its own failure mode and the list is
+  far too small to need one.
+
+**Status: the source is not on main.** Both `.gs` files and their test harnesses
+exist only on the unpushed local branch `feat/subscribe-endpoint`. The deployed
+copy lives in Google and runs regardless, but the versioned source and the tests
+are unbacked. SCOPE.md §3 does not yet acknowledge either Apps Script backend,
+and no BACKLOG.md row tracks this stream.
