@@ -1,4 +1,4 @@
-v037 | 2026-08-02 | 252 lines
+v038 | 2026-08-10 | 252 lines
 
 # BACKLOG.md — threeflows-new
 
@@ -30,7 +30,7 @@ branch, no PR.
 | BL-002 | close | governance | SCOPE.md v002: add rule "Style-system changes identified but not immediately implemented are logged to BACKLOG.md — never left untracked."; trim Open decisions now tracked here (BL-007, BL-008) | 2026-07-15 | User ratified; verified in SCOPE.md v003 (style-tracking rule + trimmed Open decisions present) |
 | BL-003 | discard | feature | Current-page nav underline affordance (ink text + 2px brick underline) — implemented in PR#1, then removed by user design decision | 2026-07-15 | User: underline removed by design decision |
 | BL-004 | close | feature | Footer buildout: decide what the minimal footer grows into (nav links, contact info, tagline) | 2026-07-15 | User: current footer is good as an MVP; further buildout added when needed. |
-| BL-005 | open | feature | Tagline: placeholder "Beside you, start to scale" is TBD in STYLE.md — confirm or replace; placement decision held (nav ruled out; hero/footer candidates) | 2026-07-15 | |
+| BL-005 | discard | feature | Tagline: placeholder "Beside you, start to scale" is TBD in STYLE.md — confirm or replace; placement decision held (nav ruled out; hero/footer candidates) | 2026-07-15 | User decision: tagline settled — the placeholder "Beside you, start to scale" is confirmed as the final wording. Row dropped rather than carried further. The held placement question (nav ruled out; hero/footer candidates) was not decided and is no longer tracked by any row. |
 | BL-006 | close | process | STYLE.css foundations review: check brand package against hard constraints and foundation coverage before page builds | 2026-07-15 | OBSOLETE — precondition no longer applicable: 12+ pages are built and STYLE.css advanced v1→v013 through the ratchet process, which now serves as the ongoing audit this row described |
 | BL-007 | close | page | Blog restyling depth: full restyle vs minimal carry-over styling for old post bodies (SCOPE.md open decision) — rescoped 2026-07-16: launch trio was rewritten (moot for them); question now covers the 17 remaining carry-over posts (8 of 25 built as of 2026-07-23) | 2026-07-15 | Answered by practice — 12 posts built under the established carry-over styling. Remaining posts are an ongoing stream, not an open decision. |
 | BL-008 | close | page | Hidden pages triage: carry all vs keep/kill per page, decided during carry-over inventory (SCOPE.md open decision) — dispositions now applied in the inventory close-out below (keeps: surveys/svy001/svy002; kills: tool-ref001/mtl001/stylebook) | 2026-07-15 | User ratified; dispositions applied in inventory close-out (BACKLOG §B/§E) |
@@ -61,7 +61,7 @@ branch, no PR.
 | BL-033 | close | others | Delete the `staging.threeflows.com` DNS record at Cloudflare. It has zero repo footprint — no CNAME file, no workflow, no branch, no Pages reference — and is a leftover from the github.io preview phase | 2026-07-31 | DNS record deleted at Cloudflare by user 2026-08-01. Record had zero repo footprint — leftover from the pre-cutover github.io preview phase. |
 | BL-034 | close | page | `contact.html` needs a new form endpoint, owner-managed. Promoted from §I item 2 so it is trackable as a row rather than buried in the inventory | 2026-07-31 | Endpoint deployed and verified by test submission 2026-08-01 — header row written, 10-column row with subject, notification email carries the Subject line. Code change merged in PR #95. |
 | BL-035 | close | bug | STYLE.css's v40 changelog (~lines 80-82, not 53-56 — the v41 and v42 entries were prepended above it) and TWO STYLE.md passages describe the fit-dot pattern with names and hues that never shipped. STYLE.md ~1626-1638 names `.tf-fit-dot-solo` / `-together` / `-no` on teal / plum / stone with three wrong hex pairs; STYLE.md ~1697-1703 — omitted when this row was raised — names `td.tf-fit-solo/-together/-no` and additionally calls `.tf-fit-dot` retired, which it is not (it ships six times across the two legends; v40 retired the dot COLUMN, not the class). Shipped code is `.tf-fit-you` / `-assist` / `-we` on brick / ochre / teal. The ratchet is what the reuse check reads before defining a new pattern, so a wrong entry sends the next reader looking for classes that do not exist. Correct all three records; do not rewrite history beyond making them accurate | 2026-08-01 | PR98 |
-| BL-036 | open | feature | Evaluate and deploy reader engagement on blog and tool pages: rank, like, save, share. Record counts internally and display counts externally to readers | 2026-08-02 | |
+| BL-036 | discard | feature | Evaluate and deploy reader engagement on blog and tool pages: rank, like, save, share. Record counts internally and display counts externally to readers | 2026-08-02 | User decision 2026-08-10: not wanted. |
 
 ## Inventory / page checklist
 
@@ -112,7 +112,7 @@ un-build it — so only the evidence moves, never the status.
 | blogs.html | blog.html + bloglist.json | close | e337c40 |
 | links.html | useful-websites.html — shipped as a data-driven directory backed by `references.json` + `assets/references.js`, both new files not previously recorded in §A. **RENAMED 2026-08-02:** the page shipped as `references.html` and was renamed to `links.html` (nav label References → Links, kicker → LINKS, hero asset → `assets/images/links.jpg`); the h1 "The Retailer's Library" is unchanged, the data files keep their `references.*` names, and the old URL 404s by design | close | 43209ed |
 | seminars.html | webinars.html (+ livestream.html folded in via redirect) | open | |
-| tools.html | free-tools.html (shell only; individual tool pages deferred — BL-009) | open | |
+| tools.html | free-tools.html — built as the tools index: hero band plus a card grid, hand-linking the live tool pages (tool-company-setup.html / tool-001, tool-general-cashflow.html / tool-002). It stays hand-linked until a manifest earns a consumer — that question is BL-009 | close | af3a6e1 |
 | about.html | about.html | close | 086e26b |
 | contact.html | built fresh — new form + new endpoint (inquiry.html / intake.html redirect in; their old endpoints not carried) | close | User ratified 2026-07-31 — full content build shipped and live. |
 | privacy.html | privacy.html | close | a4c843d |
