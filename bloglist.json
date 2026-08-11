@@ -202,5 +202,17 @@
     "recap": "Twelve people were indicted in July over $2 million of Nike product that left a Memphis warehouse on 3,119 shipping labels. Nothing was hacked. The only fake thing was a sticker.",
     "readMinutes": 5,
     "listenMinutes": 7
+  },
+  {
+    "blogID": "blog-018",
+    "filename": "blog-iran-gas-price.html",
+    "title": "It's not only about Iran's gas price",
+    "date": "2026-08-10",
+    "status": "published",
+    "image": "assets/images/blog-iran-gas-price.jpg",
+    "imageAlt": "A fuel pump display in Iran showing 1,500 per unit, 30.00 liters, and a 45,000 sale total.",
+    "recap": "Someone posted a photo from a gas pump in Iran, and the comments filled with people trying to work out the price in dollars per gallon. Almost nobody could.",
+    "readMinutes": 5,
+    "listenMinutes": 8
   }
 ]
