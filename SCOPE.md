@@ -1,4 +1,4 @@
-v026 | 2026-08-05 | 146 lines
+v027 | 2026-08-11 | 188 lines
 
 # SCOPE.md — threeflows.com
 
@@ -72,6 +72,42 @@ section covers it. Stage 3 is the trigger to create one.
 - Tools may compute and display entirely in the browser — front-end only, no
   backend and no database. Each tool's calculation logic lives in its own JS
   file, never inline in the page, so the math stays testable and reusable.
+  This constraint is about TOOLS specifically. Forms and the mailing list do
+  have a backend — see below.
+
+### Form and mail backends
+
+The site is static, but it is not backend-free. Two Google Apps Script web apps
+sit behind it, both owner-managed, both reached only by a `fetch` POST to a
+deployed `/exec` URL. Neither is executed by the site; GitHub Pages serves files
+and nothing else.
+
+Their source is versioned in `apps-script/` so the logic is reviewable, but the
+repo copy is a RECORD, not the running code — Google holds what actually
+executes, and the two can drift. A change is only live once pasted into the
+Apps Script project and redeployed.
+
+- **`contact-endpoint.gs`** — behind `contact.html`. Writes submissions to a
+  Google Sheet and notifies the owner.
+- **`subscribe-endpoint.gs` + `subscribe-updates.gs`** — behind
+  `subscribe.html`. Confirmed opt-in mailing list: the endpoint writes rows and
+  sends confirmation, confirm, unsubscribe and manage mail; the second file
+  sends updates to the list from a Sheet menu. Both run in ONE container-bound
+  script project on the "Subscribe" Sheet and share global scope, so neither
+  works without the other. PROCESS.md §8 holds the procedure; the operator
+  checklist lives in that Sheet.
+
+Legacy survey pages post to their own carried-over endpoints, inventoried in
+BACKLOG.md §C.
+
+**The datastore is Google Sheets.** Submissions, survey responses and subscriber
+addresses live there and nowhere else — no database, and nothing client-sensitive
+in this repo. `privacy.html` states this publicly and is the binding version.
+
+**Never mint a new deployment for an endpoint that is already wired.** Editing
+the existing web app keeps its `/exec` URL; a new deployment gets a new one and
+silently breaks both the live form and every confirm/unsubscribe link already
+sitting in someone's inbox.
 
 ### Pages
 
@@ -80,7 +116,13 @@ section covers it. Stage 3 is the trigger to create one.
 (index — individual posts are `blog-<slug>.html`, per BLOG.md §1);
 `links.html`; `seminars.html`; `tools.html` (index — individual tools are
 `tool-<slug>.html`, per TOOLS.md §1); `about.html`; `contact.html`;
-`privacy.html`; `surveys.html` (cover for individual survey pages).
+`privacy.html`; `subscribe.html`; `surveys.html` (cover for individual survey
+pages).
+
+`subscribe.html` is unlisted rather than internal — it is a real public page,
+linked from the footer bar, from `contact.html`'s success panel and from
+`privacy.html`, but deliberately absent from the nav. It carries all five
+subscription states in one file, switched by query string.
 
 `partials.html` is the source of truth for the nav, and therefore for which
 pages are publicly reachable — a page not linked there is live but unlisted. No
