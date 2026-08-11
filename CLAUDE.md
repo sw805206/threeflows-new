@@ -1,4 +1,4 @@
-v009 | 2026-08-02 | 215 lines
+v011 | 2026-08-11 | 221 lines
 
 # Working Rules
 
@@ -80,10 +80,11 @@ don't need it), compare line 1 — version, date, line count — between
 `origin/main` and the project-folder copy. Audit whatever governance docs
 SCOPE.md lists, plus CLAUDE.md and SCOPE.md themselves, plus any stamped
 non-`.md` governance file the project keeps (e.g. STYLE.css); never assume a
-fixed list. The audit is two-part, because neither side can see both: the chat
-reports the project-folder half, Code reports the `origin/main` half, and the
-human joins them. Where the two differ, the higher version is current — flag it
-and sync to that version.
+fixed list. Code performs the whole audit: it reads both sides itself — the
+committed version from `origin/main` and the project-folder copy — compares
+them, and reports the joined result. A chat cannot read git, so it is never
+asked to supply half of it. Where the two differ, the higher version is
+current — flag it and sync to that version.
 
 **Governance docs go direct to main.** Every `.md` governance doc listed in
 SCOPE.md — CLAUDE.md, SCOPE.md, BLOG.md, BACKLOG.md, PROCESS.md and the like —
@@ -158,11 +159,16 @@ to main, then copy the file back to the disk master. The change is not finished
 until both have happened: an uncommitted edit is invisible to other projects,
 and a stale disk master is a file every other project will sync backwards from.
 
-**Picking up a change (project B).** At the start of a task, compare project B's
-copy against the disk master by line 1. If the disk master is the higher
-version, copy it into project B's working tree, commit, and push. Files move
-disk → working tree → commit → push, in that order — a file cannot enter git any
-other way.
+**Reconciling a copy (any project).** At the start of a task, compare the
+project's copy against the disk master by line 1, and where they differ, **sync
+to the later version automatically** — Claude performs the sync and reports it,
+rather than flagging the gap and waiting to be told. The comparison is
+two-sided, so it has two outcomes. **Disk master later:** copy it into the
+working tree, commit, and push — files move disk → working tree → commit → push,
+in that order, since a file cannot enter git any other way. **Repo copy later:**
+copy it out to the disk master, which is the publishing step above run on its
+own. Either way both copies end the task on the same version, and a gap is never
+carried forward across tasks.
 
 **Human steps after any change.** Re-paste Part A into Claude's global settings,
 and upload the current file to each Claude project folder.
