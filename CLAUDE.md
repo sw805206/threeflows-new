@@ -1,4 +1,4 @@
-v011 | 2026-08-11 | 221 lines
+v012 | 2026-08-14 | 224 lines
 
 # Working Rules
 
@@ -94,9 +94,12 @@ degrades a doc or an internal view, never the public site. Push is the finish
 line: an edit left uncommitted or unpushed is the failure this rule exists to
 prevent.
 
-**STYLE.css is the exception.** It is publicly served across every page, so
-committing it to main changes the live site with no review. It keeps branch
-and PR discipline.
+**Publicly-served governance files are the exception.** Where SCOPE.md declares
+a governance file publicly served, an authored change to it keeps branch and PR
+discipline: committing straight to main would change the live site with no
+review. A byte-identical copy of content already reviewed in the repo where it
+was authored is not an authored change, and goes direct to main like any other
+governance doc.
 
 **Governance docs carry a version stamp.** Line 1 of every `.md` governance doc
 is exactly `v### | yyyy-mm-dd | #### lines` — nothing above it, no title, no
