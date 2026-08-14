@@ -1,4 +1,4 @@
-v027 | 2026-08-11 | 188 lines
+v028 | 2026-08-14 | 243 lines
 
 # SCOPE.md — threeflows.com
 
@@ -9,8 +9,7 @@ business modeling and e-commerce. This repo holds threeflows.com, its
 multi-page static marketing website.
 
 Content is supplied by the human. Style direction comes from Claude Design,
-captured in STYLE.css (tokens, shared patterns) with the decisions recorded in
-STYLE.md.
+captured in TOKENS.css and STYLE.css with the decisions recorded in STYLE.md.
 
 **Where it lives**
 
@@ -32,9 +31,14 @@ Product docs, all in this repo:
 
 - **SCOPE.md** — this file
 - **STYLE.md** — design-system decisions in words; the ratchet record of which
-  page defined which pattern
-- **STYLE.css** — design tokens and shared patterns; single source of truth for
-  all styling
+  page defined which pattern, per-repo; never synced
+- **TOKENS.md** — what the tokens mean: palette, type scale, and the global
+  rules that apply to any Three Flows surface. Shared with sibling repos.
+- **TOKENS.css** — the design tokens: the `:root` custom properties (colour,
+  type scale, spacing, rules). Shared with sibling repos; see §3 Cross-repo
+  sync. Publicly served.
+- **STYLE.css** — shared patterns and components, built from TOKENS.css.
+  Publicly served. Per-repo; never synced.
 - **BLOG.md** — add-a-post procedure and manifest schema
 - **TOOLS.md** — tool page naming and internal ID scheme
 - **BACKLOG.md** — the backlog table and page inventory; the CLAUDE.md Part C
@@ -49,6 +53,10 @@ not product ones, and is synced from the disk master at
 
 Open items are tracked in BACKLOG.md, which is authoritative for them; this
 file does not duplicate them.
+
+TOKENS.css and TOKENS.md do not exist yet. Until the split from STYLE.css and
+STYLE.md lands, STYLE.css holds the tokens and the §3 sync manifest is inert:
+the files are declared, absent on both sides, and nothing is copied.
 
 ## 3. Architecture and conventions
 
@@ -178,11 +186,58 @@ Per CLAUDE.md Part B, which governs. Two project facts it cannot know: this
 site deploys from `main`, so Part B's protect-main rules apply in full; and the
 `feat/<stream>` worktree setup under `../threeflows-worktrees/` is retired —
 feature branches are worked in the main tree. Reinstate worktrees only if
-concurrent streams return.
+concurrent streams return. Third: STYLE.css and TOKENS.css are declared publicly
+served for the purposes of CLAUDE.md Part B — an authored change to either keeps
+branch and PR discipline, while a mechanical sync copy of already-reviewed
+content is not an authored change and goes direct to main.
 
-## 4. Stage 3 (future, out of scope)
+### Cross-repo sync
 
-A paid application on its own subdomain with its own stack. The marketing site
-connects to it via CTA links only. Brand is shared by re-declaring the same
-design tokens in the app. This triggers the creation of an ARCHITECTURE.md in
-this repo.
+Some governance files are shared with sibling `threeflows-*` repos. The manifest
+is authoritative — a file not listed here is never synced, in either direction.
+
+**Manifest:** TOKENS.css, TOKENS.md
+
+**Siblings:**
+
+| Repo | Local path | Remote |
+|---|---|---|
+| threeflows-app | `/Users/swai/sw805206/threeflows-app` | `https://github.com/sw805206/threeflows-app.git` |
+
+`partials.html` is deliberately excluded: the app's header carries signed-in
+state and an account link, so it is the same role filled by different markup,
+not a shared file. Adding it later is a one-line change here.
+
+**The rule.** Claude Code only — a chat cannot read another repo.
+
+1. Run at the start of any task that will touch a manifest file, before any
+   edit. Never author on top of a copy that has not been reconciled.
+2. `git fetch origin` here and in each sibling. Compare `origin/main` on both
+   sides. Never the working tree, never a project-folder copy.
+3. Compare line 1 — version, date, line count — for each manifest file:
+   - **Identical** → nothing to do. Report it.
+   - **One side higher** → copy that version into the lower side, verify
+     byte-identical, commit, push. Report both SHAs.
+   - **Same version, different content** → STOP and ask. Never overwrite. Detect
+     this by comparing checksums, not line 1 alone.
+   - **Absent on one side** → bootstrap: copy across, no comparison. Not a stop.
+   - **Sibling repo missing from disk** → STOP and report. Never skip silently.
+4. A sync copies the file whole, stamp included. **A sync never bumps the
+   version.** Only an authoring edit bumps. Two copies with identical content
+   must always carry identical stamps.
+5. A sync commit message names it as a sync and cites the source repo and
+   version, so the log distinguishes a copy from an authored change.
+
+## 4. The application platform
+
+The paid application lives in `threeflows-app`, a separate private repo at
+`/Users/swai/sw805206/threeflows-app`, to be deployed on `app.threeflows.com`.
+That repo holds its own SCOPE.md and its own BACKLOG.md and governs itself. The
+marketing site connects to it via CTA links only.
+
+Brand is shared by syncing TOKENS.css and TOKENS.md — see §3 Cross-repo sync.
+This supersedes the earlier plan to re-declare the tokens by hand in the app.
+
+No ARCHITECTURE.md is created in this repo. Earlier text placed one here; with
+the application in its own repo, this repo stays a static marketing site and
+needs none. Any architecture doc belongs in threeflows-app.
