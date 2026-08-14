@@ -1,4 +1,4 @@
-v028 | 2026-08-14 | 243 lines
+v029 | 2026-08-14 | 243 lines
 
 # SCOPE.md — threeflows.com
 
@@ -61,7 +61,7 @@ the files are declared, absent on both sides, and nothing is copied.
 ## 3. Architecture and conventions
 
 There is no separate ARCHITECTURE.md — the site is small enough that this
-section covers it. Stage 3 is the trigger to create one.
+section covers it.
 
 ### Stack and constraints
 
