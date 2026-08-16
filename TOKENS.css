@@ -1,0 +1,132 @@
+/* v001 | 2026-08-14 | 132 lines
+   ==========================================================================
+   Three Flows Solutions — design tokens
+
+   The :root custom properties: colour, type scale, spacing, rules. Split out
+   of STYLE.css, which now @imports this file, so the tokens can be shared with
+   the sibling threeflows-* repos per SCOPE.md §3 "Cross-repo sync". What the
+   tokens mean lives in TOKENS.md; the patterns built from them live in
+   STYLE.css.
+   ========================================================================== */
+
+:root {
+  /* Color — core palette is the logo's four inks; charts & tags may draw on
+     the data palette below. */
+  --tf-brick: #C2291B;        /* brand accent: primary actions, emphasis. Use sparingly. */
+  --tf-brick-dark: #8F1E12;   /* hover / pressed state for brick */
+  --tf-brick-on-ink: #D4402C; /* brick adjusted for dark (ink) backgrounds */
+  --tf-ink: #26221F;          /* text, rules, dark surfaces */
+  --tf-ink-soft: #55504D;     /* secondary text */
+  --tf-stone: #B8ADA5;        /* supporting tone: meta text, borders, charts */
+  --tf-stone-light: #DDD6CF;  /* light borders, subtle rules */
+  --tf-paper: #FCFBFA;        /* ground — the page surface; warm off-white, never pure white */
+  --tf-white: #FFFFFF;        /* header chrome surface ONLY — never a content ground (STYLE.md §2) */
+  /* Raised-surface tone for overlay elements (dropdowns; future overlays reuse it).
+     A tint derived from existing tokens — NOT a new raw hue (resolves to ~#F7F5F4
+     at the 15% mix). */
+  --tf-cream: color-mix(in srgb, var(--tf-stone-light) 15%, var(--tf-paper));
+
+  /* Footer ground — a dark WARM stone, lighter than ink. Exists so the footer
+     reads as its own band when a .tf-cta (ink) sits directly above it: two ink
+     grounds meeting merge into one slab, and this separates them on TONE alone,
+     which is why there is no seam or hairline between them.
+     RATIFIED (Design, 2026-07-20) as a derived mix per the sheet's idiom
+     (--tf-cream is the model): 75% ink into stone ≈ #4A4540, within a hair of
+     the provisional literal #4A423C it replaces. */
+  --tf-footer-ground: color-mix(in srgb, var(--tf-ink) 75%, var(--tf-stone));
+
+  /* Ink-raised — a solid dark surface that reads as RAISED above the ink ground.
+     Derived per the --tf-cream idiom (ink lifted toward stone), not a raw hue.
+     Its home is the secondary action on the ink CTA band, where a filled control
+     needs to sit just above the ink field; darker than --tf-footer-ground so a
+     button on ink stays quieter than the footer's own band. Future overlays on
+     ink may reuse it. */
+  --tf-ink-raised: color-mix(in srgb, var(--tf-ink) 80%, var(--tf-stone));
+
+  /* Sand — the section-divider tone. Ink is retired as a divider (STYLE.md §4);
+     it survives only on component frames and the footer's top rule. */
+  --tf-sand: #E5DFD7;
+  /* Sand wash — the BAND tint (a page-width ground for an alternating section),
+     not a rule. Distinct token from --tf-sand above: that one is a 2px line, this
+     one is a field. Lighter than the rule so a wash never reads as a border. */
+  --tf-sand-wash: #F6F2ED;
+
+  /* Data palette — six equal-weight series colors for charts & category coding.
+     Use in order; brick is always series 1. Never for body text. */
+  --tf-chart-1: #C2291B;  /* brick */
+  --tf-chart-2: #35618E;  /* slate */
+  --tf-chart-3: #B07A18;  /* ochre */
+  --tf-chart-4: #23787A;  /* teal */
+  --tf-chart-5: #8A3A62;  /* plum */
+  --tf-chart-6: #B8ADA5;  /* stone */
+
+  /* Category washes — six pale hue tints. Promoted from the .tf-pill-tint-*
+     literals so the engagement-tag pills and the data-viz category palette
+     share one source (the hexes were raw literals in the pill rules and,
+     by hand, in the stylebook). */
+  --tf-wash-brick: #F7E4E1;
+  --tf-wash-slate: #E3EAF2;
+  --tf-wash-ochre: #F4EAD4;
+  --tf-wash-teal:  #DDEDED;
+  --tf-wash-plum:  #F2E3EA;
+  --tf-wash-stone: #ECE7E1;
+
+  /* Category tint TEXT — the deep same-hue ink that pairs with each --tf-wash-*
+     above. Completes the tokenization begun in v032, which promoted only the
+     backgrounds: these were the last raw literals in the .tf-pill-tint-* rules,
+     and because a literal cannot be read back through var() the stylebook had to
+     hardcode them a second time. Tokenizing removes that manual-drift surface —
+     int-stylebook.html now self-reads these like every other swatch.
+     brick and stone ALIAS existing inks rather than repeat their hex (the
+     --tf-cat-* idiom); slate/ochre/teal/plum have no base ink token to alias, so
+     they carry the value. Values are unchanged from the literals they replace. */
+  --tf-wash-brick-ink: var(--tf-brick-dark);  /* #8F1E12 */
+  --tf-wash-slate-ink: #24466B;
+  --tf-wash-ochre-ink: #7A5410;
+  --tf-wash-teal-ink:  #175355;
+  --tf-wash-plum-ink:  #632846;
+  --tf-wash-stone-ink: var(--tf-ink-soft);    /* #55504D */
+
+  /* Category (data-viz) tints — per-category fills for the cashflow /
+     unit-economics stacked visualizations (blog-009, blog-010). Product,
+     Shipping & Fulfillment take existing weighted tones; the other six
+     alias the category washes above. */
+  --tf-cat-product:    var(--tf-ink-soft);   /* Product Purchase  */
+  --tf-cat-shiptar:    var(--tf-stone);      /* Shipping & Tariff */
+  --tf-cat-fulfil:     var(--tf-sand);       /* Fulfillment       */
+  --tf-cat-storage:    var(--tf-wash-ochre); /* 3PL Storage       */
+  --tf-cat-ads:        var(--tf-wash-slate); /* Online Ads        */
+  --tf-cat-platform:   var(--tf-wash-teal);  /* e-Comm Platform   */
+  --tf-cat-sales:      var(--tf-wash-brick); /* Sales Revenue     */
+  --tf-cat-returns:    var(--tf-wash-stone); /* Return & Discard  */
+  --tf-cat-cumulative: var(--tf-wash-plum);  /* Cumulative P&L    */
+
+  /* Type */
+  --tf-font-heading: 'Source Serif 4', Georgia, serif;
+  --tf-font-body: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+
+  /* Type scale */
+  --tf-text-xs: 12px;      /* meta, kickers */
+  --tf-text-sm: 14px;      /* captions, secondary */
+  --tf-text-base: 16px;    /* body */
+  --tf-text-lg: 20px;      /* lead paragraphs */
+  --tf-text-xl: 27px;      /* h3 */
+  --tf-text-2xl: 36px;     /* h2 */
+  --tf-text-3xl: 48px;     /* h1 / hero */
+
+  /* Spacing (8px base) */
+  --tf-space-1: 8px;
+  --tf-space-2: 16px;
+  --tf-space-3: 24px;
+  --tf-space-4: 32px;
+  --tf-space-6: 48px;
+  --tf-space-8: 64px;
+
+  /* Rules — all 2px; the TONE assigns the job (STYLE.md §4).
+     --tf-rule stays INK and is no longer a divider: it draws component frames
+     (buttons, hamburger, stat grid, journey, strong/ink cards) and the footer's
+     top rule. */
+  --tf-rule: 2px solid var(--tf-ink);
+  --tf-rule-sand: 2px solid var(--tf-sand);         /* divides major sections */
+  --tf-rule-light: 2px solid var(--tf-stone-light); /* divides content within a section */
+}

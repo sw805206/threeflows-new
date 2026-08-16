@@ -1,4 +1,4 @@
-v029 | 2026-08-14 | 243 lines
+v030 | 2026-08-14 | 240 lines
 
 # SCOPE.md — threeflows.com
 
@@ -54,10 +54,6 @@ not product ones, and is synced from the disk master at
 Open items are tracked in BACKLOG.md, which is authoritative for them; this
 file does not duplicate them.
 
-TOKENS.css and TOKENS.md do not exist yet. Until the split from STYLE.css and
-STYLE.md lands, STYLE.css holds the tokens and the §3 sync manifest is inert:
-the files are declared, absent on both sides, and nothing is copied.
-
 ## 3. Architecture and conventions
 
 There is no separate ARCHITECTURE.md — the site is small enough that this
@@ -66,7 +62,8 @@ section covers it.
 ### Stack and constraints
 
 - Static multi-page HTML with vanilla JS. No frameworks (no React/Vue/jQuery,
-  no Tailwind). STYLE.css is plain CSS with variables.
+  no Tailwind). STYLE.css is plain CSS, built on the variables TOKENS.css
+  declares and STYLE.css `@import`s.
 - Lean dependencies; per-page CDN loads by exception only. Charting libraries
   for tool pages are an accepted exception.
   - **Exception taken: jsPDF + jspdf-autotable.** Loaded from cdnjs with
@@ -156,8 +153,8 @@ client-sensitive belongs on them.
 
 ### Build approach
 
-- Foundations first: colors, fonts, type scale, spacing scale, and the shared
-  header/footer live in STYLE.css.
+- Foundations first: colors, fonts, type scale and spacing scale live in
+  TOKENS.css; the shared header/footer lives in STYLE.css.
 - Later pages reuse rather than reinvent. The reuse check and the ratchet
   record live in STYLE.md.
 - A pattern used on two or more pages belongs in STYLE.css. A genuine one-off
