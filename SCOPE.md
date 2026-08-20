@@ -1,4 +1,4 @@
-v032 | 2026-08-20 | 278 lines
+v033 | 2026-08-20 | 298 lines
 
 # SCOPE.md — threeflows.com
 
@@ -248,20 +248,40 @@ not a shared file. Adding it later is a one-line change here.
      copy it down.
    - **Same version, different content** → STOP and ask. Never overwrite. Detect
      this by comparing checksums, not line 1 alone.
-   - **Absent on one side** → bootstrap: copy across, no comparison. Not a stop.
+   - **Absent in the sibling** → bootstrap: copy across, no comparison. Not a
+     stop. This is the expected case for a new child, and for a manifest file
+     newly added here.
+   - **Absent here, present in a sibling** → STOP and report. Manifest files are
+     authored here only, so a file that exists solely in a sibling means
+     authoring happened in the wrong repo. Never copy it up.
    - **Sibling repo missing from disk** → STOP and report. Never skip silently.
 4. A sync copies the file whole, stamp included. **A sync never bumps the
    version.** Only an authoring edit bumps. Two copies with identical content
    must always carry identical stamps.
-5. A sync commit message names it as a sync and cites the source repo and
-   version, so the log distinguishes a copy from an authored change.
+5. A sync commit message names it as a sync and cites the source repo and the
+   version as THAT REPO'S — `threeflows-new SCOPE.md v032`, never a bare
+   `v032` — so the log distinguishes a copy from an authored change, and a
+   reader of the receiving repo's log cannot mistake the number for its own.
 6. **Authoring from a sibling's session.** A Code session started in a sibling
    repo may author manifest files, but only by working in this repo: `cd` here,
    run this repo's governance reads, the Part B sync audit and the Part C
    CLAUDE.md reconcile, then author. Routing follows the FILE's repo, not the
-   session's — TOKENS.md direct to main, TOKENS.css on a branch with a PR per
-   its publicly-served declaration. This removes the need to switch chats for a
-   token change; it does not permit authoring in the sibling.
+   session's — TOKENS.md direct to main, TOKENS.css and `assets/logo-mark.svg`
+   on a branch with a PR per their publicly-served declaration. This removes the
+   need to switch chats for a token change; it does not permit authoring in the
+   sibling.
+7. **A sync into a deploying sibling takes branch and PR on the receiving
+   side.** TOKENS.css and `assets/logo-mark.svg` are styling — every color, rule
+   and spacing step, and the brand mark itself. `threeflows-app` deploys from
+   `main`, so a sync commit pushed there ships them live. The review they passed
+   here was against THIS site's screens; nothing has reviewed them against the
+   app's, and being reviewed here is not the same as being reviewed there. So
+   the receiving repo takes the sync on a branch with a PR, reviewed against its
+   own screens. Rule 4 holds across it unchanged: the branch carries the file
+   byte-identical, stamp included, and never bumps the version. TOKENS.md is
+   prose and goes direct to main on the receiving side like any other governance
+   doc. A sibling that does not deploy from `main` takes every manifest file
+   direct to main.
 
 ## 4. The application platform
 
