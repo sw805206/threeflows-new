@@ -1,4 +1,4 @@
-v012 | 2026-08-14 | 224 lines
+v014 | 2026-08-20 | 233 lines
 
 # Working Rules
 
@@ -46,6 +46,14 @@ code. If unsure which mode we're in, ask before proceeding.
 **Be concise and direct.** Keep responses focused. Push back when you disagree —
 don't just agree to be agreeable. Do not over-explain your reasoning; I will ask
 if I want more.
+
+**Write US English.** Prose in governance docs, code comments, commit messages,
+and user-facing copy alike. The exceptions are what make the rule safe to apply
+mechanically: identifiers, file paths, CSS custom properties and quoted
+third-party text keep whatever spelling they already have, because changing
+them changes what they refer to rather than how it reads. So does a file
+authored in another repo and synced in — it must stay byte-identical across
+copies, so a British form there is corrected at its source, never here.
 
 **The repo is the source of truth.** In any project with a git repo, the
 committed, merged repo (git main) is authoritative — not another conversation,
@@ -210,9 +218,10 @@ and never reused. Category and status are assigned at flush. BACKLOG.md is a
 governance doc, so the flush is committed and pushed per Part B. If the project
 publishes a rendered backlog view, verify the flush there rather than in the raw
 file: push, wait for the deploy to land, then confirm the new rows render as
-correctly-columned rows. This is what catches an unescaped pipe, which is silent
-in the source and only visible once rendered. Verify against the deployed page,
-not a local copy, and not before the deploy confirms.
+correctly-columned rows. This is what catches an unescaped pipe, and a bare
+`<angle-bracketed>` token, which renders as a tag and vanishes — both silent in
+the source and visible only once rendered. Verify against the deployed page, not
+a local copy, and not before the deploy confirms.
 
 **Status rules.** Code never self-closes: done items move to `review`, not
 `close`. Close is mine alone and needs evidence in **Closed-by** — the `PR##`
