@@ -1,4 +1,4 @@
-v030 | 2026-08-14 | 240 lines
+v031 | 2026-08-20 | 269 lines
 
 # SCOPE.md — threeflows.com
 
@@ -193,6 +193,25 @@ content is not an authored change and goes direct to main.
 Some governance files are shared with sibling `threeflows-*` repos. The manifest
 is authoritative — a file not listed here is never synced, in either direction.
 
+**Authoring direction.** This repo is the master for the shared brand
+foundation — the design tokens and their documented meanings, which is exactly
+the manifest below and nothing else. Manifest files are authored HERE and never
+in a sibling. Not shared, and never synced: STYLE.md and STYLE.css, which §2
+declares per-repo, `partials.html`, and every pattern a sibling builds from the
+tokens. A sibling CONSUMING a token is expected and correct. A sibling
+declaring its own value for one, or widening a token's documented scope in its
+own copy, is the drift this rule exists to prevent — it raises a backlog row
+here instead.
+
+**Children.** `threeflows-app` is the first and currently only child. The
+Siblings table below is the register; adding a child means a row there plus the
+matching declaration in that repo's SCOPE.md.
+
+**The bind is two-sided.** Each child's SCOPE.md states the same relationship
+and names this repo as master. The manifest list itself lives here only — a
+child names the relationship and points at this file rather than restating the
+list, so the two can never disagree about what is shared.
+
 **Manifest:** TOKENS.css, TOKENS.md
 
 **Siblings:**
@@ -213,8 +232,11 @@ not a shared file. Adding it later is a one-line change here.
    sides. Never the working tree, never a project-folder copy.
 3. Compare line 1 — version, date, line count — for each manifest file:
    - **Identical** → nothing to do. Report it.
-   - **One side higher** → copy that version into the lower side, verify
+   - **This repo higher** → copy that version into the sibling, verify
      byte-identical, commit, push. Report both SHAs.
+   - **A sibling higher** → STOP and report. Manifest files are authored here
+     only, so a sibling ahead means authoring happened in the wrong repo. Never
+     copy it down.
    - **Same version, different content** → STOP and ask. Never overwrite. Detect
      this by comparing checksums, not line 1 alone.
    - **Absent on one side** → bootstrap: copy across, no comparison. Not a stop.
@@ -224,6 +246,13 @@ not a shared file. Adding it later is a one-line change here.
    must always carry identical stamps.
 5. A sync commit message names it as a sync and cites the source repo and
    version, so the log distinguishes a copy from an authored change.
+6. **Authoring from a sibling's session.** A Code session started in a sibling
+   repo may author manifest files, but only by working in this repo: `cd` here,
+   run this repo's governance reads, the Part B sync audit and the Part C
+   CLAUDE.md reconcile, then author. Routing follows the FILE's repo, not the
+   session's — TOKENS.md direct to main, TOKENS.css on a branch with a PR per
+   its publicly-served declaration. This removes the need to switch chats for a
+   token change; it does not permit authoring in the sibling.
 
 ## 4. The application platform
 
