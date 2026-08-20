@@ -1,4 +1,4 @@
-v014 | 2026-08-20 | 233 lines
+v015 | 2026-08-20 | 255 lines
 
 # Working Rules
 
@@ -10,8 +10,7 @@ Process lives in three tiers, by ownership:
 - **SCOPE.md** — describes the project and lists the other governance files it
   requires. Each project declares its own type, required governance docs, and
   branch/PR discipline here. Read it first to know where the project sits.
-- **XYZ.md** — project-specific files that apply only to that project, if
-  applicable. Live in the repo.
+- **XYZ.md** — project-specific files, in the repo.
 - **Google Doc SOP** — processes done entirely by the human. A user reference,
   not a source of truth.
 
@@ -24,10 +23,13 @@ CLAUDE.md conflict, CLAUDE.md Part A and Part B govern.
 in a Claude chat, the project-folder copy; in Code, the version on
 `origin/main`. Read CLAUDE.md as well when the task touches the repo,
 governance, or the backlog: Part A is already pasted into my global settings, so
-Parts B and C are what opening the file adds. Before any repo-touching work,
-read the full set SCOPE.md lists. Read once per chat at the first task, not per
-exchange. If a required governance file is missing, stop and ask before doing
-any work.
+Parts B and C are what opening the file adds. Then read the docs the task
+ACTUALLY TOUCHES, drawn from the set SCOPE.md lists — not the whole set. A doc
+unrelated to the task is not read "for context": STYLE.md and STYLE.css are read
+when a task touches styling, which is when they earn their size. Read once per
+chat at the first task, and again after a prompt I ran lands, since the files
+have changed underneath you. If a required governance file is missing, stop and
+ask before doing any work.
 
 **Don't guess.** If something is missing, ambiguous, or uncertain, stop and ask
 — never guess at a file's contents, a convention, or my intent. When you agree
@@ -85,14 +87,13 @@ working tree, never the synced project folder.
 
 **Sync audit.** At the start of every repo-touching task (pure discussion turns
 don't need it), compare line 1 — version, date, line count — between
-`origin/main` and the project-folder copy. Audit whatever governance docs
-SCOPE.md lists, plus CLAUDE.md and SCOPE.md themselves, plus any stamped
-non-`.md` governance file the project keeps (e.g. STYLE.css); never assume a
-fixed list. Code performs the whole audit: it reads both sides itself — the
-committed version from `origin/main` and the project-folder copy — compares
-them, and reports the joined result. A chat cannot read git, so it is never
-asked to supply half of it. Where the two differ, the higher version is
-current — flag it and sync to that version.
+`origin/main` and the project-folder copy. Line 1 only: never read a file's body
+for an audit. Audit whatever governance docs SCOPE.md lists, plus CLAUDE.md and
+SCOPE.md themselves, plus any stamped non-`.md` governance file the project
+keeps (e.g. STYLE.css); never assume a fixed list. Code reads both sides itself
+and reports the joined result — a chat cannot read git, so it is never asked to
+supply half of it. Where the two differ, the higher version is current — flag it
+and sync to that version.
 
 **Governance docs go direct to main.** Every `.md` governance doc listed in
 SCOPE.md — CLAUDE.md, SCOPE.md, BLOG.md, BACKLOG.md, PROCESS.md and the like —
@@ -115,12 +116,13 @@ blank line. A file whose format forbids bare text at the top (e.g. STYLE.css,
 which must open with a comment) carries the identical stamp on the first line of
 its opening comment block. Bump `v###` on every substantive change. The date and
 the line count are read from the machine at the moment of writing (`date +%F`,
-`wc -l`), the date in the machine's LOCAL timezone — the stamps are for the
-human reading them, so a doc edited late at night carries that night's date — never hand-typed, never copied forward from another line. A
+`wc -l`) — never hand-typed, never copied forward from another line. A
 hand-typed date is how a doc ends up stamped ahead of the actual day, and a
-hand-typed line count is worse than none. If machine time returns something
-implausible, stop and ask rather than stamp it. Version counters are per-file
-and independent: each doc's `v###` tracks its own history, so a constant offset
+hand-typed line count is worse than none. The date is the machine's LOCAL
+timezone: the stamps are for the human reading them, so a doc edited late at
+night carries that night's date. If machine time returns something implausible,
+stop and ask rather than stamp it. Version counters are per-file and
+independent: each doc's `v###` tracks its own history, so a constant offset
 between two files is expected and is not a defect to reconcile.
 
 **Protect main when it deploys from main.** If the project deploys from main (a
@@ -137,9 +139,8 @@ chore, style, test, perf, build, ci, uat.
 **Post-merge cleanup — Claude reminds, so I don't have to.** After any PR
 merges, Claude surfaces the cleanup automatically, but only once the merge is
 confirmed on main (a merge commit in `git log`, or my confirmation). The
-sequence is push → PR → merge → cleanup, and cleanup is gated on the merge being
-confirmed. Once it is, provide: `git checkout main`, `git pull origin main`,
-`git branch -d <branch>`, `git remote prune origin`.
+sequence is push → PR → merge → cleanup. Then provide: `git checkout main`,
+`git pull origin main`, `git branch -d <branch>`, `git remote prune origin`.
 
 **Style changes get their own commit.** When a UI/UX decision is finalized and
 applies project-wide (not a one-off), ask whether STYLE.md and/or STYLE.css
@@ -150,9 +151,8 @@ mixed into other changes.
 UX changes (style, content, layout, flow), launch localhost first so I can see
 them before they're committed. Start the server with caching disabled, or hand
 over the URL cache-busted (`?v=<short-sha>` or equivalent) — never a bare
-`localhost:####`. Beating the cache is Claude's job, not mine: I should never
-have to hard-reload, clear a cache, or open a private window to see the version
-you just built, and a review of a stale page is a wasted review.
+`localhost:####`. Beating the cache is Claude's job, not mine: a review of a
+stale page is a wasted review.
 
 ## Part C — Global Human/Claude Processes
 
@@ -175,20 +175,21 @@ project's copy against the disk master by line 1, and where they differ, **sync
 to the later version automatically** — Claude performs the sync and reports it,
 rather than flagging the gap and waiting to be told. The comparison is
 two-sided, so it has two outcomes. **Disk master later:** copy it into the
-working tree, commit, and push — files move disk → working tree → commit → push,
-in that order, since a file cannot enter git any other way. **Repo copy later:**
-copy it out to the disk master, which is the publishing step above run on its
-own. Either way both copies end the task on the same version, and a gap is never
-carried forward across tasks.
+working tree, commit, and push. **Repo copy later:** copy it out to the disk
+master, which is the publishing step above run on its own. Either way both
+copies end the task on the same version, and a gap is never carried forward
+across tasks.
 
 **Human steps after any change.** Re-paste Part A into Claude's global settings,
 and upload the current file to each Claude project folder.
 
 ### how-to: maintain the backlog (opt-in — when SCOPE.md declares it)
 
-The backlog tracks both short-term items (bugs, UI improvements) and long-term
-ones (big features, new apps). The definitions — categories, status semantics —
-live in the BACKLOG.md header.
+The backlog tracks DEFERRED work — anything raised but not being done now,
+short-term or long-term. The definitions — categories, status semantics — live
+in the BACKLOG.md header. Nothing here turns on what KIND of thing an item is:
+no category, no doc type and no size makes an item belong in the backlog or
+exempt from it.
 
 **Process vs. artifact.** The process here is global and identical everywhere.
 The artifact is per-project: each project keeps its own `BACKLOG.md` in its own
@@ -201,27 +202,48 @@ projects.
   items as they are raised during a session.
 - **BACKLOG.md** — the source of truth *in the repo*.
 
-Items flow one direction: raised in chat → held in the running block → flushed
-to BACKLOG.md.
+**The block has two exits.** Items are raised in chat and held in the running
+block. The default exit is DONE: Code does the work in the session and the item
+leaves the block without ever becoming a `BL-###` row — git history, the PR and
+the project's ratchet record carry the evidence, and a row would only duplicate
+them. The other exit is DEFERRED: I say the item waits, and it is flushed to
+BACKLOG.md. Only deferred items are ever flushed. The test is deferral alone —
+never the item's category, and never whether it is a bug, a governance fix, a
+feature or a decision.
 
 **The running block.** The trigger is my saying "log to backlog." The block
-reprints in full every time it changes — never the new row alone — so the latest
-printing is always the complete, authoritative list. Temp IDs are `P01`, `P02`,
-… scoped to the current unflushed batch only; after a flush the block empties
-and they recycle from P01.
+reprints whenever it changes — never the new row alone — so the latest printing
+is always the complete, authoritative list. Reprint a row's FULL text only when
+that row's wording changed; otherwise give it as ID, status and a one-line
+summary. Every pending row is printed in full at the flush, which is where the
+wording has to be exact. Temp IDs are `P01`, `P02`, … scoped to the current
+unflushed batch. An item that leaves by being DONE drops out of the table at the
+next reprint and is named in a one-line note beneath it with its evidence (SHA
+or PR), so nothing vanishes silently; those notes are chat-only and die with the
+session, since the durable record is git. `P##` are never reassigned within a
+session — when an item leaves, the others keep their IDs and the next item takes
+the next number, because I will already have referred to them by name. They
+recycle from P01 only once the block is empty, which a flush does not
+necessarily leave it.
 
-**Flushing.** I request the flush; nothing flushes automatically. It is a
-word-for-word copy verified by count — N pending rows in the block = N new rows
-out — which guards against dropped or duplicated rows. P## become permanent
-`BL-###`, assigned in cumulative sequence from the last BL number in the file
-and never reused. Category and status are assigned at flush. BACKLOG.md is a
-governance doc, so the flush is committed and pushed per Part B. If the project
-publishes a rendered backlog view, verify the flush there rather than in the raw
-file: push, wait for the deploy to land, then confirm the new rows render as
+**Flushing.** I request the flush; nothing flushes automatically. What flushes
+is the DEFERRED items only — where the block also holds items awaiting action,
+the flush names which rows are going and leaves the rest in place. It is a
+word-for-word copy verified by count — N deferred rows named = N new rows out —
+which guards against dropped or duplicated rows. P## become permanent `BL-###`,
+assigned in cumulative sequence from the last BL number in the file and never
+reused. Category and status are assigned at flush. BACKLOG.md is a governance
+doc, so the flush is committed and pushed per Part B. If the project publishes a
+rendered backlog view, verify the flush there rather than in the raw file: push,
+wait for the deploy to land, then confirm the new rows render as
 correctly-columned rows. This is what catches an unescaped pipe, and a bare
 `<angle-bracketed>` token, which renders as a tag and vanishes — both silent in
 the source and visible only once rendered. Verify against the deployed page, not
 a local copy, and not before the deploy confirms.
+
+**Claude does not log as a way of deferring.** Where an item could reasonably
+be done now, Claude says so and offers to do it rather than proposing a row.
+Deferral is my call — never Claude's default response to noticing something.
 
 **Status rules.** Code never self-closes: done items move to `review`, not
 `close`. Close is mine alone and needs evidence in **Closed-by** — the `PR##`
