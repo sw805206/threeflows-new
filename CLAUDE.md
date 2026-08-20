@@ -1,4 +1,4 @@
-v015 | 2026-08-20 | 255 lines
+v016 | 2026-08-20 | 266 lines
 
 # Working Rules
 
@@ -108,7 +108,12 @@ a governance file publicly served, an authored change to it keeps branch and PR
 discipline: committing straight to main would change the live site with no
 review. A byte-identical copy of content already reviewed in the repo where it
 was authored is not an authored change, and goes direct to main like any other
-governance doc.
+governance doc — unless the RECEIVING repo deploys from main. The property that
+matters there is not whether the change was authored but where it lands: a sync
+copy into a repo whose main is the deploy ships live styling that nothing has
+reviewed against THAT repo's screens, and being reviewed in the authoring repo
+is not the same review. Into a deploying repo, such a copy keeps branch and PR
+discipline on the receiving side.
 
 **Governance docs carry a version stamp.** Line 1 of every `.md` governance doc
 is exactly `v### | yyyy-mm-dd | #### lines` — nothing above it, no title, no
@@ -203,13 +208,19 @@ projects.
 - **BACKLOG.md** — the source of truth *in the repo*.
 
 **The block has two exits.** Items are raised in chat and held in the running
-block. The default exit is DONE: Code does the work in the session and the item
-leaves the block without ever becoming a `BL-###` row — git history, the PR and
-the project's ratchet record carry the evidence, and a row would only duplicate
-them. The other exit is DEFERRED: I say the item waits, and it is flushed to
-BACKLOG.md. Only deferred items are ever flushed. The test is deferral alone —
-never the item's category, and never whether it is a bug, a governance fix, a
-feature or a decision.
+block. The default exit is DONE: an item raised and finished in the same
+session, never deferred, leaves the block without ever becoming a `BL-###` row
+— git history, the PR and the project's ratchet record carry the evidence, and
+a row would only duplicate them. The other exit is DEFERRED: I say the item
+waits, and it is flushed to BACKLOG.md. Only deferred items are ever flushed.
+The test is deferral alone — never the item's category, and never whether it is
+a bug, a governance fix, a feature or a decision.
+
+**This governs entry to the backlog only.** Once an item IS a row, the Status
+rules below govern it for the rest of its life: work done on an existing row
+moves it to `review` and never lifts it back out of the file. The DONE exit
+decides what never becomes a row; it says nothing about a row that already
+exists.
 
 **The running block.** The trigger is my saying "log to backlog." The block
 reprints whenever it changes — never the new row alone — so the latest printing
