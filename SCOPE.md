@@ -1,4 +1,4 @@
-v031 | 2026-08-20 | 269 lines
+v032 | 2026-08-20 | 278 lines
 
 # SCOPE.md — threeflows.com
 
@@ -183,10 +183,11 @@ Per CLAUDE.md Part B, which governs. Two project facts it cannot know: this
 site deploys from `main`, so Part B's protect-main rules apply in full; and the
 `feat/<stream>` worktree setup under `../threeflows-worktrees/` is retired —
 feature branches are worked in the main tree. Reinstate worktrees only if
-concurrent streams return. Third: STYLE.css and TOKENS.css are declared publicly
-served for the purposes of CLAUDE.md Part B — an authored change to either keeps
-branch and PR discipline, while a mechanical sync copy of already-reviewed
-content is not an authored change and goes direct to main.
+concurrent streams return. Third: STYLE.css, TOKENS.css and
+`assets/logo-mark.svg` are declared publicly served for the purposes of
+CLAUDE.md Part B — an authored change to any of them keeps branch and PR
+discipline, while a mechanical sync copy of already-reviewed content is not an
+authored change and goes direct to main.
 
 ### Cross-repo sync
 
@@ -194,14 +195,14 @@ Some governance files are shared with sibling `threeflows-*` repos. The manifest
 is authoritative — a file not listed here is never synced, in either direction.
 
 **Authoring direction.** This repo is the master for the shared brand
-foundation — the design tokens and their documented meanings, which is exactly
-the manifest below and nothing else. Manifest files are authored HERE and never
-in a sibling. Not shared, and never synced: STYLE.md and STYLE.css, which §2
-declares per-repo, `partials.html`, and every pattern a sibling builds from the
-tokens. A sibling CONSUMING a token is expected and correct. A sibling
-declaring its own value for one, or widening a token's documented scope in its
-own copy, is the drift this rule exists to prevent — it raises a backlog row
-here instead.
+foundation — the design tokens, their documented meanings, and the brand mark,
+which is exactly the manifest below and nothing else. Manifest files are
+authored HERE and never in a sibling. Not shared, and never synced: STYLE.md
+and STYLE.css, which §2 declares per-repo, `partials.html`, and every pattern a
+sibling builds from the tokens. A sibling CONSUMING a token is expected and
+correct. A sibling declaring its own value for one, or widening a token's
+documented scope in its own copy, is the drift this rule exists to prevent — it
+raises a backlog row here instead.
 
 **Children.** `threeflows-app` is the first and currently only child. The
 Siblings table below is the register; adding a child means a row there plus the
@@ -212,7 +213,7 @@ and names this repo as master. The manifest list itself lives here only — a
 child names the relationship and points at this file rather than restating the
 list, so the two can never disagree about what is shared.
 
-**Manifest:** TOKENS.css, TOKENS.md
+**Manifest:** TOKENS.css, TOKENS.md, `assets/logo-mark.svg`
 
 **Siblings:**
 
@@ -230,10 +231,18 @@ not a shared file. Adding it later is a one-line change here.
    edit. Never author on top of a copy that has not been reconciled.
 2. `git fetch origin` here and in each sibling. Compare `origin/main` on both
    sides. Never the working tree, never a project-folder copy.
-3. Compare line 1 — version, date, line count — for each manifest file:
+3. Compare each manifest file — line 1 for a stamped file, a `shasum -a 256`
+   checksum for an unstamped one. `assets/logo-mark.svg` is the only unstamped
+   entry and stays that way deliberately: an SVG is a served asset that design
+   tools rewrite wholesale on export, so a stamp in an opening XML comment
+   would be dropped silently and leave this rule reading a stamp that is no
+   longer there. A checksum cannot say which side is newer and does not need
+   to — the authoring direction above already fixes that, so a mismatch on an
+   unstamped file always means copy down from here.
    - **Identical** → nothing to do. Report it.
-   - **This repo higher** → copy that version into the sibling, verify
-     byte-identical, commit, push. Report both SHAs.
+   - **This repo higher**, or an unstamped file differing → copy this repo's
+     version into the sibling, verify byte-identical, commit, push. Report both
+     SHAs.
    - **A sibling higher** → STOP and report. Manifest files are authored here
      only, so a sibling ahead means authoring happened in the wrong repo. Never
      copy it down.
