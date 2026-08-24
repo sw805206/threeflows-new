@@ -1,4 +1,4 @@
-v016 | 2026-08-20 | 266 lines
+v017 | 2026-08-22 | 301 lines
 
 # Working Rules
 
@@ -129,6 +129,41 @@ night carries that night's date. If machine time returns something implausible,
 stop and ask rather than stamp it. Version counters are per-file and
 independent: each doc's `v###` tracks its own history, so a constant offset
 between two files is expected and is not a defect to reconcile.
+
+**Correcting a claim means correcting what justified it.** When a factual claim
+in a governance doc changes, the sentence stating the claim is not the only thing
+that moved. Two others did, and neither announces itself:
+
+- **The justification** — the sentences saying WHY the doc says what it says: the
+  reason, the argument, the "because". Someone checking the doc reads the claim
+  against reality, because the claim is what they came for. The reasoning reads as
+  background, and nobody diffs background.
+- **The conclusion** — what the doc went on to infer FROM the claim. This can sit
+  paragraphs away, in a different subsection, and it can be further from true than
+  the premise ever was.
+
+So amending is three passes rather than one. Correct the claim. Then find the
+sentences explaining why it said that. Then find what was concluded from it. Check
+all three against what is now true, and delete or rewrite a justification whose
+premise has died rather than leaving it standing because the paragraph around it
+was rewritten and now looks fresh. **A rewritten paragraph is not evidence that
+the sentences inside it were re-read.**
+
+The check is cheap and specific: after the edit, search the section for the words
+that carry reasoning — because, since, which is why, so that, the reason — and for
+anything that begins "this means" or "so there is no". Each hit either still
+follows from what the doc now says or does not.
+
+**The evidence, kept because a rule without it gets softened by whoever finds it
+inconvenient.** This project has hit it four times: PR #14's form, the Resend
+claim, the mock consolidation's undrawn list, and the plan column. In three of the
+four a rewrite of the surrounding paragraph left the justifying sentences looking
+untouched — the paragraph was newer than the sentences inside it. The fourth is
+the one that establishes the conclusion pass: the doc said nothing recorded which
+plan a user had bought, which became false when the column was added, and
+concluded from it that there was nowhere at all a paid user could read their plan
+back — which became false later still, and was further from true. Checking only
+the premise would have left the conclusion standing.
 
 **Protect main when it deploys from main.** If the project deploys from main (a
 live website or app), never commit code directly to main: one feature branch per
