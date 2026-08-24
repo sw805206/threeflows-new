@@ -283,7 +283,12 @@
        spending a word or a column on it; the value goes to full ink as soon as
        the reader overwrites it. */
     .tf-input.is-placeholder { color: var(--tf-stone); }
-    .tf-input.is-placeholder:focus { color: var(--tf-ink); }
+    /* A text field CLEARS when focused, so it goes to ink the moment the caret
+       lands — there is nothing muted left to read. A SELECT clears nothing:
+       focusing it only opens the list, and flipping it to ink there would
+       claim the reader had chosen something merely by looking. It stays muted
+       until the value actually changes. */
+    input.tf-input.is-placeholder:focus { color: var(--tf-ink); }
 
     /* ---- Step 2 table -----------------------------------------------------
        Six columns of currency in a 62ch measure. One step down the scale, with
@@ -586,7 +591,7 @@
                 <div class="tf-explained">
                   <div class="tf-field">
                     <label class="tf-label" for="b-filing">Filing status</label>
-                    <select class="tf-input" id="b-filing" data-var="filingStatus">
+                    <select class="tf-input is-placeholder" id="b-filing" data-var="filingStatus">
                       <option selected>Married filing jointly</option>
                       <option>Single</option>
                       <option>Head of household</option>

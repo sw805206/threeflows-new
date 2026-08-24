@@ -1485,6 +1485,10 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
       })).join('');
       if (current && ST[current]) sel.value = current;
       else if (isHome) sel.value = '';
+      /* "Select one" is a prompt, not a value — the least like real data of
+         anything on the step — so it wears the same muted treatment as every
+         other unanswered field, and takes ink only once a state is chosen. */
+      if (isHome) sel.classList.toggle('is-placeholder', !ST[sel.value]);
     });
   }
 
@@ -2511,6 +2515,9 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     var t = e.target;
     if (t.matches && t.matches('[data-election]')) { applyElection(); renderYearTable(readBase()); recalc(); return; }
     if (t.id === 'b-state' || t.id === 'b-filing') {
+      /* Actively chosen now, so it stops reading as a suggestion. The home
+         select can also go BACK to unchosen, which returns it to muted. */
+      t.classList.toggle('is-placeholder', t.id === 'b-state' && !ST[t.value]);
       if (t.id === 'b-state' && !STATE.outlookStateTouched) {
         var o = el('#o-state');
         if (o) o.value = t.value;
@@ -2568,6 +2575,9 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
         if (x.type === 'checkbox' || x.type === 'radio') x.checked = x.defaultChecked;
         else if (x.tagName === 'SELECT') {
           Array.prototype.slice.call(x.options).forEach(function (o) { o.selected = o.defaultSelected; });
+          /* Back to a pre-selected default, so it is muted again. Only the
+             filing status has one; the state selects open empty or derived. */
+          if (x.id === 'b-filing') x.classList.add('is-placeholder');
         } else {
           x.value = x.defaultValue;
           /* Back to a suggestion: greyed again, and cleared again on focus.
