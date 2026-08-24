@@ -405,6 +405,63 @@
     .tf-framing p:last-child { margin-bottom: 0; }
     .tf-framing strong { color: var(--tf-ink); }
 
+
+    /* ---- Source citation --------------------------------------------------
+       Sits under the source prose as its own line, so the link is scannable
+       down the column rather than buried mid-sentence. A row with no citable
+       source wears the same slot in muted type, which keeps the column
+       readable as "where did this come from" for every row. */
+    .tf-source-link {
+      display: block;
+      margin-top: 6px;
+      font-size: var(--tf-text-xs);
+      line-height: 1.4;
+    }
+    .tf-source-link.is-none { color: var(--tf-stone); }
+
+    /* ---- Ranking header ---------------------------------------------------
+       Column names over .tf-rank, on the SAME grid as a row so the labels sit
+       above the columns they name. The after-tax figure is what the tool
+       exists to produce and had been reading as an unexplained number. */
+    .tf-rank-head {
+      display: grid;
+      grid-template-columns: 30px 108px minmax(0, 1fr) 76px;
+      gap: var(--tf-space-1);
+      align-items: end;
+      padding: 0 var(--tf-space-2) var(--tf-space-1);
+      font-size: var(--tf-text-xs);
+      /* NO tracking here, unlike .tf-meta. The rank column is 30px, and the
+         sheet's 0.14em pushed "Rank" straight out of it and into "State" —
+         the two labels ran together as one word. The columns are narrow by
+         design, so the header gives up the letter-spacing rather than the
+         alignment. */
+      letter-spacing: 0;
+      text-transform: uppercase;
+      color: var(--tf-ink-soft);
+      line-height: 1.3;
+    }
+    .tf-rank-head > :first-child { text-align: right; }
+    .tf-rank-head-amt { text-align: right; }
+    @media (max-width: 640px) {
+      .tf-rank-head { grid-template-columns: 24px 80px minmax(0, 1fr) 66px; }
+    }
+
+    /* The top-ranked state, which is shown whether or not it was picked. */
+    .tf-rank-best {
+      font-size: var(--tf-text-xs);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--tf-brick);
+      margin-left: 6px;
+    }
+
+    /* ---- Step 4 heading air -----------------------------------------------
+       "The business share" is written by the engine into a container that sits
+       directly beneath the year table, outside the .tf-tool-panel > h3 rule
+       that gives the authored headings their top margin. Without this it butts
+       against the table above it. */
+    [data-outlook-summary] > h3 { margin-top: var(--tf-space-6); }
+
   </style>
 </head>
 <body class="tf-app">
@@ -512,9 +569,16 @@
                 <div class="tf-explained">
                   <div class="tf-field">
                     <label class="tf-label" for="b-state">Home state</label>
+                    <!-- Opens on "Select one", deliberately. Every rate on this page is
+                         state-specific, so defaulting to a real state would produce
+                         a complete, confident answer for somewhere the reader does
+                         not live. The option's value is empty, which is not a key in
+                         the dataset, so the engine can tell "unchosen" from "chosen"
+                         without a second flag. -->
                     <select class="tf-input" id="b-state" data-state-select="home">
-                      <!-- Options are written by the engine from the state
-                           dataset, so the markup carries no state name. -->
+                      <option value="">Select one</option>
+                      <!-- The 51 jurisdictions are written by the engine from the
+                           state dataset, so the markup carries no state name. -->
                     </select>
                   </div>
                   <p class="tf-explain-note">Where you live and where the business is registered. This tool assumes they are the same.</p>
@@ -618,7 +682,7 @@
                    rather than left implicit. -->
               <div class="tf-assume-group">
                 <h3>Your annual household spend</h3>
-                <p class="tf-explain-note">Enter what you actually pay, sales tax included &mdash; the receipt total, not the shelf price. The readout below separates the sales tax back out.</p>
+                <p class="tf-explain-note">Enter what you actually pay, sales tax included &mdash; the receipt total, not the shelf price. The readout below separates the sales tax back out. Step 2 grows these forward at an assumed <strong data-inflation-rate></strong> a year; <strong>holding spend flat instead makes year-over-year changes easier to read</strong>, so you may prefer to overwrite those cells to match Year 1.</p>
 
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Housing <small>Mortgage or rent, utilities, upkeep</small></div>
@@ -677,7 +741,7 @@
                 <h3>Your business (Year 1)</h3>
 
                 <div class="tf-bucket">
-                  <div class="tf-bucket-name"><strong>Revenue</strong> <small>Total billings, before any cost</small></div>
+                  <div class="tf-bucket-name"><strong>Total revenue for the year</strong> <small>Everything the business took in, before any cost. If you invoice and get paid within the same year, billed and received are the same number</small></div>
                   <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-bz-revenue" inputmode="decimal" value="30,000" data-money></div>
                 </div>
                 <div class="tf-bucket">
@@ -744,6 +808,8 @@
               </div>
             </div>
             <p class="tf-lead tf-secondary">Year 1 comes from Step 1. The rest are placeholders on a plain growth curve. <strong>Overwrite them with your own view.</strong></p>
+            <p class="tf-empty-note" data-await hidden>Choose your home state in Step 1. Every rate on this page is state-specific, so there is nothing to show until then.</p>
+            <div data-needs-state>
 
             <!-- W-2 and 1099 stay in SEPARATE columns for the same reason they
                  are separate fields in Step 1: they are taxed differently, and
@@ -793,6 +859,7 @@
             <!-- Written by the engine, including which callout modifier it wears:
                  an affirming note when the years clear, a warning when they do not. -->
             <div data-surplus-note></div>
+            </div>
           </section>
 
           <!-- ================== STEP 3: The Tax Impact =====================
@@ -820,6 +887,8 @@
               </div>
             </div>
             <p class="tf-lead tf-secondary">Income in, spending and tax out, and what is left is yours.</p>
+            <p class="tf-empty-note" data-await hidden>Choose your home state in Step 1. Every rate on this page is state-specific, so there is nothing to show until then.</p>
+            <div data-needs-state>
 
             <div class="tf-ctl-row">
               <div class="tf-field">
@@ -896,7 +965,17 @@
               <span><i class="tf-chart-swatch tf-seg-tax"></i>Tax</span>
               <span><i class="tf-chart-swatch tf-seg-remaining"></i>Remaining</span>
             </div>
+            <!-- The right-hand figure is the one the whole tool exists to
+                 produce, and it sat unlabeled. A header row names it over the
+                 column it belongs to. -->
+            <div class="tf-rank-head">
+              <span>Rank</span>
+              <span>State</span>
+              <span>Where each dollar of income goes</span>
+              <span class="tf-rank-head-amt">After-tax take-home</span>
+            </div>
             <div class="tf-rank" data-rank></div>
+            </div>
           </section>
 
           <!-- ================= STEP 4: Surplus After Tax ===================
@@ -911,6 +990,8 @@
               </div>
             </div>
             <p class="tf-lead tf-secondary">The same three buckets, across the trajectory from Step 2.</p>
+            <p class="tf-empty-note" data-await hidden>Choose your home state in Step 1. Every rate on this page is state-specific, so there is nothing to show until then.</p>
+            <div data-needs-state>
 
             <div class="tf-ctl-row">
               <div class="tf-field">
@@ -970,6 +1051,7 @@
                  engine, and hidden outright in the job-only and business-only
                  scenarios where the comparison is degenerate. -->
             <div data-outlook-summary hidden></div>
+            </div>
           </section>
 
           <!-- ============== STEP 5: Assumptions & Sources ================== -->
@@ -985,7 +1067,6 @@
               <p>The rates come from public sources, and <strong>those sources do not always agree with each other.</strong> Where we found a genuine conflict, the table below says so and names both readings rather than quietly picking one. Some figures we read against a primary source this pass; most we carried from a reputable compilation and did not re-check. The right-hand column tells you which is which for every single input.</p>
               <p><strong>We do not guarantee any of it is accurate or current.</strong> Tax rules change, published compilations lag, and simplifications we have made deliberately &mdash; each one listed below &mdash; will be wrong for some households. <strong>Check anything you intend to act on with an accountant or tax attorney who knows your situation.</strong></p>
             </div>
-            <p class="tf-explain-note" data-sources-count></p>
 
             <h3>What the model does</h3>
             <ul class="tf-note-list">
@@ -1012,11 +1093,14 @@
             </ul>
 
             <h3>Where every figure comes from</h3>
+            <p class="tf-empty-note" data-await hidden>The rows below are specific to your home state. Choose one in Step 1 to see them.</p>
+            <div data-needs-state>
             <div class="tf-data-table">
               <table>
                 <thead><tr><th>Input</th><th>Source, and what we assumed</th><th>Provenance</th></tr></thead>
                 <tbody data-sources-table></tbody>
               </table>
+            </div>
             </div>
           </section>
 

@@ -790,10 +790,18 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
      ordinary raises; household spend holds flat; the business grows the way
      an owner-operated business is usually imagined to. Every one of these is
      meant to be overwritten. */
+  /* u — OUR OWN ASSUMPTION, not a published forecast. Household spending was
+     previously held flat across years 2-5, which quietly asserted that a
+     basket costs the same in five years as today. Growing it at a stated rate
+     is the more honest default. Flat is still the easier read for comparing
+     one year against the next, and the copy says so — every cell is editable,
+     so flattening it by hand is a deliberate choice the reader can make. */
+  var HOUSEHOLD_SPEND_INFLATION = 0.025;
+
   var PLACEHOLDER_CURVE = {
     wages:    [1, 1.028, 1.056, 1.083, 1.111],
     contract: [1, 1.028, 1.056, 1.083, 1.111],
-    spend:    [1, 1, 1, 1, 1],
+    spend:    [1, 1.025, 1.051, 1.077, 1.104],
     revenue:  [1, 2.667, 5.333, 8.667, 13.333],
     costs:    [1, 2.5, 5.5, 9.5, 15]
   };
@@ -836,7 +844,11 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     BUCKETS.forEach(function (b) { entered[b.id] = val('b-sp-' + b.id); });
 
     return {
-      key: stateSel && stateSel.value ? stateSel.value : 'CA',
+      /* NULL until a state is chosen. Nothing downstream computes against a
+         state the reader never picked — every rate on the page is
+         state-specific, so a silent default would produce a complete,
+         confident answer for somewhere they do not live. */
+      key: (stateSel && ST[stateSel.value]) ? stateSel.value : null,
       /* THREE statuses, matched explicitly. This previously read
          `value === 'Single' ? 'sgl' : 'mfj'`, so "Head of household" fell
          through to MARRIED FILING JOINTLY and every HoH user silently got the
@@ -1034,6 +1046,26 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
 
   var FTA_SRC = 'Federation of Tax Administrators sales tax matrix, and state revenue department publications';
 
+  /* Source links. A row either points at the document the figure came from or
+     says plainly that it has no citable source — an approximate link is worse
+     than none, because it lends a figure authority the figure does not have. */
+  var LINKS = {
+    irs:   { href: 'https://www.irs.gov/pub/irs-drop/rp-25-32.pdf', label: 'IRS Rev. Proc. 2025-32 (PDF)' },
+    ssa:   { href: 'https://www.ssa.gov/oact/cola/cbb.html', label: 'SSA contribution and benefit base' },
+    ctc:   { href: 'https://www.irs.gov/credits-deductions/individuals/child-tax-credit', label: 'IRS — Child Tax Credit' },
+    medi:  { href: 'https://www.irs.gov/taxtopics/tc560', label: 'IRS Topic 560 — Additional Medicare Tax' },
+    qbi:   { href: 'https://www.irs.gov/newsroom/qualified-business-income-deduction', label: 'IRS — Qualified Business Income Deduction' },
+    salt:  { href: 'https://www.irs.gov/taxtopics/tc503', label: 'IRS Topic 503 — Deductible Taxes' },
+    futa:  { href: 'https://www.irs.gov/taxtopics/tc759', label: 'IRS Topic 759 — FUTA' },
+    tfSales: { href: 'https://taxfoundation.org/data/all/state/state-sales-tax-rates/', label: 'Tax Foundation — State and Local Sales Tax Rates' },
+    tfInc:   { href: 'https://taxfoundation.org/data/all/state/state-income-tax-rates/', label: 'Tax Foundation — State Individual Income Tax Rates' },
+    tfGroc:  { href: 'https://taxfoundation.org/data/all/state/grocery-tax-by-state/', label: 'Tax Foundation — Grocery Tax by State' },
+    fta:     { href: 'https://www.taxadmin.org/sales-taxation-of-services/', label: 'Federation of Tax Administrators — sales taxation of services' },
+    census:  { href: 'https://www.census.gov/programs-surveys/acs', label: 'US Census Bureau — American Community Survey' },
+    dol:     { href: 'https://oui.doleta.gov/unemploy/statelaws.asp', label: 'US DOL — significant provisions of state UI laws' }
+  };
+  var NO_SOURCE = { none: true, label: 'No published source — our own assumption' };
+
   /* row: [input, source, provenance, conflictNote] */
   function sourceRows(key) {
     var st = ST[key], sx = SALES[key], name = ST[key].n;
@@ -1041,65 +1073,65 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     var rows = [
       ['Federal income tax brackets and standard deduction',
        'IRS Rev. Proc. 2025-32. Standard deduction $32,200 married filing jointly, $16,100 single, $24,150 head of household. Married filing jointly runs 10% to $24,800 and 37% above $768,700; single runs 10% to $12,400 and 37% above $640,600.',
-       CHECKED],
+       CHECKED, null, LINKS.irs],
 
       ['Federal head of household bracket schedule',
        'IRS Rev. Proc. 2025-32, Table 2. 10% to $17,700, then 12% to $67,450, converging with the single schedule from 22% upward.',
        CONFLICT,
-       'Published tables disagree on where the 35% bracket begins for this status — $256,200 against $256,225, the latter being the single-filer figure. The head-of-household figure is used here, matching the small divergence the two schedules have carried in prior years. At the top rate the difference is worth under a dollar.'],
+       'Published tables disagree on where the 35% bracket begins for this status — $256,200 against $256,225, the latter being the single-filer figure. The head-of-household figure is used here, matching the small divergence the two schedules have carried in prior years. At the top rate the difference is worth under a dollar.', LINKS.irs],
 
       ['Social Security wage base',
        'Social Security Administration, 2026: $184,500. Medicare has no wage cap, so the 1.45% applies to every dollar.',
-       CHECKED],
+       CHECKED, null, LINKS.ssa],
 
       ['Additional Medicare tax',
        '0.9% on wages and self-employment income above $200,000 single and head of household, $250,000 married filing jointly. Statutory, and deliberately not inflation-indexed, so the thresholds do not move with the brackets.',
-       CHECKED],
+       CHECKED, null, LINKS.medi],
 
       ['Child tax credit',
        '$2,200 per qualifying child, of which $1,700 is refundable.',
        CHECKED,
-       'Applied here as a NON-refundable credit: it reduces tax to zero and no further. A household whose credit exceeds its liability would in reality receive part of the difference back, so this tool understates the benefit at low incomes.'],
+       'Applied here as a NON-refundable credit: it reduces tax to zero and no further. A household whose credit exceeds its liability would in reality receive part of the difference back, so this tool understates the benefit at low incomes.', LINKS.ctc],
 
       ['QBI deduction threshold and phase-in range',
        'Statutory, as amended by OBBBA: $403,500 married filing jointly, $201,775 otherwise, phasing in over $150,000 and $75,000 respectively.',
-       CHECKED],
+       CHECKED, null, LINKS.qbi],
 
       ['QBI deduction rate and minimum deduction',
        'Carried from the compiled dataset at 20% with a $400 floor.',
-       PLAIN],
+       PLAIN, null, LINKS.qbi],
 
       ['SALT deduction cap',
        'Carried at $40,400, indexed forward from the 2025 figure. The indexing assumption is ours, not a published number.',
-       PLAIN],
+       PLAIN, null, LINKS.salt],
 
       ['Federal unemployment tax',
        'Carried at 0.6% on the first $7,000 of each employee\'s wages — the 6.0% statutory rate net of the 5.4% state credit an employer paying its state tax on time normally receives.',
-       PLAIN],
+       PLAIN, null, LINKS.futa],
 
       [name + ' — combined state and average local sales tax rate',
        'Tax Foundation, July 2026 compilation: ' + st.sales.toFixed(2) + '%.',
-       PLAIN]
+       PLAIN, null, LINKS.tfSales]
     ];
 
     if (st.pit) {
       rows.push([name + ' — individual income tax brackets and standard deduction',
-        'Carried from the compiled dataset; not read back against the state revenue department this pass.', PLAIN]);
+        'Carried from the compiled dataset; not read back against the state revenue department this pass.', PLAIN, null, LINKS.tfInc]);
       rows.push(['Head of household treatment in ' + name,
         'Mapped to this state\'s SINGLE schedule and single standard deduction.',
         CONFLICT,
-        'An ASSUMPTION, not a published figure. Several states run their own head-of-household schedule, and a few — California most notably — make it materially more generous than single. Modeling that would need a separate bracket set and deduction for every state, which the source dataset does not carry. Where a state does have its own schedule this OVERSTATES the tax rather than understating it.']);
+        'An ASSUMPTION, not a published figure. Several states run their own head-of-household schedule, and a few — California most notably — make it materially more generous than single. Modeling that would need a separate bracket set and deduction for every state, which the source dataset does not carry. Where a state does have its own schedule this OVERSTATES the tax rather than understating it.', NO_SOURCE]);
     } else {
       rows.push([name + ' — no individual income tax',
-        'This state levies none, so the line is omitted from the breakdown entirely rather than shown as $0.', CHECKED]);
+        'This state levies none, so the line is omitted from the breakdown entirely rather than shown as $0.', CHECKED, null, LINKS.tfInc]);
     }
 
     rows.push([name + ' — effective property tax rate',
-      'Census-derived statewide average of ' + st.prop.toFixed(2) + '% of market value. A statewide average hides wide county-level variation.', PLAIN]);
+      'Census-derived statewide average of ' + st.prop.toFixed(2) + '% of market value. A statewide average hides wide county-level variation.', PLAIN, null, LINKS.census]);
     rows.push([name + ' — unemployment insurance rate and wage base',
-      'Mid-range new-employer rate. An established employer\'s experience rating will differ.', PLAIN]);
+      'Mid-range new-employer rate. An established employer\'s experience rating will differ.', PLAIN, null, LINKS.dol]);
     if (st.pfml) {
-      rows.push([name + ' — employer paid family leave rate', 'Carried from the compiled dataset.', PLAIN]);
+      rows.push([name + ' — employer paid family leave rate', 'Carried from the compiled dataset.', PLAIN, null, NO_SOURCE]);
     }
 
     /* The two exemption rows the build brief singles out. Both say plainly
@@ -1110,7 +1142,7 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     rows.push([name + ' — grocery sales tax treatment',
       FTA_SRC + '. Groceries are ' + groc + ' here.',
       CONFLICT,
-      'PUBLISHED SOURCES DISAGREE, and not narrowly. They differ on how many states tax groceries at all, on the rate where a reduced rate applies, and — the biggest divergence — on whether local rates still apply in states that removed the state-level grocery tax. This tool models several of those states at a local-only rate, which some compilations show as fully exempt. The figure in use is an ESTIMATE pending state-by-state verification, tracked as BL-043.']);
+      'PUBLISHED SOURCES DISAGREE, and not narrowly. They differ on how many states tax groceries at all, on the rate where a reduced rate applies, and — the biggest divergence — on whether local rates still apply in states that removed the state-level grocery tax. This tool models several of those states at a local-only rate, which some compilations show as fully exempt. The figure in use is an ESTIMATE pending state-by-state verification, tracked as BL-043.', LINKS.tfGroc]);
 
     var cloth = sx.cloth === 'exempt' ? 'treated as exempt'
               : sx.cloth === 'threshold' ? ('treated as exempt below $' + sx.cCap + ' per item')
@@ -1118,33 +1150,37 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     rows.push([name + ' — clothing sales tax treatment',
       FTA_SRC + '. Clothing is ' + cloth + ' here.',
       CONFLICT,
-      'PUBLISHED SOURCES DISAGREE on which garments an exemption reaches and on how per-item thresholds are applied to a mixed basket. A threshold exemption is modeled here as a FULL exemption, which overstates the relief for anyone buying above the threshold. An estimate pending verification, tracked as BL-043.']);
+      'PUBLISHED SOURCES DISAGREE on which garments an exemption reaches and on how per-item thresholds are applied to a mixed basket. A threshold exemption is modeled here as a FULL exemption, which overstates the relief for anyone buying above the threshold. An estimate pending verification, tracked as BL-043.', LINKS.fta]);
 
     rows.push([name + ' — general treatment of services (' + sx.svc + ')',
-      FTA_SRC + '. Recorded for reference only: the bucket map assigns service exposure uniformly across states, so this field does not enter the arithmetic.', PLAIN]);
+      FTA_SRC + '. Recorded for reference only: the bucket map assigns service exposure uniformly across states, so this field does not enter the arithmetic.', PLAIN, null, LINKS.fta]);
 
     var ent = LABELS.entity(key, 'sole-proprietor'), entSc = LABELS.entity(key, 's-corp');
     if (ent.present || entSc.present) {
       rows.push([name + ' — ' + ent.label.toLowerCase(),
-        'Simplified to a flat amount. The full statute has conditions this does not model.', PLAIN]);
+        'Simplified to a flat amount. The full statute has conditions this does not model.', PLAIN, null, NO_SOURCE]);
     }
     if (GROSS[key]) {
       rows.push([name + ' — ' + GROSS[key].label.toLowerCase(),
-        'A documented approximation of the regime, not the full statute.', PLAIN]);
+        'A documented approximation of the regime, not the full statute.', PLAIN, null, NO_SOURCE]);
     }
     if (st.ptet) {
       rows.push([name + ' — pass-through entity tax election available',
-        'Presence flagged only. The election can materially change the answer and its mechanics are NOT modeled here.', PLAIN]);
+        'Presence flagged only. The election can materially change the answer and its mechanics are NOT modeled here.', PLAIN, null, NO_SOURCE]);
     }
 
     rows.push(['Taxable share of the Transport and Everything else buckets',
-      'Our own assumption, fixed at ' + Math.round(MIXED_BUCKET_TAXABLE_FRACTION * 100) + '% and identical in every state. No published split of these categories into taxable goods and untaxed services and fees exists.', PLAIN]);
+      'Our own assumption, fixed at ' + Math.round(MIXED_BUCKET_TAXABLE_FRACTION * 100) + '% and identical in every state. No published split of these categories into taxable goods and untaxed services and fees exists.', PLAIN, null, NO_SOURCE]);
     rows.push(['Clothing share of the Retail & general bucket',
-      'Our own assumption, fixed at ' + Math.round(CLOTHING_SHARE_OF_RETAIL * 100) + '% and identical in every state.', PLAIN]);
+      'Our own assumption, fixed at ' + Math.round(CLOTHING_SHARE_OF_RETAIL * 100) + '% and identical in every state.', PLAIN, null, NO_SOURCE]);
+    rows.push(['Household spending growth, years 2 to 5',
+      'Our own assumption: household spend is grown at ' + (HOUSEHOLD_SPEND_INFLATION * 100).toFixed(1) +
+      '% a year. Not a published inflation forecast, and not tied to any index — a single flat rate applied to the whole basket, when in reality the categories move at different speeds. Every cell is editable, and holding spend flat makes year-over-year changes easier to read.',
+      PLAIN, null, NO_SOURCE]);
     rows.push(['Growth curve for years 2 to 5',
-      'Illustrative placeholders on a plain curve, meant to be overwritten. Not a forecast.', PLAIN]);
+      'Illustrative placeholders on a plain curve, meant to be overwritten. Not a forecast.', PLAIN, null, NO_SOURCE]);
     rows.push(['Rates across the five-year horizon',
-      'Held FLAT. No bracket indexing, no rate changes, no policy changes are modeled in years 2 to 5.', CHECKED]);
+      'Held FLAT. No bracket indexing, no rate changes, no policy changes are modeled in years 2 to 5.', CHECKED, null, NO_SOURCE]);
 
     return rows;
   }
@@ -1389,7 +1425,10 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
   };
 
   function setVar(name, text) {
-    els('[data-var="' + name + '"]').forEach(function (e) { e.textContent = text; });
+    els('[data-var="' + name + '"]').forEach(function (e) {
+      if (e.tagName === 'SELECT' || e.tagName === 'INPUT' || e.tagName === 'TEXTAREA') return;
+      e.textContent = text;
+    });
   }
   function showRow(name, on) {
     els('[data-row="' + name + '"]').forEach(function (e) { e.hidden = !on; });
@@ -1398,11 +1437,17 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
   function fillStateSelects() {
     els('select[data-state-select]').forEach(function (sel) {
       var current = sel.value;
-      sel.innerHTML = STATE_KEYS.map(function (k) {
+      var isHome = sel.getAttribute('data-state-select') === 'home';
+      /* The HOME select keeps an empty first option, and it is the default.
+         This rebuilds the option list, so the placeholder has to be re-emitted
+         here rather than left in the markup — writing it in the markup alone
+         is how it came to be overwritten with California on boot. */
+      var opts = isHome ? ['<option value="">Select one</option>'] : [];
+      sel.innerHTML = opts.concat(STATE_KEYS.map(function (k) {
         return '<option value="' + k + '">' + esc(ST[k].n) + '</option>';
-      }).join('');
+      })).join('');
       if (current && ST[current]) sel.value = current;
-      else if (sel.getAttribute('data-state-select') === 'home') sel.value = 'CA';
+      else if (isHome) sel.value = '';
     });
   }
 
@@ -1412,6 +1457,40 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
      selected: hiding a row must not silently deselect it. */
   var pickerFilter = '';
 
+  /* Kept in step with the grid-template-columns count in the page's own style
+     block. If one changes the other must change with it — they are two halves
+     of one layout decision, and the comment says so in both places. */
+  var PICKER_COLUMNS = 3;
+
+  /* [a,b,c,d,e,f,g] over 3 columns becomes the order a row-major grid needs in
+     order to LOOK column-major:
+        a d f      read down: a b c | d e f | g
+        b e g
+        c
+     Columns absorb the remainder from the left, so the left columns are the
+     long ones and no column is more than one item taller than the next. */
+  function columnMajor(list, cols) {
+    var n = list.length;
+    if (n === 0) return list;
+    var rows = Math.ceil(n / cols);
+    var tall = n % cols;                    // this many columns get the extra row
+    if (tall === 0) tall = cols;
+
+    var colOf = [], start = 0, i, c;
+    for (c = 0; c < cols; c++) {
+      var len = (c < tall) ? rows : rows - 1;
+      colOf.push(list.slice(start, start + len));
+      start += len;
+    }
+    var out = [];
+    for (i = 0; i < rows; i++) {
+      for (c = 0; c < cols; c++) {
+        if (colOf[c][i] !== undefined) out.push(colOf[c][i]);
+      }
+    }
+    return out;
+  }
+
   function fillStatePicker() {
     var host = el('#state-picker');
     if (!host) return;
@@ -1420,6 +1499,14 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     var keys = STATE_KEYS.filter(function (k) {
       return !q || ST[k].n.toLowerCase().indexOf(q) !== -1 || k.toLowerCase() === q;
     });
+
+    /* COLUMN-MAJOR. A CSS grid fills row by row, which puts Alaska to the
+       RIGHT of Alabama and breaks the one thing an alphabetical list is for —
+       running your eye down it. Reordering the array into column order before
+       the grid lays it out restores the reading order without giving up the
+       grid, and it re-derives on every filter, so a narrowed list is still
+       alphabetical down each column. */
+    keys = columnMajor(keys, PICKER_COLUMNS);
 
     host.innerHTML = keys.length
       ? keys.map(function (k) {
@@ -1438,6 +1525,12 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
   }
 
   /* --- Step 1 ------------------------------------------------------------- */
+  function renderInflationRate() {
+    els('[data-inflation-rate]').forEach(function (e) {
+      e.textContent = (HOUSEHOLD_SPEND_INFLATION * 100).toFixed(1) + '%';
+    });
+  }
+
   function renderBase(base, years) {
     var y1 = years[0];
     var enteredTotal = 0;
@@ -1632,30 +1725,45 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
 
     var shown = all.filter(function (r) { return keys.indexOf(r.key) !== -1; });
     var home = all.filter(function (r) { return r.key === base.key; })[0];
+    /* RANK 1 IS ALWAYS SHOWN, selected or not. A ranking that opens at rank 4
+       because that is what happened to be ticked tells the reader where they
+       came in a race whose winner they cannot see. It is marked as the best
+       available so it is not mistaken for one of their own picks. */
+    var best = all[0];
+    var bestIsExtra = (best.key !== base.key) &&
+                      !shown.some(function (r) { return r.key === best.key; });
 
     var span = shown.reduce(function (m, r) {
       return Math.max(m, r.s.spend + Math.abs(r.s.tax) + Math.abs(r.s.remaining));
     }, 1);
 
-    function row(r, isHome) {
+    function row(r, isHome, mark) {
       var s = r.s;
       var seg = function (v, cls) {
         var w = Math.max(0, (Math.abs(v) / span) * 100);
         return w < 0.2 ? '' : '<i class="' + cls + '" style="width:' + w.toFixed(1) + '%"></i>';
       };
-      return '<div class="tf-rank-row' + (isHome ? ' is-home' : '') + '">' +
+      var name = esc(ST[r.key].n) + (mark === 'best' ? ' <span class="tf-rank-best">best</span>' : '');
+      return '<div class="tf-rank-row' + (isHome ? ' is-home' : '') + (mark === 'best' ? ' is-best' : '') + '">' +
         '<div class="tf-rank-num">' + rankOf[r.key] + '</div>' +
-        '<div class="tf-rank-name">' + (isHome ? '<strong>' + esc(ST[r.key].n) + '</strong>' : esc(ST[r.key].n)) + '</div>' +
+        '<div class="tf-rank-name">' + (isHome ? '<strong>' + name + '</strong>' : name) + '</div>' +
         '<div class="tf-rank-bar">' + seg(s.spend, 'tf-seg-spend') + seg(s.tax, 'tf-seg-tax') +
           seg(s.remaining, s.remaining < 0 ? 'tf-seg-short' : 'tf-seg-remaining') + '</div>' +
         '<div class="tf-rank-amt' + (s.remaining < 0 ? ' tf-num-neg' : '') + '">' + money(s.remaining) + '</div></div>';
     }
 
     var out = row(home, true) +
-      '<div class="tf-rank-sep">— your state, ' + ordinal(rankOf[base.key]) + ' of ' + all.length + ' —</div>' +
-      shown.filter(function (r) { return r.key !== base.key; }).map(function (r) { return row(r, false); }).join('');
+      '<div class="tf-rank-sep">— your state, ' + ordinal(rankOf[base.key]) + ' of ' + all.length + ' —</div>';
 
-    host.innerHTML = out || '<div class="tf-rank-sep">— no states selected —</div>';
+    if (bestIsExtra) {
+      out += row(best, false, 'best') +
+             '<div class="tf-rank-sep">— best of all ' + all.length + ', shown whether or not you picked it —</div>';
+    }
+
+    out += shown.filter(function (r) { return r.key !== base.key; })
+                .map(function (r) { return row(r, false, r.key === best.key ? 'best' : ''); }).join('');
+
+    host.innerHTML = out;
   }
 
   function ordinal(n) {
@@ -1746,19 +1854,22 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     host.innerHTML = rows.map(function (r) {
       var prov = r[2] || 'plain';
       var note = r[3] ? '<span class="tf-source-conflict">' + esc(r[3]) + '</span>' : '';
+      /* A row either LINKS to the document its figure came from, or says
+         outright that no published source exists. An approximate link would be
+         worse than none: it lends a figure authority it does not have. */
+      var link = r[4];
+      var cite = '';
+      if (link && link.none) {
+        cite = '<span class="tf-source-link is-none">' + esc(link.label) + '</span>';
+      } else if (link) {
+        cite = '<a class="tf-source-link" href="' + esc(link.href) + '" target="_blank" rel="noopener">' +
+               esc(link.label) + '</a>';
+      }
       return '<tr><td>' + esc(r[0]) + '</td>' +
-             '<td>' + esc(r[1]) + note + '</td>' +
+             '<td>' + esc(r[1]) + note + cite + '</td>' +
              '<td><span class="tf-prov tf-prov-' + prov + '">' + PROV_LABEL[prov] + '</span></td></tr>';
     }).join('');
 
-    var count = el('[data-sources-count]');
-    if (count) {
-      var checked = rows.filter(function (r) { return r[2] === 'checked'; }).length;
-      var conflict = rows.filter(function (r) { return r[2] === 'conflict'; }).length;
-      count.textContent = rows.length + ' inputs, of which ' + checked +
-        ' were read against a primary source this pass and ' + conflict +
-        ' have sources that disagree with each other';
-    }
   }
 
   /* ========================================================================
@@ -1770,8 +1881,42 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
 
   var LAST = null;
 
+  /* Every panel's data region, and the prompt each shows before a state is
+     picked. Step 1 keeps its FORM — the reader can fill it in in any order —
+     but its derived readouts go to an em dash, because each of them already
+     depends on a sales-tax rate. */
+  var AWAIT_MSG = 'Choose your home state in Step 1. Every rate on this page is state-specific, so there is nothing to show until then.';
+
+  function renderAwaitingState() {
+    /* Display slots only. A <select> can carry data-var too — the filing
+       status does — and writing textContent to one DESTROYS ITS OPTIONS,
+       which emptied the filing dropdown the moment the page opened without a
+       state. Form controls hold their own value and are never a display slot. */
+    els('[data-var]').forEach(function (e) {
+      if (e.tagName === 'SELECT' || e.tagName === 'INPUT' || e.tagName === 'TEXTAREA') return;
+      e.textContent = '—';
+    });
+    els('[data-await]').forEach(function (e) { e.hidden = false; });
+    els('[data-needs-state]').forEach(function (e) { e.hidden = true; });
+    els('[data-row]').forEach(function (e) { e.hidden = true; });
+  }
+
+  function clearAwaitingState() {
+    els('[data-await]').forEach(function (e) { e.hidden = true; });
+    els('[data-needs-state]').forEach(function (e) { e.hidden = false; });
+  }
+
   function recalc() {
     var base = readBase();
+
+    if (!base.key) {
+      renderInflationRate();
+      renderAwaitingState();
+      LAST = null;
+      return;
+    }
+    clearAwaitingState();
+
     var years = buildYears(base);
 
     var projections = {
@@ -1782,6 +1927,7 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
 
     LAST = { base: base, years: years, projections: projections };
 
+    renderInflationRate();
     renderBase(base, years);
     renderIncomeStep(base, projections);
     renderAfterTax(base, projections);
@@ -2106,11 +2252,32 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
      moves it, and a reader mid-number loses their place. The value is parsed
      comma-blind either way, so what is on screen and what the engine reads
      cannot diverge. */
+  /* A PLACEHOLDER CLEARS WHEN YOU ENTER IT. Greying the figure says "this is a
+     suggestion"; leaving it in the box means the reader has to select and
+     delete someone else's number before typing their own, and any character
+     they type lands beside it. Focus empties the cell; leaving it empty puts
+     the suggestion back, so nothing is lost by looking. */
+  root.addEventListener('focusin', function (e) {
+    var t = e.target;
+    if (!t || t.tagName !== 'INPUT') return;
+    if (!t.classList.contains('is-placeholder')) return;
+    t.dataset.suggested = t.value;
+    t.value = '';
+  });
+
   root.addEventListener('focusout', function (e) {
     var t = e.target;
     if (!t || !t.tagName || t.tagName !== 'INPUT') return;
     if (!t.hasAttribute('data-money') && !t.classList.contains('tf-year-input')) return;
-    if (t.value.trim() === '') return;
+    /* Left without typing: the suggestion goes back, still grey. */
+    if (t.value.trim() === '') {
+      if (t.dataset.suggested !== undefined) {
+        t.value = t.dataset.suggested;
+        delete t.dataset.suggested;
+      }
+      return;
+    }
+    delete t.dataset.suggested;
     t.value = grouped(t.value);
   });
 
@@ -2205,12 +2372,13 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     fillStateSelects();
     fillStatePicker();
     var homeSel = el('#b-state'), outSel = el('#o-state');
-    if (homeSel && !ST[homeSel.value]) homeSel.value = 'CA';
-    /* Seed Step 4 from Step 1 unconditionally on boot. Testing !ST[value] was
-       not enough: the select had already been populated with all 51 states, so
-       its value was a VALID key — the first one alphabetically — and the seed
-       never ran. That is how it came to open on Alabama. */
-    if (outSel && !STATE.outlookStateTouched) outSel.value = homeSel ? homeSel.value : 'CA';
+    /* No default home state: the reader picks one, and nothing computes until
+       they do. Step 4 seeds from whatever Step 1 holds — empty at first — and
+       follows it until the reader takes that control over. Testing !ST[value]
+       was not enough for the Step 4 seed: the select had already been
+       populated, so its value was a VALID key, the first alphabetically, and
+       the seed never ran. That is how it came to open on Alabama. */
+    if (outSel && !STATE.outlookStateTouched && homeSel) outSel.value = homeSel.value;
     renderYearTable(readBase());
     recalc();
   }
