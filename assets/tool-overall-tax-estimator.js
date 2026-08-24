@@ -834,7 +834,18 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
 
   function el(sel) { return root.querySelector(sel); }
   function els(sel) { return Array.prototype.slice.call(root.querySelectorAll(sel)); }
-  function val(id) { var e = el('#' + id); return e ? num(e.value) : 0; }
+  /* A placeholder CLEARS when focused, so while the caret is in it the field
+     is empty on screen. The suggestion it is standing in for is parked on the
+     element, and read from there — otherwise every derived figure on the page
+     would lurch to zero the moment the reader clicked into a box, and lurch
+     back when they left without typing. What is displayed and what is
+     computed stay the same number either way. */
+  function fieldValue(e) {
+    if (!e) return 0;
+    if (e.value === '' && e.dataset.suggested !== undefined) return num(e.dataset.suggested);
+    return num(e.value);
+  }
+  function val(id) { return fieldValue(el('#' + id)); }
 
   function readBase() {
     var stateSel = el('#b-state');
@@ -1200,6 +1211,32 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
      computed values first — one source, resolved at the last moment.
      ======================================================================== */
 
+  /* THE SEGMENT PALETTE — ONE DEFINITION, three consumers.
+     This previously lived in two places: a set of .tf-seg-* CSS classes worn
+     by the comparison bars and the legend swatches, and a second set of
+     hardcoded fills inside the SVG builders. They drifted, exactly as two
+     copies of anything do — the Step 4 chart went on drawing the pale washes
+     after the classes were corrected to separable tones, so its legend keyed
+     colors the chart was not drawing.
+     Everything now reads from here. The .tf-seg-* classes are gone; the bars
+     and swatches take an inline background from this object, which is a token
+     reference and never a raw value. */
+  var SEG = {
+    spend:     'var(--tf-stone)',
+    tax:       'var(--tf-ink-soft)',
+    remaining: 'var(--tf-brick)',
+    short:     'var(--tf-brick-dark)',   /* remaining, below zero */
+    household: 'var(--tf-stone)',
+    business:  'var(--tf-brick)',
+    net:       'var(--tf-ink)'
+  };
+
+  /* A legend key. Built from SEG so a swatch cannot name a color the marks do
+     not draw. */
+  function key(role, label) {
+    return '<span><i class="tf-chart-swatch" style="background:' + SEG[role] + '"></i>' + label + '</span>';
+  }
+
   var CH = { w: 636, h: 320, left: 66, right: 598, top: 24, bottom: 258, barW: 56 };
 
   function esc(s) {
@@ -1317,14 +1354,14 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     var marks = '';
     projection.forEach(function (_, i) {
       var st = stack([
-        { value: house[i], fill: 'var(--tf-stone)' },
-        { value: biz[i], fill: 'var(--tf-brick)' }
+        { value: house[i], fill: SEG.household },
+        { value: biz[i], fill: SEG.business }
       ], sc, i);
       s += st.svg;
       var net = nets[i];
       var ny = sc.y(net);
       marks += '<line x1="' + barX(i) + '" y1="' + ny.toFixed(1) + '" x2="' + (barX(i) + CH.barW) +
-               '" y2="' + ny.toFixed(1) + '" stroke="var(--tf-ink)" stroke-width="2.5"/>';
+               '" y2="' + ny.toFixed(1) + '" stroke="' + SEG.net + '" stroke-width="2.5"/>';
       marks += '<text x="' + barCenter(i) + '" y="' + (net < 0 ? ny + 14 : ny - 6).toFixed(1) +
                '" font-family="var(--tf-font-body)" font-size="11" font-weight="700" text-anchor="middle" fill="' +
                (net < 0 ? 'var(--tf-brick)' : 'var(--tf-ink)') + '">' + esc(money(net)) + '</text>';
@@ -1352,9 +1389,9 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     var marks = '';
     projection.forEach(function (row, i) {
       var st = stack([
-        { value: row.spend, fill: 'var(--tf-wash-stone)' },
-        { value: row.tax, fill: 'var(--tf-wash-brick)' },
-        { value: row.remaining, fill: 'var(--tf-brick)' }
+        { value: row.spend, fill: SEG.spend },
+        { value: row.tax, fill: SEG.tax },
+        { value: row.remaining, fill: row.remaining < 0 ? SEG.short : SEG.remaining }
       ], sc, i);
       s += st.svg;
       var neg = row.remaining < 0;
@@ -1588,8 +1625,20 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     var host = el('[data-surplus-chart]');
     if (host) host.innerHTML = chart.svg;
 
-    /* The legend keys only the marks this variant actually draws. */
-    els('[data-legend="surplus-household"]').forEach(function (e) { e.hidden = (which === 'business') ? false : false; });
+    /* Keys only the marks this variant actually draws, from the same palette
+       the chart drew them with. */
+    var sLeg = el('[data-surplus-legend]');
+    if (sLeg) {
+      /* Job-only draws no business bar at all, so keying one described a mark
+         that was not on the chart. */
+      var anyBiz = proj.some(function (r) { return r.businessIncome > 0; });
+      var anyHouse = proj.some(function (r) { return (r.income - r.businessIncome) - r.spend !== 0; });
+      var k = [];
+      if (anyHouse) k.push(key('household', 'Household surplus'));
+      if (anyBiz) k.push(key('business', 'Business profit'));
+      k.push(key('net', 'Net for the year'));
+      sLeg.innerHTML = k.join('');
+    }
 
     var last = proj[proj.length - 1];
     var lastNet = last.income - last.spend;
@@ -1739,16 +1788,16 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
 
     function row(r, isHome, mark) {
       var s = r.s;
-      var seg = function (v, cls) {
+      var seg = function (v, role) {
         var w = Math.max(0, (Math.abs(v) / span) * 100);
-        return w < 0.2 ? '' : '<i class="' + cls + '" style="width:' + w.toFixed(1) + '%"></i>';
+        return w < 0.2 ? '' : '<i style="width:' + w.toFixed(1) + '%;background:' + SEG[role] + '"></i>';
       };
       var name = esc(ST[r.key].n) + (mark === 'best' ? ' <span class="tf-rank-best">best</span>' : '');
       return '<div class="tf-rank-row' + (isHome ? ' is-home' : '') + (mark === 'best' ? ' is-best' : '') + '">' +
         '<div class="tf-rank-num">' + rankOf[r.key] + '</div>' +
         '<div class="tf-rank-name">' + (isHome ? '<strong>' + name + '</strong>' : name) + '</div>' +
-        '<div class="tf-rank-bar">' + seg(s.spend, 'tf-seg-spend') + seg(s.tax, 'tf-seg-tax') +
-          seg(s.remaining, s.remaining < 0 ? 'tf-seg-short' : 'tf-seg-remaining') + '</div>' +
+        '<div class="tf-rank-bar">' + seg(s.spend, 'spend') + seg(s.tax, 'tax') +
+          seg(s.remaining, s.remaining < 0 ? 'short' : 'remaining') + '</div>' +
         '<div class="tf-rank-amt' + (s.remaining < 0 ? ' tf-num-neg' : '') + '">' + money(s.remaining) + '</div></div>';
     }
 
@@ -1764,6 +1813,21 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
                 .map(function (r) { return row(r, false, r.key === best.key ? 'best' : ''); }).join('');
 
     host.innerHTML = out;
+
+    /* The key, built from the rows actually drawn. "Remaining" and "Short" are
+       two different reds — the bars have always drawn them that way, and a
+       fixed legend claimed only the positive one, so in a scenario where every
+       state ran short the key matched nothing on screen. */
+    var legend = el('[data-rank-legend]');
+    if (legend) {
+      var drawn = shown.concat([home]).concat(bestIsExtra ? [best] : []);
+      var anyPos = drawn.some(function (r) { return r.s.remaining >= 0; });
+      var anyNeg = drawn.some(function (r) { return r.s.remaining < 0; });
+      var keys = [key('spend', 'Spend'), key('tax', 'Tax')];
+      if (anyPos) keys.push(key('remaining', 'Remaining'));
+      if (anyNeg) keys.push(key('short', 'Short &mdash; spend and tax exceed income'));
+      legend.innerHTML = keys.join('');
+    }
   }
 
   function ordinal(n) {
@@ -1787,6 +1851,17 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     var chart = outlookChart(proj, which);
     var host = el('[data-outlook-chart]');
     if (host) host.innerHTML = chart.svg;
+
+    /* Same treatment as the comparison list: a scenario that runs short draws
+       a different red, so the key follows the data rather than asserting a
+       fixed three. */
+    var oLeg = el('[data-outlook-legend]');
+    if (oLeg) {
+      var keys = [key('spend', 'Spend'), key('tax', 'Tax')];
+      if (proj.some(function (r) { return r.remaining >= 0; })) keys.push(key('remaining', 'Remaining'));
+      if (proj.some(function (r) { return r.remaining < 0; })) keys.push(key('short', 'Short &mdash; spend and tax exceed income'));
+      oLeg.innerHTML = keys.join('');
+    }
 
     var tbl = el('[data-outlook-table]');
     if (tbl) {
@@ -2054,22 +2129,136 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     y = writeWrapped(doc, ST[base.key].n + ' · ' + base.filingLabel + ' · ' +
       (base.election === 's-corp' ? 'S-corp election' : 'Owner-run'), margin, y, inner, 11) + 8;
 
+    /* ---- Step 1: what was entered -------------------------------------
+       The PDF previously opened straight onto Step 3's arithmetic, so a saved
+       copy recorded the ANSWER without the inputs that produced it — unusable
+       as a record, and impossible to check months later. Every step is carried
+       now, in the order the page presents them. */
+    var yrs = LAST.years, y1 = yrs[0];
+    var P1 = businessProfit(y1.biz, base.election, ST[base.key]);
+    var enteredTotal = 0;
+    BUCKETS.forEach(function (b) { enteredTotal += num(base.entered[b.id]); });
+    var preTax = basketTotal(y1.basket);
+
+    function table(title, head, body, opts) {
+      opts = opts || {};
+      if (opts.newPage) { doc.addPage(); y = margin; }
+      if (title) {
+        doc.setFont('times', 'bold').setFontSize(opts.big ? 14 : 11).setTextColor.apply(doc, ink);
+        doc.text(title, margin, y);
+        y += opts.big ? 14 : 11;
+      }
+      doc.autoTable({
+        startY: y, margin: { left: margin, right: margin },
+        head: head ? [head] : undefined, body: body,
+        styles: { font: 'helvetica', fontSize: 8, cellPadding: 3.5, textColor: ink,
+                  lineColor: sand, lineWidth: 0.5, valign: 'top' },
+        headStyles: { fillColor: false, textColor: inkSoft, fontStyle: 'bold', lineColor: sand },
+        columnStyles: opts.columnStyles || {}
+      });
+      y = doc.lastAutoTable.finalY + 16;
+      return y;
+    }
+
+    var rightNum = { 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' }, 4: { halign: 'right' } };
+
+    doc.addPage(); y = margin;
+    doc.setFont('times', 'bold').setFontSize(14).setTextColor.apply(doc, ink);
+    doc.text('Step 1 — Your Base Year', margin, y); y += 18;
+
+    table('Where you are', null, [
+      ['Home state', ST[base.key].n],
+      ['Filing status', base.filingLabel],
+      ['Dependents', String(Math.round(base.dependents))],
+      ['How the business is taxed', base.election === 's-corp' ? 'S-corp' : 'Owner-run']
+    ], { columnStyles: { 0: { cellWidth: 170, fontStyle: 'bold' } } });
+
+    table('Employment income and home', null, [
+      ['W-2 wages', moneyPlain(base.wages)],
+      ['1099 / contract income', moneyPlain(base.contract)],
+      ['Home value', base.homeValue ? moneyPlain(base.homeValue) : 'Not owned']
+    ], { columnStyles: { 0: { cellWidth: 170, fontStyle: 'bold' }, 1: { halign: 'right' } } });
+
+    table('Household spend, as entered', ['Bucket', 'Amount'],
+      BUCKETS.map(function (b) { return [b.label, moneyPlain(num(base.entered[b.id]))]; }).concat([
+        ['Total as entered', moneyPlain(enteredTotal)],
+        ['Sales tax inside it', moneyPlain(-(enteredTotal - preTax))],
+        ['Pre-tax household spend', moneyPlain(preTax)]
+      ]),
+      { columnStyles: { 0: { cellWidth: 200 }, 1: { halign: 'right' } } });
+
+    table('Business', ['Line', 'Amount'], [
+      ['Total revenue for the year', moneyPlain(P1.revenue)],
+      ['Less goods, wages and operating expenses', moneyPlain(-P1.costsBeforeDep)],
+      ['Operating earnings (EBITDA)', moneyPlain(P1.ebitda)],
+      ['Less depreciation and loan interest', moneyPlain(-P1.depreciation)],
+      ['Business profit, before tax', moneyPlain(P1.net)]
+    ], { columnStyles: { 0: { cellWidth: 200 }, 1: { halign: 'right' } } });
+
+    /* ---- Step 2: the five-year inputs ---------------------------------- */
+    table('Step 2 — Income Before Tax', ['Year', 'W-2 wages', '1099 / contract', 'Household spend', 'Business revenue', 'Business costs'],
+      (YEAR_INPUTS || []).map(function (r, n) {
+        return [String(n + 1), moneyPlain(r.wages), moneyPlain(r.contract),
+                moneyPlain(r.spend), moneyPlain(r.revenue), moneyPlain(r.costs)];
+      }),
+      { newPage: true, big: true,
+        columnStyles: { 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' },
+                        4: { halign: 'right' }, 5: { halign: 'right' } } });
+    doc.setFont('helvetica', 'normal').setFontSize(8).setTextColor.apply(doc, inkSoft);
+    y = writeWrapped(doc, 'Year 1 comes from Step 1. Years 2 to 5 are placeholders on a plain growth curve unless overwritten; household spend is grown at ' +
+      (HOUSEHOLD_SPEND_INFLATION * 100).toFixed(1) + '% a year.', margin, y, inner, 10) + 12;
+
+    /* ---- Step 3: the arithmetic, and where the tax goes ---------------- */
     var i = STATE.year3;
-    var head = ['Year ' + (i + 1), 'Job only', 'Job + business', 'Business only'];
     var job = projections.job[i], both = projections.both[i], biz = projections.business[i];
-    var body = [
-      ['Income'].concat([job, both, biz].map(function (s) { return moneyPlain(s.income); })),
-      ['Spend'].concat([job, both, biz].map(function (s) { return moneyPlain(-s.spend); })),
-      ['Tax'].concat([job, both, biz].map(function (s) { return moneyPlain(-s.tax); })),
-      ['Remaining'].concat([job, both, biz].map(function (s) { return moneyPlain(s.remaining); }))
-    ];
-    doc.autoTable({
-      startY: y, margin: { left: margin, right: margin },
-      head: [head], body: body,
-      styles: { font: 'helvetica', fontSize: 8, cellPadding: 4, textColor: ink, lineColor: sand, lineWidth: 0.5 },
-      headStyles: { fillColor: false, textColor: inkSoft, fontStyle: 'bold', lineColor: sand },
-      columnStyles: { 0: { fontStyle: 'bold' }, 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' } }
+
+    table('Step 3 — The Tax Impact', ['Year ' + (i + 1) + ', ' + ST[base.key].n, 'Job only', 'Job + business', 'Business only'], [
+      ['Income'].concat([job, both, biz].map(function (x) { return moneyPlain(x.income); })),
+      ['Spend'].concat([job, both, biz].map(function (x) { return moneyPlain(-x.spend); })),
+      ['Tax'].concat([job, both, biz].map(function (x) { return moneyPlain(-x.tax); })),
+      ['Remaining'].concat([job, both, biz].map(function (x) { return moneyPlain(x.remaining); }))
+    ], { newPage: true, big: true, columnStyles: Object.assign({ 0: { fontStyle: 'bold' } }, rightNum) });
+
+    /* The two ledgers, carrying the SAME dynamic-label rules as the page: a
+       state with no income tax loses that line rather than showing $0. */
+    var pl = both.personal, bl = both.business;
+    var persRows = [['Federal income tax', moneyPlain(pl.fed)],
+                    ['Social Security & Medicare', moneyPlain(pl.fica)]];
+    if (LABELS.hasStateIncomeTax(base.key)) persRows.push(['State income tax', moneyPlain(pl.state)]);
+    persRows.push(['Property tax', moneyPlain(pl.property)]);
+    if (LABELS.hasSalesTax(base.key)) persRows.push(['Sales tax', moneyPlain(pl.sales)]);
+    persRows.push(['Personal total', moneyPlain(both.personalTax)]);
+    table('Where the tax goes — personal', ['Line', 'Amount'], persRows,
+      { columnStyles: { 0: { cellWidth: 240 }, 1: { halign: 'right' } } });
+
+    var busRows = [[base.election === 's-corp' ? 'Payroll tax on your salary' : 'Self-employment tax', moneyPlain(bl.se)],
+                   ['Federal income tax on profit', moneyPlain(bl.fed)]];
+    if (LABELS.hasStateIncomeTax(base.key)) busRows.push(['State income tax on profit', moneyPlain(bl.state)]);
+    var entL = LABELS.entity(base.key, base.election);
+    if (entL.present) busRows.push([entL.label, moneyPlain(bl.entity)]);
+    var grL = LABELS.grossReceipts(base.key, both.full.profit.revenue);
+    if (grL.present) busRows.push([grL.label, moneyPlain(bl.gross)]);
+    busRows.push(['Business total (incremental)', moneyPlain(both.businessTax)]);
+    table('Where the tax goes — business', ['Line', 'Amount'], busRows,
+      { columnStyles: { 0: { cellWidth: 240 }, 1: { halign: 'right' } } });
+
+    /* ---- Step 3: the state comparison --------------------------------- */
+    var cmpKeys = STATE_KEYS.filter(function (k) { return STATE.compare[k]; });
+    if (cmpKeys.indexOf(base.key) === -1) cmpKeys.push(base.key);
+    var ranked = STATE_KEYS.map(function (k) {
+      return { key: k, s: scenario(Object.assign({}, yrs[i]), k, STATE.scenarioCompare) };
+    }).sort(function (a, b) { return b.s.remaining - a.s.remaining; });
+    var rankIdx = {};
+    ranked.forEach(function (r, n) { rankIdx[r.key] = n + 1; });
+    var cmpRows = ranked.filter(function (r) {
+      return cmpKeys.indexOf(r.key) !== -1 || r.key === ranked[0].key;
+    }).map(function (r) {
+      return [String(rankIdx[r.key]),
+              ST[r.key].n + (r.key === base.key ? ' (your state)' : '') + (r.key === ranked[0].key ? ' — best' : ''),
+              moneyPlain(r.s.spend), moneyPlain(r.s.tax), moneyPlain(r.s.remaining)];
     });
+    table('How your home state compares — after-tax take-home', ['Rank', 'State', 'Spend', 'Tax', 'After-tax take-home'], cmpRows,
+      { newPage: true, big: true, columnStyles: Object.assign({ 0: { cellWidth: 34, halign: 'right' } }, { 2: { halign: 'right' }, 3: { halign: 'right' }, 4: { halign: 'right' } }) });
 
     var chart = outlookChart(projections[STATE.scenarioOutlook], STATE.scenarioOutlook);
     var drawW = inner, drawH = chart.height * (drawW / chart.width);
@@ -2079,7 +2268,10 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
       doc.addPage();
       var y2 = margin;
       doc.setFont('times', 'bold').setFontSize(14).setTextColor.apply(doc, ink);
-      doc.text('Five-year outlook', margin, y2); y2 += 14;
+      doc.text('Step 4 — Surplus After Tax', margin, y2); y2 += 14;
+      doc.setFont('helvetica', 'normal').setFontSize(8).setTextColor.apply(doc, inkSoft);
+      doc.text(ST[el('#o-state') && ST[el('#o-state').value] ? el('#o-state').value : base.key].n +
+        ' · ' + scenarioWords(STATE.scenarioOutlook), margin, y2); y2 += 12;
       doc.addImage(png, 'PNG', margin, y2, drawW, drawH);
       return y2 + drawH + 16;
     }, function () {
@@ -2098,19 +2290,48 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
         columnStyles: { 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' }, 4: { halign: 'right' } }
       });
 
+      /* The business share, and the crossover — the point of Step 4, and it
+         was absent from the saved copy entirely. */
+      var sh = shares(proj);
+      if (STATE.scenarioOutlook === 'both') {
+        doc.autoTable({
+          startY: doc.lastAutoTable.finalY + 16, margin: { left: margin, right: margin },
+          head: [['Year', 'Business % of income', 'Business % of tax']],
+          body: sh.rows.map(function (r, n) {
+            return ['Year ' + (n + 1), pct(r.shareIncome), pct(r.shareTax)];
+          }),
+          styles: { font: 'helvetica', fontSize: 8, cellPadding: 3.5, textColor: ink, lineColor: sand, lineWidth: 0.5 },
+          headStyles: { fillColor: false, textColor: inkSoft, fontStyle: 'bold', lineColor: sand },
+          columnStyles: { 1: { halign: 'right' }, 2: { halign: 'right' } }
+        });
+        var yS = doc.lastAutoTable.finalY + 12;
+        doc.setFont('helvetica', 'normal').setFontSize(8).setTextColor.apply(doc, inkSoft);
+        var line = sh.crossover
+          ? (sh.sustained === sh.crossover
+              ? 'Business % of tax first runs ahead of business % of income in Year ' + sh.crossover + ', and stays ahead.'
+              : (sh.sustained
+                  ? 'Business % of tax first runs ahead in Year ' + sh.crossover + ', falls back, then stays ahead from Year ' + sh.sustained + '.'
+                  : 'Business % of tax runs ahead in Year ' + sh.crossover + ' but is back below by Year 5.'))
+          : 'Business % of tax stays at or below business % of income across all five years.';
+        writeWrapped(doc, line, margin, yS, inner, 10);
+      }
+
       doc.addPage();
       var y3 = margin;
       doc.setFont('times', 'bold').setFontSize(14).setTextColor.apply(doc, ink);
-      doc.text('Assumptions and sources', margin, y3);
+      doc.text('Step 5 — Assumptions and sources', margin, y3);
       doc.autoTable({
         startY: y3 + 12, margin: { left: margin, right: margin },
-        head: [['Input', 'Source', 'Status']],
+        head: [['Input', 'Source, and what we assumed', 'Provenance']],
         body: sourceRows(base.key).map(function (r) {
-          return [r[0], r[1], r[2] ? 'Verified' : 'Unverified'];
+          var src = r[1];
+          if (r[3]) src += '  ' + r[3];
+          if (r[4]) src += '  ' + (r[4].none ? r[4].label : r[4].label + ' — ' + r[4].href);
+          return [r[0], src, PROV_LABEL[r[2] || 'plain']];
         }),
         styles: { font: 'helvetica', fontSize: 7, cellPadding: 3, textColor: ink, lineColor: sand, lineWidth: 0.5, valign: 'top' },
         headStyles: { fillColor: false, textColor: inkSoft, fontStyle: 'bold', lineColor: sand },
-        columnStyles: { 0: { cellWidth: 170 }, 1: { cellWidth: 'auto' }, 2: { cellWidth: 55 } }
+        columnStyles: { 0: { cellWidth: 130 }, 1: { cellWidth: 'auto' }, 2: { cellWidth: 72 } }
       });
 
       stampPageNumbers(doc);
@@ -2245,7 +2466,12 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
       recalc();
       return;
     }
-    if (t.hasAttribute && t.hasAttribute('data-money')) { renderYearTable(readBase()); recalc(); }
+    if (t.hasAttribute && t.hasAttribute('data-money')) {
+      t.classList.remove('is-placeholder');
+      delete t.dataset.suggested;
+      renderYearTable(readBase());
+      recalc();
+    }
   });
 
   /* Regroup on BLUR, never while typing: reformatting under a live caret
@@ -2342,7 +2568,14 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
         if (x.type === 'checkbox' || x.type === 'radio') x.checked = x.defaultChecked;
         else if (x.tagName === 'SELECT') {
           Array.prototype.slice.call(x.options).forEach(function (o) { o.selected = o.defaultSelected; });
-        } else x.value = x.defaultValue;
+        } else {
+          x.value = x.defaultValue;
+          /* Back to a suggestion: greyed again, and cleared again on focus.
+             Without this, Start over would return the values but leave them
+             looking like figures the reader had entered. */
+          delete x.dataset.suggested;
+          if (x.hasAttribute('data-money') && x.defaultValue !== '') x.classList.add('is-placeholder');
+        }
       });
       YEAR_INPUTS = null;
       EDITED = {};

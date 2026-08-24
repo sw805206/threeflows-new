@@ -135,26 +135,11 @@
        segments and the chart legend swatches. A legend that keyed a different
        value from the mark it explains is the failure this shares a class to
        prevent. Every value is an existing token. */
-    /* THE WASHES DO NOT SURVIVE AT BAR HEIGHT. --tf-wash-brick against
-       --tf-paper measures about 1.06:1 — on a 300px chart block that reads as
-       a tint, but in an 18px comparison bar it is invisible, and the ranking
-       bars rendered as an empty rule. Worse, the negative-remaining segment
-       carried the SAME wash as tax, so a shortfall and a tax charge were the
-       same color. Three separable tones now, all core palette, no new hue:
-       light warm grey, dark grey, brand red. Used by the bars AND the chart
-       legends, so the key can never name a color the mark does not draw. */
-    .tf-seg-spend      { background: var(--tf-stone); }
-    .tf-seg-tax        { background: var(--tf-ink-soft); }
-    .tf-seg-remaining  { background: var(--tf-brick); }
-    .tf-seg-household  { background: var(--tf-stone); }
-    .tf-seg-business   { background: var(--tf-brick); }
-    .tf-seg-net        { background: var(--tf-ink); }
-    /* A NEGATIVE remaining segment. It hangs below the zero line on the
-       chart and runs the other way in a comparison bar, so it needs to be
-       told apart from the positive case at a glance. */
-    /* A shortfall: the deeper red, so it is told from tax AND from a positive
-       remaining without relying on position alone. */
-    .tf-seg-short      { background: var(--tf-brick-dark); }
+    /* (The .tf-seg-* classes that lived here are gone. Segment colors are now
+       defined ONCE, in the engine's SEG object, and applied by it to the SVG
+       fills, the comparison bars and every legend swatch alike — a CSS copy
+       could only drift from the charts again, which is how the Step 4 legend
+       came to key colors its chart was not drawing.) */
 
     /* ---- State comparison list -------------------------------------------
        One row per state: rank, name, a single bar split into spend | tax |
@@ -306,13 +291,27 @@
        rather than a stack of boxes. */
     #panel-income .tf-data-table table { font-size: var(--tf-text-xs); }
     #panel-income .tf-data-table :is(th, td) { padding: 6px var(--tf-space-1); }
+    /* ONE line per edge, not two. The cell already has a 2px rule and the
+       .tf-input carries its own 2px border, so every entry sat in a box inside
+       a box at identical weight — the grid read as double-struck. The field
+       gives up its border and fills the cell instead; focus is still shown,
+       by the brick border returning on :focus. */
     #panel-income .tf-year-input {
       font-size: var(--tf-text-xs);
       padding: 4px 6px;
       text-align: right;
-      max-width: 84px;
-      margin-left: auto;
+      width: 100%;
+      max-width: none;
+      border: none;
+      background: transparent;
     }
+    #panel-income .tf-year-input:focus,
+    #panel-income .tf-year-input:focus-visible {
+      outline: 2px solid var(--tf-brick);
+      outline-offset: -2px;
+    }
+    /* The cell shrinks to the field, so the padding lives on one of them. */
+    #panel-income .tf-data-table td:has(> .tf-year-input) { padding: 0; }
 
     /* ---- State picker -----------------------------------------------------
        Fifty-one full-width chips in a scroll box stacked one per row: 51 rows
@@ -600,7 +599,7 @@
                   <div class="tf-field">
                     <label class="tf-label" for="b-dependents">Dependents</label>
                     <div class="tf-input-uom">
-                      <input class="tf-input" type="text" id="b-dependents" inputmode="numeric" value="2" data-money>
+                      <input class="tf-input is-placeholder" type="text" id="b-dependents" inputmode="numeric" value="2" data-money>
                     </div>
                   </div>
                   <p class="tf-explain-note">Children under 17 who qualify for the child tax credit &mdash; often worth more than the gap between two states.</p>
@@ -633,7 +632,7 @@
                     <label class="tf-label" for="b-wages">W&#8209;2 wages <span class="tf-label-sub">household total</span></label>
                     <div class="tf-input-uom">
                       <span class="tf-uom tf-uom-pre">$</span>
-                      <input class="tf-input" type="text" id="b-wages" inputmode="decimal" value="180,000" data-money>
+                      <input class="tf-input is-placeholder" type="text" id="b-wages" inputmode="decimal" value="180,000" data-money>
                     </div>
                   </div>
                   <p class="tf-explain-note">Gross wages before withholding, for everyone in the household with a job.</p>
@@ -644,7 +643,7 @@
                     <label class="tf-label" for="b-contract">1099 / contract income <span class="tf-label-sub">household total</span></label>
                     <div class="tf-input-uom">
                       <span class="tf-uom tf-uom-pre">$</span>
-                      <input class="tf-input" type="text" id="b-contract" inputmode="decimal" value="0" data-money>
+                      <input class="tf-input is-placeholder" type="text" id="b-contract" inputmode="decimal" value="0" data-money>
                     </div>
                   </div>
                   <p class="tf-explain-note">Contract work done for someone else. If the 1099 income is your own business billing its clients, it belongs in Your business below, not here &mdash; entering it twice taxes it twice.</p>
@@ -669,7 +668,7 @@
                     <label class="tf-label" for="b-home">Home value <span class="tf-label-sub">if you own</span></label>
                     <div class="tf-input-uom">
                       <span class="tf-uom tf-uom-pre">$</span>
-                      <input class="tf-input" type="text" id="b-home" inputmode="decimal" value="850,000" data-money>
+                      <input class="tf-input is-placeholder" type="text" id="b-home" inputmode="decimal" value="850,000" data-money>
                     </div>
                   </div>
                   <p class="tf-explain-note">Market value, not what you paid. Leave blank if you rent. Your mortgage or rent payment goes in Housing below either way.</p>
@@ -686,35 +685,35 @@
 
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Housing <small>Mortgage or rent, utilities, upkeep</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-sp-housing" inputmode="decimal" value="42,000" data-money></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input is-placeholder" type="text" id="b-sp-housing" inputmode="decimal" value="42,000" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Groceries <small>Food at home</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-sp-groceries" inputmode="decimal" value="14,400" data-money></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input is-placeholder" type="text" id="b-sp-groceries" inputmode="decimal" value="14,400" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Dining &amp; entertainment <small>Restaurants, going out, subscriptions</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-sp-dining" inputmode="decimal" value="9,600" data-money></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input is-placeholder" type="text" id="b-sp-dining" inputmode="decimal" value="9,600" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Transport <small>Car payments, fuel, transit, maintenance</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-sp-transport" inputmode="decimal" value="12,000" data-money></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input is-placeholder" type="text" id="b-sp-transport" inputmode="decimal" value="12,000" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Insurance <small>Health, auto, home, life</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-sp-insurance" inputmode="decimal" value="9,600" data-money></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input is-placeholder" type="text" id="b-sp-insurance" inputmode="decimal" value="9,600" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Healthcare <small>Out of pocket, beyond premiums</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-sp-healthcare" inputmode="decimal" value="6,000" data-money></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input is-placeholder" type="text" id="b-sp-healthcare" inputmode="decimal" value="6,000" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Retail &amp; general <small>Clothing, household goods, electronics</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-sp-retail" inputmode="decimal" value="18,000" data-money></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input is-placeholder" type="text" id="b-sp-retail" inputmode="decimal" value="18,000" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Everything else <small>Childcare, education, travel, gifts</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-sp-other" inputmode="decimal" value="6,000" data-money></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input is-placeholder" type="text" id="b-sp-other" inputmode="decimal" value="6,000" data-money></div>
                 </div>
 
                 <!-- Readout (a): the basket, and the sales tax inside it. -->
@@ -742,15 +741,15 @@
 
                 <div class="tf-bucket">
                   <div class="tf-bucket-name"><strong>Total revenue for the year</strong> <small>Everything the business took in, before any cost. If you invoice and get paid within the same year, billed and received are the same number</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-bz-revenue" inputmode="decimal" value="30,000" data-money></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input is-placeholder" type="text" id="b-bz-revenue" inputmode="decimal" value="30,000" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Cost of goods sold <small>Goods purchased, storage, shipping, subcontractors</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-bz-cogs" inputmode="decimal" value="4,000" data-money></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input is-placeholder" type="text" id="b-bz-cogs" inputmode="decimal" value="4,000" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Employee wages <small>Gross pay for people who are not you. The tool adds employer payroll tax on top, at your state&rsquo;s rate</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-bz-wages" inputmode="decimal" value="0" data-money></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input is-placeholder" type="text" id="b-bz-wages" inputmode="decimal" value="0" data-money></div>
                 </div>
 
                 <!-- EXISTS ONLY UNDER S-CORP. Hidden, not disabled: a sole
@@ -759,16 +758,16 @@
                      takes its place. -->
                 <div class="tf-bucket" data-owner-salary-row hidden>
                   <div class="tf-bucket-name"><strong>Your own W&#8209;2 salary</strong> <small>An S&#8209;corp must pay you a reasonable salary. Ask a CPA what counts as reasonable for your role</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-bz-ownersalary" inputmode="decimal" value="0" data-money></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input is-placeholder" type="text" id="b-bz-ownersalary" inputmode="decimal" value="0" data-money></div>
                 </div>
 
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Operating expenses <small>Software, travel, marketing, benefits, professional fees</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-bz-opex" inputmode="decimal" value="5,000" data-money></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input is-placeholder" type="text" id="b-bz-opex" inputmode="decimal" value="5,000" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Depreciation &amp; loan interest <small>Equipment written down, interest on business debt</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-bz-dep" inputmode="decimal" value="1,000" data-money></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input is-placeholder" type="text" id="b-bz-dep" inputmode="decimal" value="1,000" data-money></div>
                 </div>
 
                 <div class="tf-check">
@@ -850,11 +849,10 @@
                  descend from the drawn zero line; nothing is clamped. -->
             <div class="tf-chart-scroll" data-surplus-chart></div>
 
-            <div class="tf-chart-legend">
-              <span><i class="tf-chart-swatch tf-seg-household"></i>Household surplus</span>
-              <span><i class="tf-chart-swatch tf-seg-business"></i>Business profit</span>
-              <span><i class="tf-chart-swatch tf-seg-net"></i>Net for the year</span>
-            </div>
+            <!-- Written by the engine from the same palette the chart draws
+                 with, so a swatch can never key a color the chart is not
+                 using. -->
+            <div class="tf-chart-legend" data-surplus-legend></div>
 
             <!-- Written by the engine, including which callout modifier it wears:
                  an affirming note when the years clear, a warning when they do not. -->
@@ -960,11 +958,11 @@
                  composition and the ranking read together. The home state is
                  marked on ground and on a left edge, and pinned to the top
                  rather than left to be hunted for in the ranking. -->
-            <div class="tf-chart-legend">
-              <span><i class="tf-chart-swatch tf-seg-spend"></i>Spend</span>
-              <span><i class="tf-chart-swatch tf-seg-tax"></i>Tax</span>
-              <span><i class="tf-chart-swatch tf-seg-remaining"></i>Remaining</span>
-            </div>
+            <!-- Written by the engine, not authored here: a negative remaining
+                 draws in a DIFFERENT red from a positive one, so a fixed legend
+                 keyed a color the bars were not drawing whenever a scenario ran
+                 short. The key now follows what is actually on screen. -->
+            <div class="tf-chart-legend" data-rank-legend></div>
             <!-- The right-hand figure is the one the whole tool exists to
                  produce, and it sat unlabeled. A header row names it over the
                  column it belongs to. -->
@@ -1017,11 +1015,7 @@
                  below it when the business does not cover the household. -->
             <div class="tf-chart-scroll" data-outlook-chart></div>
 
-            <div class="tf-chart-legend">
-              <span><i class="tf-chart-swatch tf-seg-spend"></i>Spend</span>
-              <span><i class="tf-chart-swatch tf-seg-tax"></i>Tax</span>
-              <span><i class="tf-chart-swatch tf-seg-remaining"></i>Remaining</span>
-            </div>
+            <div class="tf-chart-legend" data-outlook-legend></div>
 
             <!-- The two closing columns are the point of the step, so the table
                  is fixed on the job + business case: the share comparison is
