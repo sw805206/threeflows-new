@@ -37,8 +37,18 @@
     /* v — IRS Rev. Proc. 2025-32 */
     bracketsMFJ: [[0, .10], [24800, .12], [100800, .22], [211400, .24], [403550, .32], [512450, .35], [768700, .37]],
     bracketsSGL: [[0, .10], [12400, .12], [50400, .22], [105700, .24], [201775, .32], [256225, .35], [640600, .37]],
+    /* v — head of household, Rev. Proc. 2025-32 Table 2. HoH is NOT a blend of
+       the other two: it carries wider 10% and 12% bands than single and then
+       converges with single from 22% up. The 35% threshold is the one figure
+       where published tables disagree — $256,200 here against $256,225 in
+       some secondary tables, which is the single amount. The HoH-specific
+       figure is used, matching the $25 HoH/single divergence the schedules
+       have carried in prior years; the conflict is disclosed in Step 5 rather
+       than settled silently. At the top rate it is worth under a dollar. */
+    bracketsHOH: [[0, .10], [17700, .12], [67450, .22], [105700, .24], [201775, .32], [256200, .35], [640600, .37]],
     stdMFJ: 32200,
     stdSGL: 16100,
+    stdHOH: 24150,
 
     /* u — the 2026 Social Security wage base was not verified (2025 was
        $176,100). The source annotates this LINE as unverified; the rates sit
@@ -51,14 +61,18 @@
     medRate: .0145,
 
     /* v — statutory, unindexed */
-    addMedThresh: { mfj: 250000, sgl: 200000 },
+    /* HoH takes the SINGLE threshold in all three of these — statutory, not an
+       approximation: the additional Medicare threshold, the QBI threshold and
+       phase-in range, and the child tax credit phase-out all read $200,000 for
+       every status except married filing jointly. */
+    addMedThresh: { mfj: 250000, sgl: 200000, hoh: 200000 },
     addMedRate: .009,
 
     /* u — carried unannotated by the source, so recorded unverified */
     qbiRate: .20,
     /* v */
-    qbiThresh: { mfj: 403500, sgl: 201775 },
-    qbiPhase: { mfj: 150000, sgl: 75000 },
+    qbiThresh: { mfj: 403500, sgl: 201775, hoh: 201775 },
+    qbiPhase: { mfj: 150000, sgl: 75000, hoh: 75000 },
     qbiFloor: 400,
 
     /* u — $40,000 for 2025, indexed roughly 1%/yr */
@@ -69,7 +83,7 @@
        gap between two states. OBBBA set $2,200 from 2025, phasing out at 5%
        of AGI above the thresholds. */
     ctcPerChild: 2200,
-    ctcPhaseStart: { mfj: 400000, sgl: 200000 },
+    ctcPhaseStart: { mfj: 400000, sgl: 200000, hoh: 200000 },
     ctcPhaseRate: .05,
 
     /* u — NOT carried by the source material. Federal unemployment tax is
@@ -79,6 +93,16 @@
        tax on time actually bears. */
     futaRate: .006,
     futaWageBase: 7000
+  };
+
+  /* Filing status: the page's own option text mapped to the code the rate
+     tables are keyed by. The MARKUP is the source of the labels; this is the
+     only place they are matched, and an unrecognized label falls back to
+     married filing jointly with the fallback stated rather than implied. */
+  var FILING_BY_LABEL = {
+    'Married filing jointly': 'mfj',
+    'Single': 'sgl',
+    'Head of household': 'hoh'
   };
 
   /* ========================================================================
@@ -371,7 +395,23 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     return t;
   }
 
-  var num = function (v) { var n = parseFloat(v); return isFinite(n) ? n : 0; };
+  /* Every figure entering the engine passes through here, which is why the
+     comma-stripping lives at this one point: the entry fields render
+     thousands separators, so a raw parseFloat would read "42,000" as 42. */
+  var num = function (v) {
+    if (typeof v === 'string') v = v.replace(/,/g, '').replace(/\s/g, '');
+    var n = parseFloat(v);
+    return isFinite(n) ? n : 0;
+  };
+
+  /* Group digits for display in an entry field. Kept separate from money()
+     because a field carries no currency symbol — the $ sits beside it in its
+     own .tf-uom-pre slot. */
+  function grouped(v) {
+    var n = num(v);
+    if (!isFinite(n)) return '';
+    return Math.round(n).toLocaleString('en-US');
+  }
 
   function money(n) {
     var r = Math.round(Math.abs(n));
@@ -574,7 +614,7 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
 
     /* --- earned income ---------------------------------------------------
        W-2 wages from a job, plus the owner's own W-2 salary under an S-corp,
-       are wage income. 1099 contract income and (under sole proprietorship)
+       are wage income. 1099 contract income and (when the business is owner-run)
        business profit are self-employment income. This is the split the page
        insists on keeping: the two are taxed differently. */
     var w2 = num(year.wages) + P.ownerW2;
@@ -594,12 +634,21 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     /* --- state income tax ------------------------------------------------
        SIMPLIFICATION: the state base is federal AGI less the state's own
        standard deduction. Real state bases add and subtract dozens of items;
-       modelling them would need a second dataset per state and would not
+       modeling them would need a second dataset per state and would not
        change the shape of the decision this tool exists to show. */
     var stateTax = 0;
     if (st.pit) {
-      var stDed = (filing === 'mfj') ? st.ded : (st.dedS != null ? st.dedS : st.ded);
-      var stBrackets = (filing === 'mfj') ? st.pit : (st.pitS || st.pit);
+      /* HEAD OF HOUSEHOLD MAPS TO THE STATE'S SINGLE SCHEDULE. Many states run
+         a distinct HoH schedule, and a few (California most notably) make it
+         materially more generous than single. Modeling that honestly would
+         mean 51 more bracket arrays and 51 more deduction figures, none of
+         which the source dataset carries — so the mapping is an ASSUMPTION,
+         and it is a conservative one: where a state does have its own HoH
+         schedule, this overstates that state's tax rather than understating
+         it. Disclosed as its own row in Step 5. */
+      var single = (filing !== 'mfj');
+      var stDed = single ? (st.dedS != null ? st.dedS : st.ded) : st.ded;
+      var stBrackets = single ? (st.pitS || st.pit) : st.pit;
       stateTax = bracketTax(Math.max(0, agi - stDed), stBrackets);
     }
 
@@ -611,7 +660,7 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
 
     /* --- federal income tax ---------------------------------------------- */
     var salt = Math.min(stateTax + propertyTax, FED.saltCap);
-    var stdDed = (filing === 'mfj') ? FED.stdMFJ : FED.stdSGL;
+    var stdDed = filing === 'mfj' ? FED.stdMFJ : filing === 'hoh' ? FED.stdHOH : FED.stdSGL;
     var deduction = Math.max(stdDed, salt);
 
     var taxableBefore = Math.max(0, agi - deduction);
@@ -619,7 +668,9 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     if (qbi > 0 && qbi < FED.qbiFloor && P.net > 0) qbi = Math.min(FED.qbiFloor, Math.max(0, P.net));
 
     var taxable = Math.max(0, taxableBefore - qbi);
-    var fedBefore = bracketTax(taxable, filing === 'mfj' ? FED.bracketsMFJ : FED.bracketsSGL);
+    var fedBrackets = filing === 'mfj' ? FED.bracketsMFJ
+                    : filing === 'hoh' ? FED.bracketsHOH : FED.bracketsSGL;
+    var fedBefore = bracketTax(taxable, fedBrackets);
     var ctc = childTaxCredit(num(year.dependents), agi, filing);
     var fedTax = Math.max(0, fedBefore - ctc);
 
@@ -786,7 +837,16 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
 
     return {
       key: stateSel && stateSel.value ? stateSel.value : 'CA',
-      filing: (filingSel && filingSel.value === 'Single') ? 'sgl' : 'mfj',
+      /* THREE statuses, matched explicitly. This previously read
+         `value === 'Single' ? 'sgl' : 'mfj'`, so "Head of household" fell
+         through to MARRIED FILING JOINTLY and every HoH user silently got the
+         most generous schedule in the system — MFJ brackets, the $32,200
+         standard deduction, the $250,000 Medicare threshold and the MFJ QBI
+         and child-credit thresholds. It understated a single parent's federal
+         tax by thousands with nothing on screen to suggest anything was
+         wrong. Matched by explicit value now, with 'mfj' reachable only from
+         its own label. */
+      filing: FILING_BY_LABEL[filingSel && filingSel.value] || 'mfj',
       filingLabel: filingSel ? filingSel.value : '',
       election: (scorp && scorp.checked) ? 's-corp' : 'sole-proprietor',
       dependents: val('b-dependents'),
@@ -809,6 +869,9 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
      editable; years 2-5 are read from their own inputs, which are seeded from
      the curve the first time they are drawn. */
   var YEAR_INPUTS = null;          // null until Step 2 has been drawn once
+  /* Year cells the reader has edited. A placeholder is a suggestion until it
+     is overwritten; after that it is their figure and loses the grey. */
+  var EDITED = {};
 
   function baseYearRow(base) {
     var enteredTotal = 0;
@@ -959,64 +1022,129 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
      rate that changes status changes this table in the same edit.
      ======================================================================== */
 
-  var IRS = 'IRS Rev. Proc. 2025-32';
-  var STAT = 'Statutory';
-  var MODEL = 'Carried from model knowledge, not verified against a published source';
+  /* Provenance codes. These say WHERE A FIGURE CAME FROM, not whether it is
+     right — an unchecked figure from a reputable compilation is not an error,
+     and the old ochre "Unverified" badge read like one across two thirds of
+     the table.
+       CHECKED  — read against a primary source this pass, citation shown
+       CONFLICT — published sources disagree; the row says so and names both
+                  readings rather than picking one silently
+       PLAIN    — carried from a compilation and not independently checked */
+  var CHECKED = 'checked', CONFLICT = 'conflict', PLAIN = 'plain';
 
+  var FTA_SRC = 'Federation of Tax Administrators sales tax matrix, and state revenue department publications';
+
+  /* row: [input, source, provenance, conflictNote] */
   function sourceRows(key) {
     var st = ST[key], sx = SALES[key], name = ST[key].n;
+
     var rows = [
-      ['Federal brackets and standard deduction', IRS, 1],
-      ['Additional Medicare threshold and rate', STAT + ', unindexed', 1],
-      ['QBI threshold and phase-in range', STAT + ' (OBBBA)', 1],
-      ['QBI minimum deduction', STAT + ' (OBBBA)', 1],
-      ['Social Security wage base, and Social Security and Medicare rates', MODEL + '; the 2026 wage base is an estimate', 0],
-      ['QBI deduction rate', MODEL, 0],
-      ['SALT cap', 'Indexing assumed from the 2025 figure', 0],
-      ['Child tax credit and phase-out', MODEL + '; not carried by the source dataset', 0],
-      ['Federal unemployment tax rate and wage base', MODEL + '; net of the state credit', 0],
-      [name + ' — combined state and average local sales rate', 'Tax Foundation, July 2026', 1]
+      ['Federal income tax brackets and standard deduction',
+       'IRS Rev. Proc. 2025-32. Standard deduction $32,200 married filing jointly, $16,100 single, $24,150 head of household. Married filing jointly runs 10% to $24,800 and 37% above $768,700; single runs 10% to $12,400 and 37% above $640,600.',
+       CHECKED],
+
+      ['Federal head of household bracket schedule',
+       'IRS Rev. Proc. 2025-32, Table 2. 10% to $17,700, then 12% to $67,450, converging with the single schedule from 22% upward.',
+       CONFLICT,
+       'Published tables disagree on where the 35% bracket begins for this status — $256,200 against $256,225, the latter being the single-filer figure. The head-of-household figure is used here, matching the small divergence the two schedules have carried in prior years. At the top rate the difference is worth under a dollar.'],
+
+      ['Social Security wage base',
+       'Social Security Administration, 2026: $184,500. Medicare has no wage cap, so the 1.45% applies to every dollar.',
+       CHECKED],
+
+      ['Additional Medicare tax',
+       '0.9% on wages and self-employment income above $200,000 single and head of household, $250,000 married filing jointly. Statutory, and deliberately not inflation-indexed, so the thresholds do not move with the brackets.',
+       CHECKED],
+
+      ['Child tax credit',
+       '$2,200 per qualifying child, of which $1,700 is refundable.',
+       CHECKED,
+       'Applied here as a NON-refundable credit: it reduces tax to zero and no further. A household whose credit exceeds its liability would in reality receive part of the difference back, so this tool understates the benefit at low incomes.'],
+
+      ['QBI deduction threshold and phase-in range',
+       'Statutory, as amended by OBBBA: $403,500 married filing jointly, $201,775 otherwise, phasing in over $150,000 and $75,000 respectively.',
+       CHECKED],
+
+      ['QBI deduction rate and minimum deduction',
+       'Carried from the compiled dataset at 20% with a $400 floor.',
+       PLAIN],
+
+      ['SALT deduction cap',
+       'Carried at $40,400, indexed forward from the 2025 figure. The indexing assumption is ours, not a published number.',
+       PLAIN],
+
+      ['Federal unemployment tax',
+       'Carried at 0.6% on the first $7,000 of each employee\'s wages — the 6.0% statutory rate net of the 5.4% state credit an employer paying its state tax on time normally receives.',
+       PLAIN],
+
+      [name + ' — combined state and average local sales tax rate',
+       'Tax Foundation, July 2026 compilation: ' + st.sales.toFixed(2) + '%.',
+       PLAIN]
     ];
 
     if (st.pit) {
-      rows.push([name + ' — individual income tax brackets', MODEL, 0]);
-      rows.push([name + ' — standard deduction and personal exemption', MODEL, 0]);
+      rows.push([name + ' — individual income tax brackets and standard deduction',
+        'Carried from the compiled dataset; not read back against the state revenue department this pass.', PLAIN]);
+      rows.push(['Head of household treatment in ' + name,
+        'Mapped to this state\'s SINGLE schedule and single standard deduction.',
+        CONFLICT,
+        'An ASSUMPTION, not a published figure. Several states run their own head-of-household schedule, and a few — California most notably — make it materially more generous than single. Modeling that would need a separate bracket set and deduction for every state, which the source dataset does not carry. Where a state does have its own schedule this OVERSTATES the tax rather than understating it.']);
     } else {
-      rows.push([name + ' — no individual income tax', 'State levies none; the line is omitted rather than shown as $0', 1]);
+      rows.push([name + ' — no individual income tax',
+        'This state levies none, so the line is omitted from the breakdown entirely rather than shown as $0.', CHECKED]);
     }
 
-    rows.push([name + ' — effective property tax rate', 'Census-derived statewide average', 0]);
-    rows.push([name + ' — unemployment insurance rate and wage base', 'Mid-range new-employer rate', 0]);
-    if (st.pfml) rows.push([name + ' — employer paid family leave rate', MODEL, 0]);
+    rows.push([name + ' — effective property tax rate',
+      'Census-derived statewide average of ' + st.prop.toFixed(2) + '% of market value. A statewide average hides wide county-level variation.', PLAIN]);
+    rows.push([name + ' — unemployment insurance rate and wage base',
+      'Mid-range new-employer rate. An established employer\'s experience rating will differ.', PLAIN]);
+    if (st.pfml) {
+      rows.push([name + ' — employer paid family leave rate', 'Carried from the compiled dataset.', PLAIN]);
+    }
 
-    var groc = sx.groc === 'exempt' ? 'exempt'
-             : sx.groc === 'reduced' ? ('reduced, modeled at ' + sx.gRate.toFixed(2) + '%')
-             : 'taxable at the general rate';
-    rows.push([name + ' — grocery sales tax treatment (' + groc + ')', FTA, sx.v]);
+    /* The two exemption rows the build brief singles out. Both say plainly
+       that the published sources do not agree with each other. */
+    var groc = sx.groc === 'exempt' ? 'treated as exempt'
+             : sx.groc === 'reduced' ? ('treated as taxed at a reduced ' + sx.gRate.toFixed(2) + '%')
+             : 'treated as taxable at the general rate';
+    rows.push([name + ' — grocery sales tax treatment',
+      FTA_SRC + '. Groceries are ' + groc + ' here.',
+      CONFLICT,
+      'PUBLISHED SOURCES DISAGREE, and not narrowly. They differ on how many states tax groceries at all, on the rate where a reduced rate applies, and — the biggest divergence — on whether local rates still apply in states that removed the state-level grocery tax. This tool models several of those states at a local-only rate, which some compilations show as fully exempt. The figure in use is an ESTIMATE pending state-by-state verification, tracked as BL-043.']);
 
-    var cloth = sx.cloth === 'exempt' ? 'exempt'
-              : sx.cloth === 'threshold' ? ('exempt under $' + sx.cCap + ' per item')
-              : 'taxable';
-    rows.push([name + ' — clothing sales tax treatment (' + cloth + ')', FTA, sx.v]);
-    rows.push([name + ' — general treatment of services (' + sx.svc + ')', FTA + ' — recorded for reference; the bucket map assigns service exposure uniformly', sx.v]);
+    var cloth = sx.cloth === 'exempt' ? 'treated as exempt'
+              : sx.cloth === 'threshold' ? ('treated as exempt below $' + sx.cCap + ' per item')
+              : 'treated as taxable';
+    rows.push([name + ' — clothing sales tax treatment',
+      FTA_SRC + '. Clothing is ' + cloth + ' here.',
+      CONFLICT,
+      'PUBLISHED SOURCES DISAGREE on which garments an exemption reaches and on how per-item thresholds are applied to a mixed basket. A threshold exemption is modeled here as a FULL exemption, which overstates the relief for anyone buying above the threshold. An estimate pending verification, tracked as BL-043.']);
 
-    var ent = LABELS.entity(key, 'sole-proprietor');
-    var entSc = LABELS.entity(key, 's-corp');
+    rows.push([name + ' — general treatment of services (' + sx.svc + ')',
+      FTA_SRC + '. Recorded for reference only: the bucket map assigns service exposure uniformly across states, so this field does not enter the arithmetic.', PLAIN]);
+
+    var ent = LABELS.entity(key, 'sole-proprietor'), entSc = LABELS.entity(key, 's-corp');
     if (ent.present || entSc.present) {
-      rows.push([name + ' — ' + ent.label.toLowerCase(), 'Simplified; a flat amount, not the full statute', 0]);
+      rows.push([name + ' — ' + ent.label.toLowerCase(),
+        'Simplified to a flat amount. The full statute has conditions this does not model.', PLAIN]);
     }
     if (GROSS[key]) {
-      rows.push([name + ' — ' + GROSS[key].label.toLowerCase(), 'Simplified; a documented approximation, not the full statute', 0]);
+      rows.push([name + ' — ' + GROSS[key].label.toLowerCase(),
+        'A documented approximation of the regime, not the full statute.', PLAIN]);
     }
     if (st.ptet) {
-      rows.push([name + ' — pass-through entity tax election available', 'Presence flagged; the mechanics are not modeled', 0]);
+      rows.push([name + ' — pass-through entity tax election available',
+        'Presence flagged only. The election can materially change the answer and its mechanics are NOT modeled here.', PLAIN]);
     }
 
-    rows.push(['Taxable fraction of Transport and Everything else (' + Math.round(MIXED_BUCKET_TAXABLE_FRACTION * 100) + '%)',
-               'Fixed assumption, no published split exists; the same fraction in every state', 0]);
-    rows.push(['Clothing share of the Retail & general bucket (' + Math.round(CLOTHING_SHARE_OF_RETAIL * 100) + '%)',
-               'Fixed assumption; the same fraction in every state', 0]);
-    rows.push(['Five-year growth curve for years 2 to 5', 'Illustrative placeholders, meant to be overwritten', 0]);
+    rows.push(['Taxable share of the Transport and Everything else buckets',
+      'Our own assumption, fixed at ' + Math.round(MIXED_BUCKET_TAXABLE_FRACTION * 100) + '% and identical in every state. No published split of these categories into taxable goods and untaxed services and fees exists.', PLAIN]);
+    rows.push(['Clothing share of the Retail & general bucket',
+      'Our own assumption, fixed at ' + Math.round(CLOTHING_SHARE_OF_RETAIL * 100) + '% and identical in every state.', PLAIN]);
+    rows.push(['Growth curve for years 2 to 5',
+      'Illustrative placeholders on a plain curve, meant to be overwritten. Not a forecast.', PLAIN]);
+    rows.push(['Rates across the five-year horizon',
+      'Held FLAT. No bracket indexing, no rate changes, no policy changes are modeled in years 2 to 5.', CHECKED]);
 
     return rows;
   }
@@ -1248,6 +1376,12 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
 
   var STATE = {                       // page-level view state, never persisted
     year3: 0,                         // Step 3 year index
+    /* Step 4's state DEFAULTS to the Step 1 home state and follows it, until
+       the reader changes it themselves — from then on it is theirs and no
+       longer tracks Step 1. That is why the control is not labeled "from
+       Step 1": the label would stop being true on first use. It previously
+       defaulted to whatever sorted first alphabetically, which was Alabama. */
+    outlookStateTouched: false,
     scenarioIncome: 'both',
     scenarioCompare: 'both',
     scenarioOutlook: 'both',
@@ -1272,14 +1406,35 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     });
   }
 
+  /* The picker. Rendered against the current filter, so typing narrows the
+     list rather than scrolling it. Selection lives in STATE.compare and is
+     never read back off the DOM, which is what lets a filtered-out state stay
+     selected: hiding a row must not silently deselect it. */
+  var pickerFilter = '';
+
   function fillStatePicker() {
-    var host = el('#state-picker .tf-choice-options');
+    var host = el('#state-picker');
     if (!host) return;
-    host.innerHTML = STATE_KEYS.map(function (k) {
-      var on = STATE.compare[k] ? ' checked' : '';
-      return '<label class="tf-choice"><input type="checkbox" value="' + k + '"' + on +
-             '><span>' + esc(ST[k].n) + '</span></label>';
-    }).join('');
+    var home = el('#b-state') ? el('#b-state').value : null;
+    var q = pickerFilter.trim().toLowerCase();
+    var keys = STATE_KEYS.filter(function (k) {
+      return !q || ST[k].n.toLowerCase().indexOf(q) !== -1 || k.toLowerCase() === q;
+    });
+
+    host.innerHTML = keys.length
+      ? keys.map(function (k) {
+          var on = STATE.compare[k] ? ' checked' : '';
+          return '<label class="tf-picker-item' + (k === home ? ' is-home' : '') + '" title="' + esc(ST[k].n) + '">' +
+                 '<input type="checkbox" value="' + k + '"' + on + '>' +
+                 '<span>' + esc(ST[k].n) + '</span></label>';
+        }).join('')
+      : '<p class="tf-picker-empty">No state matches that.</p>';
+
+    var count = el('[data-picker-count]');
+    if (count) {
+      var n = STATE_KEYS.filter(function (k) { return STATE.compare[k]; }).length;
+      count.textContent = n + ' of ' + STATE_KEYS.length + ' selected';
+    }
   }
 
   /* --- Step 1 ------------------------------------------------------------- */
@@ -1314,15 +1469,21 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     YEAR_INPUTS[0] = baseYearRow(base);
 
     var cols = ['wages', 'contract', 'spend', 'revenue', 'costs'];
+    /* Years 2-5 are SUGGESTIONS, and are greyed to say so. The words
+       "from Step 1" and "placeholder" used to carry that, at the cost of a
+       wide first column and a table that read as annotated rather than
+       editable; the styling carries it now and the year column is just the
+       number. A field the reader edits stops being grey the moment it holds
+       their own figure. */
     var rows = YEAR_INPUTS.map(function (r, i) {
       var cells = cols.map(function (c) {
-        if (i === 0) return '<td class="tf-num">' + money(r[c]) + '</td>';
-        return '<td class="tf-num"><input class="tf-input tf-year-input" type="number" min="0" step="1" ' +
-               'inputmode="decimal" data-year="' + i + '" data-col="' + c + '" value="' + Math.round(r[c]) + '"></td>';
+        if (i === 0) return '<td class="tf-num">' + grouped(r[c]) + '</td>';
+        var isPlaceholder = !EDITED[i + '.' + c];
+        return '<td class="tf-num"><input class="tf-input tf-year-input' +
+               (isPlaceholder ? ' is-placeholder' : '') + '" type="text" inputmode="numeric" ' +
+               'data-year="' + i + '" data-col="' + c + '" value="' + grouped(r[c]) + '"></td>';
       }).join('');
-      var tag = i === 0 ? '<span class="tf-check-sub">from Step 1</span>'
-                        : '<span class="tf-check-sub">placeholder</span>';
-      return '<tr' + (i === 0 ? ' class="tf-hilite-base"' : '') + '><td>' + (i + 1) + ' ' + tag + '</td>' + cells + '</tr>';
+      return '<tr' + (i === 0 ? ' class="tf-hilite-base"' : '') + '><td>' + (i + 1) + '</td>' + cells + '</tr>';
     }).join('');
     host.innerHTML = rows;
   }
@@ -1571,21 +1732,32 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
   }
 
   /* --- Step 5: generated from the dataset ---------------------------------- */
+  var PROV_LABEL = {
+    checked: 'Checked against source',
+    conflict: 'Sources disagree',
+    plain: 'Not independently checked'
+  };
+
   function renderSources(base) {
     var host = el('[data-sources-table]');
     if (!host) return;
     var rows = sourceRows(base.key);
+
     host.innerHTML = rows.map(function (r) {
-      var pill = r[2]
-        ? '<span class="tf-pill tf-pill-sm tf-pill-tint-teal">Verified</span>'
-        : '<span class="tf-pill tf-pill-sm tf-pill-tint-ochre">Unverified</span>';
-      return '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td><td>' + pill + '</td></tr>';
+      var prov = r[2] || 'plain';
+      var note = r[3] ? '<span class="tf-source-conflict">' + esc(r[3]) + '</span>' : '';
+      return '<tr><td>' + esc(r[0]) + '</td>' +
+             '<td>' + esc(r[1]) + note + '</td>' +
+             '<td><span class="tf-prov tf-prov-' + prov + '">' + PROV_LABEL[prov] + '</span></td></tr>';
     }).join('');
 
     var count = el('[data-sources-count]');
     if (count) {
-      var un = rows.filter(function (r) { return !r[2]; }).length;
-      count.textContent = un + ' of ' + rows.length + ' inputs on this page';
+      var checked = rows.filter(function (r) { return r[2] === 'checked'; }).length;
+      var conflict = rows.filter(function (r) { return r[2] === 'conflict'; }).length;
+      count.textContent = rows.length + ' inputs, of which ' + checked +
+        ' were read against a primary source this pass and ' + conflict +
+        ' have sources that disagree with each other';
     }
   }
 
@@ -1734,7 +1906,7 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
 
     doc.setFont('helvetica', 'normal').setFontSize(9).setTextColor.apply(doc, inkSoft);
     y = writeWrapped(doc, ST[base.key].n + ' · ' + base.filingLabel + ' · ' +
-      (base.election === 's-corp' ? 'S-corp election' : 'Sole proprietor'), margin, y, inner, 11) + 8;
+      (base.election === 's-corp' ? 'S-corp election' : 'Owner-run'), margin, y, inner, 11) + 8;
 
     var i = STATE.year3;
     var head = ['Year ' + (i + 1), 'Job only', 'Job + business', 'Business only'];
@@ -1896,7 +2068,7 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
   }
 
   /* Entity election. The owner W-2 salary field EXISTS ONLY under S-corp — a
-     sole proprietor cannot be on their own payroll — so the row is removed
+     an owner-run business cannot put its owner on payroll — so the row is removed
      rather than disabled, and the draws footnote takes its place. */
   function applyElection() {
     var scorp = el('[data-election="s-corp"]');
@@ -1913,24 +2085,53 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
 
   root.addEventListener('input', function (e) {
     var t = e.target;
+    if (t.hasAttribute && t.hasAttribute('data-picker-filter')) {
+      pickerFilter = t.value;
+      fillStatePicker();
+      return;
+    }
     if (t.classList && t.classList.contains('tf-year-input')) {
       var yi = parseInt(t.getAttribute('data-year'), 10);
       var col = t.getAttribute('data-col');
       if (YEAR_INPUTS && YEAR_INPUTS[yi]) YEAR_INPUTS[yi][col] = num(t.value);
+      EDITED[yi + '.' + col] = true;
+      t.classList.remove('is-placeholder');
       recalc();
       return;
     }
-    if (t.tagName === 'INPUT' && t.type === 'number') { renderYearTable(readBase()); recalc(); }
+    if (t.hasAttribute && t.hasAttribute('data-money')) { renderYearTable(readBase()); recalc(); }
+  });
+
+  /* Regroup on BLUR, never while typing: reformatting under a live caret
+     moves it, and a reader mid-number loses their place. The value is parsed
+     comma-blind either way, so what is on screen and what the engine reads
+     cannot diverge. */
+  root.addEventListener('focusout', function (e) {
+    var t = e.target;
+    if (!t || !t.tagName || t.tagName !== 'INPUT') return;
+    if (!t.hasAttribute('data-money') && !t.classList.contains('tf-year-input')) return;
+    if (t.value.trim() === '') return;
+    t.value = grouped(t.value);
   });
 
   root.addEventListener('change', function (e) {
     var t = e.target;
     if (t.matches && t.matches('[data-election]')) { applyElection(); renderYearTable(readBase()); recalc(); return; }
-    if (t.id === 'b-state' || t.id === 'b-filing') { renderYearTable(readBase()); recalc(); return; }
-    if (t.id === 'o-state') { recalc(); return; }
+    if (t.id === 'b-state' || t.id === 'b-filing') {
+      if (t.id === 'b-state' && !STATE.outlookStateTouched) {
+        var o = el('#o-state');
+        if (o) o.value = t.value;
+      }
+      if (t.id === 'b-state') fillStatePicker();
+      renderYearTable(readBase());
+      recalc();
+      return;
+    }
+    if (t.id === 'o-state') { STATE.outlookStateTouched = true; recalc(); return; }
     if (t.id === 't-year') { STATE.year3 = t.selectedIndex; recalc(); return; }
     if (t.closest && t.closest('#state-picker')) {
       STATE.compare[t.value] = t.checked;
+      fillStatePicker();
       recalc();
       return;
     }
@@ -1957,7 +2158,13 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     var all = e.target.closest('[data-picker-all]'), none = e.target.closest('[data-picker-none]');
     if (all || none) {
       var on = !!all;
-      STATE_KEYS.forEach(function (k) { STATE.compare[k] = on; });
+      /* Scoped to what the filter is currently SHOWING. With a filter active,
+         "All" meaning all fifty-one would silently select states the reader
+         cannot see; against an empty filter the two are the same thing. */
+      var q = pickerFilter.trim().toLowerCase();
+      STATE_KEYS.forEach(function (k) {
+        if (!q || ST[k].n.toLowerCase().indexOf(q) !== -1) STATE.compare[k] = on;
+      });
       fillStatePicker();
       recalc();
       return;
@@ -1971,7 +2178,10 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
         } else x.value = x.defaultValue;
       });
       YEAR_INPUTS = null;
+      EDITED = {};
+      pickerFilter = '';
       STATE.year3 = 0;
+      STATE.outlookStateTouched = false;
       STATE.scenarioIncome = STATE.scenarioCompare = STATE.scenarioOutlook = 'both';
       STATE.compare = {};
       DEFAULT_COMPARE.forEach(function (k) { STATE.compare[k] = true; });
@@ -1996,10 +2206,11 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     fillStatePicker();
     var homeSel = el('#b-state'), outSel = el('#o-state');
     if (homeSel && !ST[homeSel.value]) homeSel.value = 'CA';
-    /* Step 4's state defaults to the Step 1 state and is then free — it is
-       deliberately NOT labelled "from Step 1", because that would stop being
-       true the moment anyone used the control. */
-    if (outSel && !ST[outSel.value]) outSel.value = homeSel ? homeSel.value : 'CA';
+    /* Seed Step 4 from Step 1 unconditionally on boot. Testing !ST[value] was
+       not enough: the select had already been populated with all 51 states, so
+       its value was a VALID key — the first one alphabetically — and the seed
+       never ran. That is how it came to open on Alabama. */
+    if (outSel && !STATE.outlookStateTouched) outSel.value = homeSel ? homeSel.value : 'CA';
     renderYearTable(readBase());
     recalc();
   }

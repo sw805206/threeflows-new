@@ -127,7 +127,7 @@
        FIELD of chips and takes the full row, or .tf-choice-options has no
        width to wrap into and the chips stack one per line. */
     .tf-ctl-row .tf-field { max-width: 210px; }
-    .tf-ctl-row .tf-field:has(.tf-state-picker) { max-width: none; flex: 1 1 100%; }
+    .tf-ctl-row .tf-field:has(.tf-picker) { max-width: none; flex: 1 1 100%; }
     .tf-ctl-row .tf-view-toggle { margin-bottom: 0; }
 
     /* ---- Segment colors --------------------------------------------------
@@ -135,8 +135,16 @@
        segments and the chart legend swatches. A legend that keyed a different
        value from the mark it explains is the failure this shares a class to
        prevent. Every value is an existing token. */
-    .tf-seg-spend      { background: var(--tf-wash-stone); }
-    .tf-seg-tax        { background: var(--tf-wash-brick); }
+    /* THE WASHES DO NOT SURVIVE AT BAR HEIGHT. --tf-wash-brick against
+       --tf-paper measures about 1.06:1 — on a 300px chart block that reads as
+       a tint, but in an 18px comparison bar it is invisible, and the ranking
+       bars rendered as an empty rule. Worse, the negative-remaining segment
+       carried the SAME wash as tax, so a shortfall and a tax charge were the
+       same color. Three separable tones now, all core palette, no new hue:
+       light warm grey, dark grey, brand red. Used by the bars AND the chart
+       legends, so the key can never name a color the mark does not draw. */
+    .tf-seg-spend      { background: var(--tf-stone); }
+    .tf-seg-tax        { background: var(--tf-ink-soft); }
     .tf-seg-remaining  { background: var(--tf-brick); }
     .tf-seg-household  { background: var(--tf-stone); }
     .tf-seg-business   { background: var(--tf-brick); }
@@ -144,7 +152,9 @@
     /* A NEGATIVE remaining segment. It hangs below the zero line on the
        chart and runs the other way in a comparison bar, so it needs to be
        told apart from the positive case at a glance. */
-    .tf-seg-short      { background: var(--tf-wash-brick); outline: 1px solid var(--tf-brick); outline-offset: -1px; }
+    /* A shortfall: the deeper red, so it is told from tax AND from a positive
+       remaining without relying on position alone. */
+    .tf-seg-short      { background: var(--tf-brick-dark); }
 
     /* ---- State comparison list -------------------------------------------
        One row per state: rank, name, a single bar split into spend | tax |
@@ -271,16 +281,130 @@
     .tf-explain-note + .tf-bucket { margin-top: var(--tf-space-2); }
     .tf-check .tf-meta { margin-bottom: var(--tf-space-1); }
 
+    /* (The scroll-box chip picker that lived here was replaced by .tf-picker
+       above; its rules are removed rather than left to rot.) */
+
+    /* ---- Step 1 selects need their own width ------------------------------
+       .tf-assume-group caps every entry box at --tf-entry-w (120px) so the
+       figure columns share a left edge. A SELECT is not a figure: "Married
+       filing jointly" and "District of Columbia" both truncate at 120px, and
+       a filing status the reader cannot read is one they cannot check. Widened
+       to the measure the longest option needs; the number fields are
+       untouched, so the entry column still lines up. */
+    .tf-assume-group .tf-field > select.tf-input { max-width: 280px; width: 100%; }
+
+    /* ---- Placeholder figures ----------------------------------------------
+       Years 2-5 arrive as suggestions on a growth curve. Grey says so without
+       spending a word or a column on it; the value goes to full ink as soon as
+       the reader overwrites it. */
+    .tf-input.is-placeholder { color: var(--tf-stone); }
+    .tf-input.is-placeholder:focus { color: var(--tf-ink); }
+
+    /* ---- Step 2 table -----------------------------------------------------
+       Six columns of currency in a 62ch measure. One step down the scale, with
+       the entry fields matched to it, so a row reads as one line of figures
+       rather than a stack of boxes. */
+    #panel-income .tf-data-table table { font-size: var(--tf-text-xs); }
+    #panel-income .tf-data-table :is(th, td) { padding: 6px var(--tf-space-1); }
+    #panel-income .tf-year-input {
+      font-size: var(--tf-text-xs);
+      padding: 4px 6px;
+      text-align: right;
+      max-width: 84px;
+      margin-left: auto;
+    }
+
     /* ---- State picker -----------------------------------------------------
-       A scroll-capped field for the .tf-choice checkbox chips, so 51 states
-       cannot push the rest of the step off the screen. The chips themselves
-       are the shipped .tf-choice control, unmodified. */
-    .tf-state-picker {
-      max-height: 176px;
+       Fifty-one full-width chips in a scroll box stacked one per row: 51 rows
+       deep in a 196px window, so 2,635px of it sat below the fold and finding
+       a state meant scrolling blind. Replaced with a filter box over a compact
+       three-column checkbox list — the filter is what actually solves it, since
+       a reader looking for one state types three letters instead of hunting a
+       list they cannot see. The count is stated because with a scrolling list
+       the selection is no longer visible at a glance. */
+    .tf-picker { border: var(--tf-rule-light); background: var(--tf-paper); }
+    .tf-picker-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--tf-space-1);
+      padding: var(--tf-space-1);
+      border-bottom: var(--tf-rule-light);
+    }
+    .tf-picker-head .tf-input { flex: 1 1 160px; max-width: none; padding: 6px 10px; font-size: var(--tf-text-sm); }
+    .tf-picker-count { font-size: var(--tf-text-xs); color: var(--tf-ink-soft); white-space: nowrap; }
+    /* THREE columns. Each item gets ~200px of text, which fits "District of
+       Columbia" — the longest of the 51 — whole, and keeps the list to 17 rows
+       so most of it is one short scroll away. The filter above is what
+       actually solves finding a state: it is a typing problem, not a
+       scrolling one. Drops to two columns and then one as the measure
+       narrows. */
+    .tf-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0 var(--tf-space-2);
+      max-height: 220px;
       overflow-y: auto;
       padding: var(--tf-space-1);
-      border: var(--tf-rule-light);
     }
+    @media (max-width: 820px) { .tf-picker-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 520px) { .tf-picker-grid { grid-template-columns: 1fr; } }
+    .tf-picker-item {
+      display: flex;
+      align-items: center;
+      gap: var(--tf-space-1);
+      padding: 3px 4px;
+      font-size: var(--tf-text-sm);
+      line-height: 1.3;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tf-picker-item:hover { background: var(--tf-wash-brick); }
+    .tf-picker-item input { flex-shrink: 0; accent-color: var(--tf-brick); margin: 0; }
+    .tf-picker-item.is-home { font-weight: 700; }
+    .tf-picker-empty { padding: var(--tf-space-2); font-size: var(--tf-text-sm); color: var(--tf-ink-soft); }
+
+    /* ---- Provenance register ----------------------------------------------
+       These mark WHERE A FIGURE CAME FROM, not whether it is wrong. The ochre
+       "Unverified" badge read as an error state on two thirds of the table,
+       which is both alarming and inaccurate — an unchecked figure from a
+       reputable compilation is not a defect. Quieter treatment, and the
+       wording says what was actually done. */
+    .tf-prov {
+      display: inline-block;
+      font-size: var(--tf-text-xs);
+      line-height: 1.3;
+      white-space: nowrap;
+      color: var(--tf-ink-soft);
+    }
+    .tf-prov::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-right: 6px;
+      vertical-align: 1px;
+      background: var(--tf-stone);
+    }
+    .tf-prov-checked::before { background: var(--tf-brick); }
+    .tf-prov-conflict::before { background: var(--tf-wash-ochre-ink); }
+    /* A row whose sources disagree: the note sits under the source text. */
+    .tf-source-conflict {
+      display: block;
+      margin-top: 4px;
+      font-size: var(--tf-text-xs);
+      color: var(--tf-wash-ochre-ink);
+    }
+
+    /* ---- Step 5 framing ---------------------------------------------------
+       The framing paragraphs lead the step, ahead of the table, because what
+       the table means depends on them. */
+    .tf-framing p { font-size: var(--tf-text-sm); color: var(--tf-ink-soft); margin: 0 0 var(--tf-space-2); }
+    .tf-framing p:last-child { margin-bottom: 0; }
+    .tf-framing strong { color: var(--tf-ink); }
+
   </style>
 </head>
 <body class="tf-app">
@@ -320,11 +444,11 @@
             </button>
             <button type="button" class="tf-step-nav-item" role="tab" id="tab-aftertax" data-tab="aftertax" aria-selected="false" aria-controls="panel-aftertax" tabindex="-1">
               <span class="tf-step-nav-num">Step 3</span>
-              <span class="tf-step-nav-desc">What Tax Leaves You</span>
+              <span class="tf-step-nav-desc">The Tax Impact</span>
             </button>
             <button type="button" class="tf-step-nav-item" role="tab" id="tab-outlook" data-tab="outlook" aria-selected="false" aria-controls="panel-outlook" tabindex="-1">
               <span class="tf-step-nav-num">Step 4</span>
-              <span class="tf-step-nav-desc">Five-Year Outlook</span>
+              <span class="tf-step-nav-desc">Surplus After Tax</span>
             </button>
             <button type="button" class="tf-step-nav-item" role="tab" id="tab-sources" data-tab="sources" aria-selected="false" aria-controls="panel-sources" tabindex="-1">
               <span class="tf-step-nav-num">Step 5</span>
@@ -377,7 +501,7 @@
                 <h2>Your Base Year</h2>
               </div>
             </div>
-            <p class="tf-lead tf-secondary">What you earn, own and spend this year. The next four years need four numbers each.</p>
+            <p class="tf-lead tf-secondary">What you earn, own and spend this year. <strong>Every figure on this step is an annual amount.</strong> The next four years need four numbers each, and Step 2 prefills them.</p>
 
             <div class="tf-card">
 
@@ -412,7 +536,7 @@
                   <div class="tf-field">
                     <label class="tf-label" for="b-dependents">Dependents</label>
                     <div class="tf-input-uom">
-                      <input class="tf-input" type="number" id="b-dependents" min="0" step="1" inputmode="numeric" value="2">
+                      <input class="tf-input" type="text" id="b-dependents" inputmode="numeric" value="2" data-money>
                     </div>
                   </div>
                   <p class="tf-explain-note">Children under 17 who qualify for the child tax credit &mdash; often worth more than the gap between two states.</p>
@@ -425,10 +549,11 @@
                 <div class="tf-choice-group">
                   <p class="tf-choice-question">How is the business taxed? <span class="tf-choice-hint">this is the tax election, not the entity type</span></p>
                   <div class="tf-choice-options">
-                    <label class="tf-choice"><input type="radio" name="b-election" data-election="sole-proprietor" checked><span>Sole proprietor</span></label>
+                    <label class="tf-choice"><input type="radio" name="b-election" data-election="sole-proprietor" checked><span>Owner-run</span></label>
                     <label class="tf-choice"><input type="radio" name="b-election" data-election="s-corp"><span>S&#8209;corp</span></label>
                   </div>
-                  <p class="tf-explain-note">Under sole proprietorship you pay self&#8209;employment tax on all profit and cannot put yourself on payroll. An S&#8209;corp must pay you a reasonable W&#8209;2 salary, and only that salary carries payroll tax &mdash; but it costs more to run. Which one wins changes as the business grows; try both.</p>
+                  <p class="tf-explain-note">Most side businesses start owner-run: the business does not file its own return, and the profit lands on your personal one. You take money out as draws, not payroll, and pay self&#8209;employment tax on all of it. Filing jointly does not change this &mdash; the business belongs to whoever opened it, and its profit appears on your joint return.</p>
+                  <p class="tf-explain-note">An S&#8209;corp is the same LLC, elected to be taxed differently. It must run payroll for you, and only that salary carries payroll tax. It costs more to run, so it wins only once profit is large enough. Try both.</p>
                 </div>
               </div>
 
@@ -437,14 +562,14 @@
                    of payroll tax, contract income carries self-employment tax
                    in full. Merging them would make the payroll line wrong. -->
               <div class="tf-assume-group">
-                <h3>Your income</h3>
+                <h3>Your employment income (Year 1)</h3>
 
                 <div class="tf-explained">
                   <div class="tf-field">
                     <label class="tf-label" for="b-wages">W&#8209;2 wages <span class="tf-label-sub">household total</span></label>
                     <div class="tf-input-uom">
                       <span class="tf-uom tf-uom-pre">$</span>
-                      <input class="tf-input" type="number" id="b-wages" min="0" step="1" inputmode="decimal" value="180000">
+                      <input class="tf-input" type="text" id="b-wages" inputmode="decimal" value="180,000" data-money>
                     </div>
                   </div>
                   <p class="tf-explain-note">Gross wages before withholding, for everyone in the household with a job.</p>
@@ -455,7 +580,7 @@
                     <label class="tf-label" for="b-contract">1099 / contract income <span class="tf-label-sub">household total</span></label>
                     <div class="tf-input-uom">
                       <span class="tf-uom tf-uom-pre">$</span>
-                      <input class="tf-input" type="number" id="b-contract" min="0" step="1" inputmode="decimal" value="0">
+                      <input class="tf-input" type="text" id="b-contract" inputmode="decimal" value="0" data-money>
                     </div>
                   </div>
                   <p class="tf-explain-note">Contract work done for someone else. If the 1099 income is your own business billing its clients, it belongs in Your business below, not here &mdash; entering it twice taxes it twice.</p>
@@ -480,7 +605,7 @@
                     <label class="tf-label" for="b-home">Home value <span class="tf-label-sub">if you own</span></label>
                     <div class="tf-input-uom">
                       <span class="tf-uom tf-uom-pre">$</span>
-                      <input class="tf-input" type="number" id="b-home" min="0" step="1" inputmode="decimal" value="850000">
+                      <input class="tf-input" type="text" id="b-home" inputmode="decimal" value="850,000" data-money>
                     </div>
                   </div>
                   <p class="tf-explain-note">Market value, not what you paid. Leave blank if you rent. Your mortgage or rent payment goes in Housing below either way.</p>
@@ -497,35 +622,35 @@
 
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Housing <small>Mortgage or rent, utilities, upkeep</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="number" id="b-sp-housing" min="0" step="1" inputmode="decimal" value="42000"></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-sp-housing" inputmode="decimal" value="42,000" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Groceries <small>Food at home</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="number" id="b-sp-groceries" min="0" step="1" inputmode="decimal" value="14400"></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-sp-groceries" inputmode="decimal" value="14,400" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Dining &amp; entertainment <small>Restaurants, going out, subscriptions</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="number" id="b-sp-dining" min="0" step="1" inputmode="decimal" value="9600"></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-sp-dining" inputmode="decimal" value="9,600" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Transport <small>Car payments, fuel, transit, maintenance</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="number" id="b-sp-transport" min="0" step="1" inputmode="decimal" value="12000"></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-sp-transport" inputmode="decimal" value="12,000" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Insurance <small>Health, auto, home, life</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="number" id="b-sp-insurance" min="0" step="1" inputmode="decimal" value="9600"></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-sp-insurance" inputmode="decimal" value="9,600" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Healthcare <small>Out of pocket, beyond premiums</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="number" id="b-sp-healthcare" min="0" step="1" inputmode="decimal" value="6000"></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-sp-healthcare" inputmode="decimal" value="6,000" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Retail &amp; general <small>Clothing, household goods, electronics</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="number" id="b-sp-retail" min="0" step="1" inputmode="decimal" value="18000"></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-sp-retail" inputmode="decimal" value="18,000" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Everything else <small>Childcare, education, travel, gifts</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="number" id="b-sp-other" min="0" step="1" inputmode="decimal" value="6000"></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-sp-other" inputmode="decimal" value="6,000" data-money></div>
                 </div>
 
                 <!-- Readout (a): the basket, and the sales tax inside it. -->
@@ -549,19 +674,19 @@
                    profit. Revenue is entered separately from profit because a
                    few states tax receipts directly, profit or no profit. -->
               <div class="tf-assume-group">
-                <h3>Your business</h3>
+                <h3>Your business (Year 1)</h3>
 
                 <div class="tf-bucket">
                   <div class="tf-bucket-name"><strong>Revenue</strong> <small>Total billings, before any cost</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="number" id="b-bz-revenue" min="0" step="1" inputmode="decimal" value="30000"></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-bz-revenue" inputmode="decimal" value="30,000" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Cost of goods sold <small>Goods purchased, storage, shipping, subcontractors</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="number" id="b-bz-cogs" min="0" step="1" inputmode="decimal" value="4000"></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-bz-cogs" inputmode="decimal" value="4,000" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Employee wages <small>Gross pay for people who are not you. The tool adds employer payroll tax on top, at your state&rsquo;s rate</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="number" id="b-bz-wages" min="0" step="1" inputmode="decimal" value="0"></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-bz-wages" inputmode="decimal" value="0" data-money></div>
                 </div>
 
                 <!-- EXISTS ONLY UNDER S-CORP. Hidden, not disabled: a sole
@@ -570,16 +695,16 @@
                      takes its place. -->
                 <div class="tf-bucket" data-owner-salary-row hidden>
                   <div class="tf-bucket-name"><strong>Your own W&#8209;2 salary</strong> <small>An S&#8209;corp must pay you a reasonable salary. Ask a CPA what counts as reasonable for your role</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="number" id="b-bz-ownersalary" min="0" step="1" inputmode="decimal" value="0"></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-bz-ownersalary" inputmode="decimal" value="0" data-money></div>
                 </div>
 
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Operating expenses <small>Software, travel, marketing, benefits, professional fees</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="number" id="b-bz-opex" min="0" step="1" inputmode="decimal" value="5000"></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-bz-opex" inputmode="decimal" value="5,000" data-money></div>
                 </div>
                 <div class="tf-bucket">
                   <div class="tf-bucket-name">Depreciation &amp; loan interest <small>Equipment written down, interest on business debt</small></div>
-                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="number" id="b-bz-dep" min="0" step="1" inputmode="decimal" value="1000"></div>
+                  <div class="tf-input-uom"><span class="tf-uom tf-uom-pre">$</span><input class="tf-input" type="text" id="b-bz-dep" inputmode="decimal" value="1,000" data-money></div>
                 </div>
 
                 <div class="tf-check">
@@ -590,9 +715,9 @@
                   <div class="tf-check-row is-total"><span>Business profit, before tax</span><span class="tf-num" data-var="businessNetProfit">$20,000</span></div>
                 </div>
 
-                <!-- Shown under sole proprietorship, replaced by the owner
+                <!-- Shown when the business is owner-run, replaced by the owner
                      salary row under S-corp. -->
-                <p class="tf-explain-note" data-draws-note><strong>You do not pay yourself on this list.</strong> A sole proprietor takes draws, not payroll &mdash; the draw is not a business expense and does not reduce profit.</p>
+                <p class="tf-explain-note" data-draws-note><strong>You do not pay yourself on this list.</strong> Running the business owner-run, you take draws rather than payroll &mdash; a draw is not a business expense and does not reduce profit.</p>
 
                 <p class="tf-explain-note"><strong>EBITDA</strong> is earnings before interest, taxes, depreciation and amortization. A sanity check, not the tax base &mdash; profit is. Revenue is entered separately because a few states tax it directly, profit or no profit.</p>
               </div>
@@ -670,7 +795,7 @@
             <div data-surplus-note></div>
           </section>
 
-          <!-- ================ STEP 3: What Tax Leaves You ==================
+          <!-- ================== STEP 3: The Tax Impact =====================
                DYNAMIC LABELS LIVE HERE. No line below hardcodes a state name,
                an entity type, or a tax that only some states levy:
 
@@ -681,7 +806,7 @@
                  - The entity line reads "State entity tax or fee", and BOTH
                    its label and its value are supplied per state AND per
                    election, since the same state charges differently under
-                   sole proprietorship and under an S-corp.
+                   an owner-run business and under an S-corp.
                  - The gross receipts line is a [data-row] present only where
                    such a tax exists.
 
@@ -691,7 +816,7 @@
             <div class="tf-panel-head">
               <div>
                 <div class="tf-kicker" data-step-eyebrow></div>
-                <h2>What Tax Leaves You</h2>
+                <h2>The Tax Impact</h2>
               </div>
             </div>
             <p class="tf-lead tf-secondary">Income in, spending and tax out, and what is left is yours.</p>
@@ -741,14 +866,15 @@
             <div class="tf-ctl-row">
               <div class="tf-field">
                 <span class="tf-label">Compare with <span class="tf-label-sub">pick as many as you like</span></span>
-                <div class="tf-state-picker" id="state-picker">
-                  <div class="tf-choice-options">
-                    <!-- All 51 jurisdictions, written by the engine. -->
+                <div class="tf-picker">
+                  <div class="tf-picker-head">
+                    <input class="tf-input" type="text" data-picker-filter placeholder="Filter states" aria-label="Filter states">
+                    <button type="button" class="tf-pill tf-pill-outline no-print" data-picker-all="state-picker">All</button>
+                    <button type="button" class="tf-pill tf-pill-outline no-print" data-picker-none="state-picker">None</button>
+                    <span class="tf-picker-count" data-picker-count></span>
                   </div>
-                </div>
-                <div class="tf-btn-row no-print">
-                  <button type="button" class="tf-pill tf-pill-outline" data-picker-all="state-picker">Select all</button>
-                  <button type="button" class="tf-pill tf-pill-outline" data-picker-none="state-picker">Deselect all</button>
+                  <!-- All 51 jurisdictions, written by the engine. -->
+                  <div class="tf-picker-grid" id="state-picker"></div>
                 </div>
               </div>
               <div>
@@ -765,15 +891,15 @@
                  composition and the ranking read together. The home state is
                  marked on ground and on a left edge, and pinned to the top
                  rather than left to be hunted for in the ranking. -->
-            <div class="tf-rank" data-rank></div>
             <div class="tf-chart-legend">
               <span><i class="tf-chart-swatch tf-seg-spend"></i>Spend</span>
               <span><i class="tf-chart-swatch tf-seg-tax"></i>Tax</span>
               <span><i class="tf-chart-swatch tf-seg-remaining"></i>Remaining</span>
             </div>
+            <div class="tf-rank" data-rank></div>
           </section>
 
-          <!-- ================ STEP 4: Five-Year Outlook ====================
+          <!-- ================= STEP 4: Surplus After Tax ===================
                The state selector DEFAULTS to the Step 1 state but is freely
                changeable, so it is not labeled "from Step 1" — a label that
                said so would be false the moment anyone used the control. -->
@@ -781,7 +907,7 @@
             <div class="tf-panel-head">
               <div>
                 <div class="tf-kicker" data-step-eyebrow></div>
-                <h2>Five-Year Outlook</h2>
+                <h2>Surplus After Tax</h2>
               </div>
             </div>
             <p class="tf-lead tf-secondary">The same three buckets, across the trajectory from Step 2.</p>
@@ -854,14 +980,19 @@
                 <h2>Assumptions &amp; Sources</h2>
               </div>
             </div>
-            <p class="tf-lead tf-secondary">Anything marked <span class="tf-pill tf-pill-sm tf-pill-tint-ochre">Unverified</span> was not confirmed against a current published source. That is <strong data-sources-count></strong>. This table is generated from the rates the tool is actually using, so it cannot drift from them.</p>
+            <div class="tf-framing">
+              <p><strong>This tool is a way of thinking about the decision, not a tax computation.</strong> It exists to show you the SHAPE of what happens as a business grows next to a job &mdash; which way the numbers move, and roughly how far &mdash; so you can tell a question worth asking from one that is not. It is not a return, and no figure on it is a filing position.</p>
+              <p>The rates come from public sources, and <strong>those sources do not always agree with each other.</strong> Where we found a genuine conflict, the table below says so and names both readings rather than quietly picking one. Some figures we read against a primary source this pass; most we carried from a reputable compilation and did not re-check. The right-hand column tells you which is which for every single input.</p>
+              <p><strong>We do not guarantee any of it is accurate or current.</strong> Tax rules change, published compilations lag, and simplifications we have made deliberately &mdash; each one listed below &mdash; will be wrong for some households. <strong>Check anything you intend to act on with an accountant or tax attorney who knows your situation.</strong></p>
+            </div>
+            <p class="tf-explain-note" data-sources-count></p>
 
             <h3>What the model does</h3>
             <ul class="tf-note-list">
               <li>Assumes you live and register the business in the same state.</li>
               <li>Treats household spending as tax&#8209;inclusive, strips sales tax at your state&rsquo;s rate, and moves it to the tax line.</li>
               <li>Applies your Step&nbsp;1 election to all three scenarios equally.</li>
-              <li>Under sole proprietorship, takes no owner salary and applies self&#8209;employment tax to all profit.</li>
+              <li>Run owner-run, takes no owner salary and applies self&#8209;employment tax to all profit.</li>
               <li>Adds employer payroll tax to employee wages at that state&rsquo;s rate.</li>
               <li>Attributes business tax incrementally &mdash; the amount your total rises by, not a separate bill.</li>
               <li>Applies property and sales tax in every scenario.</li>
@@ -880,10 +1011,10 @@
               <li>C&#8209;corp treatment &mdash; see the <a href="tool-company-setup.html">Company Setup Checklist</a>.</li>
             </ul>
 
-            <h3>Rate sources</h3>
+            <h3>Where every figure comes from</h3>
             <div class="tf-data-table">
               <table>
-                <thead><tr><th>Input</th><th>Basis</th><th>Status</th></tr></thead>
+                <thead><tr><th>Input</th><th>Source, and what we assumed</th><th>Provenance</th></tr></thead>
                 <tbody data-sources-table></tbody>
               </table>
             </div>
