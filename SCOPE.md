@@ -1,4 +1,4 @@
-v033 | 2026-08-20 | 298 lines
+v034 | 2026-08-24 | 299 lines
 
 # SCOPE.md — threeflows.com
 
@@ -71,7 +71,8 @@ section covers it.
     and `defer`, on tool pages that offer a PDF download — and on those pages
     only. A blocked or tampered CDN therefore leaves `window.jspdf` undefined
     and the tool falls back to `window.print()`. Current consumers:
-    `tool-company-setup.html` and `tool-general-cashflow.html`.
+    `tool-company-setup.html`, `tool-general-cashflow.html` and
+    `tool-overall-tax-estimator.html`.
 - All internal links are RELATIVE paths, for portability.
 - Shared header and footer are served from `partials.html`, fetched per page.
 - Tools may compute and display entirely in the browser — front-end only, no
