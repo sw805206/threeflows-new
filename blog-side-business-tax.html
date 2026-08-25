@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A job, a side business, and fifty-one states — Three Flows Solutions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="STYLE.css">
+  <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+</head>
+<body class="tf-app">
+  <!-- Shared header injected from partials.html -->
+  <div id="tf-header"></div>
+
+  <main class="tf-section" data-blog-id="blog-019">
+    <div class="tf-container">
+      <div class="tf-prose-layout" data-toc>
+      <div class="tf-prose">
+        <!-- TOP NAV ROW: back-to-blogs (left) + prev/next pager (right).
+             blog.js fills the pager; an absent neighbour renders muted. -->
+        <div class="tf-post-topnav">
+          <a href="blogs.html">← Blogs</a>
+          <span class="tf-post-pager"></span>
+        </div>
+        <!-- POST HEADER: h1 → dek → date (divider). blog.js appends
+             " · N min read" to the date meta. An optional rail image renders
+             from the manifest's "image" field — never marked up here. -->
+        <h1>A job, a side business, and fifty-one states</h1>
+        <p class="tf-prose-intro">The economy is uncertain and a second income sounds like insurance. Here is what the tax actually does to it — and why we ignored our own answer.</p>
+        <p class="tf-meta">August 24, 2026</p>
+
+        <!-- POST BODY: prose only. h2 = main sections (appear in the rail),
+             h3 = subsections. -->
+        <h2>Everyone is looking for a second income right now</h2>
+
+        <p>You have a job. It pays the mortgage. It also feels less permanent than it did three years ago, and you have started thinking about what else you could be doing — and, some evenings, where else you might do it from.</p>
+
+        <p>Consulting, probably, if your work travels. Building small tools now that AI has collapsed what used to be a six-month engineering project into a weekend. Selling something online. Making things people watch. The specific idea matters less than the fact that almost everyone we talk to has one, and most of them have not started.</p>
+
+        <h2>Start it before you build it</h2>
+
+        <p>The advice we give is boring and we have never regretted giving it.</p>
+
+        <p>Find something you would keep doing on a bad week. Not the thing with the best margin — the thing you will still open on a Tuesday night after a long day at the job that actually pays you. You are going to sweat for this. Pick something worth sweating for.</p>
+
+        <p>Then just start. You do not need a company. Take the first client, sell the first thing, publish the first piece as yourself. Most side businesses die before they earn anything, and forming an entity around an idea you have not tested is how you end up paying annual fees to maintain a company that never had a customer.</p>
+
+        <p>When it starts working — when there is real money, real clients, real risk — set up the LLC. That is the moment the structure earns its cost, and it is the moment our <a href="tool-company-setup.html">Company Setup Checklist</a> is built for.</p>
+
+        <h2>Then the question gets harder</h2>
+
+        <p>Here is where it stops being simple.</p>
+
+        <p>You now have a job, a life, and a business, and they compete for the same hours. Look five years out and the picture gets more crowded, not less. Maybe you get married in there. Maybe there are children. Maybe the side business stops being a side business.</p>
+
+        <p>And somewhere in that picture is a question almost nobody answers before they need to: what does all of this cost in tax, where I live now, versus somewhere else?</p>
+
+        <p>It is a genuinely hard question, and not for the reason people assume. The hard part is not the arithmetic. It is that the answer changes as your income mix changes. A state that is generous to a salary is not necessarily generous to a business owner. Some tax your profit. A few tax your revenue, which means they charge you in a year you lose money. Some have no income tax at all and recover it through property tax that lands harder on you than an income tax would have.</p>
+
+        <p>We should say this early, because it shapes everything below: the number this produces is one input among several, and for most people it will not be the deciding one. It is still worth knowing.</p>
+
+        <h2>Why we built this, and what we are not</h2>
+
+        <p>We are not tax experts. We want to be direct about that, because a tool that looks authoritative and is not is worse than no tool.</p>
+
+        <p>Tax codes change every year. Published sources disagree with each other — we found compilations that could not agree on how many states tax groceries, or at what rate, which is not an obscure corner of the code. Real situations carry details ours does not model: multi-state work, credits, elections, the specific facts of your household.</p>
+
+        <p>What we had was a mix of need and curiosity. Some of us have had to answer this question for ourselves. The rest wanted to understand the framework underneath it — what actually drives the difference between one state and another once you are earning two ways instead of one.</p>
+
+        <p>That is the method we keep coming back to. Pull the data together and the logic falls out of it, because the relationships were always there and were only hard to see. Put the result in a picture and the decision becomes something you can hold in your head instead of something you have to trust. Neither half is new. What is new is that AI makes stitching them together possible at this size — a working model, built and rebuilt in days, by people who are not specialists in the subject.</p>
+
+        <p>So treat what follows as a framework for thinking, not as a computation of what you owe. It is good at showing you the shape of a decision and the relative distance between options. It is not good at telling you your tax bill.</p>
+
+        <h2>How to use it</h2>
+
+        <p>The <a href="tool-overall-tax-estimator.html">Overall Tax Estimator</a> is straightforward to fill in. A handful of assumptions sit behind it:</p>
+
+        <ul>
+          <li>You have a job supporting a household of one or more, and a business alongside it.</li>
+          <li>The business is an LLC, and you either run it yourself or have elected S-corp treatment.</li>
+          <li>You live and register the business in the same state.</li>
+          <li>Investment income is out of scope — no capital gains, no dividends, no retirement contributions. This is about money you earn from working.</li>
+          <li>Rates are held flat across all five years.</li>
+        </ul>
+
+        <p><strong>Every figure is annual.</strong> Not monthly. It is the easiest mistake to make and it throws off everything downstream.</p>
+
+        <p><strong>Years 2 through 5 matter as much as the base year, and they are yours.</strong> The tool does not forecast. It fills them with a plain growth curve so the page is not empty, and then it is on you to replace that with what you actually expect. A trajectory you did not write is not worth reading.</p>
+
+        <p>Then play with it. Switch between the job alone, the job plus the business, and the business alone. Change the state. The point is not one answer — it is watching which numbers move and which barely do.</p>
+
+        <p>Step 5 lists every rate, where it came from, and which ones we read against a primary source versus carried from a compilation. Read it before you trust a number. Where we do not have a source, we say so.</p>
+
+        <p>Then print it and take it to your accountant. That is the conversation this is built for — it saves you paying someone to gather what you can gather yourself. And if something is wrong, or missing, or would be better another way, <a href="contact.html">write to us</a>. We would rather hear it than not.</p>
+
+        <h2>We picked the expensive answer</h2>
+
+        <p>We ran this for ourselves. The ranking was clear, and it did not say New York.</p>
+
+        <p>We chose New York anyway.</p>
+
+        <p>Not because the tool was wrong. It told us exactly what it should have — it costed the surface. What it cannot do is price the part that has no price: the network that is here and nowhere else, the particular mix of creative and driven and genuinely different people this city collects, what those are worth to the kind of work we do. You will have your own version of that, and it will not be in any model either.</p>
+
+        <p>What the tool did was tell us there is a cost, and how much. We did not go in blind and we do not get to be surprised later.</p>
+
+        <p>That is what we think a plan is for. Not to hand you the decision — it will never know enough for that. To put the calculated options in front of you, so that when you follow your gut, you already know in the back of your head exactly what it is costing you and why you decided it was worth it.</p>
+
+        <p>Run it. Find out what your version of that costs.</p>
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared footer injected from partials.html -->
+  <div id="tf-footer"></div>
+
+  <!-- Fetch snippet: load partials.html (relative), inject header/footer,
+       mark the current nav link, and wire dropdowns + the mobile menu.
+       Fails silently (no nav rather than a broken page). -->
+  <script src="assets/partials.js" defer></script>
+  <script src="assets/toc.js"></script>
+  <script src="assets/blog.js"></script>
+  <script src="assets/lightbox.js"></script>
+</body>
+</html>

@@ -8,5 +8,10 @@
     "toolID": "tool-002",
     "filename": "tool-general-cashflow.html",
     "title": "General Cashflow Projection"
+  },
+  {
+    "toolID": "tool-003",
+    "filename": "tool-overall-tax-estimator.html",
+    "title": "Overall Tax Estimator"
   }
 ]
