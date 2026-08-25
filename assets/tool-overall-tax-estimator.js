@@ -943,6 +943,27 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     return rows;
   }
 
+  /* Years 2-5 FOLLOW Year 1, except where the reader has taken a cell over.
+     They were seeded once from the page's original defaults and then never
+     re-derived: Year 1 tracked Step 1, but the four years after it stayed
+     pinned to multiples of figures the reader had already replaced. Enter a
+     $5,000 business and Year 2 still read $80,010 — 2.667 x the $30,000
+     default — so the projection was a curve through someone else's business.
+     A suggestion has to follow the number it is a suggestion ABOUT. An edited
+     cell is the reader's own and is never overwritten, which is what EDITED
+     is for. */
+  function reseedUnedited() {
+    if (!YEAR_INPUTS) return;
+    var y1 = YEAR_INPUTS[0];
+    var cols = ['wages', 'contract', 'spend', 'revenue', 'costs'];
+    for (var i = 1; i < YEARS; i++) {
+      cols.forEach(function (c) {
+        if (EDITED[i + '.' + c]) return;
+        YEAR_INPUTS[i][c] = num(y1[c]) * PLACEHOLDER_CURVE[c][i];
+      });
+    }
+  }
+
   /* Build the five model years the engine runs on. The PRE-TAX basket is
      computed ONCE from Step 1's entries and the home state's rates, then
      scaled for later years by how their total spend compares to Year 1's. */
@@ -1633,6 +1654,7 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     if (!host) return;
     if (!YEAR_INPUTS) YEAR_INPUTS = seedYearInputs(base);
     YEAR_INPUTS[0] = baseYearRow(base);
+    reseedUnedited();
 
     var cols = ['wages', 'contract', 'spend', 'revenue', 'costs'];
     /* Years 2-5 are SUGGESTIONS, and are greyed to say so. The words
