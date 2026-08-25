@@ -2519,6 +2519,27 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
      delete someone else's number before typing their own, and any character
      they type lands beside it. Focus empties the cell; leaving it empty puts
      the suggestion back, so nothing is lost by looking. */
+  /* AFFIRMING THE PRE-SELECTED FILING STATUS.
+     A <select> fires `change` only when the value actually MOVES, so choosing
+     the option that is already selected fires nothing at all — and the
+     pre-selected option is "Married filing jointly", the likeliest answer for
+     the household this tool is built for. The result was that the one status
+     most readers want was the one they could not confirm: it stayed muted
+     until they picked something else and came back.
+     Interaction is the right signal rather than value change. Opening the
+     control is a deliberate act on a question the reader has now engaged with,
+     and whatever they leave it on is their answer. Bound to pointerdown and to
+     the keys that open a native select, so mouse and keyboard behave alike;
+     Tab alone is not an answer and is excluded. */
+  function affirmFiling(e) {
+    var sel = e.target.closest && e.target.closest('#b-filing');
+    if (!sel || !sel.classList.contains('is-placeholder')) return;
+    if (e.type === 'keydown' && (e.key === 'Tab' || e.shiftKey && e.key === 'Tab')) return;
+    sel.classList.remove('is-placeholder');
+  }
+  root.addEventListener('pointerdown', affirmFiling);
+  root.addEventListener('keydown', affirmFiling);
+
   root.addEventListener('focusin', function (e) {
     var t = e.target;
     if (!t || t.tagName !== 'INPUT') return;
@@ -2547,8 +2568,10 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     var t = e.target;
     if (t.matches && t.matches('[data-election]')) { applyElection(); renderYearTable(readBase()); recalc(); return; }
     if (t.id === 'b-state' || t.id === 'b-filing') {
-      /* Actively chosen now, so it stops reading as a suggestion. The home
-         select can also go BACK to unchosen, which returns it to muted. */
+      /* The home select's muting is VALUE-driven — muted whenever no real
+         state is held — so it is re-derived here and needs no interaction
+         tracking. The filing status is different and is handled on
+         interaction instead; see the pointerdown/keydown listener below. */
       t.classList.toggle('is-placeholder', t.id === 'b-state' && !ST[t.value]);
       if (t.id === 'b-state' && !STATE.outlookStateTouched) {
         var o = el('#o-state');
