@@ -820,8 +820,20 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     wages:    [1, 1.028, 1.056, 1.083, 1.111],
     contract: [1, 1.028, 1.056, 1.083, 1.111],
     spend:    [1, 1.025, 1.051, 1.077, 1.104],
-    revenue:  [1, 2.667, 5.333, 8.667, 13.333],
-    costs:    [1, 2.5, 5.5, 9.5, 15]
+    /* SOFTENED. The business curve used to reach 13.3x revenue by Year 5 —
+       a 91% compound rate held for four straight years, which is venture
+       scale and not what an owner-operated business next to a job does. It
+       was chosen to dramatize "the business grows into the job" and it
+       overstated the case, which mattered more once the curve started
+       multiplying the reader's OWN Year 1 rather than a default.
+       4x over five years, DECELERATING — +60%, +50%, +33%, +25% — because
+       growth that slows as the base gets larger is the shape a real business
+       traces; a flat compound rate is the shape a spreadsheet traces. Costs
+       rise slightly slower than revenue, so margin improves a little with
+       scale rather than eroding. Still illustrative, still meant to be
+       overwritten. */
+    revenue:  [1, 1.6, 2.4, 3.2, 4.0],
+    costs:    [1, 1.55, 2.2, 2.85, 3.4]
   };
 
   /* Years 2-5 enter business costs as ONE figure. The engine needs the split,
@@ -1242,7 +1254,8 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
       '% a year. Not a published inflation forecast, and not tied to any index — a single flat rate applied to the whole basket, when in reality the categories move at different speeds. Every cell is editable, and holding spend flat makes year-over-year changes easier to read.',
       PLAIN, null, NO_SOURCE]);
     rows.push(['Growth curve for years 2 to 5',
-      'Illustrative placeholders on a plain curve, meant to be overwritten. Not a forecast.', PLAIN, null, NO_SOURCE]);
+      'Our own illustrative curve, not a forecast and not drawn from any data. Business revenue reaches 4x its Year 1 figure by Year 5, growing 60%, 50%, 33% and 25% year over year — decelerating, because a growing base is harder to grow. Costs rise slightly slower, so margin improves a little with scale. Wages drift up about 2.8% a year. Every cell is editable and these are meant to be replaced with your own view.',
+      PLAIN, null, NO_SOURCE]);
     rows.push(['Rates across the five-year horizon',
       'Held FLAT. No bracket indexing, no rate changes, no policy changes are modeled in years 2 to 5.', CHECKED, null, NO_SOURCE]);
 
