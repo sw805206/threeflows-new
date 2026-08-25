@@ -177,63 +177,81 @@
                Step 5 but does not enter the arithmetic.
      ======================================================================== */
 
-  var X = function (groc, gRate, cloth, cCap, svc) {
-    return { groc: groc, gRate: gRate, cloth: cloth, cCap: cCap, svc: svc, v: 0 };
+  /* PER-FIELD verification flags, not one flag for the row. A single `v` per
+     state forced grocery, clothing and services to share a verdict, so the
+     whole table had to sit at the weakest of the three. They verify from
+     different sources and at different times, and the clothing rules turned
+     out to be confirmable in full while several grocery rates are still ours.
+
+       vGroc  — the grocery figure THIS TOOL USES is confirmed. Exempt and
+                full-rate states qualify: the rate is 0 or the state's general
+                rate, both already verified. Reduced-rate states mostly do NOT,
+                because no source publishes the combined state-plus-local rate
+                on food that the model needs — that number is still ours, even
+                where the treatment behind it is confirmed.
+       vCloth — the clothing treatment and any per-item threshold.
+       vSvc   — the general services treatment. Not checked, and it does not
+                enter the arithmetic; it is reported for reference only. */
+  var X = function (groc, gRate, cloth, cCap, svc, vGroc, vCloth, vSvc) {
+    return {
+      groc: groc, gRate: gRate, cloth: cloth, cCap: cCap, svc: svc,
+      vGroc: vGroc || 0, vCloth: vCloth || 0, vSvc: vSvc || 0
+    };
   };
   var FTA = 'Federation of Tax Administrators sales tax matrix; state revenue department publications';
 
   var SALES = {
-    AL: X('reduced', 7.46, 'taxable', 0, 'few'),
-    AK: X('exempt', 0, 'taxable', 0, 'few'),
-    AZ: X('exempt', 0, 'taxable', 0, 'few'),
-    AR: X('reduced', 3.11, 'taxable', 0, 'enumerated'),
-    CA: X('exempt', 0, 'taxable', 0, 'few'),
-    CO: X('exempt', 0, 'taxable', 0, 'few'),
-    CT: X('exempt', 0, 'taxable', 0, 'enumerated'),
-    DE: X('exempt', 0, 'exempt', 0, 'few'),
-    FL: X('exempt', 0, 'taxable', 0, 'enumerated'),
-    GA: X('reduced', 3.56, 'taxable', 0, 'few'),
-    HI: X('taxable', 0, 'taxable', 0, 'broad'),
-    ID: X('taxable', 0, 'taxable', 0, 'few'),
-    IL: X('reduced', 1.00, 'taxable', 0, 'few'),
-    IN: X('exempt', 0, 'taxable', 0, 'few'),
-    IA: X('exempt', 0, 'taxable', 0, 'enumerated'),
-    KS: X('reduced', 2.21, 'taxable', 0, 'few'),
-    KY: X('exempt', 0, 'taxable', 0, 'enumerated'),
-    LA: X('reduced', 5.13, 'taxable', 0, 'few'),
-    ME: X('exempt', 0, 'taxable', 0, 'enumerated'),
-    MD: X('exempt', 0, 'taxable', 0, 'enumerated'),
-    MA: X('exempt', 0, 'threshold', 175, 'few'),
-    MI: X('exempt', 0, 'taxable', 0, 'few'),
-    MN: X('exempt', 0, 'exempt', 0, 'enumerated'),
-    MS: X('taxable', 0, 'taxable', 0, 'enumerated'),
-    MO: X('reduced', 5.44, 'taxable', 0, 'few'),
-    MT: X('exempt', 0, 'exempt', 0, 'few'),
-    NE: X('exempt', 0, 'taxable', 0, 'enumerated'),
-    NV: X('exempt', 0, 'taxable', 0, 'few'),
-    NH: X('exempt', 0, 'exempt', 0, 'few'),
-    NJ: X('exempt', 0, 'exempt', 0, 'enumerated'),
-    NM: X('exempt', 0, 'taxable', 0, 'broad'),
-    NY: X('exempt', 0, 'threshold', 110, 'enumerated'),
-    NC: X('reduced', 2.35, 'taxable', 0, 'few'),
-    ND: X('exempt', 0, 'taxable', 0, 'few'),
-    OH: X('exempt', 0, 'taxable', 0, 'enumerated'),
-    OK: X('reduced', 4.56, 'taxable', 0, 'few'),
-    OR: X('exempt', 0, 'exempt', 0, 'few'),
-    PA: X('exempt', 0, 'exempt', 0, 'enumerated'),
-    RI: X('exempt', 0, 'threshold', 250, 'enumerated'),
-    SC: X('reduced', 1.49, 'taxable', 0, 'few'),
-    SD: X('taxable', 0, 'taxable', 0, 'broad'),
-    TN: X('reduced', 6.61, 'taxable', 0, 'enumerated'),
-    TX: X('exempt', 0, 'taxable', 0, 'enumerated'),
-    UT: X('reduced', 3.00, 'taxable', 0, 'enumerated'),
-    VT: X('exempt', 0, 'exempt', 0, 'few'),
-    VA: X('reduced', 1.00, 'taxable', 0, 'few'),
-    WA: X('exempt', 0, 'taxable', 0, 'enumerated'),
-    WV: X('exempt', 0, 'taxable', 0, 'broad'),
-    WI: X('exempt', 0, 'taxable', 0, 'enumerated'),
-    WY: X('exempt', 0, 'taxable', 0, 'few'),
-    DC: X('exempt', 0, 'taxable', 0, 'broad')
+    AL: X('reduced', 7.46, 'taxable', 0, 'few', 0, 1, 0),
+    AK: X('exempt', 0, 'taxable', 0, 'few', 1, 1, 0),
+    AZ: X('exempt', 0, 'taxable', 0, 'few', 1, 1, 0),
+    AR: X('reduced', 3.11, 'taxable', 0, 'enumerated', 0, 1, 0),
+    CA: X('exempt', 0, 'taxable', 0, 'few', 1, 1, 0),
+    CO: X('exempt', 0, 'taxable', 0, 'few', 1, 1, 0),
+    CT: X('exempt', 0, 'taxable', 0, 'enumerated', 1, 1, 0),
+    DE: X('exempt', 0, 'exempt', 0, 'few', 1, 1, 0),
+    FL: X('exempt', 0, 'taxable', 0, 'enumerated', 1, 1, 0),
+    GA: X('reduced', 3.56, 'taxable', 0, 'few', 0, 1, 0),
+    HI: X('taxable', 0, 'taxable', 0, 'broad', 1, 1, 0),
+    ID: X('taxable', 0, 'taxable', 0, 'few', 1, 1, 0),
+    IL: X('reduced', 1.00, 'taxable', 0, 'few', 0, 1, 0),
+    IN: X('exempt', 0, 'taxable', 0, 'few', 1, 1, 0),
+    IA: X('exempt', 0, 'taxable', 0, 'enumerated', 1, 1, 0),
+    KS: X('reduced', 2.21, 'taxable', 0, 'few', 0, 1, 0),
+    KY: X('exempt', 0, 'taxable', 0, 'enumerated', 1, 1, 0),
+    LA: X('reduced', 5.13, 'taxable', 0, 'few', 0, 1, 0),
+    ME: X('exempt', 0, 'taxable', 0, 'enumerated', 1, 1, 0),
+    MD: X('exempt', 0, 'taxable', 0, 'enumerated', 1, 1, 0),
+    MA: X('exempt', 0, 'threshold', 175, 'few', 1, 1, 0),
+    MI: X('exempt', 0, 'taxable', 0, 'few', 1, 1, 0),
+    MN: X('exempt', 0, 'exempt', 0, 'enumerated', 1, 1, 0),
+    MS: X('taxable', 0, 'taxable', 0, 'enumerated', 1, 1, 0),
+    MO: X('reduced', 5.44, 'taxable', 0, 'few', 0, 1, 0),
+    MT: X('exempt', 0, 'exempt', 0, 'few', 1, 1, 0),
+    NE: X('exempt', 0, 'taxable', 0, 'enumerated', 1, 1, 0),
+    NV: X('exempt', 0, 'taxable', 0, 'few', 1, 1, 0),
+    NH: X('exempt', 0, 'exempt', 0, 'few', 1, 1, 0),
+    NJ: X('exempt', 0, 'exempt', 0, 'enumerated', 1, 1, 0),
+    NM: X('exempt', 0, 'taxable', 0, 'broad', 1, 1, 0),
+    NY: X('exempt', 0, 'threshold', 110, 'enumerated', 1, 1, 0),
+    NC: X('reduced', 2.35, 'taxable', 0, 'few', 0, 1, 0),
+    ND: X('exempt', 0, 'taxable', 0, 'few', 1, 1, 0),
+    OH: X('exempt', 0, 'taxable', 0, 'enumerated', 1, 1, 0),
+    OK: X('reduced', 4.56, 'taxable', 0, 'few', 0, 1, 0),
+    OR: X('exempt', 0, 'exempt', 0, 'few', 1, 1, 0),
+    PA: X('exempt', 0, 'exempt', 0, 'enumerated', 1, 1, 0),
+    RI: X('exempt', 0, 'threshold', 250, 'enumerated', 1, 1, 0),
+    SC: X('reduced', 1.49, 'taxable', 0, 'few', 0, 1, 0),
+    SD: X('taxable', 0, 'taxable', 0, 'broad', 1, 1, 0),
+    TN: X('reduced', 6.61, 'taxable', 0, 'enumerated', 0, 1, 0),
+    TX: X('exempt', 0, 'taxable', 0, 'enumerated', 1, 1, 0),
+    UT: X('reduced', 3.00, 'taxable', 0, 'enumerated', 1, 1, 0),
+    VT: X('exempt', 0, 'exempt', 0, 'few', 1, 1, 0),
+    VA: X('reduced', 1.00, 'taxable', 0, 'few', 1, 1, 0),
+    WA: X('exempt', 0, 'taxable', 0, 'enumerated', 1, 1, 0),
+    WV: X('exempt', 0, 'taxable', 0, 'broad', 1, 1, 0),
+    WI: X('exempt', 0, 'taxable', 0, 'enumerated', 1, 1, 0),
+    WY: X('exempt', 0, 'taxable', 0, 'few', 1, 1, 0),
+    DC: X('exempt', 0, 'taxable', 0, 'broad', 1, 1, 0)
   };
 
   /* ========================================================================
@@ -1070,7 +1088,8 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     futa:  { href: 'https://www.irs.gov/taxtopics/tc759', label: 'IRS Topic 759 — FUTA' },
     tfSales: { href: 'https://taxfoundation.org/data/all/state/state-sales-tax-rates/', label: 'Tax Foundation — State and Local Sales Tax Rates' },
     tfInc:   { href: 'https://taxfoundation.org/data/all/state/state-income-tax-rates/', label: 'Tax Foundation — State Individual Income Tax Rates' },
-    tfGroc:  { href: 'https://taxfoundation.org/data/all/state/grocery-tax-by-state/', label: 'Tax Foundation — Grocery Tax by State' },
+    tfGroc:  { href: 'https://taxfoundation.org/data/all/state/2026-sales-tax-rates-midyear/', label: 'Tax Foundation — 2026 Sales Tax Rates, Midyear Update' },
+    tfCloth: { href: 'https://taxfoundation.org/data/all/state/map-state-sales-taxes-and-clothing-exemptions/', label: 'Tax Foundation — State Sales Taxes and Clothing Exemptions' },
     fta:     { href: 'https://www.taxadmin.org/sales-taxation-of-services/', label: 'Federation of Tax Administrators — sales taxation of services' },
     census:  { href: 'https://www.census.gov/programs-surveys/acs', label: 'US Census Bureau — American Community Survey' },
     dol:     { href: 'https://oui.doleta.gov/unemploy/statelaws.asp', label: 'US DOL — significant provisions of state UI laws' }
@@ -1150,21 +1169,34 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     var groc = sx.groc === 'exempt' ? 'treated as exempt'
              : sx.groc === 'reduced' ? ('treated as taxed at a reduced ' + sx.gRate.toFixed(2) + '%')
              : 'treated as taxable at the general rate';
-    rows.push([name + ' — grocery sales tax treatment',
-      FTA_SRC + '. Groceries are ' + groc + ' here.',
-      CONFLICT,
-      'PUBLISHED SOURCES DISAGREE, and not narrowly. They differ on how many states tax groceries at all, on the rate where a reduced rate applies, and — the biggest divergence — on whether local rates still apply in states that removed the state-level grocery tax. This tool models several of those states at a local-only rate, which some compilations show as fully exempt. The figure in use is an ESTIMATE pending state-by-state verification, tracked as BL-043.', LINKS.tfGroc]);
+    if (sx.vGroc) {
+      rows.push([name + ' — grocery sales tax treatment',
+        'Groceries are ' + groc + ' here, checked against the Tax Foundation and Kiplinger 2026 compilations, which agree on it. ' +
+        (sx.groc === 'reduced'
+          ? 'The combined rate is itself published for this state, so no state-and-local split had to be estimated.'
+          : 'The rate is either zero or the state\'s own general rate, both already confirmed above.'),
+        CHECKED, null, LINKS.tfGroc]);
+    } else {
+      rows.push([name + ' — grocery sales tax treatment',
+        'Groceries are ' + groc + ' here. The TREATMENT is confirmed against the 2026 compilations; the RATE is ours.',
+        CONFLICT,
+        'The published sources agree on which states tax food and at what STATE rate, but none of them publishes the combined state-and-local rate on food that this model needs — and they differ on whether local rates still apply where the state rate was removed. The ' + sx.gRate.toFixed(2) + '% in use is our own state-plus-local estimate. Arkansas is the sharpest example: one 2026 compilation lists it at 0.125% while another says the state grocery tax was eliminated on 1 January 2026.',
+        LINKS.tfGroc]);
+    }
 
     var cloth = sx.cloth === 'exempt' ? 'treated as exempt'
               : sx.cloth === 'threshold' ? ('treated as exempt below $' + sx.cCap + ' per item')
               : 'treated as taxable';
     rows.push([name + ' — clothing sales tax treatment',
-      FTA_SRC + '. Clothing is ' + cloth + ' here.',
-      CONFLICT,
-      'PUBLISHED SOURCES DISAGREE on which garments an exemption reaches and on how per-item thresholds are applied to a mixed basket. A threshold exemption is modeled here as a FULL exemption, which overstates the relief for anyone buying above the threshold. An estimate pending verification, tracked as BL-043.', LINKS.fta]);
+      'Clothing is ' + cloth + ' here. Checked across all 51 jurisdictions against the Tax Foundation clothing-exemption map and a second 2026 compilation, which agree in full: Minnesota, New Jersey, Pennsylvania and Vermont exempt clothing outright, Massachusetts exempts below $175, New York below $110 and Rhode Island below $250, and every other state taxes it.',
+      CHECKED,
+      sx.cloth === 'threshold'
+        ? 'One simplification remains, and it is ours rather than the sources\': a per-item threshold is modeled as a FULL exemption on the clothing share of the basket, which overstates the relief for anyone buying above it.'
+        : null,
+      LINKS.tfCloth]);
 
     rows.push([name + ' — general treatment of services (' + sx.svc + ')',
-      FTA_SRC + '. Recorded for reference only: the bucket map assigns service exposure uniformly across states, so this field does not enter the arithmetic.', PLAIN, null, LINKS.fta]);
+      FTA_SRC + '. NOT checked, and deliberately so: the bucket map assigns service exposure uniformly across every state, so this field is reported for reference and does not enter the arithmetic at all.', PLAIN, null, LINKS.fta]);
 
     var ent = LABELS.entity(key, 'sole-proprietor'), entSc = LABELS.entity(key, 's-corp');
     if (ent.present || entSc.present) {
