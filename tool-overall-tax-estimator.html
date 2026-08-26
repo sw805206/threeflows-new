@@ -466,6 +466,16 @@
        against the table above it. */
     [data-outlook-summary] > h3 { margin-top: var(--tf-space-6); }
 
+
+    /* ---- Surplus and shortfall, on the headline figures --------------------
+       Same rule as the bars: teal is money kept, brick is a shortfall. The
+       sheet's .tf-stat-value is brick unconditionally, so without this a
+       positive take-home would wear the colour that means "short" in the
+       chart directly beneath it. Page-local and token-built; STYLE.css is
+       untouched. */
+    .tf-stat-value.is-kept  { color: var(--tf-chart-4); }
+    .tf-stat-value.is-short { color: var(--tf-brick); }
+
   </style>
 </head>
 <body class="tf-app">

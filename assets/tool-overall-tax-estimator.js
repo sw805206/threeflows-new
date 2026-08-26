@@ -1288,12 +1288,30 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
      and swatches take an inline background from this object, which is a token
      reference and never a raw value. */
   var SEG = {
-    spend:     'var(--tf-stone)',
-    tax:       'var(--tf-ink-soft)',
-    remaining: 'var(--tf-brick)',
-    short:     'var(--tf-brick-dark)',   /* remaining, below zero */
+    spend:     'var(--tf-stone)',        /* the basket, unchanged by tax */
+    tax:       'var(--tf-ink-soft)',     /* what the tax takes */
+    /* SURPLUS AND SHORTFALL ARE OPPOSITES AND MUST NOT BE TWO REDS.
+       They were brick and brick-dark, which measure 1.54:1 apart — near
+       identical at bar height, so a state that ran short looked like a state
+       that did well. Teal is the data palette's near-green (--tf-chart-4) and
+       is the greenest thing the brand has; there is no green in TOKENS.css and
+       adding one would mean editing a publicly-served, cross-repo-synced file
+       for a chart tweak.
+       Checked under simulation rather than by eye, because red-and-green is
+       the exact axis colour blindness collapses: against brick, teal separates
+       2.25:1 under deuteranopia and 2.55:1 under protanopia, where the old
+       brick-dark managed 1.56 and 1.50. Slate scores higher still (2.86/3.25)
+       and is the fallback if this proves too subtle, but it reads as blue
+       rather than as a surplus. Colour is not carrying this alone either — a
+       shortfall also shows a minus sign and a brick figure. */
+    remaining: 'var(--tf-chart-4)',      /* teal — money you keep */
+    short:     'var(--tf-brick)',        /* brick — spend and tax exceed income */
     household: 'var(--tf-stone)',
-    business:  'var(--tf-brick)',
+    /* Business profit is money kept, so it takes the same teal. This also
+       leaves brick meaning ONE thing across the whole tool — the negative
+       case — which it did not when it was both "business profit" here and
+       "shortfall" two steps later. */
+    business:  'var(--tf-chart-4)',
     net:       'var(--tf-ink)'
   };
 
@@ -1749,9 +1767,13 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
         ['Job only', job], ['Job + business', both], ['Business only', biz]
       ].map(function (p, n) {
         var s = p[1];
+        /* The headline figure takes the same teal/brick rule as the bars it
+           summarises. The sheet's .tf-stat-value is brick for everything,
+           which would have left a positive take-home wearing the colour that
+           now means "short" three inches below it. */
         return '<div' + (n === 1 ? ' class="tf-hilite-mark"' : '') + '>' +
                '<div class="tf-stat-label">' + p[0] + '</div>' +
-               '<div class="tf-stat-value">' + money(s.remaining) + '</div>' +
+               '<div class="tf-stat-value ' + (s.remaining < 0 ? 'is-short' : 'is-kept') + '">' + money(s.remaining) + '</div>' +
                '<div class="tf-stat-sub">' + (s.remaining < 0 ? 'short' : 'left') + ', on ' + money(s.income) + '</div></div>';
       }).join('');
     }
