@@ -1,4 +1,4 @@
-v017 | 2026-08-22 | 301 lines
+v018 | 2026-08-25 | 311 lines
 
 # Working Rules
 
@@ -165,16 +165,26 @@ concluded from it that there was nowhere at all a paid user could read their pla
 back — which became false later still, and was further from true. Checking only
 the premise would have left the conclusion standing.
 
-**Protect main when it deploys from main.** If the project deploys from main (a
-live website or app), never commit code directly to main: one feature branch per
-task, branched from an up-to-date main → commit locally as you work → push the
-branch → open a PR only when I ask → merge → clean up. If the project does not
-deploy from main, committing code directly to main is fine; branch only when you
-want isolation for risky work.
+**Protect main when it deploys from main.** Where the project deploys from main
+(a live website or app), anything on the branch-and-PR side of the split takes
+one feature branch per task, branched from an up-to-date main → commit locally as
+you work → push the branch → open a PR only when I ask → merge → clean up. Where
+the project does not deploy from main, a commit reaches no reader and there is
+nothing for the split to protect: committing directly to main is fine, and you
+branch only when you want isolation for risky work.
 
-**No PR unless I explicitly ask.** When I do ask, name it
-`type/short-description`, where type is one of: feat, fix, docs, refactor,
-chore, style, test, perf, build, ci, uat.
+**Direct to main:** anything the build validates before it publishes, plus
+governance docs.
+
+**Branch and PR unless I say otherwise:** anything on a deploying surface that
+nothing validates — the viewer, the build script, stylesheets.
+
+Public or private makes no difference. If it isn't obvious which side a file sits
+on, the test is whether a bad commit reaches readers with nothing catching it; if
+that's still unclear, ask.
+
+When I ask for a PR, name it `type/short-description`, where type is one of: feat,
+fix, docs, refactor, chore, style, test, perf, build, ci, uat.
 
 **Post-merge cleanup — Claude reminds, so I don't have to.** After any PR
 merges, Claude surfaces the cleanup automatically, but only once the merge is
