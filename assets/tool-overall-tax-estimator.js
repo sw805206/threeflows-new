@@ -2130,6 +2130,24 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     var e = document.querySelector('.tf-tool-content ' + sel);
     return e ? e.textContent.trim() : '';
   }
+  /* THE PRIVACY CALLOUT'S BODY IS DERIVED, NOT AUTHORED.
+     It is the privacy paragraph from the legal block — §6's second paragraph,
+     the one that is character-identical across all three tool pages — copied
+     up to the callout at runtime. The paragraph is authored ONCE in the markup
+     and read from there, so the surfaced notice and the foot-of-page notice
+     cannot drift into two versions of the same promise. That drift is not
+     hypothetical: TOOLS.md §7 records tool-002 reaching the point of printing
+     a hand-tightened paraphrase of its own disclaimer.
+     A missing source element yields an EMPTY STRING and nothing is written —
+     never a fallback sentence, which would be a second authored wording by
+     another name. */
+  function fillPrivacyCallout() {
+    var target = el('[data-privacy-callout-body]');
+    if (!target) return;
+    var paras = legalParagraphs();
+    target.textContent = paras.length > 1 ? paras[1] : '';
+  }
+
   function legalParagraphs() {
     var block = el('[data-tool-legal]');
     if (!block) return [];
@@ -2217,6 +2235,25 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
     doc.setFont('helvetica', 'normal');
     legalParagraphs().forEach(function (p) { y = writeWrapped(doc, p, margin, y, inner, 10) + 5; });
     y += 6;
+
+    /* The privacy callout, after the legal block and ahead of the panel
+       content. Both strings are READ FROM THE DOM — the title from the markup,
+       the body from the callout the page already derived — so TOOLS.md §7
+       holds: no user-facing copy is restated here. Empty elements yield empty
+       strings and the block is skipped rather than printed hollow.
+       This DOES repeat the privacy paragraph, which already leads the document
+       inside the legal block. That is intended: on paper the two are far
+       apart, and the surfaced notice is the one a reader meets before they
+       start typing figures. */
+    var cTitle = headText('[data-privacy-callout] .tf-callout-title');
+    var cBody = headText('[data-privacy-callout] .tf-callout-body');
+    if (cTitle || cBody) {
+      doc.setFont('helvetica', 'bold').setFontSize(9).setTextColor.apply(doc, ink);
+      if (cTitle) y = writeWrapped(doc, cTitle, margin, y, inner, 11);
+      doc.setFont('helvetica', 'normal').setFontSize(8).setTextColor.apply(doc, inkSoft);
+      if (cBody) y = writeWrapped(doc, cBody, margin, y, inner, 10);
+      y += 8;
+    }
 
     doc.setFont('helvetica', 'normal').setFontSize(9).setTextColor.apply(doc, inkSoft);
     y = writeWrapped(doc, ST[base.key].n + ' · ' + base.filingLabel + ' · ' +
@@ -2724,6 +2761,7 @@ DC: S('District of Columbia',{pit:[[0,.04],[10000,.06],[40000,.065],[60000,.085]
   var DEFAULT_COMPARE = ['WY', 'NV', 'TN', 'FL', 'WA', 'TX'];
 
   function boot() {
+    fillPrivacyCallout();
     fillStateSelects();
     fillStatePicker();
     var homeSel = el('#b-state'), outSel = el('#o-state');

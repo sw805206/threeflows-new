@@ -476,6 +476,17 @@
     .tf-stat-value.is-kept  { color: var(--tf-chart-4); }
     .tf-stat-value.is-short { color: var(--tf-brick); }
 
+
+    /* ---- Privacy callout placement ----------------------------------------
+       The base .tf-callout carries no margin of its own, and the action row
+       above it ends with --tf-space-2. Dropped between the two it would sit
+       16px under the row and flush against the panel below, reading as part
+       of neither. This is placement only — no colour, no border, no type
+       touched, and nothing about the callout pattern itself changes. Page
+       local per STYLE.md §5; if a second page ever wants a callout in this
+       slot it gets promoted rather than copied. */
+    .tf-tool-content > .tf-callout { margin: var(--tf-space-2) 0 var(--tf-space-4); }
+
   </style>
 </head>
 <body class="tf-app">
@@ -550,6 +561,37 @@
             </nav>
             <button type="button" class="tf-pill tf-pill-outline" data-reset>Start over</button>
             <button type="button" class="tf-pill tf-pill-outline" data-pdf>Download PDF</button>
+          </div>
+
+          <!-- PRIVACY CALLOUT. Sits between the action row and the panel and
+               OUTSIDE the panel, so it holds one position across all five
+               steps rather than repeating or moving with each panel's heading
+               — the same reasoning that puts the action row where it is.
+               The base .tf-callout, reused as found: no new class, no new
+               token, no colour set here. The icon takes its brick from
+               STYLE.css's own `.tf-callout svg` rule.
+               NOT print-hidden. A reader who prints or downloads the page is
+               precisely the one carrying the figures somewhere else, so the
+               notice travels with them.
+               THE BODY IS DELIBERATELY EMPTY IN THE MARKUP. It is filled at
+               runtime from the privacy paragraph in the legal block below, the
+               same way the panel eyebrows are derived from the rail's step
+               numbers: one authored wording of that paragraph in this file, so
+               the callout and the legal block cannot drift into two versions
+               of one notice. A missing source yields an empty string, never a
+               fallback. The cost is that the sentence does NOT appear in a
+               grep of the static markup — it lands at runtime. -->
+          <div class="tf-callout" data-privacy-callout>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/>
+              <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/>
+              <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/>
+              <path d="m2 2 20 20"/>
+            </svg>
+            <div>
+              <div class="tf-callout-title">Your numbers stay in this browser and never reach us.</div>
+              <p class="tf-callout-body" data-privacy-callout-body></p>
+            </div>
           </div>
 
           <div class="tf-tool-panels">
