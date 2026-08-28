@@ -1,4 +1,4 @@
-v004 | 2026-08-02 | 182 lines
+v005 | 2026-08-27 | 218 lines
 
 # TOOLS.md — tool page naming and IDs
 
@@ -109,16 +109,18 @@ tablist. There is no second source of truth for which step is active.
 
 ## 6. Required copy
 
-These three strings must not drift, so they are reproduced here in full. The
-page is the source; this section is the check.
+These strings must not drift, so they are reproduced here in full. The page is
+the source; this section is the check. The first three are on EVERY tool page;
+the fourth is scoped to one tool and says so.
 
 The legal block sits at the foot of the content column, headed `.tf-meta`
 **"Disclaimer and privacy"**, and carries three paragraphs in this order:
 **generic, privacy, tool-specific.**
 
-**1. Generic** — character-identical on both tool pages AND on `tools.html`.
-Being quoted in three places, it changes in ONE commit, per STYLE.md's
-quoted-values rule:
+**1. Generic** — character-identical on all three tool pages AND on
+`tools.html`. Being quoted in four places, it changes in ONE commit, per
+STYLE.md's quoted-values rule. The count grows with every tool built, which is
+the reason the rule is a single-commit rule rather than a careful-editing one:
 
 > Three Flows Solutions is a business consultancy. These free tools are provided
 > to introduce business logic. Do not use the output as the basis for a final
@@ -127,7 +129,10 @@ quoted-values rule:
 > regulations, laws, and standards that apply to your situation.
 
 **2. Privacy** — tool pages only. It is deliberately NOT on `tools.html`, which
-has no inputs to describe:
+has no inputs to describe. On `tool-overall-tax-estimator.html` it has a SECOND
+reader: the callout in item 4 derives its body from this paragraph at runtime,
+so editing the wording here moves both the foot-of-page notice and the surfaced
+one, and neither needs touching separately:
 
 > Nothing you enter in these free tools is sent to us or stored anywhere — we
 > have no record of it and cannot retrieve it for you. Your entries exist only
@@ -136,14 +141,34 @@ has no inputs to describe:
 
 **3. Tool-specific** — each tool's own, per §8.
 
-**Rail CTA**, identical on both pages. It opens in a new tab, deliberately and
-only here, so a reader mid-way through the inputs does not lose them:
+**4. Privacy callout title** — `tool-overall-tax-estimator.html` ONLY, per §8's
+surfaced-privacy-callout variation. The other tool pages do not carry it and
+must not gain it by symmetry:
+
+> Your numbers stay in this browser and never reach us.
+
+**The callout's BODY is never authored.** It is paragraph 2 above, copied into
+the callout at runtime from the legal block in the same page — the derivation
+idiom §5 uses for the panel eyebrow. One authored wording of that paragraph per
+page, so the surfaced notice and the foot-of-page notice cannot become two
+versions of one promise. A missing source element yields an empty string, never
+a fallback sentence; a fallback would be a second authored wording under
+another name, which is the exact failure §7 records. The consequence to accept:
+the sentence is NOT in a grep of the static markup at the callout, and the
+paragraph therefore prints twice — once surfaced, once in the legal block. That
+is intended, not a duplication to tidy.
+
+**Rail CTA**, identical on all three pages. It opens in a new tab, deliberately
+and only here, so a reader mid-way through the inputs does not lose them:
 
 > Want something customized to your business? Contact us.
 
 The legal block is **not print-hidden** — all three paragraphs print — and the
 PDF places the whole block at the TOP of the generated document, ahead of the
-panel content.
+panel content. Where a tool also carries §6's fourth string, that callout
+prints too and follows the legal block in the PDF, so the order on paper is
+legal block, then callout, then panel. The legal block is no longer the only
+thing standing between the top of the document and the panel content.
 
 ## 7. Constraints
 
@@ -156,7 +181,8 @@ panel content.
 - **The engine lives in `assets/tool-<slug>.js`** — never inline (SCOPE.md).
 - **No user-facing copy is restated in the JS.** The title, the intro and the
   legal block are READ FROM THE DOM when the PDF is built. This is written from a
-  failure: both engines once hardcoded all three, and both drifted — tool-002
+  failure: the first two engines once hardcoded all three, and both drifted —
+  tool-002
   reached the point of printing a hand-tightened paraphrase of its own
   disclaimer, a third wording of one notice. A missing element yields an empty
   string, never a stale fallback.
@@ -169,12 +195,22 @@ panel content.
 
 ## 8. Per-tool variation
 
-Three things legitimately differ between tools. Everything else in §5–§7 is
+Four things legitimately differ between tools. Everything else in §5–§7 is
 shared.
 
-- **"Start over"** appears only where there is input to clear. tool-002 has it;
-  tool-001 has none, and none was invented for symmetry.
+- **"Start over"** appears only where there is input to clear. tool-002 and
+  tool-003 have it; tool-001 has none, and none was invented for symmetry.
 - **The tool-specific disclaimer paragraph** — §6's third paragraph.
+- **A surfaced privacy callout.** `tool-overall-tax-estimator.html` carries
+  §6's fourth string in a base `.tf-callout` above the panel; tool-001 and
+  tool-002 do not, and were not given one for symmetry. The distinction is what
+  the tool ASKS FOR, not what it does with it: tool-003 collects household
+  income, wages, business revenue and a home value — figures a reader may
+  hesitate over — where tool-001 asks only structural questions and tool-002
+  asks about a plan rather than a paycheck. Every tool page makes the same
+  promise in its legal block; this one repeats it where the reader meets it
+  before typing. A tool that starts collecting figures of that kind should gain
+  the callout; one that does not should not carry it as decoration.
 - **Kind — checklist or calculator.** Shown on the index card only, as a Lucide
   icon plus the word, inside `.tf-card-kicker`: `list-checks` "Checklist",
   `calculator` "Calculator". Both at **16px, not STYLE.md §2's 22px default** —

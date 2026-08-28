@@ -1,4 +1,4 @@
-v064 | 2026-08-14 | 3062 lines
+v065 | 2026-08-27 | 3092 lines
 
 # Three Flows Solutions — Brand Style Guide
 
@@ -3060,3 +3060,33 @@ Paired with STYLE.css v059, same commit per SCOPE.md.
   since 2026-08-01, fifteen STYLE.md commits ago. A single new clause on a
   summary missing that many versions would make it read as maintained when it is
   not; an obviously dormant summary is the more honest artifact.
+
+### Privacy callout — base `.tf-callout` reused, no new pattern — tool-overall-tax-estimator.html — 2026-08-27
+
+**NO `STYLE.css` CHANGE, and that is the point of the entry.** tool-003 surfaces
+its privacy notice above the panel using the BASE `.tf-callout` exactly as
+shipped — no new class, no modifier, no new token, no new colour value. The
+icon is Lucide `eye-off` at 22px / 1.75px stroke in the callout's existing svg
+slot, taking its brick from `.tf-callout svg` rather than setting a colour;
+§2's 22px default applies here, unlike the 16px index-card kickers TOOLS.md §8
+carves out.
+
+The one addition is PLACEMENT, and it is page-local under §5: the base callout
+carries no margin of its own and `.tf-panel-actions` above it ends with
+`--tf-space-2`, so dropped between the action row and the panel it sat flush
+against the panel and read as belonging to neither. `.tf-tool-content >
+.tf-callout { margin: var(--tf-space-2) 0 var(--tf-space-4); }` in the page's
+own `<style>` block, built from tokens. Nothing about the pattern changes —
+this is a gap, not a variant.
+
+Recorded so the next page that wants a callout in this slot PROMOTES the
+margin rather than copying it, per §5's second-use rule. If that happens the
+rule moves to `STYLE.css` scoped to `.tf-tool-content`, not to `.tf-callout`
+generally: a callout in running prose does not want it.
+
+The callout's BODY is not authored in the markup — it is derived at runtime
+from the privacy paragraph in the same page's legal block, the idiom TOOLS.md
+§5 already uses for the panel eyebrow. That is a content rule rather than a
+style one and lives in TOOLS.md §6; it is noted here only because it explains
+why the callout ships with an empty `.tf-callout-body` and why that is correct
+rather than an oversight.
