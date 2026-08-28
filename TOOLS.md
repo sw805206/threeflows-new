@@ -1,4 +1,4 @@
-v005 | 2026-08-27 | 218 lines
+v006 | 2026-08-28 | 218 lines
 
 # TOOLS.md — tool page naming and IDs
 
@@ -117,12 +117,12 @@ The legal block sits at the foot of the content column, headed `.tf-meta`
 **"Disclaimer and privacy"**, and carries three paragraphs in this order:
 **generic, privacy, tool-specific.**
 
-**1. Generic** — character-identical on all three tool pages AND on
+**1. Generic** — character-identical on every tool page AND on
 `tools.html`. Being quoted in four places, it changes in ONE commit, per
 STYLE.md's quoted-values rule. The count grows with every tool built, which is
 the reason the rule is a single-commit rule rather than a careful-editing one:
 
-> Three Flows Solutions is a business consultancy. These free tools are provided
+> Three Flows Solutions is a business consultancy. These tools are provided
 > to introduce business logic. Do not use the output as the basis for a final
 > business decision or for execution without discussing it with qualified
 > professional service providers, and check the federal, state, and institutional
@@ -134,7 +134,7 @@ reader: the callout in item 4 derives its body from this paragraph at runtime,
 so editing the wording here moves both the foot-of-page notice and the surfaced
 one, and neither needs touching separately:
 
-> Nothing you enter in these free tools is sent to us or stored anywhere — we
+> Nothing you enter in these tools is sent to us or stored anywhere — we
 > have no record of it and cannot retrieve it for you. Your entries exist only
 > while the page is open; refreshing or leaving the page clears them. Download
 > the PDF if you want to keep your work.
