@@ -1,4 +1,4 @@
-v018 | 2026-08-25 | 311 lines
+v020 | 2026-08-30 | 326 lines
 
 # Working Rules
 
@@ -215,6 +215,11 @@ The master copy of CLAUDE.md lives on local disk at
 `/Users/swai/sw805206/CLAUDE.md`. Every project repo holds a copy, and the disk
 master is what they reconcile against.
 
+Every project repo holds a copy regardless of which local tree or which GitHub
+account it belongs to: the master is an absolute path, not a tree-relative one,
+so a repo under a different account's tree reconciles against it identically. A
+new repo joins by taking a copy at creation.
+
 **Publishing a change (project A).** Edit the copy in project A's repo, commit
 to main, then copy the file back to the disk master. The change is not finished
 until both have happened: an uncommitted edit is invisible to other projects,
@@ -260,6 +265,16 @@ a row would only duplicate them. The other exit is DEFERRED: I say the item
 waits, and it is flushed to BACKLOG.md. Only deferred items are ever flushed.
 The test is deferral alone — never the item's category, and never whether it is
 a bug, a governance fix, a feature or a decision.
+
+**A DECISION NOT TO ACT GOES IN THE GOVERNING PROSE, NOT HERE.** The DONE exit
+above assumes a finished item left a commit to find; a decision to leave code
+alone leaves none — no commit, no diff, no PR — so its reasoning has no artifact
+at all and vanishes with the chat. It is still not deferred, so a row would
+announce work that does not exist in the one file people read looking for work.
+Record it in the §-level documentation that governs the thing decided about,
+where the person who would otherwise "fix" it is already reading. Symptom: an
+asymmetry nobody can explain, tidied away three months later on the evidence
+available.
 
 **This governs entry to the backlog only.** Once an item IS a row, the Status
 rules below govern it for the rest of its life: work done on an existing row
