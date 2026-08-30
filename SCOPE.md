@@ -1,6 +1,14 @@
-v035 | 2026-08-27 | 305 lines
+v036 | 2026-08-30 | 313 lines
 
 # SCOPE.md — threeflows.com
+
+## Repository
+
+| | |
+|---|---|
+| Local | `/Users/swai/sw805206/threeflows-new` |
+| Git | `https://github.com/sw805206/threeflows-new` |
+| GitHub account | `sw805206` |
 
 ## 1. Project
 
