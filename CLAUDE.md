@@ -1,4 +1,4 @@
-v021 | 2026-08-30 | 357 lines
+v022 | 2026-08-30 | 366 lines
 
 # Working Rules
 
@@ -94,6 +94,15 @@ keeps (e.g. STYLE.css); never assume a fixed list. Code reads both sides itself
 and reports the joined result — a chat cannot read git, so it is never asked to
 supply half of it. Where the two differ, the higher version is current — flag it
 and sync to that version.
+
+**Verify the git identity before pushing.** Where the repo has a remote, run
+`gh auth status` at the start of any task that will push, and confirm the active
+account matches the GitHub account declared in SCOPE.md. `gh auth switch` and
+`gh auth login` change credential state for every project on the machine, so
+Claude never runs either — on a mismatch, stop and give me the exact command to
+run myself. The declared account is per-project and the switch is global, which
+is why this is checked at the start of the task rather than discovered at the
+push.
 
 **Governance docs go direct to main.** Every `.md` governance doc listed in
 SCOPE.md — CLAUDE.md, SCOPE.md, BLOG.md, BACKLOG.md, PROCESS.md and the like —
