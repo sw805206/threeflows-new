@@ -1,4 +1,4 @@
-v005 | 2026-08-27 | 218 lines
+v007 | 2026-08-28 | 249 lines
 
 # TOOLS.md — tool page naming and IDs
 
@@ -117,12 +117,12 @@ The legal block sits at the foot of the content column, headed `.tf-meta`
 **"Disclaimer and privacy"**, and carries three paragraphs in this order:
 **generic, privacy, tool-specific.**
 
-**1. Generic** — character-identical on all three tool pages AND on
+**1. Generic** — character-identical on every tool page AND on
 `tools.html`. Being quoted in four places, it changes in ONE commit, per
 STYLE.md's quoted-values rule. The count grows with every tool built, which is
 the reason the rule is a single-commit rule rather than a careful-editing one:
 
-> Three Flows Solutions is a business consultancy. These free tools are provided
+> Three Flows Solutions is a business consultancy. These tools are provided
 > to introduce business logic. Do not use the output as the basis for a final
 > business decision or for execution without discussing it with qualified
 > professional service providers, and check the federal, state, and institutional
@@ -134,7 +134,7 @@ reader: the callout in item 4 derives its body from this paragraph at runtime,
 so editing the wording here moves both the foot-of-page notice and the surfaced
 one, and neither needs touching separately:
 
-> Nothing you enter in these free tools is sent to us or stored anywhere — we
+> Nothing you enter in these tools is sent to us or stored anywhere — we
 > have no record of it and cannot retrieve it for you. Your entries exist only
 > while the page is open; refreshing or leaving the page clears them. Download
 > the PDF if you want to keep your work.
@@ -172,12 +172,18 @@ thing standing between the top of the document and the panel content.
 
 ## 7. Constraints
 
-- **Front-end only, and no persistence of any kind.** No backend and no database
-  (SCOPE.md), and additionally **no `localStorage`, no `sessionStorage`, no
-  cookies** — nothing that outlives the page. That last rule is what makes §6's
-  privacy paragraph true rather than aspirational. A future "save my progress"
-  request is a change to this rule and to that paragraph, not a feature that
-  fits around them.
+- **Front-end only. Tool input never persists and never leaves the browser.**
+  No backend and no database (SCOPE.md). Nothing a reader types INTO a tool is
+  stored, transmitted, or allowed to outlive the page — no `localStorage`, no
+  `sessionStorage`, no cookies, no network call carrying it. That is what makes
+  §6's privacy paragraph true rather than aspirational, and a "save my
+  progress" feature is still a change to this rule and to that paragraph, not
+  something that fits around them. Site-level state that is NOT derived from
+  tool input — the email-unlock flag being the only current case — is
+  permitted, and is governed where it is defined rather than here. The
+  distinction is the reader's data versus the site's own bookkeeping; if a
+  proposed value could be reconstructed from what someone typed into a tool, it
+  falls under the prohibition.
 - **The engine lives in `assets/tool-<slug>.js`** — never inline (SCOPE.md).
 - **No user-facing copy is restated in the JS.** The title, the intro and the
   legal block are READ FROM THE DOM when the PDF is built. This is written from a
@@ -216,3 +222,28 @@ shared.
   `calculator` "Calculator". Both at **16px, not STYLE.md §2's 22px default** —
   22px dwarfs a 12px uppercase kicker. Stroke stays 1.75px and the colour comes
   from the kicker's own brick through `currentColor`, so §2 holds otherwise.
+
+## 9. Card-only entries (paid tools)
+
+A paid tool has no page in this repo. It is a card on `tools.html` whose link
+leaves for `app.threeflows.com`, where `threeflows-app` owns the tool, the
+account, the entitlement and the payment.
+
+Such an entry therefore has NO slug (§1), NO `data-tool-id` (§2), NO
+`toollist.json` row (§3), and none of §5–§7 applies to it. It stays out of the
+manifest for the same reason §3 gives for the manifest's current thinness:
+`filename` must point at a file on disk, and there is none. If the manifest
+later earns a consumer that needs the whole shelf rather than the pages, that
+is the moment to revisit.
+
+What the card carries: the kind kicker per §8, a title, a description, and a
+pill whose label is the app's entry action. It carries NO price — pricing lives
+in the app, and a number quoted here would go stale in a repo this one cannot
+see, with nothing to catch it.
+
+The link target must be a stable destination page supplied by `threeflows-app`,
+never the auth screen. A reader arriving cold from a blog post needs to see what
+the tool is before being asked to authenticate.
+
+The boundary: card copy is owned here; everything past the click is owned by
+`threeflows-app`.
