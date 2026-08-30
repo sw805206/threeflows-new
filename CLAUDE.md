@@ -1,4 +1,4 @@
-v020 | 2026-08-30 | 326 lines
+v021 | 2026-08-30 | 357 lines
 
 # Working Rules
 
@@ -213,12 +213,10 @@ or **opt-in**, applying only where SCOPE.md declares them.
 
 The master copy of CLAUDE.md lives on local disk at
 `/Users/swai/sw805206/CLAUDE.md`. Every project repo holds a copy, and the disk
-master is what they reconcile against.
-
-Every project repo holds a copy regardless of which local tree or which GitHub
-account it belongs to: the master is an absolute path, not a tree-relative one,
-so a repo under a different account's tree reconciles against it identically. A
-new repo joins by taking a copy at creation.
+master is what they reconcile against — regardless of which local tree or which
+GitHub account the repo belongs to, since the master is an absolute path, not a
+tree-relative one. A new repo joins by taking a copy at creation, per §how-to:
+start a new project.
 
 **Publishing a change (project A).** Edit the copy in project A's repo, commit
 to main, then copy the file back to the disk master. The change is not finished
@@ -237,6 +235,39 @@ across tasks.
 
 **Human steps after any change.** Re-paste Part A into Claude's global settings,
 and upload the current file to each Claude project folder.
+
+### how-to: start a new project (universal)
+
+A new repo is set up deliberately; nothing about it is automatic. The decisions
+below are made before any work begins, and a chat opening this section asks for
+them rather than assuming them.
+
+**The account decides the tree.** Each GitHub account owns one local tree, and a
+repo lives in the tree matching the account that owns it. Placement is not
+cosmetic: commit identity is derived from the directory, so a repo cloned into
+the wrong tree commits under the wrong account and nothing announces it.
+
+**The clone URL carries the credential path.** Accounts authenticate
+differently, and the URL form is what selects between them. Clone with the form
+belonging to that account, not a bare `github.com` URL assumed to work for all
+of them. A wrong URL fails loudly, which is the easy failure.
+
+**Verify identity before the first commit.** Run `git config user.email` in the
+fresh clone and check it against the account the project belongs to. This is a
+rule, not a step to remember: no commit is made in a new repo until it has
+passed. It is the only check that catches a wrong-tree clone, whose failure is
+otherwise silent.
+
+**Then author the governance the project needs.** Copy CLAUDE.md from the disk
+master per §how-to: keep CLAUDE.md in sync — byte-identical, never re-stamped.
+Author SCOPE.md, which declares the project type, the governance docs it
+requires, whether it deploys from main, and its branch/PR discipline; little
+else can be decided until it exists. Add BACKLOG.md where the project opts into
+the backlog process. Ignore local tooling directories at creation rather than
+after they first dirty the tree.
+
+**The first push anchors the repo.** Governance docs go direct to main per Part
+B, so the initial commit is pushed immediately rather than left sitting local.
 
 ### how-to: maintain the backlog (opt-in — when SCOPE.md declares it)
 
